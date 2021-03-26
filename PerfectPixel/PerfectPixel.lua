@@ -366,13 +366,13 @@ local function Core()
 		--"SellPrice"--------------------
 		if control:GetNamedChild("SellPrice") then
 			local sp = control:GetNamedChild("SellPrice")
-			PP.Font(sp, --[[Font]] PP.f.u67, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Font(sp, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 			sp:SetHidden(false)
 		end
 		--"ButtonStackCount"-------------
 		if control:GetNamedChild("ButtonStackCount") then
 			local stack = control:GetNamedChild("ButtonStackCount")
-			PP.Font(stack, --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Font(stack, --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 			PP.Anchor(stack, --[[#1]] LEFT, control:GetNamedChild("ButtonIcon"), LEFT, 34, 8)
 		end
 		--"Button"-------------
@@ -397,7 +397,7 @@ local function Core()
 		--"Name"-------------
 		if control:GetNamedChild("Name") then
 			local name = control:GetNamedChild("Name")
-			PP.Font(name, --[[Font]] PP.f.u67, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Font(name, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 			PP.Anchor(name, --[[#1]] LEFT, control, LEFT, 110, -1)
 			name:SetLineSpacing(0)
 			name:SetVerticalAlignment(TEXT_ALIGN_CENTER)
@@ -518,8 +518,8 @@ local function Core()
 --CROWN_CRATE_KEYBOARD_SCENE
 	PP.Anchor(ZO_CrownCratesGemsCounter, --[[#1]] BOTTOMLEFT, GuiRoot, BOTTOMLEFT, 10, -2)
 	ZO_CrownCratesGemsCounterGemIcon:SetDimensions(22, 22)
-	PP.Font(ZO_CrownCratesGemsCounterGemsHeader, --[[Font]] PP.f.u67, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-	PP.Font(ZO_CrownCratesGemsCounterGems, --[[Font]] PP.f.u67, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_CrownCratesGemsCounterGemsHeader, --[[Font]] PP.f.Expressway, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_CrownCratesGemsCounterGems, --[[Font]] PP.f.Expressway, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	
 --FadeAnimations---------------------------------------------------------------------------------------
 	-- treasureMapQuickSlot
@@ -572,8 +572,8 @@ local function Core()
 end
 
 --ZO_KeybindStrip----------------------------------------------------
-KEYBIND_STRIP_STANDARD_STYLE.nameFont			= PP.f.u67 .. "|18|outline"
-KEYBIND_STRIP_STANDARD_STYLE.keyFont			= PP.f.u57 .. "|16"
+KEYBIND_STRIP_STANDARD_STYLE.nameFont			= PP.f.Expressway .. "|18|outline"
+KEYBIND_STRIP_STANDARD_STYLE.keyFont			= PP.f.Expressway .. "|16"
 KEYBIND_STRIP_STANDARD_STYLE.resizeToFitPadding	= 20
 KEYBIND_STRIP_STANDARD_STYLE.leftAnchorOffset	= 10
 KEYBIND_STRIP_STANDARD_STYLE.centerAnchorOffset	= 0

@@ -36,7 +36,7 @@ PP.journalSceneGroup = function()
 	PP.Anchor(ZO_QuestJournal, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
 	PP.Anchor(ZO_QuestJournalQuestCount, --[[#1]] TOPLEFT, nil, TOPLEFT, 0, -6)
 	PP.Anchor(ZO_QuestJournalNavigationContainerScroll, --[[#1]] TOPLEFT, nil, TOPLEFT, 5, 0, --[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, 0, 0)
-	PP.Font(ZO_QuestJournalQuestCount, --[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_QuestJournalQuestCount, --[[Font]] PP.f.Expressway, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 
 	ZO_Scroll_SetMaxFadeDistance(ZO_QuestJournalNavigationContainer, 10)
 
@@ -66,7 +66,7 @@ PP.journalSceneGroup = function()
 			text:SetText(name)
 			text:SetSelected(true)
 			text:SetVerticalAlignment(TEXT_ALIGN_CENTER)
-			PP.Font(text, --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] 197, 194, 158, 1, --[[StyleColor]] 0, 0, 0, .8)
+			PP.Font(text, --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] 197, 194, 158, 1, --[[StyleColor]] 0, 0, 0, .8)
 			PP.Anchor(text, --[[#1]] TOPLEFT, control, TOPLEFT, 10, 0, --[[#2]] true, BOTTOMRIGHT, control, BOTTOMRIGHT, 0, 0)
 			text:SetMouseEnabled(false)
 
@@ -79,7 +79,7 @@ PP.journalSceneGroup = function()
 		local existingSetupCallback = treeEntry.setupFunction
 		treeEntry.setupFunction = function(node, control, data, open)
 			existingSetupCallback(node, control, data, open)
-			PP.Font(control, --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Font(control, --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 			control:SetDimensions(290, 21)
 			control:SetVerticalAlignment(TEXT_ALIGN_CENTER)
 			--icon--

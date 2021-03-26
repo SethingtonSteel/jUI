@@ -26,6 +26,7 @@ PP.f = {			--[[	Fonts		]]
 	univers67	=	"EsoUI/Common/Fonts/Univers67.otf|15",
 	u57			=	"EsoUI/Common/Fonts/Univers57.otf",
 	u67			=	"EsoUI/Common/Fonts/Univers67.otf",
+	Expressway	=	"LMP_MediaStash/fonts/Expressway.ttf",
 }
 --[[colors
 def2 = ( 197, 194, 158 )

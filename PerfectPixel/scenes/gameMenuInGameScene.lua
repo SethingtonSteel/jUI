@@ -54,9 +54,9 @@ PP.gameMenuInGameScene = function()
 		PP.Anchor(ZO_AddOnsLoadOutOfDateAddOns,		--[[#1]] RIGHT, ZO_AddOnsLoadOutOfDateAddOnsText, LEFT, -6, -1)
 		PP.Anchor(ZO_AddOnsCharacterSelectDropdown,	--[[#1]] LEFT, ZO_AddOnsTitle, RIGHT, 50, 1)
 
-		PP.Font(ZO_AddOnsMultiButtonKeyLabel,		--[[Font]] PP.f.u57, 16, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-		PP.Font(ZO_AddOnsMultiButtonNameLabel,		--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-		PP.Font(ZO_AddOnsTitle,						--[[Font]] PP.f.u67, 22, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+		PP.Font(ZO_AddOnsMultiButtonKeyLabel,		--[[Font]] PP.f.Expressway, 16, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+		PP.Font(ZO_AddOnsMultiButtonNameLabel,		--[[Font]] PP.f.Expressway, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+		PP.Font(ZO_AddOnsTitle,						--[[Font]] PP.f.Expressway, 22, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 
 		ZO_Scroll_SetMaxFadeDistance(ZO_AddOnsList, 10)
 

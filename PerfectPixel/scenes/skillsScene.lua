@@ -52,13 +52,13 @@ PP.skillsScene = function()
 	PP.Anchor(ZO_Skills, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 85,	--[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -104)
 
 	PP.Anchor(ZO_SkillsAvailablePoints, --[[#1]] TOPLEFT, nil, TOPLEFT, 0, 0)
-	PP.Font(ZO_SkillsAvailablePoints, --[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-	PP.Font(ZO_SkillsSkyShards, --[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_SkillsAvailablePoints, --[[Font]] PP.f.Expressway, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_SkillsSkyShards, --[[Font]] PP.f.Expressway, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 --ZO_SkillsSkillInfo
 	PP.Anchor(ZO_SkillsSkillInfo, --[[#1]] TOP, ZO_Skills, TOP, 112, -5, --[[#2]] false, LEFT, ZO_SkillsSkillLinesContainer, RIGHT, 65, 0)
 	
-	PP.Font(ZO_SkillsSkillInfoName, --[[Font]] PP.f.u67, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-	PP.Font(ZO_SkillsSkillInfoRank, --[[Font]] PP.f.u67, 54, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_SkillsSkillInfoName, --[[Font]] PP.f.Expressway, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_SkillsSkillInfoRank, --[[Font]] PP.f.Expressway, 54, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	PP.Anchor(ZO_SkillsSkillInfoRank, --[[#1]] LEFT, nil, LEFT, -50, 0)
 	PP.Bar(ZO_SkillsSkillInfoXPBar, --[[height]] 14, --[[fontSize]] 15)
 	PP.Anchor(ZO_SkillsSkillInfoXPBar, --[[#1]] TOPLEFT, ZO_SkillsSkillInfoRank, BOTTOMRIGHT, 15, -30, --[[#2]] true, BOTTOMRIGHT, ZO_SkillsSkillList, TOPRIGHT, -20, -16)
@@ -122,7 +122,7 @@ PP.skillsScene = function()
 			--text--
 			local text = control:GetNamedChild("Text")
 			text:SetSelected(true)
-			PP.Font(text, --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] 173, 166, 132, 1, --[[StyleColor]] 0, 0, 0, .8)
+			PP.Font(text, --[[Font]] PP.f.Expressway, 18, "outline", --[[Alpha]] nil, --[[Color]] 173, 166, 132, 1, --[[StyleColor]] 0, 0, 0, .8)
 			PP.Anchor(text, --[[#1]] LEFT, nil, RIGHT, 0, 0)
 			text:SetVerticalAlignment(TEXT_ALIGN_CENTER)
 			text:SetDesaturation(-1)
@@ -144,7 +144,7 @@ PP.skillsScene = function()
 
 			--SpentSkillPoints  compatibility--
 			if control:GetNamedChild("PointText") then
-				PP.Font(control:GetNamedChild("PointText"), --[[Font]] PP.f.u67, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+				PP.Font(control:GetNamedChild("PointText"), --[[Font]] PP.f.Expressway, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 				PP.Anchor(control:GetNamedChild("PointText"), --[[#1]] nil, nil, nil, 220, 2)
 			end
 
@@ -158,17 +158,17 @@ PP.skillsScene = function()
 			existingSetupCallback(node, control, skillLineData, open)
 			control:SetHeight(21)
 			control:SetVerticalAlignment(TEXT_ALIGN_CENTER)
-			PP.Font(control, --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Font(control, --[[Font]] PP.f.Expressway, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 			--StatusIcon--
 			PP.Anchor(control:GetNamedChild("StatusIcon"), --[[#1]] nil, nil, nil, -2, 0)
 
 			--SpentSkillPoints  compatibility--
 			if control:GetNamedChild("LevelText") then
-				PP.Font(control:GetNamedChild("LevelText"), --[[Font]] PP.f.u67, 14, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+				PP.Font(control:GetNamedChild("LevelText"), --[[Font]] PP.f.Expressway, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 				PP.Anchor(control:GetNamedChild("LevelText"), --[[#1]] nil, nil, nil, -74, 1)
 			end
 			if control:GetNamedChild("PointText") then
-				PP.Font(control:GetNamedChild("PointText"), --[[Font]] PP.f.u67, 14, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+				PP.Font(control:GetNamedChild("PointText"), --[[Font]] PP.f.Expressway, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 				PP.Anchor(control:GetNamedChild("PointText"), --[[#1]] nil, nil, nil, 160, 1)
 			end
 

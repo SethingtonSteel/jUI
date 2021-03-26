@@ -1,7 +1,7 @@
 PP.guildSceneGroup = function()
 
 	PP.Anchor(ZO_GuildSelector, --[[#1]] BOTTOMLEFT, ZO_GuildHome, TOPLEFT, -70, -5)
-	PP.Font(ZO_GuildSelectorComboBoxSelectedItemText, --[[Font]] PP.f.u67, 30, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
+	PP.Font(ZO_GuildSelectorComboBoxSelectedItemText, --[[Font]] PP.f.Expressway, 30, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
 	ZO_GuildSelectorDivider:SetHidden(true)
 
 --guildHome--ZO_GuildHome--------------------------------------------------------------------

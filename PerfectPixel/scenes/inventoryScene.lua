@@ -191,7 +191,7 @@ PP.inventoryScene = function()
 	do
 		local function RefreshControlMode_1_Dynamic(control, data, typeId)
 			local sp = control:GetNamedChild("SellPrice")
-			sp:SetFont(PP.f.u67 .. "|15|outline")
+			sp:SetFont(PP.f.Expressway .. "|15|outline")
 			sp:SetHidden(false)
 		end
 
@@ -235,7 +235,7 @@ PP.inventoryScene = function()
 	for _, bar in pairs(tabStablesBar) do
 		PP.Bar(bar:GetNamedChild("StatusBarBar"), --[[height]] 8, --[[fontSize]] 15)
 		bar:GetNamedChild("StatusBar"):SetHeight(16)
-		PP.Font(bar:GetNamedChild("Value"), --[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+		PP.Font(bar:GetNamedChild("Value"), --[[Font]] PP.f.Expressway, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	end
 
 --SCENE_MANAGER:GetScene("fence_keyboard")
@@ -248,7 +248,7 @@ PP.inventoryScene = function()
 	--RowSellPrice
 	local fence_currency = {
 		showTooltips	= true,
-		font			= PP.f.u67 .. "|15|shadow",
+		font			= PP.f.Expressway .. "|15|shadow",
 		iconSide		= RIGHT,
 	}
 	local function ColorCost(control, data, scrollList)
@@ -304,13 +304,13 @@ PP.inventoryScene = function()
 
 	--NEW--********************************************************************************************
 	--RowSellPrice
-	ITEM_SLOT_CURRENCY_OPTIONS.font							= PP.f.u67 .. "|15|shadow"
-	ITEM_BACKPACK_SLOT_CURRENCY_OPTIONS.font				= PP.f.u67 .. "|15|shadow"
+	ITEM_SLOT_CURRENCY_OPTIONS.font							= PP.f.Expressway .. "|15|shadow"
+	ITEM_BACKPACK_SLOT_CURRENCY_OPTIONS.font				= PP.f.Expressway .. "|15|shadow"
 
 	--InfoBarMoney, AltMoney
-	ZO_KEYBOARD_CURRENCY_OPTIONS.font						= PP.f.u67 .. "|18|outline"
-	ZO_KEYBOARD_CURRENCY_BANK_TOOLTIP_OPTIONS.font			= PP.f.u67 .. "|18|outline"
-	ZO_KEYBOARD_CURRENCY_GUILD_BANK_TOOLTIP_OPTIONS.font	= PP.f.u67 .. "|18|outline"
+	ZO_KEYBOARD_CURRENCY_OPTIONS.font						= PP.f.Expressway .. "|18|outline"
+	ZO_KEYBOARD_CURRENCY_BANK_TOOLTIP_OPTIONS.font			= PP.f.Expressway .. "|18|outline"
+	ZO_KEYBOARD_CURRENCY_GUILD_BANK_TOOLTIP_OPTIONS.font	= PP.f.Expressway .. "|18|outline"
 
 	--*************************************************************************************************
 end

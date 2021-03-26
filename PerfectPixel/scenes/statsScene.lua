@@ -36,8 +36,8 @@ PP.statsScene = function()
 
 	PP.Anchor(asPanel,			--[[#1]] TOPRIGHT, ZO_StatsPanel, TOPLEFT, 0, 0,	--[[#2]] true, BOTTOMRIGHT, ZO_StatsPanel, BOTTOMLEFT, 0, 0)
 
-	PP.Font(asClose.keyLabel,	--[[Font]] PP.f.u57, 16, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-	PP.Font(asClose.nameLabel,	--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(asClose.keyLabel,	--[[Font]] PP.f.Expressway, 16, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(asClose.nameLabel,	--[[Font]] PP.f.Expressway, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 
 	PP.Anchor(asList,			--[[#1]] nil, nil, nil, nil, nil,	--[[#2]] true, nil, nil, nil, -20, nil)
 	PP.ScrollBar(asList,		--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)

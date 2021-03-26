@@ -58,8 +58,8 @@ PP.worldMapScene = function()
 
 	ZO_WorldMapContainerRaggedEdge:SetHidden(true)
 
-	ZO_WorldMapZoomKeybindKeyLabel:SetFont(PP.f.u57 .. "|16")
-	ZO_WorldMapZoomKeybindNameLabel:SetFont(PP.f.u67 .. "|18|outline")
+	ZO_WorldMapZoomKeybindKeyLabel:SetFont(PP.f.Expressway .. "|16")
+	ZO_WorldMapZoomKeybindNameLabel:SetFont(PP.f.Expressway .. "|18|outline")
 	ZO_WorldMapZoomDivider:SetHidden(true)
 
 	ZO_WorldMapInfoMenuBarLabel:SetHidden(true)
@@ -91,7 +91,7 @@ PP.worldMapScene = function()
 	PP.Anchor(ZO_WorldMapZoneStoryTopLevel_KeyboardList,				--[[#1]] TOPLEFT, ZO_WorldMapZoneStoryTopLevel_Keyboard, TOPLEFT, 8, 0,	--[[#2]] true, BOTTOMRIGHT, ZO_WorldMapZoneStoryTopLevel_Keyboard, BOTTOMRIGHT, 0, 0)
 	PP.Anchor(ZO_WorldMapZoneStoryTopLevel_KeyboardZoneStoriesButton,	--[[#1]] TOP, ZO_WorldMapZoneStoryTopLevel_Keyboard, BOTTOM, 8, 10)
 	PP.Anchor(ZO_WorldMapZoneStoryTopLevel_KeyboardTitle,				--[[#1]] BOTTOM, ZO_WorldMapZoneStoryTopLevel_Keyboard, TOP, 8, -2)
-	PP.Font(ZO_WorldMapZoneStoryTopLevel_KeyboardTitle,					--[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
+	PP.Font(ZO_WorldMapZoneStoryTopLevel_KeyboardTitle,					--[[Font]] PP.f.Expressway, 24, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
 	ZO_WorldMapZoneStoryTopLevel_KeyboardTitleDivider:SetHidden(true)
 
 	local dataType = ZO_ScrollList_GetDataTypeTable(ZO_WorldMapZoneStoryTopLevel_KeyboardList, 1) --SetupCompletionType(control, data)

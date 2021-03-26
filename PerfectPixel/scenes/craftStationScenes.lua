@@ -104,7 +104,7 @@ PP.craftStationScenes = function()
 	-- traitContainer:SetDrawLayer(0)
 	-- traitContainer:SetHeight(400)
 	
-	PP.Font(ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerSelectTraitLabel, --[[Font]] PP.f.u67, 22, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+	PP.Font(ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerSelectTraitLabel, --[[Font]] PP.f.Expressway, 22, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	
 	ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerDivider:SetHidden(true)
 	ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerBGMungeOverlay:SetHidden(true)
@@ -245,10 +245,10 @@ PP.craftStationScenes = function()
 		slot["control"]:SetDimensions(PROVISIONER_SLOT_ROW_WIDTH, PROVISIONER_SLOT_ROW_HEIGHT)
 		slot["control"]:GetNamedChild("Bg"):SetColor(5/255, 5/255, 5/255, .7)
 		slot["icon"]:SetDimensions(40, 40)
-		PP.Font(slot["nameLabel"], --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+		PP.Font(slot["nameLabel"], --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 		slot["countControl"]:SetHeight(PROVISIONER_SLOT_ROW_HEIGHT)
-		PP.Font(slot["countFractionDisplay"]["numeratorLabel"], --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-		PP.Font(slot["countFractionDisplay"]["denominatorLabel"], --[[Font]] PP.f.u67, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+		PP.Font(slot["countFractionDisplay"]["numeratorLabel"], --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+		PP.Font(slot["countFractionDisplay"]["denominatorLabel"], --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	end
 --------------------------------------
 	ZO_PreHook(ZO_Provisioner, "ConfigureFromSettings", function(self, settings)
@@ -319,7 +319,7 @@ PP.craftStationScenes = function()
 
 		control.name = CreateControl("$(parent)Name", control, CT_LABEL)
 		local name = control.name
-		name:SetFont(PP.f.univers67)
+		name:SetFont(PP.f.Expressway)
 		name:SetAnchor(LEFT, control, LEFT, 5, 0)
 		name:SetMaxLineCount(1)
 		name:SetWrapMode(TEXT_WRAP_MODE_ELLIPSIS)
@@ -327,7 +327,7 @@ PP.craftStationScenes = function()
 
 		control.count = CreateControl("$(parent)Count", control, CT_LABEL)
 		local count = control.count
-		count:SetFont("ZoFontGameMedium")
+		count:SetFont("PP.f.Expressway")
 		count:SetAnchor(RIGHT, control, RIGHT, -5, 0)
 		count:SetMaxLineCount(1)
 		count:SetWrapMode(TEXT_WRAP_MODE_ELLIPSIS)
