@@ -1,0 +1,21 @@
+## Title: Grim Focus Counter
+## APIVersion: 100033 100034
+## SavedVariables: GrimFocusCounterVariables
+## Description: Displays stacks of Grim Focus (and its morphs).
+## Version: 1.4.4
+## AddOnVersion: 10404
+## Author: |cFFCCCC@g4rr3t|r (NA)
+## DependsOn: LibAddonMenu-2.0>=28
+
+src/Main.lua
+src/Textures.lua
+src/Defaults.lua
+src/Abilities.lua
+src/Settings.lua
+src/Tracking.lua
+src/Interface.lua
+
+; Configuration for makePackage.sh
+; See github.com/inimicus/makePackage for more information
+; PackageExcludes: art/gifs/* art/gifs/**/*
+; PackageBumpFiles: src/Main.lua

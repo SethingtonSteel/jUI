@@ -1,0 +1,26 @@
+## Title: Dynamic CP
+## Champion Point presets per tree, with role and class filters!
+## Author: Kyzeragon
+## Contributors: Raijindono (UX)
+## Version: 0.6.4
+## APIVersion: 100034
+
+## DependsOn: LibAddonMenu-2.0>=31 LibDialog>=126
+
+## SavedVariables: DynamicCPSavedVariables
+
+src/init.lua
+src/points.lua
+src/presetData.lua
+src/screenUpdates.lua
+src/slottables.lua
+src/settings.lua
+ui/presets.lua
+ui/pulldown.lua
+ui/quickstars.lua
+xml/presets.xml
+xml/infolabel.xml
+xml/warning.xml
+xml/pulldown.xml
+xml/quickstars.xml
+bindings.xml

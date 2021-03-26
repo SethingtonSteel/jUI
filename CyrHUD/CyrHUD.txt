@@ -1,0 +1,18 @@
+## APIVersion: 100032
+## Title: CyrHUD
+## Version: 11.0
+## Author: Sasky, |c4779ce@aldericon
+## SavedVariables: CyrHUD_SavedVars
+## DependsOn: LibAddonMenu-2.0>=28
+
+lang/en.lua
+lang/$(language).lua
+
+classes/Info.lua
+classes/Label.lua
+classes/Battle.lua
+classes/ScoringBar.lua
+
+CyrHUD.lua
+menu.lua
+bindings.xml

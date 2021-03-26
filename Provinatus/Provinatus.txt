@@ -1,0 +1,47 @@
+# Manifest generated using eso-manifest. https://www.npmjs.com/package/eso-manifest
+## Title: |cFF69B4Provinatus|r 2.1.8
+## APIVersion: 100034
+## AddOnVersion: 2128
+## Author: |cFF69B4@AlbinoPython (NA Server)|r
+## Description: Heads up display that shows: group members' locations, quest markers, rally points, and more
+## Version: 2.1.8
+## SavedVariables: ProvinatusVariables ProvinatusProfileConfig
+## DependsOn: LibAddonMenu-2.0 LibGPS>=30
+## OptionalDependsOn: DungeonChampions SkyShards LoreBooks LostTreasure HarvestMap
+bindings.xml
+Lang/$(language).lua
+Config.lua
+Provinatus.lua
+Profiles.lua
+Data/LoreBooks.lua
+Data/POITextures.lua
+Data/Psijic.lua
+Data/Skyshards.lua
+Data/TreasureMaps.lua
+Layers/AVA.lua
+Layers/Antiquities.lua
+Layers/Chat.lua
+Layers/Combat.lua
+Layers/Compass.lua
+Layers/Display.lua
+Layers/DungeonChampions.lua
+Layers/HarvestMap.lua
+Layers/LoreBooks.lua
+Layers/PlayerOrientation.lua
+Layers/POI.lua
+Layers/Pointer.lua
+Layers/Psijic.lua
+Layers/RallyPoint.lua
+Layers/Quests.lua
+Layers/ServicePins.lua
+Layers/Skyshards.lua
+Layers/Team.lua
+Layers/TreasureMaps.lua
+Layers/Waypoint.lua
+Layers/WorldEvents.lua
+Menu.lua
+Projection.lua
+
+# This Add-on is not created by, affiliated with, or sponsored by, ZeniMax Media Inc. or its affiliates.
+# The Elder Scrolls® and related logos are registered trademarks or trademarks of ZeniMax Media Inc. in the United States
+# and/or other countries. All rights reserved.

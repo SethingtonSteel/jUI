@@ -1,0 +1,12 @@
+## Title: NamePlater
+## Author: kadeer
+## Description: Allows you to use custom fonts, change the style and size of nameplates
+## Version: 0.14 alpha
+## APIVersion: 100031 100032
+## AddOnVersion: 14
+## DependsOn: LibAddonMenu-2.0
+## SavedVariables: NamePlaterSettings
+
+NamePlater_Constants.lua
+NamePlater_Menu.lua
+NamePlater.lua

@@ -1,0 +1,99 @@
+<GuiXml>
+  <Controls>
+    <TopLevelControl name="AUI_MeterStatistic" tier="HIGH" clampedToScreen="true" mouseEnabled="true" hidden="true">
+      <Controls>
+        <Backdrop name="$(parent)_Border" tier="MEDIUM" layer="OVERLAY">
+          <AnchorFill />
+          <Edge file="EsoUI/Art/WorldMap/worldmap_frame_edge.dds" edgeFileWidth="128" edgeFileHeight="16" />
+          <OnInitialized>
+            self:SetCenterColor(0, 0, 0, 0.8)
+          </OnInitialized>
+        </Backdrop>
+        <Button name="$(parent)_CloseButton">
+          <Dimensions x="24" y="24" />
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" offsetX="-8" offsetY="8" />
+        </Button>
+        <Label name="$(parent)_LabelHeader">
+          <Anchor point="TOP" relativePoint="TOP" offsetX="0" offsetY="8" />
+        </Label>
+        <Label name="$(parent)_LabelDate">
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" offsetX="30" offsetY="8" />
+        </Label>
+        <Button name="$(parent)_PreviousRecord">
+          <Dimensions x="32" y="32"/>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" offsetX="320" offsetY="10" />
+        </Button>
+        <Button name="$(parent)_NextRecord">
+          <Dimensions x="32" y="32"/>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" offsetX="-320" offsetY="10" />
+        </Button>
+        <Button name="$(parent)_LoadRecord">
+          <Dimensions x="32" y="32"/>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" offsetX="-220" offsetY="10" />
+        </Button>
+        <Button name="$(parent)_SaveRecord">
+          <Dimensions x="32" y="32"/>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" offsetX="-180" offsetY="10" />
+        </Button>
+        <Button name="$(parent)_DeleteRecord">
+          <Dimensions x="32" y="32"/>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" offsetX="-140" offsetY="10" />
+        </Button>
+        <Texture name="$(parent)_HeaderLine" />
+        <Label name="$(parent)_LabelNoData">
+          <Anchor point="CENTER" />
+        </Label>
+        <Control name="$(parent)_Inner" hidden="true">
+          <Anchor point="TOPLEFT" relativeTo="$(parent)" offsetX="24"/>
+          <Controls>
+            <Label name="$(parent)_LabelTypeSelection" />
+            <Control name="$(parent)_ComboBoxTypeSelection" inherits="ZO_ComboBox" />
+            <Label name="$(parent)_LabelSourceSelection" />
+            <Control name="$(parent)_ComboBoxSourceSelection" inherits="ZO_ComboBox" />
+            <Label name="$(parent)_LabelTargetSelection" />
+            <Control name="$(parent)_ComboBoxTargetSelection" inherits="ZO_ComboBox" />
+            <Control name="$(parent)_InfoContainer" />
+            <Control name="$(parent)_PanelLeft">
+              <Anchor point="TOPLEFT" relativeTo="$(parent)_Inner" offsetY="40"/>
+              <Dimensions x="250" y="400"/>
+            </Control>
+            <Control name="$(parent)_PanelRight">
+              <Anchor point="TOPRIGHT" relativeTo="$(parent)_Inner" offsetY="40"/>
+              <Dimensions x="250" y="400"/>
+              <Controls>
+                <Texture name="$(parent)_Line" />
+
+                <Label name="$(grandparent)_LabelTotalDamageName" />
+                <Label name="$(grandparent)_LabelTotalDamageValue" />
+
+                <Label name="$(grandparent)_LabelTotalDPSName" />
+                <Label name="$(grandparent)_LabelTotalDPSValue" />
+
+                <Label name="$(grandparent)_LabelTotalCriticalName" />
+                <Label name="$(grandparent)_LabelTotalCriticalValue" />
+
+                <Label name="$(grandparent)_LabelMeasuringTimeName" />
+                <Label name="$(grandparent)_LabelMeasuringTimeValue" />
+
+                <Label name="$(grandparent)_LabelCombatTimeName" />
+                <Label name="$(grandparent)_LabelCombatTimeValue" />
+              </Controls>
+            </Control>
+          </Controls>
+        </Control>
+        <Button name="$(parent)_ButtonPostCombatStatic" inherits="ZO_DefaultButton" hidden="true">
+          <Dimensions x="200" y="30"/>
+          <Anchor point="CENTER" offsetY="-26" relativePoint="BOTTOM" />
+          <Controls>
+            <Label name="$(parent)_Text">
+              <Anchor point="CENTER" />
+            </Label>
+          </Controls>
+        </Button>
+        <Label name="$(parent)_LabelVersion">
+          <Anchor point="BOTTOMLEFT" offsetX="20" offsetY="-12" />
+        </Label>
+      </Controls>
+    </TopLevelControl>
+  </Controls>
+</GuiXml>

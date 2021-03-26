@@ -1,0 +1,31 @@
+## Title: Caros Skill Point Saver
+## Description: Save your spent Skill points and CP and load them again after the coming update.
+## APIVersion: 100034
+## Version: 1.7.1
+## Author: |c1d6dadIrniben|r
+## SavedVariables: CSPSSavedVariables
+## OptionalDependsOn: DressingRoom AlphaGear
+##
+## This Add-on is not created by, affiliated with or sponsored by ZeniMax Media Inc. or its affiliates.
+## The Elder Scrolls® and related logos are registered trademarks or trademarks of ZeniMax Media Inc. in the United States and/or other countries.
+## All rights reserved
+##
+## You can read the full terms at https://account.elderscrollsonline.com/add-on-terms
+
+lang/en.lua
+lang/$(language).lua
+
+data/skillfactory.lua
+data/cpnamekeys.lua
+data/presets.lua
+CarosSkillPointSaver.lua
+csps_external.lua
+csps_cp2.lua
+csps_ui.lua
+csps_skchecks.lua
+csps_tree.lua
+csps_profiles.lua
+csps_barmanager.lua
+
+CarosSkillPointSaver.xml
+bindings.xml

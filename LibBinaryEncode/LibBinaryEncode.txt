@@ -1,0 +1,11 @@
+;All of the good addons have comments here.
+
+## Title: LibBinaryEncode
+## APIVersion: 100033 100034
+## Author: |c7f0000Rhyono|r
+## Description: Allows encoding binary to compress it.
+## Version: 1.31
+## AddOnVersion: 31
+## IsLibrary: true
+## SavedVariables: LBE_LOG
+LibBinaryEncode.lua

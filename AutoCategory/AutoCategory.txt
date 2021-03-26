@@ -1,0 +1,40 @@
+## Title: AutoCategory
+## APIVersion: 100025
+## Author: RockingDice
+## Description: Type "/ac" 
+## Version: 1.34
+## SavedVariables: AutoCategorySavedVars
+## OptionalDependsOn: LibAddonMenu-2.0 InventoryGridView GearChangerByIakoni FCOItemSaver QuickMenu ItemSaver
+
+Libs/LibStub/LibStub.lua
+Libs/LibMediaProvider-1.0/LibMediaProvider-1.0.lua
+Libs/LibAddonMenu-2.0/LibAddonMenu-2.0.lua
+Libs/LibAddonMenu-2.0/controls/panel.lua
+Libs/LibAddonMenu-2.0/controls/submenu.lua
+Libs/LibAddonMenu-2.0/controls/button.lua
+Libs/LibAddonMenu-2.0/controls/checkbox.lua
+Libs/LibAddonMenu-2.0/controls/colorpicker.lua
+Libs/LibAddonMenu-2.0/controls/custom.lua
+Libs/LibAddonMenu-2.0/controls/description.lua
+Libs/LibAddonMenu-2.0/controls/dropdown.lua
+Libs/LibAddonMenu-2.0/controls/editbox.lua
+Libs/LibAddonMenu-2.0/controls/header.lua
+Libs/LibAddonMenu-2.0/controls/slider.lua
+Libs/LibAddonMenu-2.0/controls/texture.lua
+Libs/LibAddonMenu-2.0/controls/iconpicker.lua
+
+lang/all.lua
+lang/$(language).lua
+AutoCategory_Global.lua
+AutoCategory_Defaults.lua
+AutoCategory.xml
+AutoCategory_Hooks.lua
+AutoCategory.lua
+AddonMenu.lua
+AutoCategory_RuleFunc.lua
+AutoCategory_API.lua
+AutoCategory_Integrations_Iakoni_Gear_Changer.lua
+AutoCategory_Integrations_Inventory_Grid_View.lua
+AutoCategory_Integrations_QuickMenu.lua
+AutoCategory_Integrations_DoItAll.lua
+Bindings.xml

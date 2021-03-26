@@ -1,0 +1,13 @@
+## APIVersion: 100032
+## Title: Price Tooltip
+## Version: 1.5.2
+## Author: Mladen90 (@Mladen90 EU), Infixo (CoAuthor)
+## Description: Additional tooltips for price (works with MM, TTC, ATT)
+## DependsOn: PriceTooltipNote LibAddonMenu-2.0 LibCustomMenu
+## OptionalDependsOn: TamrielTradeCentre MasterMerchant ArkadiusTradeTools
+## SavedVariables: PriceTooltip_Settings_2
+
+PriceTooltip.lua
+PriceTooltip_Default.lua
+PriceTooltip_Globals.lua
+PriceTooltip_Menu.lua

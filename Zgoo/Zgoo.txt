@@ -1,0 +1,11 @@
+## Title: Zgoo
+## Author: Errc, SinusPi, merlight, Rhyono
+## Version: 1.29
+## APIVersion: 100033 100034
+## SavedVariables: ZgooSV
+
+Zgoo.xml
+Startup.lua
+Zgoo.lua
+Events.lua
+Bindings.xml

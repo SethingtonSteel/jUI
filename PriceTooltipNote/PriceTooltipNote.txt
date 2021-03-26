@@ -1,0 +1,8 @@
+## APIVersion: 100032
+## Title: Price Tooltip Note
+## Version: 1.0.1
+## Author: Mladen90 (@Mladen90 EU)
+## Description: Extension for PriceTooltip
+## SavedVariables: PriceTooltipNote_Settings
+
+PriceTooltipNote.lua

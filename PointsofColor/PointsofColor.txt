@@ -1,0 +1,9 @@
+## Title: PointsofColor
+## Version: 2.43
+## Author: Jhenox
+## APIVersion: 100033
+## SavedVariables: PointsofColor_SavedVariables
+## DependsOn: LibAddonMenu-2.0
+
+PointsofColor.lua
+PointsofColor_Settings.lua

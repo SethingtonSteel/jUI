@@ -1,0 +1,7 @@
+<GuiXml>
+  <Controls>
+    <Backdrop name="AUI_Actionbar_KeybindBG" virtual="true">
+      <AnchorFill />
+    </Backdrop>
+  </Controls>
+</GuiXml>

@@ -1,0 +1,39 @@
+<Bindings>
+    <Layer name="SI_KEYBINDINGS_LAYER_GENERAL">
+        <Category name="Port to Friend's House">
+            <Action name="PORTTOFRIENDSHOUSE_OPEN">
+                <Down>PortToFriend.OpenWindowKeyBinding()</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_1">
+                <Down>PortToFriend.PortToFavoriteBinding(1)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_2">
+                <Down>PortToFriend.PortToFavoriteBinding(2)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_3">
+                <Down>PortToFriend.PortToFavoriteBinding(3)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_4">
+                <Down>PortToFriend.PortToFavoriteBinding(4)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_5">
+                <Down>PortToFriend.PortToFavoriteBinding(5)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_6">
+                <Down>PortToFriend.PortToFavoriteBinding(6)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_7">
+                <Down>PortToFriend.PortToFavoriteBinding(7)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_8">
+                <Down>PortToFriend.PortToFavoriteBinding(8)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_9">
+                <Down>PortToFriend.PortToFavoriteBinding(9)</Down>
+            </Action>
+			<Action name="PORTTOFRIENDSHOUSE_FAV_10">
+                <Down>PortToFriend.PortToFavoriteBinding(10)</Down>
+            </Action>
+        </Category>
+    </Layer>
+</Bindings>

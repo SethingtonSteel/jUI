@@ -1,0 +1,69 @@
+<Bindings>
+	<Layer name="SI_KEYBINDINGS_LAYER_GENERAL">
+		<Category name="|c9e0911Caro's|r Skill Point Saver">
+			<Action name="CSPS_SHOW">
+				<Down>CSPS.isShown()</Down>
+			</Action>
+			<Action name="CSPS_CPHK1">
+				<Down>CSPS.groupApply(1)</Down>
+			</Action>
+			<Action name="CSPS_CPHK2">
+				<Down>CSPS.groupApply(2)</Down>
+			</Action>
+			<Action name="CSPS_CPHK3">
+				<Down>CSPS.groupApply(3)</Down>
+			</Action>
+			<Action name="CSPS_CPHK4">
+				<Down>CSPS.groupApply(4)</Down>
+			</Action>
+			<Action name="CSPS_CPHK5">
+				<Down>CSPS.groupApply(5)</Down>
+			</Action>
+			<Action name="CSPS_CPHK6">
+				<Down>CSPS.groupApply(6)</Down>
+			</Action>
+			<Action name="CSPS_CPHK7">
+				<Down>CSPS.groupApply(7)</Down>
+			</Action>
+			<Action name="CSPS_CPHK8">
+				<Down>CSPS.groupApply(8)</Down>
+			</Action>
+			<Action name="CSPS_CPHK9">
+				<Down>CSPS.groupApply(9)</Down>
+			</Action>
+			<Action name="CSPS_CPHK10">
+				<Down>CSPS.groupApply(10)</Down>
+			</Action>			
+			<Action name="CSPS_CPHK11">
+				<Down>CSPS.groupApply(11)</Down>
+			</Action>
+			<Action name="CSPS_CPHK12">
+				<Down>CSPS.groupApply(12)</Down>
+			</Action>
+			<Action name="CSPS_CPHK13">
+				<Down>CSPS.groupApply(13)</Down>
+			</Action>
+			<Action name="CSPS_CPHK14">
+				<Down>CSPS.groupApply(14)</Down>
+			</Action>
+			<Action name="CSPS_CPHK15">
+				<Down>CSPS.groupApply(15)</Down>
+			</Action>
+			<Action name="CSPS_CPHK16">
+				<Down>CSPS.groupApply(16)</Down>
+			</Action>
+			<Action name="CSPS_CPHK17">
+				<Down>CSPS.groupApply(17)</Down>
+			</Action>
+			<Action name="CSPS_CPHK18">
+				<Down>CSPS.groupApply(18)</Down>
+			</Action>
+			<Action name="CSPS_CPHK19">
+				<Down>CSPS.groupApply(19)</Down>
+			</Action>
+			<Action name="CSPS_CPHK20">
+				<Down>CSPS.groupApply(20)</Down>
+			</Action>			
+		</Category>
+	</Layer>
+</Bindings>

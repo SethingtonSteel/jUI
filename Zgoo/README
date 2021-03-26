@@ -1,0 +1,43 @@
+Zgoo
+
+Dev tool for inspecting tables or userdatas, and for tracking events.
+
+Version 0.71
+Developed by @Errc & SinusPi
+2/5/2013
+
+
+Zgoo allows you to browse through tables and userdata to example their components in a nice and easy interface.
+
+To use Zgoo, the chat command .zgoo is used. 
+
+/zgoo Zgoo
+Will show the table for the addon.
+
+/zgoo GuiRoot
+And from there you can see all the children in the GetChildren table.
+
+/zgoo mouse 
+Will examine the element that currently has your mouse's focus.
+
+/zgoo free
+Will unlock your mouse from the reticle so you can freely move it around the screen.
+
+/zgoo global  or  /zgoo _G
+Examines the _G.
+
+Click the [+] button to expand tables and user data. Click [.] or [:] to call functions.
+
+Extras:
+- GetChildren function added for all userdata elements. This allows for easy access and visibility to all children. (This is not available by default)
+- A__Zgoo_ToggleHidden is an alias to ToggleHidden. Moved it up the list for easy access.
+
+
+Zgoo Events
+
+Track events in real time. Can unregister events by hitting the X button (reload to undo this). Hit + to expand the arguments for the event.
+
+/zgoo events 
+
+Known Issues:
+- if some function call breaks it all, hold CTRL to disable automatic calling of Get*,Is*,Can* functions.

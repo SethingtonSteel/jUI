@@ -1,0 +1,21 @@
+## Title: LibUespQuestData
+## Description: Quest database from the UESP. Download uespLog to assist with data logging.
+## Version: 2021-03-07
+## AddOnVersion: 20210307
+## Author: Enodoc
+## APIVersion: 100033 100034
+## IsLibrary: true
+
+LibUespQuestData/lang/en.lua
+LibUespQuestData/lang/$(language).lua
+LibUespQuestData/LibUespQuestData.lua
+LibUespQuestData/Data.lua
+LibUespQuestData/Data2.lua
+
+
+; This Add-on is not created by, affiliated with or sponsored by ZeniMax Media Inc. or its affiliates.
+; The Elder Scrolls® and related logos are registered trademarks or trademarks of ZeniMax Media Inc. in the United States and/or other countries.
+; All rights reserved.
+;
+; You can read the full terms at:
+; https://account.elderscrollsonline.com/add-on-terms

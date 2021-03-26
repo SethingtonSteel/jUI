@@ -1,0 +1,40 @@
+## Title: |c40FF40Faster|r Travel
+## Author: SimonIllyan, XanDDemoX, upyachka, Valandil
+## Version 2.5.2
+## APIVersion: 100033 100034
+## Description: Better travel using wayshrines
+## SavedVariables: FasterTravel_Data
+## DependsOn: LibWorldMapInfoTab LibSavedVars>=60004 LibAddonMenu-2.0>=32
+## OptionalDependsOn: pChat rChat tom
+
+FasterTravel.lua
+lang/en.lua
+lang/$(language).lua
+Options.lua
+ClassBase.lua
+List.lua
+Utils.lua
+Location.lua
+LocationData.lua
+Wayshrine.lua
+WayshrineData.lua
+Transitus.lua
+Campaign.lua
+Teleport.lua
+Quest.lua
+WorldMap.lua
+Timer.lua
+DropDown.lua
+WayshrineTooltip.lua
+SurveyTheWorld.lua
+MapTab.lua
+MapTabWayshrines.lua
+MapTabPlayers.lua
+QuestTracker.lua
+worldmapinfocontrol.lua
+worldmapwayshrines.xml
+worldmapwayshrines.lua
+worldmapplayers.xml
+worldmapplayers.lua
+Bindings.xml
+
