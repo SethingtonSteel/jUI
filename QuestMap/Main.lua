@@ -106,11 +106,11 @@ local function GetPlayerPos()
     xpos, ypos = GPS:LocalToGlobal(x, y)
     -- x = string.format("%05.2f", x*100)
     -- y = string.format("%05.2f", y*100)
-    QuestMap.dm("Debug", zone)
-    QuestMap.dm("Debug", "X: "..x)
-    QuestMap.dm("Debug", "Y: "..y)
-    QuestMap.dm("Debug", "xpos: "..xpos)
-    QuestMap.dm("Debug", "ypos: "..ypos)
+    p(zone)
+    p("X: "..x)
+    p("Y: "..y)
+    p("xpos: "..xpos)
+    p("ypos: "..ypos)
     -- Add to chat input field so it's copyable
     -- StartChatInput(zone.." @ "..x.."/"..y)
     -- ZO_ChatWindowTextEntryEditBox:SelectAll();
@@ -421,6 +421,8 @@ local function MapCallbackQuestPins(pinType)
             end
 
             -- Collect all the information about the quest first
+            LQD:set_achievement_quests(quest[LQD.quest_map_pin_index.quest_id])
+
             local completed_quest = LQD.completed_quests[quest[LQD.quest_map_pin_index.quest_id]] or false
             if QuestMap.settings.hiddenQuests[quest[LQD.quest_map_pin_index.quest_id]] ~= nil then
                 hidden_quest = true

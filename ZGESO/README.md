@@ -12,19 +12,30 @@ No longer supported references:
 
 Install through the excellent add-on manager <a href="https://minion.mmoui.com/" target="blank">Minion</a>
 
-### 7/27 Update: Elsweyr Guide Out Now!
+### 3/14/21 Update: Skyrim Guides Coming Soon (Thanks to snichols7778)!
 
-<img src="https://i.imgur.com/3PSp7pg.png">
+<img src="https://i.imgur.com/bsUJyDD.png">
 <i>artwork &copy; ZeniMax Media</i>
 
 ### Recent Updates
 
-* 11/2 Update: API version now supports Dragonhold
-* 8/12 Update: API version now supports Scalebreaker
+* 3/13/21 merge: Sharlikran: Misc changes and updates
+
+* 3/13/21 merge: Sharlikran: Removed embedded libraries. Fixed /zgpos output
+
+* 3/13/21 merge: Krandor1: Fix for the two glumbra bugs reported by AegonVI
+
+* 3/13/21 merge: Krandor1: Reorder bleakrock quests so hero of bleakrock achivement can be earned. Bug request from Cavanoskus on forums.
+
+* 11/2/20: API version now supports Dragonhold
+
+* 8/12/20: API version now supports Scalebreaker
+
+* 7/27/20: Northern Elsweyr Guide Out Now!
 
 ### Coming Soon
 
-* Revamped and Remastered Summerset guide
+* Western Skyrim guide by snichols7778
 
 
 # Development Guide
@@ -70,7 +81,7 @@ For example, 1.4.96
 
 `/` = Placed on the same line after `|q`, the slash checks for the completed task in the Quest Journal based on the current step's quest. Note: Must match word-for-word, space-for-space to register as completed.
 
-`|tip` = Handler for displaying tips in a small font
+`|tip` = Handler for displaying tips in a small font. Note: placing a `|tip` in a `|goto` step prevents the goto from automatically going to the next step when the condition is met.
 
 `|next Aldmeri Dominion Leveling Guides\\Khenarthi's Roost` = Instructs ZGESO to skip to another guide
 * `next` = Handler that tells the guide to load another guide
