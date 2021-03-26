@@ -111,7 +111,7 @@ PP.worldMapScene = function()
 		end
 		ZO_ScrollList_Commit(self.list)
 	end)
---LargeMap-----------------------------------------------------------------------------------------
+--LargeMap----------------------------------------------------------------------------------------- WORLD_MAP_MANAGER
 	if SV.large then
 
 		local modes = {

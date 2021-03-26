@@ -3,7 +3,7 @@ PP.SV = {}
 PP.ADDON_NAME		= "PerfectPixel"
 PP.ADDON_AUTHOR		= "@KL1SK"
 PP.ADDON_WEBSITE	= "https://www.esoui.com/downloads/info2103-PerfectPixel.html"
-PP.ADDON_VERSION 	= "0.10.94"
+PP.ADDON_VERSION 	= "0.11.06"
 
 -- media
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52,13 +52,13 @@ local function Settings()
 		CALLBACK_MANAGER:RegisterCallback("LAM-PanelOpened", function(panel)
 			if panel ~= PerfectPixelOptions then return end
 			SCENE_MANAGER:GetScene('gameMenuInGame'):AddFragment(INVENTORY_FRAGMENT)
-			SCENE_MANAGER:GetScene('gameMenuInGame'):AddFragment(RIGHT_PANEL_BG_FRAGMENT)
+			-- SCENE_MANAGER:GetScene('gameMenuInGame'):AddFragment(RIGHT_PANEL_BG_FRAGMENT)
 			-- SCENE_MANAGER:GetScene('gameMenuInGame'):AddFragment(PP_BACKDROP_FRAGMENT)
 		end)
 		CALLBACK_MANAGER:RegisterCallback("LAM-PanelClosed", function(panel)
 			if panel ~= PerfectPixelOptions then return end
 			SCENE_MANAGER:GetScene('gameMenuInGame'):RemoveFragment(INVENTORY_FRAGMENT)
-			SCENE_MANAGER:GetScene('gameMenuInGame'):RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
+			-- SCENE_MANAGER:GetScene('gameMenuInGame'):RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
 			-- SCENE_MANAGER:GetScene('gameMenuInGame'):RemoveFragment(PP_BACKDROP_FRAGMENT)
 		end)
 	end
@@ -332,6 +332,7 @@ local function Core()
 	local DEF = {
 		DoNotInterrupt_toggle	= true,
 		blur_background_toggle	= true,
+		-- fade_scene_duration		= 20,
 	}
 	local SV = ZO_SavedVars:NewAccountWide(PP.ADDON_NAME, SV_VER, "Scene manager", DEF, GetWorldName())
 	---------------------------------------------
@@ -351,6 +352,12 @@ local function Core()
 				setFunc				= function(value) SV.blur_background_toggle = value end,
 				default				= DEF.blur_background_toggle,
 			},
+			-- {	type 				= "slider", name = GetString(PP_LAM_FADE_SCENE_DURATION),
+				-- max					= 1000, min = 0,
+				-- getFunc				= function() return SV.fade_scene_duration end,
+				-- setFunc				= function(value) SV.fade_scene_duration = value end,
+				-- default				= DEF.fade_scene_duration,
+			-- },
 		},
 	})
 --===============================================================================================--
@@ -488,12 +495,9 @@ local function Core()
 	local keybindStripHeight = 31
 	ZO_KeybindStripControl:SetHeight(keybindStripHeight)
 	ZO_KeybindStripMungeBackground:SetHeight(keybindStripHeight)
+	ZO_KeybindStripMungeBackgroundTexture:SetHidden(true)																
+	PP:CreateBackground(ZO_KeybindStripMungeBackground, --[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 6, 6)
 
-	ZO_KeybindStripMungeBackgroundTexture:SetHidden(true)
-
-	PP.ListBackdrop(ZO_KeybindStripMungeBackground, -6, 0, 2, 6, --[[tex]]	PP.SV.skin_backdrop, PP.SV.skin_backdrop_tile_size, PP.SV.skin_backdrop_tile and 1 or 0,
-																--[[bd]]	PP.SV.skin_backdrop_col[1] * 255, PP.SV.skin_backdrop_col[2] * 255, PP.SV.skin_backdrop_col[3] * 255, PP.SV.skin_backdrop_col[4],
-																--[[edge]]	PP.SV.skin_edge_col[1] * 255, PP.SV.skin_edge_col[2] * 255, PP.SV.skin_edge_col[3] * 255, PP.SV.skin_edge_col[4])
 -- ZO_MainMenuSceneGroupBar
 	PP.Anchor(ZO_MainMenuSceneGroupBar, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, -30, 64)
 
@@ -517,21 +521,33 @@ local function Core()
 	PP.Font(ZO_CrownCratesGemsCounterGemsHeader, --[[Font]] PP.f.u67, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	PP.Font(ZO_CrownCratesGemsCounterGems, --[[Font]] PP.f.u67, 20, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	
---animations---------------------------------------------------------------------------------------
+--FadeAnimations---------------------------------------------------------------------------------------
 	-- treasureMapQuickSlot
 	-- treasureMapInventory
 	-- DEFAULT_SCENE_TRANSITION_TIME = 1
 	-- ZO_CONVEYOR_TRANSITION_TIME = 1
 	-- DEFAULT_HUD_DURATION = 1
+	PLAYER_PROGRESS_BAR_FRAGMENT.suppressFadeTimeline:GetAnimation():SetDuration(1)
+
+	local fade_scene_duration = 20
 
 	ZO_PreHook(ZO_FadeSceneFragment, "Show", function(self, ...)
-		-- if self.duration == 1 then return end
-		self.duration = 20
+		if self.duration > fade_scene_duration then
+			self.duration = fade_scene_duration
+			self.control:SetAlpha(1)
+			local alphaAnimation = self:GetAnimation():GetFirstAnimation()
+			alphaAnimation:SetEndAlpha(1)
+			alphaAnimation:SetStartAlpha(1)
+		end
 	end)
-
 	ZO_PreHook(ZO_HUDFadeSceneFragment, "Show", function(self, ...)
-		-- if self.duration == 1 then return end
-		self.showDuration = 20
+		if self.showDuration > fade_scene_duration then
+			self.showDuration = fade_scene_duration
+			self.control:SetAlpha(1)
+			local alphaAnimation = self:GetAnimation():GetFirstAnimation()
+			alphaAnimation:SetEndAlpha(1)
+			alphaAnimation:SetStartAlpha(1)
+		end
 	end)
 
 	-- ZO_PreHook(ZO_PlayerProgressBarFragment, "Hide", function(self, ...)
@@ -540,7 +556,6 @@ local function Core()
 		-- return true
 	-- end)
 
-	PLAYER_PROGRESS_BAR_FRAGMENT.suppressFadeTimeline:GetAnimation():SetDuration(1)
 ---------------------------------------------------------------------------------------------------
 	ZO_PreHook("SetFullscreenEffect", function()
 		if SV.blur_background_toggle then return end
@@ -554,32 +569,6 @@ local function Core()
 		return true
 	end)
 ---------------------------------------------------------------------------------------------------
-	ZO_PreHook("ZO_VerticalScrollbarBase_OnMouseEnter", function(self)
-		self:SetAlpha(.9)
-		return true
-	end)
-	ZO_PreHook("ZO_VerticalScrollbarBase_OnMouseExit", function(self)
-		self:SetAlpha(.7)
-		return true
-	end)
-	ZO_PreHook("ZO_VerticalScrollbarBase_OnMouseDown", function(self)
-		self:SetAlpha(1)
-		return true
-	end)
-	ZO_PreHook("ZO_VerticalScrollbarBase_OnMouseUp", function(self)
-		self:SetAlpha(.9)
-		return true
-	end)
-	ZO_PreHook("ZO_VerticalScrollbarBase_OnScrollAreaEnter", function(self)
-		return true
-	end)
-	ZO_PreHook("ZO_VerticalScrollbarBase_OnScrollAreaExit", function(self)
-		return true
-	end)
-	ZO_PreHook("ZO_VerticalScrollbarBase_OnEffectivelyHidden", function(self)
-		self:SetAlpha(.7)
-		return true
-	end)
 end
 
 --ZO_KeybindStrip----------------------------------------------------

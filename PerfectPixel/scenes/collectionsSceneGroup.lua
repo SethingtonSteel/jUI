@@ -26,8 +26,8 @@ PP.collectionsSceneGroup = function()
 					scene:RemoveFragment(fragment)
 				end
 			end
-			scene:AddFragment(PP_BACKDROP_FRAGMENT)
-			PP.SetBackdrop(1, tlw, scene, -10, -10, 0, 10)
+
+			PP:CreateBackground(tlw, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
 
 			PP.Anchor(tlw, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 		end
@@ -85,8 +85,7 @@ PP.collectionsSceneGroup = function()
 
 --ZO_OUTFIT_STYLES_BOOK_SCENE, ZO_OUTFIT_STYLES_BOOK_KEYBOARD, ZO_OUTFIT_STYLES_PANEL_KEYBOARD
 
-
-	PP.SetBackdrop(2, ZO_RestyleSheetWindowTopLevel_Keyboard,		ZO_RESTYLE_SHEET_WINDOW_FRAGMENT, -20, -30, 10, -32)
+	PP:CreateBackground(ZO_RestyleSheetWindowTopLevel_Keyboard, --[[#1]] nil, nil, nil, -20, -30, --[[#2]] nil, nil, nil, 10, -32)
 
 	PP.Anchor(ZO_OutfitStylesPanelTopLevel_Keyboard, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT, -2, 122, --[[#2]] true, BOTTOMRIGHT,	GuiRoot, BOTTOMRIGHT,	-8, -70)
 	PP.Anchor(ZO_OutfitStylesPanelTopLevel_KeyboardPaneContainer, --[[#1]] TOPLEFT, nil, TOPLEFT,	0, 0, --[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT,	8, 0)
@@ -126,10 +125,17 @@ PP.collectionsSceneGroup = function()
 	end
 
 --ITEM_SETS_BOOK_SCENE, ITEM_SET_COLLECTIONS_BOOK_KEYBOARD
-	local ISB_TLW			= ZO_ItemSetsBook_Keyboard_TopLevel
-	local ISB_List			= ZO_ItemSetsBook_Keyboard_TopLevelCategoryContentListContainerList
+	--==ZO_ItemSetsBook_Keyboard_TopLevel==--
+	-- local item_set = ITEM_SET_COLLECTIONS_BOOK_KEYBOARD
 
-	PP.Anchor(ZO_ItemSetsBook_Keyboard_TopLevelFilters,		--[[#1]] TOPLEFT, ISB_TLW, TOPLEFT,	0, 0, --[[#2]] true, TOPRIGHT, ISB_TLW, TOPRIGHT, 0, 0)
+	-- PP:CreateBackground(item_set.control,	--[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
+
+
+	local ISCB		= ITEM_SET_COLLECTIONS_BOOK_KEYBOARD
+	local iscbTLC	= ISCB.control
+	local iscbList	= ISCB.gridListPanelList.list
+
+	PP.Anchor(ZO_ItemSetsBook_Keyboard_TopLevelFilters,		--[[#1]] TOPLEFT, iscbTLC, TOPLEFT,	0, 0, --[[#2]] true, TOPRIGHT, iscbTLC, TOPRIGHT, 0, 0)
 
 	PP.Anchor(ZO_ItemSetsBook_Keyboard_TopLevelCategoryContentCategoryProgress, --[[#1]] TOPLEFT, ZO_ItemSetsBook_Keyboard_TopLevelCategoryContent, TOPLEFT, 0, 0, --[[#2]] true, TOPRIGHT, ZO_ItemSetsBook_Keyboard_TopLevelCategoryContent, TOPRIGHT, -8, 0)
 
@@ -137,7 +143,7 @@ PP.collectionsSceneGroup = function()
 	PP.Anchor(ZO_ItemSetsBook_Keyboard_TopLevelCategoryContentList,	--[[#1]] TOPLEFT, ZO_ItemSetsBook_Keyboard_TopLevelCategoryContentCategoryProgress, BOTTOMLEFT,	0, 10, --[[#2]] true, BOTTOMRIGHT, ZO_ItemSetsBook_Keyboard_TopLevelCategoryContent, BOTTOMRIGHT, 0, 0)
 
 	--------------------------
-	local dataType_1 = ZO_ScrollList_GetDataTypeTable(ISB_List, 1)
+	local dataType_1 = ZO_ScrollList_GetDataTypeTable(iscbList, 1)
 	local existingSetupCallback = dataType_1.setupCallback
 	dataType_1["controlHeight"] = 68
 	dataType_1["controlWidth"] = 68
@@ -157,7 +163,7 @@ PP.collectionsSceneGroup = function()
 		backdrop:SetDrawLevel(0)
 		backdrop:SetDrawTier(0)
 	end
-	local dataType_2 = ZO_ScrollList_GetDataTypeTable(ISB_List, 2)
+	local dataType_2 = ZO_ScrollList_GetDataTypeTable(iscbList, 2)
 	local existingSetupCallback = dataType_2.setupCallback
 	dataType_2.setupCallback = function(control, data)
 		existingSetupCallback(control, data)

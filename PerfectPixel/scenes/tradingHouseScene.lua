@@ -1,5 +1,20 @@
 PP.tradingHouseScene = function()
 
+	TRADING_HOUSE_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
+	-- TRADING_HOUSE_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
+	TRADING_HOUSE_SCENE:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_FRAGMENT)
+	PP:ForceRemoveFragment(TRADING_HOUSE_SCENE, TREE_UNDERLAY_FRAGMENT)
+
+	PP:CreateBackground(ZO_TradingHouse,		--[[#1]] nil, nil, nil, -20, 0, --[[#2]] nil, nil, nil, 0, 20, true)
+	PP:HideBackgroundForScene(TRADING_HOUSE_SCENE, ZO_PlayerInventory.PP_BG)
+	PP:HideBackgroundForScene(TRADING_HOUSE_SCENE, ZO_CraftBag.PP_BG)
+
+	local tradingHouseLayout = BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT
+	tradingHouseLayout.layoutData.inventoryTopOffsetY				= 100
+	tradingHouseLayout.layoutData.inventoryBottomOffsetY			= -91
+	tradingHouseLayout.layoutData.width								= 635
+	tradingHouseLayout.layoutData.sortByNameWidth					= 311
+
 --==ZO_TradingHouse==============================================================================--
 
 	local rowHeight, controlHeight = 44, 42
@@ -111,13 +126,6 @@ PP.tradingHouseScene = function()
 		end
 	end
 
-	TRADING_HOUSE_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	TRADING_HOUSE_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	TRADING_HOUSE_SCENE:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_FRAGMENT)
-	TRADING_HOUSE_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
-
-	PP.SetBackdrop(1, ZO_TradingHouse, TRADING_HOUSE_SCENE, -20, 0, 0, 20)
-	
 	PP.Anchor(ZO_TradingHouse,							--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -80)
 	PP.Font(ZO_TradingHouseTitleLabel, --[[Font]] PP.f.u67, 30, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
 	ZO_TradingHouseTitleDivider:SetHidden(true)
@@ -212,122 +220,70 @@ PP.tradingHouseScene = function()
 	end
 
 --==ZO_TradingHouseSearchHistoryTopLevel_Keyboard================================================--
-	if not AwesomeGuildStore then
+	TRADING_HOUSE_SEARCH_HISTORY_KEYBOARD_FRAGMENT.callbackRegistry = nil
 
-		TRADING_HOUSE_SEARCH_HISTORY_KEYBOARD_FRAGMENT.callbackRegistry = nil
+	PP:CreateBackground(ZO_TradingHouseSearchHistoryTopLevel_Keyboard,		--[[#1]] nil, nil, nil, 0, 1, --[[#2]] nil, nil, nil, -4, -2)
 
-		PP.SetBackdrop(2, ZO_TradingHouseSearchHistoryTopLevel_Keyboard, TRADING_HOUSE_SEARCH_HISTORY_KEYBOARD_FRAGMENT, 0, 1, -4, -2)
-		PP.ScrollBar(ZO_TradingHouseSearchHistoryTopLevel_KeyboardList, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
-		PP.Anchor(ZO_TradingHouseSearchHistoryTopLevel_KeyboardList, --[[#1]] TOPLEFT, ZO_TradingHouseSearchHistoryTopLevel_Keyboard, TOPLEFT, 8, 8, --[[#2]] true, BOTTOMRIGHT, ZO_TradingHouseSearchHistoryTopLevel_Keyboard, BOTTOMRIGHT, -4, -8)
-		
-		ZO_TradingHouseSearchHistoryTopLevel_Keyboard:SetWidth(350)
-		PP.Anchor(ZO_TradingHouseSearchHistoryTopLevel_Keyboard, --[[#1]] TOPLEFT, GuiRoot, TOPLEFT, 0, 100, --[[#2]] true, BOTTOMLEFT, GuiRoot, BOTTOMLEFT, 0, -300)
+	PP.ScrollBar(ZO_TradingHouseSearchHistoryTopLevel_KeyboardList, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
+	PP.Anchor(ZO_TradingHouseSearchHistoryTopLevel_KeyboardList, --[[#1]] TOPLEFT, ZO_TradingHouseSearchHistoryTopLevel_Keyboard, TOPLEFT, 8, 8, --[[#2]] true, BOTTOMRIGHT, ZO_TradingHouseSearchHistoryTopLevel_Keyboard, BOTTOMRIGHT, -4, -8)
+	
+	ZO_TradingHouseSearchHistoryTopLevel_Keyboard:SetWidth(350)
+	PP.Anchor(ZO_TradingHouseSearchHistoryTopLevel_Keyboard, --[[#1]] TOPLEFT, GuiRoot, TOPLEFT, 0, 100, --[[#2]] true, BOTTOMLEFT, GuiRoot, BOTTOMLEFT, 0, -300)
 
-		PP.Anchor(ZO_TradingHouseSearchHistoryTopLevel_KeyboardTitle, --[[#1]] BOTTOMLEFT, ZO_TradingHouseSearchHistoryTopLevel_Keyboard, TOPLEFT, 10, 0)
-		PP.Font(ZO_TradingHouseSearchHistoryTopLevel_KeyboardTitle, --[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
-		ZO_TradingHouseSearchHistoryTopLevel_KeyboardTitleDivider:SetHidden(true)
+	PP.Anchor(ZO_TradingHouseSearchHistoryTopLevel_KeyboardTitle, --[[#1]] BOTTOMLEFT, ZO_TradingHouseSearchHistoryTopLevel_Keyboard, TOPLEFT, 10, 0)
+	PP.Font(ZO_TradingHouseSearchHistoryTopLevel_KeyboardTitle, --[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
+	ZO_TradingHouseSearchHistoryTopLevel_KeyboardTitleDivider:SetHidden(true)
 
-		local historyRowHeight, historyControlHeight = 44, 42
-		local listHistory = ZO_TradingHouseSearchHistoryTopLevel_KeyboardList
-		listHistory.highlightTemplate = nil
-		listHistory.uniformControlHeight = historyRowHeight
-		ZO_Scroll_SetMaxFadeDistance(listHistory, PP.SV.list_skin.list_fade_distance)
-		local dataTypeHistory = ZO_ScrollList_GetDataTypeTable(listHistory, 1)
-		local orig_SetupCallbackHistory = dataTypeHistory.setupCallback -- SetupHistoryRow(rowControl, rowData)
-		dataTypeHistory.height = historyRowHeight
-		dataTypeHistory.setupCallback = function(rowControl, rowData)
-			orig_SetupCallbackHistory(rowControl, rowData)
-			rowControl:SetHeight(historyControlHeight)
+	local historyRowHeight, historyControlHeight = 44, 42
+	local listHistory = ZO_TradingHouseSearchHistoryTopLevel_KeyboardList
+	listHistory.highlightTemplate = nil
+	listHistory.uniformControlHeight = historyRowHeight
+	ZO_Scroll_SetMaxFadeDistance(listHistory, PP.SV.list_skin.list_fade_distance)
+	local dataTypeHistory = ZO_ScrollList_GetDataTypeTable(listHistory, 1)
+	local orig_SetupCallbackHistory = dataTypeHistory.setupCallback -- SetupHistoryRow(rowControl, rowData)
+	dataTypeHistory.height = historyRowHeight
+	dataTypeHistory.setupCallback = function(rowControl, rowData)
+		orig_SetupCallbackHistory(rowControl, rowData)
+		rowControl:SetHeight(historyControlHeight)
 
-			local description		= rowControl:GetNamedChild("Description")
+		local description		= rowControl:GetNamedChild("Description")
 
-			--"Description"--------------------------
-			if description then
-				-- local r, g, b = GetInterfaceColor(INTERFACE_COLOR_TYPE_ITEM_QUALITY_COLORS, rowData["searchTable"]["Quality"] -1) --["searchTable"]
-				-- if rowData["searchTable"]["Quality"] > 2 then
-					-- description:SetColor(r, g, b, .9)
-					-- description:SetDesaturation(.3)
-				-- end
-				PP.Font(description, --[[Font]] PP.f.u67, 15, "shadow", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-				PP.Anchor(description, --[[#1]] TOPLEFT, rowControl, TOPLEFT, 10, 0, --[[#2]] true, BOTTOMRIGHT, rowControl, BOTTOMRIGHT, -10, 0)
-				description:SetLineSpacing(0)
-				description:SetVerticalAlignment(TEXT_ALIGN_CENTER)
-				description:SetMaxLineCount(2)
-				description:SetWrapMode(1)
-			end
-			--"Backdrop"-------------
-			local backdrop = PP.CreateBackdrop(rowControl)
-			backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_col))
-			backdrop:SetCenterTexture(PP.SV.list_skin.list_skin_backdrop, PP.SV.list_skin.list_skin_backdrop_tile_size, PP.SV.list_skin.list_skin_backdrop_tile and 1 or 0)
-			backdrop:SetEdgeColor(unpack(PP.SV.list_skin.list_skin_edge_col))
-			backdrop:SetEdgeTexture(PP.SV.list_skin.list_skin_edge, PP.SV.list_skin.list_skin_edge_file_width, PP.SV.list_skin.list_skin_edge_file_height, PP.SV.list_skin.list_skin_edge_thickness, 0)
-			backdrop:SetInsets(PP.SV.list_skin.list_skin_backdrop_insets, PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets)
-			backdrop:SetIntegralWrapping(PP.SV.list_skin.list_skin_edge_integral_wrapping)
+		--"Description"--------------------------
+		if description then
+			-- local r, g, b = GetInterfaceColor(INTERFACE_COLOR_TYPE_ITEM_QUALITY_COLORS, rowData["searchTable"]["Quality"] -1) --["searchTable"]
+			-- if rowData["searchTable"]["Quality"] > 2 then
+				-- description:SetColor(r, g, b, .9)
+				-- description:SetDesaturation(.3)
+			-- end
+			PP.Font(description, --[[Font]] PP.f.u67, 15, "shadow", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Anchor(description, --[[#1]] TOPLEFT, rowControl, TOPLEFT, 10, 0, --[[#2]] true, BOTTOMRIGHT, rowControl, BOTTOMRIGHT, -10, 0)
+			description:SetLineSpacing(0)
+			description:SetVerticalAlignment(TEXT_ALIGN_CENTER)
+			description:SetMaxLineCount(2)
+			description:SetWrapMode(1)
 		end
-
-		ZO_PreHook("ZO_TradingHouseSearchHistoryRow_Keyboard_OnMouseEnter", function(rowControl)
-			rowControl.backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_hl_col))
-		end)
-		ZO_PreHook("ZO_TradingHouseSearchHistoryRow_Keyboard_OnMouseExit", function(rowControl)
-			rowControl.backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_col))
-		end)
+		--"Backdrop"-------------
+		local backdrop = PP.CreateBackdrop(rowControl)
+		backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_col))
+		backdrop:SetCenterTexture(PP.SV.list_skin.list_skin_backdrop, PP.SV.list_skin.list_skin_backdrop_tile_size, PP.SV.list_skin.list_skin_backdrop_tile and 1 or 0)
+		backdrop:SetEdgeColor(unpack(PP.SV.list_skin.list_skin_edge_col))
+		backdrop:SetEdgeTexture(PP.SV.list_skin.list_skin_edge, PP.SV.list_skin.list_skin_edge_file_width, PP.SV.list_skin.list_skin_edge_file_height, PP.SV.list_skin.list_skin_edge_thickness, 0)
+		backdrop:SetInsets(PP.SV.list_skin.list_skin_backdrop_insets, PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets)
+		backdrop:SetIntegralWrapping(PP.SV.list_skin.list_skin_edge_integral_wrapping)
 	end
+
+	ZO_PreHook("ZO_TradingHouseSearchHistoryRow_Keyboard_OnMouseEnter", function(rowControl)
+		rowControl.backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_hl_col))
+	end)
+	ZO_PreHook("ZO_TradingHouseSearchHistoryRow_Keyboard_OnMouseExit", function(rowControl)
+		rowControl.backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_col))
+	end)
 --===============================================================================================--
 	local function LoadFunc()
-		local tradingHouseLayout = BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT
-		tradingHouseLayout.layoutData.inventoryTopOffsetY				= 100
-		tradingHouseLayout.layoutData.inventoryBottomOffsetY			= -91
-		tradingHouseLayout.layoutData.width								= 635
-		tradingHouseLayout.layoutData.sortByNameWidth					= 311
-
 		LeftPaneUpdate()
 		UpdateSetupCallback()
 		UpdateSortBy()
-		if AwesomeGuildStore then
-			PP.Anchor(AwesomeGuildStoreGuildSelector, --[[#1]] LEFT, ZO_TradingHouseTitle, LEFT, 0, -2)
-			PP.Anchor(AwesomeGuildStoreGuildSelectorComboBoxOpenDropdown, --[[#1]] LEFT, AwesomeGuildStoreGuildSelectorComboBoxSelectedItemText, RIGHT, 3, 5)
-			PP.Font(AwesomeGuildStoreGuildSelectorComboBoxSelectedItemText, --[[Font]] PP.f.u67, 30, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
-
-			-- PP.ListBackdrop(AwesomeGuildStoreFilterArea, -10, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-			PP.ScrollBar(AwesomeGuildStoreFilterArea, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
-			-- PP.Anchor(AwesomeGuildStoreFilterArea, --[[#1]] TOPLEFT, ZO_TradingHouseBrowseItemsLeftPane, TOPLEFT, 0, 0 , --[[#2]] true, BOTTOMRIGHT, ZO_TradingHouseBrowseItemsLeftPane, BOTTOMRIGHT, 23, -1)
-			ZO_Scroll_SetMaxFadeDistance(AwesomeGuildStoreFilterArea, 10)
-
-			if(AwesomeGuildStore:GetAPIVersion() == 4) then
-				local basicLayout, advancedLayout = AwesomeGuildStore:GetSellTabBackpackLayouts()
-				if(basicLayout) then
-					basicLayout.layoutData.inventoryTopOffsetY			= 100
-					basicLayout.layoutData.inventoryBottomOffsetY		= -91
-					basicLayout.layoutData.width						= 635
-					basicLayout.layoutData.sortByNameWidth				= 311
-				end
-				if(advancedLayout) then
-					advancedLayout.layoutData.inventoryTopOffsetY		= 100
-					advancedLayout.layoutData.inventoryBottomOffsetY	= -91
-					advancedLayout.layoutData.width						= 635
-					advancedLayout.layoutData.sortByNameWidth			= 311
-				end
-			end
-		end
-
 		EVENT_MANAGER:UnregisterForEvent(PP.ADDON_NAME .. "tradingHouseScene", EVENT_OPEN_TRADING_HOUSE, LoadFunc)
 	end
 	EVENT_MANAGER:RegisterForEvent(PP.ADDON_NAME .. "tradingHouseScene", EVENT_OPEN_TRADING_HOUSE, LoadFunc)
-
-	local orig_UpdateFragments = TRADING_HOUSE.UpdateFragments
-	function TRADING_HOUSE.UpdateFragments(self)
-		if TRADING_HOUSE_SCENE:IsShowing() then
-			if self:IsInSellMode() then
-				SCENE_MANAGER:AddFragment(INVENTORY_FRAGMENT)
-			else
-				SCENE_MANAGER:RemoveFragment(INVENTORY_FRAGMENT)
-			end
-			if not AwesomeGuildStore and self:IsInSearchMode() and not ITEM_PREVIEW_KEYBOARD:IsInteractionCameraPreviewEnabled() then
-				SCENE_MANAGER:AddFragment(TRADING_HOUSE_SEARCH_HISTORY_KEYBOARD_FRAGMENT)
-			else
-				SCENE_MANAGER:RemoveFragment(TRADING_HOUSE_SEARCH_HISTORY_KEYBOARD_FRAGMENT)
-			end
-		end
-	end
-
 end

@@ -21,14 +21,12 @@ PP.inventoryScene = function()
 				 },
 			})
 	--===============================================================================================--
-	local TopOffsetY = 100
-	local BottomOffsetY = -80
-
-	local bankTopOffsetY = 100
-	local bankBottomOffsetY = -90
-
-	local mailTopOffsetY = 110
-	local mailBottomOffsetY = -90
+	local TopOffsetY			= 100
+	local BottomOffsetY			= -80
+	local bankTopOffsetY		= 100
+	local bankBottomOffsetY		= -90
+	local mailTopOffsetY		= 110
+	local mailBottomOffsetY		= -90
 	-- inventoryTopOffsetY =
 	-- inventoryBottomOffsetY =
 	-- inventoryFilterDividerTopOffsetY =
@@ -45,6 +43,7 @@ PP.inventoryScene = function()
 
 	BACKPACK_HOUSE_BANK_LAYOUT_FRAGMENT["layoutData"]["inventoryTopOffsetY"]			= bankTopOffsetY
 	BACKPACK_HOUSE_BANK_LAYOUT_FRAGMENT["layoutData"]["inventoryBottomOffsetY"]			= bankBottomOffsetY
+	-- BACKPACK_HOUSE_BANK_LAYOUT_FRAGMENT:SetLayoutValue("hideCurrencyInfo", false)
 
 	BACKPACK_BANK_LAYOUT_FRAGMENT["layoutData"]["inventoryTopOffsetY"]					= bankTopOffsetY
 	BACKPACK_BANK_LAYOUT_FRAGMENT["layoutData"]["inventoryBottomOffsetY"]				= bankBottomOffsetY
@@ -68,32 +67,24 @@ PP.inventoryScene = function()
 	-- BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["inventoryBottomOffsetY"]		= bankBottomOffsetY
 	-------------------------------------------------
 	local orgApplySharedBagLayout = ZO_InventoryManager.ApplySharedBagLayout
-	local function reanchorInvControlAndList(inventory, inventoryControl, layoutData)
-		if not inventoryControl then return end
+	function ZO_InventoryManager:ApplySharedBagLayout(inventoryControl, layoutData)
 		inventoryControl:ClearAnchors()
 		inventoryControl:SetAnchor(TOPRIGHT, GuiRoot, TOPRIGHT, 0, layoutData.inventoryTopOffsetY)
 		inventoryControl:SetAnchor(BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, layoutData.inventoryBottomOffsetY)
 
-		local inventoryContainer = inventoryControl:GetNamedChild("List")
-		if not inventoryContainer then
-			inventoryContainer = inventoryControl:GetNamedChild("Backpack")
-		end
-		if inventoryContainer then
-			inventoryContainer:SetWidth(layoutData.width)
-			inventoryContainer:ClearAnchors()
-			inventoryContainer:SetAnchor(TOPRIGHT, inventoryControl, TOPRIGHT, 0, layoutData.backpackOffsetY)
-			inventoryContainer:SetAnchor(BOTTOMRIGHT)
+		local inventoryContainer = inventoryControl:GetNamedChild("List") or inventoryControl:GetNamedChild("Backpack")
+		inventoryContainer:SetWidth(layoutData.width)
+		inventoryContainer:ClearAnchors()
+		inventoryContainer:SetAnchor(TOPRIGHT, inventoryControl, TOPRIGHT, 0, layoutData.backpackOffsetY)
+		inventoryContainer:SetAnchor(BOTTOMRIGHT)
 
-			ZO_ScrollList_SetHeight(inventoryContainer, inventoryContainer:GetHeight())
-			ZO_ScrollList_Commit(inventoryContainer)
-		end
+		ZO_ScrollList_SetHeight(inventoryContainer, inventoryContainer:GetHeight())
+		ZO_ScrollList_Commit(inventoryContainer)
 
 		local sortHeaders = inventoryControl:GetNamedChild("SortBy")
-		if sortHeaders then
-			sortHeaders:ClearAnchors()
-			sortHeaders:SetAnchor(TOPRIGHT, inventoryControl, TOPRIGHT, 0, layoutData.sortByOffsetY)
-			sortHeaders:SetWidth(layoutData.width)
-		end
+		sortHeaders:ClearAnchors()
+		sortHeaders:SetAnchor(TOPRIGHT, inventoryControl, TOPRIGHT, 0, layoutData.sortByOffsetY)
+		sortHeaders:SetWidth(layoutData.width)
 
 		local emptyLabel = inventoryControl:GetNamedChild("Empty")
 		if emptyLabel then
@@ -101,60 +92,29 @@ PP.inventoryScene = function()
 			emptyLabel:SetAnchor(TOPLEFT, inventoryControl, TOPLEFT, 50, layoutData.emptyLabelOffsetY)
 			emptyLabel:SetAnchor(TOPRIGHT, inventoryControl, TOPRIGHT, -50, layoutData.emptyLabelOffsetY)
 		end
-
 		local sortByName = sortHeaders:GetNamedChild("Name")
-		if sortByName then
-			sortByName:SetWidth(layoutData.sortByNameWidth)
-		end
+		sortByName:SetWidth(layoutData.sortByNameWidth)
 
 		-- local filterDivider = inventoryControl:GetNamedChild("FilterDivider")
 		-- filterDivider:ClearAnchors()
 		-- filterDivider:SetAnchor(TOP, inventoryControl, TOP, 0, 0)
 	end
 
-	function ZO_InventoryManager:ApplySharedBagLayout(inventoryControl, layoutData)
-		reanchorInvControlAndList(self, inventoryControl, layoutData)
+	local invList = {ZO_PlayerInventory, ZO_CraftBag, ZO_QuickSlot, ZO_PlayerBank, ZO_HouseBank, ZO_GuildBank, ZO_StoreWindow, ZO_BuyBack, ZO_RepairWindow} -- ZO_InventoryWallet
+	for _, v in ipairs(invList) do
+		ZO_InventoryManager:ApplySharedBagLayout(v, BACKPACK_DEFAULT_LAYOUT_FRAGMENT.layoutData)
 	end
 
-	--AdvancedFilters fixes the layouts on it's own
-	if not AdvancedFilters then
-		--Fix layouts of inventory list at bank withdraw e.g.
+-- CHARACTER_WINDOW_STATS_FRAGMENT
+	PP:CreateBackground(ZO_Character,		--[[#1]] nil, nil, nil, 0, 16, --[[#2]] nil, ZO_CharacterWindowStats, nil, -2, 32, true)
+	ZO_CharacterWindowStats:SetWidth(30)
+	ZO_PreHookHandler(ZO_CharacterWindowStats, 'OnEffectivelyShown', function(self, hidden) self:SetWidth(303) end)
+	ZO_PreHookHandler(ZO_CharacterWindowStats, 'OnEffectivelyHidden', function(self, hidden) self:SetWidth(30) end)
 
-		--Backpack layout fragment -> Banks e.g.
-		local fragmentToInventoryControl = {
-			[BANK_FRAGMENT] 		= PLAYER_INVENTORY.inventories[INVENTORY_BANK].filterBar:GetParent(),
-			[GUILD_BANK_FRAGMENT]	= PLAYER_INVENTORY.inventories[INVENTORY_GUILD_BANK].filterBar:GetParent(),
-			[HOUSE_BANK_FRAGMENT]	= PLAYER_INVENTORY.inventories[INVENTORY_HOUSE_BANK].filterBar:GetParent(),
-		}
-		local function fragmentChange(oldState, newState, fragment)
-			if (newState == SCENE_FRAGMENT_SHOWN ) then
-				--d("[PP]Scene Fragment shown BANK")
-				local inventoryControl = fragmentToInventoryControl[fragment]
-				if inventoryControl then
-					local layoutData = fragment.layoutData or BACKPACK_DEFAULT_LAYOUT_FRAGMENT.layoutData
-					reanchorInvControlAndList(PLAYER_INVENTORY, inventoryControl, layoutData)
-				end
-				--elseif (newState == SCENE_FRAGMENT_HIDDEN ) then
-
-			end
-		end
-		local fragments = {
-			BANK_FRAGMENT,
-			GUILD_BANK_FRAGMENT,
-			HOUSE_BANK_FRAGMENT,
-		}
-		for _, fragment in ipairs(fragments) do
-			fragment:RegisterCallback("StateChange", function(oldState, newState) fragmentChange(oldState, newState, fragment) end)
-		end
-	end
-
-
-	--SCENE_MANAGER:GetScene('inventory')
+--SCENE_MANAGER:GetScene('inventory')
 	local inventoryScene = SCENE_MANAGER:GetScene('inventory')
 	inventoryScene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-	-- inventoryScene:RemoveFragment(FRAME_EMOTE_FRAGMENT_INVENTORY)
 	inventoryScene:RemoveFragment(WIDE_LEFT_PANEL_BG_FRAGMENT)
-	inventoryScene:AddFragment(PP_BACKDROP_FRAGMENT)
 
 	if SV.NoSpin then
 		inventoryScene:RemoveFragment(FRAME_PLAYER_FRAGMENT)
@@ -173,12 +133,13 @@ PP.inventoryScene = function()
 		end
 	end
 
-	PP.SetBackdrop(1, ZO_InventoryWallet,	'inventory', -6, 0, 0, 6)	--To avoid problems with background mapping, use ZO_InventoryWallet instead of ZO_PlayerInventory.
-	PP.SetBackdrop(2, ZO_Character,			'inventory', 0, 16, 310, 32)
+	PP:CreateBackground(ZO_PlayerInventory,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(ZO_CraftBag,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(ZO_InventoryWallet,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(ZO_QuickSlot,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 
-	local inventoryTab = {ZO_PlayerInventoryList, ZO_PlayerInventoryQuest, ZO_CraftBagList, ZO_InventoryWalletList, ZO_QuickSlotList}
-	for _, v in ipairs(inventoryTab) do
-		-- PP.ListBackdrop(v, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
+	local inventoryLists = {ZO_PlayerInventoryList, ZO_PlayerInventoryQuest, ZO_CraftBagList, ZO_InventoryWalletList, ZO_QuickSlotList}
+	for _, v in ipairs(inventoryLists) do
 		PP.ScrollBar(v,	--[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
 	end
 
@@ -193,60 +154,39 @@ PP.inventoryScene = function()
 	PP.Anchor(ZO_QuickSlot,						--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Anchor(ZO_QuickSlotFilterDivider,		--[[#1]] TOP, ZO_QuickSlot, TOP, 0, 60)
 
-	--SCENE_MANAGER:GetScene('houseBank')
-	local houseBankScene = SCENE_MANAGER:GetScene('houseBank')
-	houseBankScene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-	houseBankScene:AddFragment(PP_BACKDROP_FRAGMENT)
-	houseBankScene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
+--SCENE_MANAGER:GetScene() 'bank', 'houseBank', 'guildBank',
+	banksTable = {
+		{sName = 'bank',		tlc = ZO_PlayerBank	},
+		{sName = 'houseBank',	tlc = ZO_HouseBank	},
+		{sName = 'guildBank',	tlc = ZO_GuildBank	},
+	}
+	for i = 1, #banksTable do
+		local bank		= banksTable[i]
+		local scene		= SCENE_MANAGER:GetScene(bank.sName)
+		local tlc		= bank.tlc
 
-	PP.SetBackdrop(1, ZO_HouseBank,			'houseBank', -6, 0, 0, 6)
+		scene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
+		scene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
+		
+		PP:CreateBackground(tlc, --[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 
-	-- PP.ListBackdrop(ZO_HouseBankBackpack, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-	PP.ScrollBar(ZO_HouseBankBackpack,	--[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
+		PP.ScrollBar(tlc:GetNamedChild("Backpack"), --[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
 
-	PP.Anchor(ZO_HouseBank,						--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, bankTopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, bankBottomOffsetY)
-	PP.Anchor(ZO_HouseBankMenu,					--[[#1]] BOTTOM, ZO_HouseBank, TOP, -40, 0)
-	PP.Anchor(ZO_HouseBankFilterDivider,		--[[#1]] TOP, ZO_HouseBank, TOP, 0, 60)
+		PP.Anchor(tlc,									--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, bankTopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, bankBottomOffsetY)
+		PP.Anchor(tlc:GetNamedChild("Menu"),			--[[#1]] BOTTOM, tlc, TOP, -40, 0)
+		PP.Anchor(tlc:GetNamedChild("FilterDivider"),	--[[#1]] TOP, tlc, TOP, 0, 60)
+	end
 
-	--SCENE_MANAGER:GetScene("bank")
-	local bankScene = SCENE_MANAGER:GetScene("bank")
-	bankScene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-	bankScene:AddFragment(PP_BACKDROP_FRAGMENT)
-	bankScene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
-
-	PP.SetBackdrop(1, ZO_PlayerBank,		'bank', -6, 0, 0, 6)
-
-	-- PP.ListBackdrop(ZO_PlayerBankBackpack, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-	PP.ScrollBar(ZO_PlayerBankBackpack,	--[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
-
-	PP.Anchor(ZO_PlayerBank,					--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, bankTopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, bankBottomOffsetY)
-	PP.Anchor(ZO_PlayerBankMenu,				--[[#1]] BOTTOM, ZO_PlayerBank, TOP, -40, 0)
-	PP.Anchor(ZO_PlayerBankFilterDivider,		--[[#1]] TOP, ZO_PlayerBank, TOP, 0, 60)
-
-	--SCENE_MANAGER:GetScene("guildBank")
-	local guildBankScene = SCENE_MANAGER:GetScene("guildBank")
-	guildBankScene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-	guildBankScene:AddFragment(PP_BACKDROP_FRAGMENT)
-	guildBankScene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
-
-	PP.SetBackdrop(1, ZO_GuildBank,		'guildBank', -6, 0, 0, 6)
-
-	-- PP.ListBackdrop(ZO_GuildBankBackpack, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-	PP.ScrollBar(ZO_GuildBankBackpack,	--[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
-
-	PP.Anchor(ZO_GuildBank,						--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, bankTopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, bankBottomOffsetY)
-	PP.Anchor(ZO_GuildBankMenu,					--[[#1]] BOTTOM, ZO_GuildBank, TOP, -40, 0)
-	PP.Anchor(ZO_GuildBankFilterDivider,		--[[#1]] TOP, ZO_GuildBank, TOP, 0, 60)
-
-	--SCENE_MANAGER:GetScene("store")
-	local storeTab = {ZO_StoreWindow, ZO_BuyBack, ZO_RepairWindow}
+--SCENE_MANAGER:GetScene("store")
+	local storeTable = {ZO_StoreWindow, ZO_BuyBack, ZO_RepairWindow}
 
 	local storeScene = SCENE_MANAGER:GetScene("store")
 	storeScene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-	storeScene:AddFragment(PP_BACKDROP_FRAGMENT)
 	storeScene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_StoreWindow,		'store', -6, 0, 0, 6)
+	PP:CreateBackground(ZO_StoreWindow,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(ZO_BuyBack,			--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(ZO_RepairWindow,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 
 	do
 		local function RefreshControlMode_1_Dynamic(control, data, typeId)
@@ -255,7 +195,7 @@ PP.inventoryScene = function()
 			sp:SetHidden(false)
 		end
 
-		for _, v in ipairs(storeTab) do
+		for _, v in ipairs(storeTable) do
 			local list = v:GetNamedChild("List")
 			-- PP.ListBackdrop(list, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
 			PP.ScrollBar(list,	--[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
@@ -281,16 +221,15 @@ PP.inventoryScene = function()
 
 	PP.Anchor(ZO_StoreWindowMenu,				--[[#1]] BOTTOM, ZO_StoreWindow, TOP, -40, 0)
 
-	--SCENE_MANAGER:GetScene("stables")
+--SCENE_MANAGER:GetScene("stables")
 	local stablesScene = SCENE_MANAGER:GetScene("stables")
 	stablesScene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-	stablesScene:AddFragment(PP_BACKDROP_FRAGMENT)
 	stablesScene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_StoreWindow,		'stables', -6, 0, 0, 6)
+	PP:CreateBackground(ZO_StablePanel,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 
-	PP.Anchor(ZO_StablePanel,					--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
-	PP.Anchor(ZO_StableWindowMenu,				--[[#1]] BOTTOM, ZO_StablePanel, TOP, -40, 0)
+	PP.Anchor(ZO_StablePanel,				--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
+	PP.Anchor(ZO_StableWindowMenu,			--[[#1]] BOTTOM, ZO_StablePanel, TOP, -40, 0)
 
 	local tabStablesBar = {ZO_StablePanelSpeedTrainRowBarContainer, ZO_StablePanelStaminaTrainRowBarContainer, ZO_StablePanelCarryTrainRowBarContainer}
 	for _, bar in pairs(tabStablesBar) do
@@ -299,13 +238,10 @@ PP.inventoryScene = function()
 		PP.Font(bar:GetNamedChild("Value"), --[[Font]] PP.f.u67, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 	end
 
-	--SCENE_MANAGER:GetScene("fence_keyboard")
+--SCENE_MANAGER:GetScene("fence_keyboard")
 	local fence_keyboardScene = SCENE_MANAGER:GetScene("fence_keyboard")
 	fence_keyboardScene:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-	fence_keyboardScene:AddFragment(PP_BACKDROP_FRAGMENT)
 	fence_keyboardScene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
-
-	PP.SetBackdrop(1, ZO_PlayerInventory,		'fence_keyboard', -6, 0, 0, 6)
 
 	PP.Anchor(ZO_Fence_Keyboard_WindowMenu,		--[[#1]] BOTTOM, ZO_PlayerInventory, TOP, -40, 0)
 
@@ -327,20 +263,20 @@ PP.inventoryScene = function()
 		end
 	end)
 
-	--SCENE_MANAGER:GetScene("trade")
+--SCENE_MANAGER:GetScene("trade") TRADE_WINDOW SCENE_MANAGER:Show("trade")
 	local tradeScene = SCENE_MANAGER:GetScene("trade")
 	tradeScene:RemoveFragment(TITLE_FRAGMENT)
 	tradeScene:RemoveFragment(PLAYER_TRADE_TITLE_FRAGMENT)
 	tradeScene:RemoveFragment(RIGHT_BG_FRAGMENT)
-	tradeScene:RemoveFragment(FRAME_EMOTE_FRAGMENT_SOCIAL)
 	tradeScene:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_FRAGMENT)
-	tradeScene:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_Trade, "trade", -10, 0, 0, 6)
+	PP:CreateBackground(ZO_Trade,		--[[#1]] nil, nil, nil, -10, 0, --[[#2]] nil, nil, nil, 0, 6, true)
+	PP:HideBackgroundForScene(tradeScene, ZO_PlayerInventory.PP_BG)
 
 	PP.Anchor(ZO_Trade, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -80)
 
-	-----------------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
 
 	ZO_PreHook("ZO_InventorySlot_SetHighlightHidden", function(listPart, hidden, instant)
 		if listPart and listPart.backdrop then

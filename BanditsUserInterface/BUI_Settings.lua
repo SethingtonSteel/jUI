@@ -1,7 +1,7 @@
 -- MENU OPTIONS COMPONENT
 local MenuOptions,MenuPanel,MenuHandlers={},{},{}
 local TexturesList={} for t in pairs(BUI.Textures) do table.insert(TexturesList,t) end
-local MoveMode_1,MoveMode_2,MoveMode_1,MoveMode_2=true,true,true,true
+local MoveMode_1,MoveMode_2=true,false
 local move_init,move_anchor
 local PinTypes={
 --	[MAP_PIN_TYPE_PLAYER]={name="Player",icon="/EsoUI/Art/MapPins/UI-WorldMapPlayerPip.dds"},
@@ -194,7 +194,7 @@ local function MenuOptions_Init()	--Menu options
 		setFunc	=function(i,value) SCENE_MANAGER:SetInUIMode(false) BUI.OnScreen.Notification(8,"Reloading UI") BUI.CallLater("Language",1000,SetCVar,"Language.2",value) end,
 		warning	="ChangeLanguageWarn",
 	},
-	--Player attributes section
+--[[	--Player attributes section
 	{	type		="checkbox",
 		name		="PlayerStatSection",
 		getFunc	=function() return BUI.Vars.PlayerStatSection end,
@@ -202,19 +202,21 @@ local function MenuOptions_Init()	--Menu options
 		warning	=true,
 		disabled	=function() return BUI.API>100033 end,
 	},
+--]]
 	--PvPmode
 	{	type		="checkbox",
 		name		="PvPmode",
 		getFunc	=function() return BUI.Vars.PvPmode end,
 		setFunc	=function(value) BUI.Vars.PvPmode=value end,
 	},
-	--Champion system helper
+--[[	--Champion system helper
 	{	type		="checkbox",
 		name		="ChampionHelper",
 		getFunc	=function() return BUI.Vars.ChampionHelper end,
 		setFunc	=function(value) BUI.Vars.ChampionHelper=value BUI.Champion_Init() end,
 		disabled	=function() return BUI.API>100033 end,
 	},
+--]]
 	--Reset Addon
 	{	type		="button",
 		name		="Reset",
@@ -1984,6 +1986,11 @@ end
 		name		="Meter_Power",
 		getFunc	=function() return BUI.Vars.Meter_Power end,
 		setFunc	=function(value) BUI.Vars.Meter_Power=value BUI.Meters.Initialize() end,
+	},
+	{	type		="checkbox",
+		name		="Meter_Crit",
+		getFunc	=function() return BUI.Vars.Meter_Crit end,
+		setFunc	=function(value) BUI.Vars.Meter_Crit=value BUI.Meters.Initialize() end,
 	},
 	{	type		="checkbox",
 		name		="Meter_Exp",

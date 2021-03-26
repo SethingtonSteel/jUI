@@ -50,6 +50,7 @@ PP.Tabs = {
 	ZO_RetraitStation_KeyboardTopLevelRetraitPanelInventoryTabs,
 	ZO_CampaignLeaderboardsInformationAreaTabs,
 	ZO_CrownGemification_KeyboardTopLevelTabs,
+	ZO_CraftAdvisor_Keyboard_TopLevelSelectionTabBar,
 }
 
 PP.MenuBar = {

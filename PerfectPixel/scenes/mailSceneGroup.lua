@@ -3,25 +3,59 @@ PP.mailSceneGroup = function()
 	local SV = PP.SV.list_skin
 
 --MAIL_INBOX--MAIL_INBOX_SCENE----------------------------------------------------------------------
-	local navigationTree		= MAIL_INBOX.navigationTree
+	local navigationTree		= MAIL_INBOX.navigationTree --ZO_Tree
 	local navigationContainer	= navigationTree.scrollControl
 
 	MAIL_INBOX_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
+	MAIL_INBOX_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
 	MAIL_INBOX_SCENE:RemoveFragment(TITLE_FRAGMENT)
 	MAIL_INBOX_SCENE:RemoveFragment(MAIL_TITLE_FRAGMENT)
-	MAIL_INBOX_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	MAIL_INBOX_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_SOCIAL)
-	MAIL_INBOX_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_MailInbox,		MAIL_INBOX_SCENE, -10, -10, 0, 10)
+	PP:CreateBackground(ZO_MailInbox, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
 
 	PP.Anchor(ZO_MailInbox,		--[[#1]] TOPRIGHT,	GuiRoot,		TOPRIGHT,	0, 120,	--[[#2]] true, BOTTOMRIGHT,		GuiRoot,		BOTTOMRIGHT,	0, -70)
-	--ZO_MailInboxList
-	-- local mailList = ZO_MailInboxList
 
 	PP.Anchor(navigationContainer,	--[[#1]] TOPLEFT,	ZO_MailInbox,	TOPLEFT,	0, 90,	--[[#2]] true, BOTTOMLEFT,		ZO_MailInbox,	BOTTOMLEFT,	0, 0)
 	PP.ScrollBar(navigationContainer,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
 	ZO_Scroll_SetMaxFadeDistance(navigationContainer, SV.list_fade_distance)
+
+------------------------------------------------------------------------------------------
+    local function HighlightControl(control, animateInstantly)
+		control.backdrop:SetEdgeColor(SV.list_skin_edge_sel_col[1], SV.list_skin_edge_sel_col[2], SV.list_skin_edge_sel_col[3], SV.list_skin_edge_sel_col[4])
+    end
+
+    local function UnhighlightControl(control, animateInstantly)
+		control.backdrop:SetEdgeColor(SV.list_skin_edge_col[1], SV.list_skin_edge_col[2], SV.list_skin_edge_col[3], SV.list_skin_edge_col[4])
+    end
+
+	-- self, self.control, self.data, self.open, userRequested, self.tree:IsEnabled()
+
+	-- local mailEntry = tree["templateInfo"]["ZO_MailInboxRow"]
+	-- local existingSetupCallback = mailEntry.setupFunction
+	-- mailEntry.setupFunction = function(node, control, mailData, open)
+		-- existingSetupCallback(node, control, data, open)
+
+		-- control.HighlightControl		= HighlightControl
+		-- control.UnhighlightControl		= UnhighlightControl
+	-- end
+
+
+    -- navigationTree:AddTemplate("ZO_MailInboxHeader", TreeHeaderSetup, NO_SELECTED_CALLBACK, CategoryEqualityFunction, TREE_CHILD_INDENT, CHILD_SPACING)
+    -- navigationTree:AddTemplate("ZO_MailInboxRow", MailEntrySetup, MailEntryOnSelected, MailEqualityFunction)
+    -- navigationTree:AddTemplate("ZO_MailInboxEmptyRow", MailEmptyEntrySetup, NO_SELECTED_CALLBACK)
+
+    -- self.templateInfo[template] =
+    -- {
+        -- template = template,
+        -- childIndent = childIndent,
+        -- childSpacing = childSpacing,
+        -- setupFunction = setupFunction,
+        -- selectionFunction = selectionFunction,
+        -- equalityFunction = equalityFunction or DefaultEqualityFunction,
+        -- objectPool = ZO_ControlPool:New(template, self.control)
+    -- }
+
+
 
 	-- local function RefreshControlMode_1(control, typeId)
 		-- control:SetHeight(SV.list_control_height)
@@ -90,16 +124,15 @@ PP.mailSceneGroup = function()
 	-- ZO_PreHook(MAIL_INBOX, "ExitRow", function(self, control)
 		-- control.backdrop:SetCenterColor(SV.list_skin_backdrop_col[1], SV.list_skin_backdrop_col[2], SV.list_skin_backdrop_col[3], SV.list_skin_backdrop_col[4])
 	-- end)
---mailSend--MAIL_SEND_SCENE------------------------------------------------------------------------
 
+--mailSend--MAIL_SEND_SCENE------------------------------------------------------------------------
 	MAIL_SEND_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
+	MAIL_SEND_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
 	MAIL_SEND_SCENE:RemoveFragment(TITLE_FRAGMENT)
 	MAIL_SEND_SCENE:RemoveFragment(MAIL_TITLE_FRAGMENT)
-	MAIL_SEND_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	MAIL_SEND_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_SOCIAL)
-	MAIL_SEND_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_MailSend,		MAIL_SEND_SCENE, -10, -10, 0, 10)
+	PP:CreateBackground(ZO_MailSend, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
+	PP:HideBackgroundForScene(MAIL_SEND_SCENE, ZO_PlayerInventory.PP_BG)
 
 	PP.Anchor(ZO_MailSend, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 end

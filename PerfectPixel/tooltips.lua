@@ -183,7 +183,7 @@ PP.tooltips = function()
 
 	PP.Anchor(InformationTooltipBG,							--[[#1]] TOPLEFT, nil, TOPLEFT, 4, 5,	--[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, -4, -10)
 	PP.Anchor(AbilityTooltipBG,								--[[#1]] TOPLEFT, nil, TOPLEFT, 5, -1,	--[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, -5, -20)
-	PP.Anchor(SkillTooltipBG,								--[[#1]] TOPLEFT, nil, TOPLEFT, 5, -1,	--[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, -5, -20)
+	PP.Anchor(SkillTooltipBG,								--[[#1]] TOPLEFT, nil, TOPLEFT, 5, -1,	--[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, -5, -10)
 	PP.Anchor(GameTooltipBG,								--[[#1]] TOPLEFT, nil, TOPLEFT, 5, 5,	--[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, -5, -9)
 	PP.Anchor(AchievementTooltipBG,							--[[#1]] TOPLEFT, nil, TOPLEFT, 5, 5,	--[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, -5, -20)
 	PP.Anchor(ZO_AchievementTooltipBG,						--[[#1]] TOPLEFT, nil, TOPLEFT, 0, 0,	--[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, 0, 0)

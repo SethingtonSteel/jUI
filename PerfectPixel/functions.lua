@@ -1,5 +1,7 @@
 if not PP then PP = {} end
 -- media
+PP.backgrounds = {}
+
 PP.t = {			--[[	Textures	]]
 	bg1		=	"PerfectPixel/textures/line.dds",
 	bg2		=	"PerfectPixel/textures/dots.dds",
@@ -33,6 +35,74 @@ over = ( 232, 232, 184 )
 96/255, 125/255, 139/255
 ]]
 -- functions
+
+function PP:CreateBackground(parent, --[[#1]] point1, relTo1, relPoint1, x1, y1, --[[#2]] point2, relTo2, relPoint2, x2, y2, minLayer)
+	local bg
+	if not parent.PP_BG then
+		bg = CreateControl("$(parent)_PP_BG", parent, CT_BACKDROP)
+	else
+		bg = parent.PP_BG
+	end
+
+	parent.PP_BG = bg
+
+	bg:SetAnchor(point1 or TOPLEFT,		relTo1 or parent,	relPoint1 or TOPLEFT,		x1 or 0, y1 or 0)
+	bg:SetAnchor(point2 or BOTTOMRIGHT,	relTo2 or parent,	relPoint2 or BOTTOMRIGHT,	x2 or 0, y2 or 0)
+
+	bg:SetDrawLayer(0)
+	bg:SetDrawLevel(0)
+	bg:SetDrawTier(0)
+
+	bg:SetCenterTexture(PP.SV.skin_backdrop, PP.SV.skin_backdrop_tile_size, PP.SV.skin_backdrop_tile and 1 or 0)
+	bg:SetCenterColor(unpack(PP.SV.skin_backdrop_col))
+	bg:SetInsets(PP.SV.skin_backdrop_insets, PP.SV.skin_backdrop_insets, -PP.SV.skin_backdrop_insets, -PP.SV.skin_backdrop_insets)
+	bg:SetEdgeTexture(PP.SV.skin_edge, PP.SV.skin_edge_file_width, PP.SV.skin_edge_file_height, PP.SV.skin_edge_thickness, 0)
+	bg:SetEdgeColor(unpack(PP.SV.skin_edge_col))
+	bg:SetIntegralWrapping(PP.SV.skin_edge_integral_wrapping)
+
+	if minLayer then
+		parent:SetDrawLayer(1)
+		parent:SetDrawLevel(1)
+		parent:SetDrawTier(1)
+
+		parent:SetDrawLayer(0)
+		parent:SetDrawLevel(0)
+		parent:SetDrawTier(0)
+	end
+
+	table.insert(self.backgrounds, bg)
+end
+
+function PP:HideBackgroundForScene(scene, pp_bg)
+	scene:RegisterCallback("StateChange", function(_, newState)
+		if newState == SCENE_FRAGMENT_SHOWING then
+			pp_bg:SetHidden(true)
+		elseif newState == SCENE_FRAGMENT_HIDDEN then
+			pp_bg:SetHidden(false)
+		end
+	end)
+end
+
+function PP:ForceRemoveFragment(scene, targetFragment)
+	local existingFn = scene.AddFragment
+	function scene:AddFragment(fragment, ...)
+		if fragment == targetFragment then
+			return
+		else
+			existingFn(self, fragment, ...)
+		end
+	end
+	scene:RemoveFragment(fragment)
+end
+
+function PP:PostHookSetupCallback(dataType, postHookFunction)
+	local existingFn = dataType.setupCallback
+	dataType.setupCallback = function(control, data, ...)
+		existingFn(control, data, ...)
+		postHookFunction(control, data, ...)
+	end
+end
+---------------------------------------------------------------------------------------------------
 
 --(3)--TOPLEFT		(1)---TOP		(9)---TOPRIGHT
 --(2)--LEFT			(128)-CENTER	(8)---RIGHT
@@ -90,10 +160,13 @@ backdrop3:SetDrawTier(0)
 backdrop3:SetHidden(true)
 -- ==================== --
 
--- SCENE_FRAGMENT_SHOWN = "shown"
--- SCENE_FRAGMENT_HIDDEN = "hidden"
--- SCENE_FRAGMENT_SHOWING = "showing"
--- SCENE_FRAGMENT_HIDING = "hiding"
+-- SCENE_FRAGMENT_SHOWN		= "shown"
+-- SCENE_FRAGMENT_HIDDEN	= "hidden"
+-- SCENE_FRAGMENT_SHOWING	= "showing"
+-- SCENE_FRAGMENT_HIDING	= "hiding"
+-- SCENE_SHOWN				= "shown"
+-- SCENE_HIDDEN				= "hidden"
+-- SCENE_SHOWING			= "showing"
 
 PP_BACKDROP_FRAGMENT = ZO_SimpleSceneFragment:New(pp_tlw)
 
@@ -223,7 +296,8 @@ PP.ScrollBar = function(control, --[[sb_c]] sb_r, sb_g, sb_b, sb_a, --[[bg_c]] b
 	sb:SetBackgroundTopTexture(tex)
 	sb:SetBackgroundMiddleTexture(tex)
 	sb:SetBackgroundBottomTexture(tex)
-	sb:SetColor(0, 0, 0, .6)
+	-- sb:SetColor(0, 0, 0, .6)
+	sb:SetColor(50/255, 50/255, 50/255, 1)
 	-- sb:SetColor( sb_r/255, sb_g/255, sb_b/255, sb_a)
 	sb:ClearAnchors()
 	sb:SetAnchor(TOPLEFT, nil, TOPRIGHT, 0, 0)
@@ -236,11 +310,12 @@ PP.ScrollBar = function(control, --[[sb_c]] sb_r, sb_g, sb_b, sb_a, --[[bg_c]] b
 
 	thumb:SetWidth(4)
 	thumb:SetTexture(nil)
-	thumb:SetColor(.5, .5, .5)
+	-- thumb:SetColor(.5, .5, .5)
+	thumb:SetColor(120/255, 120/255, 120/255, 1)
 	thumb:SetHitInsets(-4, 0, 5, 0)
 
-	sb.alphaAnimation	= nil
-	sb.timeline			= nil
+	-- sb.alphaAnimation	= nil
+	-- sb.timeline			= nil
 
 	--Fix Level
 	-- sb:SetDrawLevel(1)

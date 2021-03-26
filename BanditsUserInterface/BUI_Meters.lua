@@ -5,11 +5,12 @@ BUI.Meters={
 		Meter_Scale=120,
 		BUI_Meter_Speed={BOTTOMRIGHT,BOTTOMLEFT,-10,0,ZO_ActionBar1},
 		BUI_Meter_Power={CENTER,CENTER,-100,300},
+		BUI_Meter_Crit={CENTER,CENTER,-300,300},
 		BUI_Meter_Exp={BOTTOMLEFT,BOTTOMRIGHT,10,0,function() return (BUI_CustomBar or ZO_ActionBar1) end},
 		BUI_Meter_DPS={CENTER,CENTER,100,300},
 		BUI_Meter_Criminal={BOTTOMLEFT,BOTTOMRIGHT,250,0,ZO_ActionBar1},
 		},
-	List={"Speed","Power","Exp","DPS","Criminal"}
+	List={"Speed","Power","Crit","Exp","DPS","Criminal"}
 }
 
 local function MeterMove(name,i)
@@ -76,20 +77,39 @@ Meters={
 		min=0,max=5000,delta=5000,color={{.6,.6,.6,1},{.9,.9,.9,1}},
 		startfunc=function()
 			local minValue=BUI.MainPower=="magicka" and GetPlayerStat(STAT_SPELL_POWER) or GetPlayerStat(STAT_POWER)
---			Meters.Power.color={BUI.Vars.FrameMagickaColor,BUI.Vars.FrameStaminaColor}
 			Meters.Power.color[2]=BUI.MainPower=="magicka" and {0,.2,.96,1} or {0,.55,.12,1}
 			BUI.Meters.UI_Init("Power")
 			local function PowerUpdate()
-				local power=BUI.MainPower=="magicka" and GetPlayerStat(STAT_SPELL_POWER) or GetPlayerStat(STAT_POWER)
-				if power<minValue then minValue=power end
-				BUI_Meter_Power.value:SetText(power)	--(BUI.MainPower=="magicka" and "|c5555ff" or "|c33bb33")..power.."|r")
-				MeterSet("Power",minValue,power)
+				local value=BUI.MainPower=="magicka" and GetPlayerStat(STAT_SPELL_POWER) or GetPlayerStat(STAT_POWER)
+				if value<minValue then minValue=value end
+				BUI_Meter_Power.value:SetText(value)	--(BUI.MainPower=="magicka" and "|c5555ff" or "|c33bb33")..value.."|r")
+				MeterSet("Power",minValue,value)
 			end
 			EVENT_MANAGER:RegisterForUpdate("BUI_Meter_Power", 2000, PowerUpdate)
 		end,
 		stopfunc=function()
 			if BUI_Meter_Power then BUI_Meter_Power:SetHidden(true) end
 			EVENT_MANAGER:UnregisterForUpdate("BUI_Meter_Power")
+		end
+		},
+
+	Crit	={
+		min=0,max=100,delta=100,color={{.6,.6,.6,1},{.9,.9,.9,1}},
+		startfunc=function()
+			local minValue=BUI.MainPower=="magicka" and GetPlayerStat(STAT_SPELL_POWER) or GetPlayerStat(STAT_POWER)
+			Meters.Crit.color[2]=BUI.MainPower=="magicka" and {0,.2,.96,1} or {0,.55,.12,1}
+			BUI.Meters.UI_Init("Crit")
+			local function PowerUpdate()
+				local value=BUI.MainPower=="magicka" and math.floor(GetPlayerStat(STAT_SPELL_CRITICAL)/219*10)/10 or math.floor(GetPlayerStat(STAT_CRITICAL_STRIKE)/219*10)/10
+				if value<minValue then minValue=value end
+				BUI_Meter_Crit.value:SetText(value.."%")
+				MeterSet("Crit",minValue,value)
+			end
+			EVENT_MANAGER:RegisterForUpdate("BUI_Meter_Crit", 2000, PowerUpdate)
+		end,
+		stopfunc=function()
+			if BUI_Meter_Crit then BUI_Meter_Crit:SetHidden(true) end
+			EVENT_MANAGER:UnregisterForUpdate("BUI_Meter_Crit")
 		end
 		},
 

@@ -1,9 +1,8 @@
 PP.journalSceneGroup = function()
 --===============================================================================================--
-	local SV_VER		= 0.3
+	local SV_VER		= 0.4
 	local DEF = {
 		largeQuestList	= true,
-		questListBG		= false,
 	}
 	local SV = ZO_SavedVars:NewAccountWide(PP.ADDON_NAME, SV_VER, "JournalScene", DEF, GetWorldName())
 	---------------------------------------------
@@ -18,13 +17,6 @@ PP.journalSceneGroup = function()
 				default				= DEF.largeQuestList,
 				requiresReload		= true,
 			},
-			{	type				= "checkbox",
-				name				= GetString(PP_LAM_LIST_BG),
-				getFunc				= function() return SV.questListBG end,
-				setFunc				= function(value) SV.questListBG = value end,
-				default				= DEF.questListBG,
-				requiresReload		= true,
-			},
 		},
 	})
 --===============================================================================================--
@@ -36,15 +28,10 @@ PP.journalSceneGroup = function()
 	QUEST_JOURNAL_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	QUEST_JOURNAL_SCENE:RemoveFragment(TITLE_FRAGMENT)
 	QUEST_JOURNAL_SCENE:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-	QUEST_JOURNAL_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_QuestJournal,		QUEST_JOURNAL_SCENE, -10, -10, 0, 10)
+	PP:CreateBackground(ZO_QuestJournal, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
 
 	PP.ScrollBar(ZO_QuestJournalNavigationContainer, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
-
-	if SV.questListBG then
-		PP.ListBackdrop(ZO_QuestJournalNavigationContainer, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-	end
 
 	PP.Anchor(ZO_QuestJournal, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
 	PP.Anchor(ZO_QuestJournalQuestCount, --[[#1]] TOPLEFT, nil, TOPLEFT, 0, -6)
@@ -140,9 +127,8 @@ PP.journalSceneGroup = function()
 	antiquitiesQuestScene:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	antiquitiesQuestScene:RemoveFragment(TITLE_FRAGMENT)
 	antiquitiesQuestScene:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-	antiquitiesQuestScene:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_AntiquityJournal_Keyboard_TopLevel,		ANTIQUITY_JOURNAL_KEYBOARD_SCENE, -10, -10, 0, 10)
+	PP:CreateBackground(ZO_AntiquityJournal_Keyboard_TopLevel, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
 
 	PP.Anchor(ZO_AntiquityJournal_Keyboard_TopLevel, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
 
@@ -155,9 +141,8 @@ PP.journalSceneGroup = function()
 	cadwellsAlmanacScene:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	cadwellsAlmanacScene:RemoveFragment(TITLE_FRAGMENT)
 	cadwellsAlmanacScene:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-	cadwellsAlmanacScene:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_Cadwell,		'cadwellsAlmanac', -10, -10, 0, 10)
+	PP:CreateBackground(ZO_Cadwell, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
 
 	PP.Anchor(ZO_Cadwell, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
 
@@ -171,9 +156,8 @@ PP.journalSceneGroup = function()
 	LORE_LIBRARY_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	LORE_LIBRARY_SCENE:RemoveFragment(TITLE_FRAGMENT)
 	LORE_LIBRARY_SCENE:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-	LORE_LIBRARY_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_LoreLibrary,		LORE_LIBRARY_SCENE, -10, -10, 0, 10)
+	PP:CreateBackground(ZO_LoreLibrary, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
 
 	PP.Anchor(ZO_LoreLibrary, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT,	0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 
@@ -186,10 +170,9 @@ PP.journalSceneGroup = function()
 	achievementsScene:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	achievementsScene:RemoveFragment(TITLE_FRAGMENT)
 	achievementsScene:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-	achievementsScene:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_Achievements,		'achievements', -10, -10, 0, 10)
-	
+	PP:CreateBackground(ZO_Achievements, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
+
 	PP.Anchor(ZO_Achievements, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT,	0, 120,	--[[#2]] true, BOTTOMRIGHT,	GuiRoot, BOTTOMRIGHT,	0, -70)
 
 --leaderboards--ZO_Leaderboards--------------------------------------------------------------------
@@ -201,9 +184,8 @@ PP.journalSceneGroup = function()
 	LEADERBOARDS_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	LEADERBOARDS_SCENE:RemoveFragment(TITLE_FRAGMENT)
 	LEADERBOARDS_SCENE:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-	LEADERBOARDS_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_Leaderboards,		LEADERBOARDS_SCENE, -10, -10, 0, 10)
+	PP:CreateBackground(ZO_Leaderboards, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
 
 	PP.Anchor(ZO_Leaderboards, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT,	0, 120,	--[[#2]] true, BOTTOMRIGHT,	GuiRoot, BOTTOMRIGHT,	0, -70)
 end

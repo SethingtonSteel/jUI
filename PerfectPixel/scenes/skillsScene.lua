@@ -46,9 +46,8 @@ PP.skillsScene = function()
 	KEYBOARD_SKILLS_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	KEYBOARD_SKILLS_SCENE:RemoveFragment(TITLE_FRAGMENT)
 	KEYBOARD_SKILLS_SCENE:RemoveFragment(SKILLS_TITLE_FRAGMENT)
-	KEYBOARD_SKILLS_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_Skills, 			KEYBOARD_SKILLS_SCENE, -10, -5, 0, 44)
+	PP:CreateBackground(ZO_Skills, --[[#1]] nil, nil, nil, -10, -5, --[[#2]] nil, nil, nil, 0, 44)
 
 	PP.Anchor(ZO_Skills, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 85,	--[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -104)
 
@@ -177,9 +176,8 @@ PP.skillsScene = function()
 	end
 
 --ZO_SkillsAdvisor_Keyboard_TopLevel	--ZO_SharedMediumLeftPanelBackground
-	PP.SetBackdrop(2, ZO_SkillsAdvisor_Keyboard_TopLevel,	SKILLS_ADVISOR_FRAGMENT, 0, -30, 32, 10)
+	PP:CreateBackground(ZO_SkillsAdvisor_Keyboard_TopLevel, --[[#1]] nil, nil, nil, 0, -30, --[[#2]] nil, nil, nil, 32, 12)
 	
-	-- PP.ListBackdrop(ZO_SkillsAdvisor_Suggestions_Keyboard_TopLevelSkillSuggestionList, -11, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 10, 10, 10, .6, --[[edge]] 30, 30, 30, .6)
 	PP.ScrollBar(ZO_SkillsAdvisor_Suggestions_Keyboard_TopLevelSkillSuggestionList, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 	PP.Anchor(ZO_SkillsAdvisor_Suggestions_Keyboard_TopLevel, --[[#1]] TOPLEFT, ZO_SkillsAdvisor_Keyboard_TopLevelDivider, BOTTOMLEFT, 3, -5, --[[#2]] true, BOTTOMRIGHT, ZO_SkillsAdvisor_Keyboard_TopLevel, BOTTOMRIGHT, 30, 4)
 	

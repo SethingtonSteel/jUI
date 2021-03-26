@@ -8,7 +8,6 @@ local TargetResistance={
 local CPcap
 local Attributes={[POWERTYPE_HEALTH]="health", [POWERTYPE_MAGICKA]="magicka", [POWERTYPE_STAMINA]="stamina",[POWERTYPE_ULTIMATE]="ultimate"}
 local PreferredTargetValid,rotation_value,rotation_step,rotation_dir=false,math.pi*.05,0,1
-local STAT_CRIT_DMG_MAG,STAT_CRIT_DMG_PHIS,STAT_BLOCK_COST,STAT_BLOCK_MITIGATION=1140,1141,1142,1143
 
 function BUI.Player:Initialize()
 	--Setup initial character information
@@ -16,7 +15,7 @@ function BUI.Player:Initialize()
 	BUI.Player.accname=GetUnitDisplayName('player')
 	BUI.Player.race	=GetUnitRace('player')
 	BUI.Player.class	=BUI.Player:GetClass(GetUnitClassId('player'))
-	CPcap=GetMaxSpendableChampionPointsInAttribute()*3
+	CPcap=GetMaxSpendableChampionPointsInAttribute()
 	BUI.Player:GetLevel()
 	--Load starting attributes
 	local stats={
@@ -197,6 +196,8 @@ function BUI.Player:UpdateShield(unitTag, value, maxValue)
 		if BUI.Vars.CurvedFrame~=0 and not isGroup then BUI.Curved.Shield(unitTag,value,pct,data.health.current) end
 	end
 end
+--[[ API<100034
+local STAT_CRIT_DMG_MAG,STAT_CRIT_DMG_PHIS,STAT_BLOCK_COST,STAT_BLOCK_MITIGATION=1140,1141,1142,1143
 
 local function GetProtectBonus()
 	local protect={["Minor Protection"]=8,["Minor Aegis"]=5,["Major Protection"]=30}
@@ -426,10 +427,10 @@ function BUI.Player.StatSection()
 	end
 end
 
-	--HELPER FUNCTIONS ----------------------------------
 BUI.GetCritDamage=GetCritDamage
 BUI.GetBlockCost=GetBlockCost
-
+--]]
+	--HELPER FUNCTIONS ----------------------------------
 function BUI:IsCritter(unitTag)
 	--Critters meet all the following criteria: Level 1, Difficulty=NONE, and Neutral or Friendly reaction
 	return false	--(GetUnitLevel(unitTag)==1 and GetUnitDifficulty(unitTag)==MONSTER_DIFFICULTY_NONE and (GetUnitReaction(unitTag)==UNIT_REACTION_NEUTRAL or GetUnitReaction(unitTag)==UNIT_REACTION_FRIENDLY))
