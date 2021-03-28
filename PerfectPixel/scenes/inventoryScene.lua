@@ -291,16 +291,15 @@ PP.inventoryScene = function()
 	ZO_PreHook("ZO_InventorySlot_SetControlScaledUp", function(control, scaledUp, instant)
 		return true
 	end)
-	ZO_PreHook(ZO_InventoryMenuBar, "LayoutCraftBagTooltip", function(tooltip)
-		local title
-		if HasCraftBagAccess() then
-			title = zo_strformat(SI_INVENTORY_CRAFT_BAG_STATUS, ZO_DEFAULT_ENABLED_COLOR:Colorize(GetString(SI_ESO_PLUS_STATUS_UNLOCKED)))
-		else
-			title = zo_strformat(SI_INVENTORY_CRAFT_BAG_STATUS, ZO_DEFAULT_ENABLED_COLOR:Colorize(GetString(SI_ESO_PLUS_STATUS_LOCKED)))
-		end
-		SetTooltipText(InformationTooltip, title)
-		return true
-	end)
+
+	-- SafeAddString(SI_CRAFT_BAG_STATUS_ESO_PLUS_UNLOCKED_DESCRIPTION, nil, 100)
+	-- SafeAddString(SI_CRAFT_BAG_STATUS_LOCKED_DESCRIPTION, nil, 100)
+
+	function ZO_InventoryMenuBar:LayoutCraftBagTooltip(tooltip)
+		local str	= HasCraftBagAccess() and SI_ESO_PLUS_STATUS_UNLOCKED or SI_ESO_PLUS_STATUS_LOCKED
+		local title	= zo_strformat(SI_INVENTORY_CRAFT_BAG_STATUS, ZO_DEFAULT_ENABLED_COLOR:Colorize(GetString(str)))
+		SetTooltipText(tooltip, title)
+	end
 
 	--NEW--********************************************************************************************
 	--RowSellPrice

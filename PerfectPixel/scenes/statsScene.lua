@@ -2,16 +2,11 @@ PP.statsScene = function()
 --STATS
 	-- STATS_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
 	-- STATS_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_SKILLS)
-	-- STATS_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
 	-- STATS.outfitDropdown
-	-- ZO_PreHook(STATS_SCENE, "AddFragment", function(self, fragment) return fragment == STATS_BG_FRAGMENT end)
-	-- STATS_SCENE:RemoveFragment(STATS_BG_FRAGMENT)
 	PP:ForceRemoveFragment(STATS_SCENE, STATS_BG_FRAGMENT)
-	
+
 	PP:CreateBackground(ZO_StatsPanel,						--[[#1]] nil, ZO_AdvancedStatsPanel, nil, -15, -10,	--[[#2]] nil, nil, nil, 0, 10)
-	PP:CreateBackground(ZO_UpcomingLevelUpRewards_Keyboard,	--[[#1]] nil, nil, nil, -1, 0,		--[[#2]] nil, nil, nil, -10, 10)
-	PP:CreateBackground(ZO_UpcomingLevelUpRewards_Keyboard,	--[[#1]] nil, nil, nil, -1, 0,		--[[#2]] nil, nil, nil, -10, 10)
 	
 	PP.Anchor(ZO_StatsPanel, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 90,	--[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 	PP.Anchor(ZO_StatsPanelPane, --[[#1]] TOPLEFT, ZO_StatsPanelTitleSection, BOTTOMLEFT, 0, 0,	--[[#2]] true, BOTTOMRIGHT, ZO_StatsPanel, BOTTOMRIGHT, 0, -3)
@@ -46,6 +41,7 @@ PP.statsScene = function()
 
 
 --ZO_KEYBOARD_CLAIM_LEVEL_UP_REWARDS
+	PP:CreateBackground(ZO_ClaimLevelUpRewardsScreen_Keyboard,	--[[#1]] nil, nil, nil, -1, 0,		--[[#2]] nil, nil, nil, -10, 10)
 	PP.Anchor(ZO_ClaimLevelUpRewardsScreen_Keyboard, --[[#1]] TOPLEFT, nil, TOPLEFT, 0, 90,	--[[#2]] true, BOTTOMLEFT, nil, BOTTOMLEFT, 0, -250)
 	PP.Anchor(ZO_ClaimLevelUpRewardsScreen_KeyboardList, --[[#1]] TOPLEFT, ZO_ClaimLevelUpRewardsScreen_KeyboardTitleDivider, BOTTOMLEFT, 16, 0,	--[[#2]] true, BOTTOM, ZO_ClaimLevelUpRewardsScreen_KeyboardClaimButton, CENTER, 0, -40)
 
@@ -57,6 +53,7 @@ PP.statsScene = function()
 	PP.ScrollBar(ZO_ClaimLevelUpRewardsScreen_KeyboardList, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 
 --ZO_KEYBOARD_UPCOMING_LEVEL_UP_REWARDS
+	PP:CreateBackground(ZO_UpcomingLevelUpRewards_Keyboard,	--[[#1]] nil, nil, nil, -1, 0,		--[[#2]] nil, nil, nil, -10, 10)
 	PP.Anchor(ZO_UpcomingLevelUpRewards_Keyboard, --[[#1]] TOPLEFT, nil, TOPLEFT, 0, 90,	--[[#2]] true, BOTTOMLEFT, nil, BOTTOMLEFT, 0, -250)
 	PP.Anchor(ZO_UpcomingLevelUpRewards_KeyboardScrollContainer, --[[#1]] TOPLEFT, ZO_UpcomingLevelUpRewards_KeyboardTitleDivider, BOTTOMLEFT, 16, 0,	--[[#2]] true, BOTTOMLEFT, ZO_UpcomingLevelUpRewards_Keyboard, BOTTOMLEFT, 16, 0)
 

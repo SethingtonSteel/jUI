@@ -349,6 +349,12 @@ function PortToFriendData.CreateEuDataList()
 		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
 	}
 	list[#list + 1] = {
+		name = "@LordStorm1978",
+		houseId = 83,
+		description = "Dampflok zurück in die Zukunft",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
 		name = "@Koshjuha",
 		houseId = 56,
 		description = "I love to build with colorlights and trees. Dark broderhood? Well not really. A hain for assassins.",

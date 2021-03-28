@@ -4,7 +4,7 @@
 PortToFriend = {}
 PortToFriend.addonName = "PortToFriendsHouse"
 PortToFriend.version = 1 -- saved vars
-PortToFriend.versionString = "2.0.15"
+PortToFriend.versionString = "2.1.0"
 PortToFriend.updateInterval = 20 -- in ms, not used in this addon [default construct]
 PortToFriend.author = "@s0rdrak (PC / EU)"
 PortToFriend.credits = "@Neltje, @Graham82, @Nita65"
@@ -75,7 +75,7 @@ PortToFriend.config.vc.size.gap = -4
 --PortToFriend.config.vc.isMouseEnabled = true
 --PortToFriend.config.vc.isClampedToScreen = true
 PortToFriend.config.tabHeight = 40
-PortToFriend.config.tabWidth = 160
+PortToFriend.config.tabWidth = 158
 PortToFriend.config.tabOffset = 4
 PortToFriend.config.tabFont = "$(BOLD_FONT)|$(KB_20)soft-shadow-thick"
 PortToFriend.config.houseDebug = false
@@ -100,6 +100,7 @@ PortToFriend.constants.controls.SEARCH_BODY_BACKDROP = "PortToFriend_Search_Body
 PortToFriend.constants.controls.SCROLL_CONTROL = "PortToFriend_Scroll_Control"
 PortToFriend.constants.controls.COMBOBOX_FAVORITES = "PortToFriend_Combobox_Favorites_%d_%d"
 PortToFriend.constants.controls.COMBOBOX_LIBRARY = "PortToFriend_Combobox_Library"
+PortToFriend.constants.controls.COMBOBOX_MYHOUSES = "PortToFriend_Combobox_MyHouses"
 PortToFriend.constants.controls.VC_HEADER_NAME = "PortToFriend_VC_Header"
 PortToFriend.constants.controls.VC_HEADER_CONTROL = "PortToFriend_VC_Header_Control"
 PortToFriend.constants.controls.VC_HEADER_BACKDROP = "PortToFriend_VC_Header_Backdrop"
@@ -109,8 +110,11 @@ PortToFriend.constants.controls.VC_BODY_BACKDROP = "PortToFriend_VC_Body_Backdro
 PortToFriend.constants.controls.VC_SCROLL_CONTROL = "PortToFriend_VC_Scroll_Control"
 PortToFriend.constants.TAB_HOUSE = 1
 PortToFriend.constants.TAB_VC = 2
-PortToFriend.constants.TAB_LIBRARY = 3
-PortToFriend.constants.TAB_DONATE = 4
+PortToFriend.constants.TAB_MYHOUSES = 3
+PortToFriend.constants.TAB_LIBRARY = 4
+PortToFriend.constants.TAB_DONATE = 5
+PortToFriend.constants.SORT_ID_HOUSE = 1
+PortToFriend.constants.SORT_ID_LOCATION = 2
 PortToFriend.constants.FILTER_ID_NONE = 1
 PortToFriend.constants.FILTER_ID_HIGHLIGHT = 2
 PortToFriend.constants.FILTER_ID_LABYRINTH = 3
@@ -127,11 +131,13 @@ PortToFriend.controls.favorites = {}
 PortToFriend.controls.searchResults = {}
 PortToFriend.controls.searchResultsBackdrop = {}
 PortToFriend.controls.libraryEntries = {}
+PortToFriend.controls.purchasedHouses = {}
 
 PortToFriend.addonState = {}
 PortToFriend.addonState.houseId = 0
 PortToFriend.addonState.isScrollable = false
 PortToFriend.addonState.isVCScrollable = false
+PortToFriend.addonState.isMyHousesScrollable = false
 PortToFriend.addonState.names = {}
 PortToFriend.addonState.searchResultClicked = false
 PortToFriend.addonState.taintedVisitCards = true
@@ -139,8 +145,10 @@ PortToFriend.addonState.selectedVisitCard = -1
 PortToFriend.addonState.highlightedVisitCard = nil
 PortToFriend.addonState.windowCallback = nil
 PortToFriend.addonState.selectedTab = PortToFriend.constants.TAB_HOUSE
-PortToFriend.addonState.selectedLibraryFilter = PortToFriend.addonState.selectedTab
+PortToFriend.addonState.selectedLibraryFilter = PortToFriend.constants.FILTER_ID_NONE
 PortToFriend.addonState.categoryFilterInitialized = false
+PortToFriend.addonState.selectedMyHousesSort = PortToFriend.constants.SORT_ID_HOUSE
+PortToFriend.addonState.sortInitialized = false
 PortToFriend.savedVars = nil
 
 PortToFriend.defaults = {}
@@ -276,8 +284,9 @@ function PortToFriend.PortToFriendOnInitialize(event, addonName)
 		
 		PortToFriend.controls.body.tabControl.houseTab = PortToFriend.CreateTabControl(PortToFriend.controls.body.tabControl, PortToFriend.config.tabOffset, PortToFriend.constants.TAB_HOUSE, PortToFriend.constants.TAB_HOUSE_TITLE)
 		PortToFriend.controls.body.tabControl.vcTab = PortToFriend.CreateTabControl(PortToFriend.controls.body.tabControl, PortToFriend.config.tabOffset + PortToFriend.config.tabWidth, PortToFriend.constants.TAB_VC, PortToFriend.constants.TAB_VC_TITLE)
-		PortToFriend.controls.body.tabControl.libraryTab = PortToFriend.CreateTabControl(PortToFriend.controls.body.tabControl, PortToFriend.config.tabOffset + PortToFriend.config.tabWidth * 2, PortToFriend.constants.TAB_LIBRARY, PortToFriend.constants.TAB_LIBRARY_TITLE)
-		PortToFriend.controls.body.tabControl.donationTab = PortToFriend.CreateTabControl(PortToFriend.controls.body.tabControl, PortToFriend.config.tabOffset + PortToFriend.config.tabWidth * 3, PortToFriend.constants.TAB_DONATE, PortToFriend.constants.TAB_DONATE_TITLE)
+		PortToFriend.controls.body.tabControl.myHousesTab = PortToFriend.CreateTabControl(PortToFriend.controls.body.tabControl, PortToFriend.config.tabOffset + PortToFriend.config.tabWidth * 2, PortToFriend.constants.TAB_MYHOUSES, PortToFriend.constants.TAB_MYHOUSES_TITLE)
+		PortToFriend.controls.body.tabControl.libraryTab = PortToFriend.CreateTabControl(PortToFriend.controls.body.tabControl, PortToFriend.config.tabOffset + PortToFriend.config.tabWidth * 3, PortToFriend.constants.TAB_LIBRARY, PortToFriend.constants.TAB_LIBRARY_TITLE)
+		PortToFriend.controls.body.tabControl.donationTab = PortToFriend.CreateTabControl(PortToFriend.controls.body.tabControl, PortToFriend.config.tabOffset + PortToFriend.config.tabWidth * 4, PortToFriend.constants.TAB_DONATE, PortToFriend.constants.TAB_DONATE_TITLE)
 		
 		
 		PortToFriend.controls.body.edge = wm:CreateControl(nil, PortToFriend.controls.body.control, CT_BACKDROP)
@@ -465,6 +474,55 @@ function PortToFriend.PortToFriendOnInitialize(event, addonName)
 		
 		
 		
+		
+		PortToFriend.controls.myHouses = {}
+		PortToFriend.controls.myHouses.control = wm:CreateControl(nil, PortToFriend.controls.body.control, CT_CONTROL)
+		PortToFriend.controls.myHouses.control:SetDimensions(PortToFriend.config.size.width, PortToFriend.config.size.height - PortToFriend.config.size.headerHeightOffset - PortToFriend.config.size.headerHeight - PortToFriend.config.size.gap)
+		PortToFriend.controls.myHouses.control:SetAnchor(TOPLEFT, PortToFriend.controls.body.control, TOPLEFT, 0, PortToFriend.config.tabHeight)
+		PortToFriend.controls.myHouses.control:SetDrawLayer(0)
+		
+		PortToFriend.controls.myHouses.filterLabel = CreateControl(nil, PortToFriend.controls.myHouses.control, CT_LABEL)
+		PortToFriend.controls.myHouses.filterLabel:SetAnchor(TOPLEFT, PortToFriend.controls.myHouses.control, TOPLEFT ,8 , 15)
+		PortToFriend.controls.myHouses.filterLabel:SetFont(PortToFriend.config.fonts.header)
+		PortToFriend.controls.myHouses.filterLabel:SetWrapMode(ELLIPSIS)
+		PortToFriend.controls.myHouses.filterLabel:SetColor(PortToFriend.config.color.default.R, PortToFriend.config.color.default.G, PortToFriend.config.color.default.B)
+		PortToFriend.controls.myHouses.filterLabel:SetText(PortToFriend.constants.SORT_LABEL)
+		PortToFriend.controls.myHouses.filterLabel:SetDimensions(105, 25)
+		
+		PortToFriend.controls.myHouses.combobox = wm:CreateControlFromVirtual(PortToFriend.constants.controls.COMBOBOX_MYHOUSES, PortToFriend.controls.myHouses.control, "ZO_ScrollableComboBox")
+		PortToFriend.controls.myHouses.combobox:SetAnchor(TOPLEFT, PortToFriend.controls.myHouses.control, TOPLEFT, 120, 15)
+		PortToFriend.controls.myHouses.combobox:SetDimensions(145,25)
+		PortToFriend.controls.myHouses.dropdown = ZO_ComboBox_ObjectFromContainer(PortToFriend.controls.myHouses.combobox)
+		
+		PortToFriend.CreateSortDropdownEntries(PortToFriend.controls.myHouses.dropdown)
+		PortToFriend.controls.myHouses.dropdown:SetSelected(1)
+		
+		PortToFriend.controls.myHouses.scrollControl = wm:CreateControl(nil, PortToFriend.controls.myHouses.control, CT_SCROLL)
+		PortToFriend.controls.myHouses.scrollControl:SetDimensions(PortToFriend.config.size.width - 10, PortToFriend.config.size.height - PortToFriend.config.size.headerHeightOffset - PortToFriend.config.size.headerHeight - PortToFriend.config.size.gap - 40 - 5)
+		PortToFriend.controls.myHouses.scrollControl:SetAnchor(TOPLEFT, PortToFriend.controls.myHouses.control, TOPLEFT, 5, 40)
+		PortToFriend.controls.myHouses.scrollControl:SetScrollBounding(SCROLL_BOUNDING_CONTAINED)
+		
+		PortToFriend.controls.myHouses.scrollPanel = wm:CreateControl(nil, PortToFriend.controls.myHouses.scrollControl, CT_CONTROL)
+		PortToFriend.controls.myHouses.scrollPanel:SetDimensions(PortToFriend.config.size.width - 10, 0)
+		PortToFriend.controls.myHouses.scrollPanel:SetAnchor(TOPLEFT, PortToFriend.controls.myHouses.scrollControl, TOPLEFT, 0, 40)
+		PortToFriend.controls.myHouses.scrollPanel:SetMouseEnabled(true)
+		PortToFriend.controls.myHouses.scrollPanel:SetHandler("OnMouseWheel", PortToFriend.MyHousesPanelOnMouseWheel);
+		
+		PortToFriend.controls.myHouses.slider = wm:CreateControl(nil, PortToFriend.controls.myHouses.control, CT_SLIDER)
+		PortToFriend.controls.myHouses.slider:SetDimensions(25, PortToFriend.config.size.height - PortToFriend.config.size.headerHeightOffset - PortToFriend.config.size.headerHeight - PortToFriend.config.size.gap - 40)
+		PortToFriend.controls.myHouses.slider:SetAnchor(TOPRIGHT, PortToFriend.controls.myHouses.control, TOPRIGHT, 0, 40)
+		PortToFriend.controls.myHouses.slider:SetOrientation(ORIENTATION_VERTICAL)
+		PortToFriend.controls.myHouses.slider:SetMouseEnabled(true)
+		PortToFriend.controls.myHouses.slider:SetMinMax(0, 100)
+		PortToFriend.controls.myHouses.slider:SetThumbTexture("esoui/art/buttons/smoothsliderbutton_up.dds", nil, nil, 25, 50)
+		PortToFriend.controls.myHouses.slider:SetValueStep(1)
+		PortToFriend.controls.myHouses.slider:SetHandler("OnValueChanged", PortToFriend.MyHousesAdjustSlider)
+		PortToFriend.controls.myHouses.slider:SetValue(1)
+		PortToFriend.UpdateMyHouses()
+		PortToFriend.addonState.sortInitialized = true
+		
+		
+		
 		PortToFriend.controls.library = {}
 		PortToFriend.controls.library.control = wm:CreateControl(nil, PortToFriend.controls.body.control, CT_CONTROL)
 		PortToFriend.controls.library.control:SetDimensions(PortToFriend.config.size.width, PortToFriend.config.size.height - PortToFriend.config.size.headerHeightOffset - PortToFriend.config.size.headerHeight - PortToFriend.config.size.gap)
@@ -582,6 +640,10 @@ function PortToFriend.PortToFriendOnInitialize(event, addonName)
 		PortToFriend.TabOnMouseExit(PortToFriend.addonState.selectedTab)
 		PortToFriend.TabSelected(PortToFriend.addonState.selectedTab)
 		EVENT_MANAGER:RegisterForEvent(PortToFriend.addonName, EVENT_CHAT_MESSAGE_CHANNEL, PortToFriend.ChatMessageReceived)
+		--EVENT_MANAGER:RegisterForEvent(PortToFriend.addonName, EVENT_COLLECTIBLE_UPDATED, PortToFriend.CollectibleUpdated)
+		--EVENT_MANAGER:RegisterForEvent(PortToFriend.addonName, EVENT_COLLECTION_UPDATED, PortToFriend.CollectionUpdated)
+		--EVENT_MANAGER:RegisterForEvent(PortToFriend.addonName, EVENT_COLLECTIBLES_UPDATED, PortToFriend.CollectiblesUpdated)
+		EVENT_MANAGER:RegisterForEvent(PortToFriend.addonName, EVENT_COLLECTIBLE_NOTIFICATION_NEW, PortToFriend.CollectibleNotification)
 		
 		PortToFriend.menu.Initialize(PortToFriend.menu.name, PortToFriend.savedVars)
 		
@@ -641,6 +703,9 @@ function PortToFriend.TabSelected(index)
 	if index ~= PortToFriend.constants.TAB_VC then
 		PortToFriend.controls.body.tabControl.vcTab.backdrop:SetCenterColor(color.r, color.g, color.b, color.a)
 	end
+	if index ~= PortToFriend.constants.TAB_MYHOUSES then
+		PortToFriend.controls.body.tabControl.myHousesTab.backdrop:SetCenterColor(color.r, color.g, color.b, color.a)
+	end
 	if index ~= PortToFriend.constants.TAB_LIBRARY then
 		PortToFriend.controls.body.tabControl.libraryTab.backdrop:SetCenterColor(color.r, color.g, color.b, color.a)
 	end
@@ -652,24 +717,35 @@ function PortToFriend.TabSelected(index)
 	if index == PortToFriend.constants.TAB_HOUSE then
 		PortToFriend.controls.house.control:SetHidden(false)
 		PortToFriend.controls.vc.control:SetHidden(true)
+		PortToFriend.controls.myHouses.control:SetHidden(true)
 		PortToFriend.controls.library.control:SetHidden(true)
 		PortToFriend.controls.donation.control:SetHidden(true)
 	end
 	if index == PortToFriend.constants.TAB_VC then
 		PortToFriend.controls.house.control:SetHidden(true)
 		PortToFriend.controls.vc.control:SetHidden(false)
+		PortToFriend.controls.myHouses.control:SetHidden(true)
+		PortToFriend.controls.library.control:SetHidden(true)
+		PortToFriend.controls.donation.control:SetHidden(true)
+	end
+	if index == PortToFriend.constants.TAB_MYHOUSES then
+		PortToFriend.controls.house.control:SetHidden(true)
+		PortToFriend.controls.vc.control:SetHidden(true)
+		PortToFriend.controls.myHouses.control:SetHidden(false)
 		PortToFriend.controls.library.control:SetHidden(true)
 		PortToFriend.controls.donation.control:SetHidden(true)
 	end
 	if index == PortToFriend.constants.TAB_LIBRARY then
 		PortToFriend.controls.house.control:SetHidden(true)
 		PortToFriend.controls.vc.control:SetHidden(true)
+		PortToFriend.controls.myHouses.control:SetHidden(true)
 		PortToFriend.controls.library.control:SetHidden(false)
 		PortToFriend.controls.donation.control:SetHidden(true)
 	end
 	if index == PortToFriend.constants.TAB_DONATE then
 		PortToFriend.controls.house.control:SetHidden(true)
 		PortToFriend.controls.vc.control:SetHidden(true)
+		PortToFriend.controls.myHouses.control:SetHidden(true)
 		PortToFriend.controls.library.control:SetHidden(true)
 		PortToFriend.controls.donation.control:SetHidden(false)
 	end
@@ -681,6 +757,8 @@ function PortToFriend.TabOnMouseEnter(index)
 		control = PortToFriend.controls.body.tabControl.houseTab.backdrop
 	elseif index == PortToFriend.constants.TAB_VC then
 		control = PortToFriend.controls.body.tabControl.vcTab.backdrop
+	elseif index == PortToFriend.constants.TAB_MYHOUSES then
+		control = PortToFriend.controls.body.tabControl.myHousesTab.backdrop
 	elseif index == PortToFriend.constants.TAB_LIBRARY then
 		control = PortToFriend.controls.body.tabControl.libraryTab.backdrop
 	elseif index == PortToFriend.constants.TAB_DONATE then
@@ -695,6 +773,8 @@ function PortToFriend.TabOnMouseExit(index)
 		control = PortToFriend.controls.body.tabControl.houseTab.backdrop
 	elseif index == PortToFriend.constants.TAB_VC then
 		control = PortToFriend.controls.body.tabControl.vcTab.backdrop
+	elseif index == PortToFriend.constants.TAB_MYHOUSES then
+		control = PortToFriend.controls.body.tabControl.myHousesTab.backdrop
 	elseif index == PortToFriend.constants.TAB_LIBRARY then
 		control = PortToFriend.controls.body.tabControl.libraryTab.backdrop
 	elseif index == PortToFriend.constants.TAB_DONATE then
@@ -756,9 +836,15 @@ function PortToFriend.CreateHouseList()
 	--]]
 	local data = ZO_COLLECTIBLE_DATA_MANAGER:GetAllCollectibleDataObjects() 
 	local retHouses = {}
+	PortToFriend.purchasedHouses = {}
 	for i = 1, #data do 
 		if data[i]:IsHouse() == true then 
 			retHouses[data[i]:GetReferenceId()] = data[i]:GetFormattedName()
+			if data[i]:IsLocked() == false then
+				PortToFriend.purchasedHouses[data[i]:GetReferenceId()] = {}
+				PortToFriend.purchasedHouses[data[i]:GetReferenceId()].name = data[i]:GetFormattedName()
+				PortToFriend.purchasedHouses[data[i]:GetReferenceId()].location = data[i].houseLocation
+			end
 		end
 	end
 	return retHouses
@@ -966,6 +1052,42 @@ function PortToFriend.ChatMessageReceived(eventCode, channelType, fromName, text
 		end
 	end
 end
+--[[
+function PortToFriend.CollectibleUpdated(eventCode, id, justUnlocked)
+	--d(eventCode)
+	--d(id)
+	--d(justUnlocked)
+	d("Collectible")
+end
+
+function PortToFriend.CollectionUpdated(eventCode)
+	d("Collection Updated")
+end
+
+function PortToFriend.CollectiblesUpdated(eventCode, numJustUnlocked)
+	d("Collectibles")
+	d(eventCode)
+	d(numJustUnlocked)
+end
+]]
+
+function PortToFriend.CollectibleNotification(eventCode, collectibleId, notificationId)
+	--d("Collectible Notification")
+	--d(eventCode)
+	--d(collectibleId)
+	--d(notificationId)
+	local data = ZO_COLLECTIBLE_DATA_MANAGER:GetAllCollectibleDataObjects() 
+	for i = 1, #data do 
+		if data[i]:IsHouse() == true and data[i].collectibleId == collectibleId then 
+			PortToFriend.purchasedHouses[data[i]:GetReferenceId()] = {}
+			PortToFriend.purchasedHouses[data[i]:GetReferenceId()].name = data[i]:GetFormattedName()
+			PortToFriend.purchasedHouses[data[i]:GetReferenceId()].location = data[i].houseLocation
+			PortToFriend.UpdateMyHouses()
+			break
+		end
+	end
+end
+
 
 function PortToFriend.SortVisitCards()
 	if PortToFriend.savedVars.vc.receivedCards ~= nil then
@@ -1240,6 +1362,196 @@ function PortToFriend.VCAdjustSlider()
 	end
 end
 
+function PortToFriend.SortMyHousesByHouse(houseA, houseB)
+	if houseA.houseName == nil and houseB.houseName == nil then
+		return true
+	elseif houseA.houseName ~= nil and houseB.houseName == nil then
+		return true
+	elseif houseA.houseName == nil and houseB.houseName ~= nil then
+		return false
+	end
+	if houseA.houseName < houseB.houseName then
+		return true
+	else
+		return false
+	end
+end
+
+function PortToFriend.SortMyHousesByLocation(houseA, houseB)
+	if houseA.location == nil and houseB.location == nil then
+		return true
+	elseif houseA.location ~= nil and houseB.location == nil then
+		return true
+	elseif houseA.location == nil and houseB.location ~= nil then
+		return false
+	end
+	if houseA.location < houseB.location then
+		return true
+	elseif houseA.location > houseB.location then
+		return false
+	else
+		return PortToFriend.SortMyHousesByHouse(houseA, houseB)
+	end
+end
+
+function PortToFriend.GetSortedMyHousesList()
+	local sortFunction = nil
+	if PortToFriend.addonState.selectedMyHousesSort == PortToFriend.constants.SORT_ID_HOUSE then
+		sortFunction = PortToFriend.SortMyHousesByHouse
+	else
+		sortFunction = PortToFriend.SortMyHousesByLocation
+	end
+	local purchasedHouses = {}
+	if PortToFriend.purchasedHouses ~= nil then
+		local currentIndex = 1
+		for key, value in pairs(PortToFriend.purchasedHouses) do
+			purchasedHouses[currentIndex] = {}
+			purchasedHouses[currentIndex].houseId = key
+			purchasedHouses[currentIndex].houseName = PortToFriend.purchasedHouses[key].name
+			purchasedHouses[currentIndex].location = PortToFriend.purchasedHouses[key].location
+			
+			currentIndex = currentIndex + 1
+		end
+		--d(sortFunction)
+		--d(purchasedHouses)
+		table.sort(purchasedHouses, sortFunction)
+	end
+	return purchasedHouses
+end
+
+--/script for i = 1, 20 do PortToFriend.purchasedHouses[120+i] = {}PortToFriend.purchasedHouses[120+i].name = "test" PortToFriend.purchasedHouses[120+i].location = "test" end
+function PortToFriend.UpdateMyHouses()
+	local sortedMyHousesList = PortToFriend.GetSortedMyHousesList()
+	--d(sortedMyHousesList)
+	
+	for i = 1, #sortedMyHousesList do
+		if PortToFriend.controls.purchasedHouses[i] == nil then
+			PortToFriend.controls.purchasedHouses[i] = {}
+		end
+			
+		if PortToFriend.controls.purchasedHouses[i].backDrop == nil then
+			PortToFriend.controls.purchasedHouses[i].backDrop = wm:CreateControl(nil, PortToFriend.controls.myHouses.scrollPanel, CT_BACKDROP)
+		end
+		PortToFriend.controls.purchasedHouses[i].backDrop:SetDimensions(PortToFriend.config.size.width - 30, 25)
+		PortToFriend.controls.purchasedHouses[i].backDrop:SetHidden(false)
+		PortToFriend.controls.purchasedHouses[i].backDrop:ClearAnchors()
+		PortToFriend.controls.purchasedHouses[i].backDrop:SetAnchor(TOPLEFT, PortToFriend.controls.myHouses.scrollPanel, TOPLEFT, 5, 25 * (i - 1) + 15)
+		PortToFriend.controls.purchasedHouses[i].backDrop:SetCenterColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, 0.0)
+		PortToFriend.controls.purchasedHouses[i].backDrop:SetEdgeColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, 0.0, 0)
+		PortToFriend.controls.purchasedHouses[i].backDrop:SetAlpha(1)
+
+		if PortToFriend.controls.purchasedHouses[i].name == nil then
+			PortToFriend.controls.purchasedHouses[i].name = wm:CreateControl(nil, PortToFriend.controls.purchasedHouses[i].backDrop, CT_LABEL)
+		end			
+		PortToFriend.controls.purchasedHouses[i].name:SetDimensions(300, 25)
+		PortToFriend.controls.purchasedHouses[i].name:SetHidden(false)
+		PortToFriend.controls.purchasedHouses[i].name:ClearAnchors()
+		PortToFriend.controls.purchasedHouses[i].name:SetAnchor(TOPLEFT, PortToFriend.controls.purchasedHouses[i].backDrop, TOPLEFT, 0, 0)
+		PortToFriend.controls.purchasedHouses[i].name:SetText(sortedMyHousesList[i].houseName)
+		PortToFriend.controls.purchasedHouses[i].name:SetFont(PortToFriend.config.fonts.header)
+		PortToFriend.controls.purchasedHouses[i].name:SetColor(PortToFriend.config.color.default.R, PortToFriend.config.color.default.G, PortToFriend.config.color.default.B)
+		PortToFriend.controls.purchasedHouses[i].name:SetMouseEnabled(true)
+		PortToFriend.controls.purchasedHouses[i].name:SetHandler("OnMouseEnter", function() PortToFriend.BdMyHousesOnMouseEnter(i) end)
+		PortToFriend.controls.purchasedHouses[i].name:SetHandler("OnMouseExit", function() PortToFriend.BdMyHousesOnMouseExit(i) end)
+			
+		if PortToFriend.controls.purchasedHouses[i].location == nil then
+			PortToFriend.controls.purchasedHouses[i].location = wm:CreateControl(nil, PortToFriend.controls.purchasedHouses[i].backDrop, CT_LABEL)
+		end			
+		PortToFriend.controls.purchasedHouses[i].location:SetDimensions(265, 25)
+		PortToFriend.controls.purchasedHouses[i].location:SetHidden(false)
+		PortToFriend.controls.purchasedHouses[i].location:ClearAnchors()
+		PortToFriend.controls.purchasedHouses[i].location:SetAnchor(TOPLEFT, PortToFriend.controls.purchasedHouses[i].backDrop, TOPLEFT, 300, 0)
+		PortToFriend.controls.purchasedHouses[i].location:SetText(sortedMyHousesList[i].location)
+		PortToFriend.controls.purchasedHouses[i].location:SetFont(PortToFriend.config.fonts.header)
+		PortToFriend.controls.purchasedHouses[i].location:SetColor(PortToFriend.config.color.default.R, PortToFriend.config.color.default.G, PortToFriend.config.color.default.B)
+		PortToFriend.controls.purchasedHouses[i].location:SetMouseEnabled(true)
+		PortToFriend.controls.purchasedHouses[i].location:SetHandler("OnMouseEnter", function() PortToFriend.BdMyHousesOnMouseEnter(i) end)
+		PortToFriend.controls.purchasedHouses[i].location:SetHandler("OnMouseExit", function() PortToFriend.BdMyHousesOnMouseExit(i) end)
+			
+			
+		if PortToFriend.controls.purchasedHouses[i].VCButton == nil then
+			PortToFriend.controls.purchasedHouses[i].VCButton = wm:CreateControlFromVirtual(nil, PortToFriend.controls.purchasedHouses[i].backDrop, "ZO_DefaultButton")
+		end
+		PortToFriend.controls.purchasedHouses[i].VCButton:SetHidden(false)
+		PortToFriend.controls.purchasedHouses[i].VCButton:ClearAnchors()
+		PortToFriend.controls.purchasedHouses[i].VCButton:SetAnchor(TOPLEFT, PortToFriend.controls.purchasedHouses[i].backDrop, TOPLEFT, 540, 0)
+		PortToFriend.controls.purchasedHouses[i].VCButton:SetDimensions(50,25)
+		PortToFriend.controls.purchasedHouses[i].VCButton:SetText(PortToFriend.constants.BUTTON_VC)
+		PortToFriend.controls.purchasedHouses[i].VCButton:SetClickSound("Click")
+		PortToFriend.controls.purchasedHouses[i].VCButton:SetHandler("OnClicked", function () PortToFriend.MyHousesToVC(sortedMyHousesList[i].houseId) end)
+		PortToFriend.controls.purchasedHouses[i].VCButton:SetHandler("OnMouseEnter", function() PortToFriend.BdMyHousesOnMouseEnter(i) end)
+        PortToFriend.controls.purchasedHouses[i].VCButton:SetHandler("OnMouseExit", function() PortToFriend.BdMyHousesOnMouseExit(i) end)
+			
+			
+		if PortToFriend.controls.purchasedHouses[i].portButton == nil then
+			PortToFriend.controls.purchasedHouses[i].portButton = wm:CreateControlFromVirtual(nil, PortToFriend.controls.purchasedHouses[i].backDrop, "ZO_DefaultButton")
+		end
+		PortToFriend.controls.purchasedHouses[i].portButton:SetHidden(false)
+		PortToFriend.controls.purchasedHouses[i].portButton:ClearAnchors()
+		PortToFriend.controls.purchasedHouses[i].portButton:SetAnchor(TOPLEFT, PortToFriend.controls.purchasedHouses[i].backDrop, TOPLEFT, 580, 0)
+		PortToFriend.controls.purchasedHouses[i].portButton:SetDimensions(90,25)
+		PortToFriend.controls.purchasedHouses[i].portButton:SetText(PortToFriend.constants.MYHOUSES_PORT_INSIDE)
+		PortToFriend.controls.purchasedHouses[i].portButton:SetClickSound("Click")
+		PortToFriend.controls.purchasedHouses[i].portButton:SetHandler("OnClicked", function () PortToFriend.PortToMyHousesById(sortedMyHousesList[i].houseId, false) end)
+		PortToFriend.controls.purchasedHouses[i].portButton:SetHandler("OnMouseEnter", function() PortToFriend.BdMyHousesOnMouseEnter(i) end)
+        PortToFriend.controls.purchasedHouses[i].portButton:SetHandler("OnMouseExit", function() PortToFriend.BdMyHousesOnMouseExit(i) end)
+		
+		if PortToFriend.controls.purchasedHouses[i].removeButton == nil then
+			PortToFriend.controls.purchasedHouses[i].removeButton = wm:CreateControlFromVirtual(nil, PortToFriend.controls.purchasedHouses[i].backDrop, "ZO_DefaultButton")
+		end
+		PortToFriend.controls.purchasedHouses[i].removeButton:SetHidden(false)
+		PortToFriend.controls.purchasedHouses[i].removeButton:ClearAnchors()
+		PortToFriend.controls.purchasedHouses[i].removeButton:SetAnchor(TOPLEFT, PortToFriend.controls.purchasedHouses[i].backDrop, TOPLEFT, 670, 0)
+		PortToFriend.controls.purchasedHouses[i].removeButton:SetDimensions(90,25)
+		PortToFriend.controls.purchasedHouses[i].removeButton:SetText(PortToFriend.constants.MYHOUSES_FRONT_DOOR)
+		PortToFriend.controls.purchasedHouses[i].removeButton:SetClickSound("Click")
+		PortToFriend.controls.purchasedHouses[i].removeButton:SetHandler("OnClicked", function () PortToFriend.PortToMyHousesById(sortedMyHousesList[i].houseId, true) end)
+		PortToFriend.controls.purchasedHouses[i].removeButton:SetHandler("OnMouseEnter", function() PortToFriend.BdMyHousesOnMouseEnter(i) end)
+        PortToFriend.controls.purchasedHouses[i].removeButton:SetHandler("OnMouseExit", function() PortToFriend.BdMyHousesOnMouseExit(i) end)
+	end
+	PortToFriend.controls.myHouses.scrollPanel:SetDimensions(PortToFriend.config.size.width - 10, #sortedMyHousesList * 25 + 15)
+	
+	PortToFriend.AdjustMyHousesSliderSize()
+	
+end
+
+function PortToFriend.GetNumPurchasedHouses()
+	local ret = 0
+	for key, value in pairs(PortToFriend.purchasedHouses) do
+		ret = ret + 1
+	end
+	return ret
+end
+
+function PortToFriend.MyHousesPanelOnMouseWheel(control, delta)
+	if PortToFriend.controls.myHouses.slider:IsHidden() == false then
+		local size = 100 / PortToFriend.GetNumPurchasedHouses()
+		if size < 1 then
+			size = 1
+		end
+		local position = -delta * size * 2 + PortToFriend.controls.myHouses.slider:GetValue()
+		
+		if position < 0 then
+			position = 0
+		end
+		if position > 100 then
+			position = 100
+		end
+		PortToFriend.controls.myHouses.slider:SetValue(position)
+	end
+end
+
+function PortToFriend.MyHousesAdjustSlider()
+	local size = 25 * PortToFriend.GetNumPurchasedHouses() + 10 - (PortToFriend.config.size.height - PortToFriend.config.size.headerHeightOffset - PortToFriend.config.size.headerHeight - PortToFriend.config.size.gap - 40)
+	if size < 0 then
+		size = 0
+	end
+	
+	local slide = size / 100 * PortToFriend.controls.myHouses.slider:GetValue()
+		
+	PortToFriend.controls.myHouses.scrollPanel:SetSimpleAnchor(PortToFriend.controls.myHouses.scrollControl, 0, -slide)
+end
+
 function PortToFriend.CalculateVCLocation()
 	if PortToFriend.addonState.VCLocationCalculated == nil or PortToFriend.addonState.VCLocationCalculated == false then
 		PortToFriend.CreateVisitCardWindow()
@@ -1251,6 +1563,10 @@ function PortToFriend.FavoriteToVC(index)
 	if index ~= nil and PortToFriend.savedVars.favorites ~= nil and PortToFriend.savedVars.favorites[index] ~= nil then
 		PortToFriend.SendVisitCardOf(PortToFriend.savedVars.favorites[index].name, PortToFriend.savedVars.favorites[index].houseId, PortToFriend.constants.sendBasicComment)
 	end
+end
+
+function PortToFriend.MyHousesToVC(id)
+	PortToFriend.SendVisitCardOf(GetDisplayName(), id, PortToFriend.constants.sendBasicComment)
 end
 
 function PortToFriend.SendVisitCardOf(name, houseId, comment)
@@ -1340,6 +1656,25 @@ function PortToFriend.AdjustLibrarySliderSize()
 	else
 		PortToFriend.controls.library.slider:SetHidden(false)
 		PortToFriend.addonState.isScrollable = true
+	end
+	
+end
+
+function PortToFriend.AdjustMyHousesSliderSize()
+	local currentDataCount = PortToFriend.GetNumPurchasedHouses()
+	local headSize = 25 * currentDataCount + 25 - (PortToFriend.config.size.height - PortToFriend.config.size.headerHeightOffset - PortToFriend.config.size.headerHeight - PortToFriend.config.size.gap - 40)
+	local totalSize = 25 * currentDataCount + 25
+	local screenSize = PortToFriend.config.size.height - PortToFriend.config.size.headerHeightOffset - PortToFriend.config.size.headerHeight - PortToFriend.config.size.gap - 40
+	
+	if totalSize <= screenSize then
+		if PortToFriend.addonState.isMyHousesScrollable == true then
+			PortToFriend.controls.myHouses.slider:SetValue(0)
+		end
+		PortToFriend.controls.myHouses.slider:SetHidden(true)
+		PortToFriend.addonState.isMyHousesScrollable = false
+	else
+		PortToFriend.controls.myHouses.slider:SetHidden(false)
+		PortToFriend.addonState.isMyHousesScrollable = true
 	end
 	
 end
@@ -1437,6 +1772,20 @@ function PortToFriend.BdLibraryEntryOnMouseExit(index)
 	if PortToFriend.controls.libraryEntries ~= nil and index ~= nil and PortToFriend.controls.libraryEntries[index] ~= nil then
 		PortToFriend.controls.libraryEntries[index].backDrop:SetCenterColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, 0.0)
 		PortToFriend.controls.libraryEntries[index].backDrop:SetEdgeColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, 0.0)
+	end
+end
+
+function PortToFriend.BdMyHousesOnMouseEnter(index)
+	if PortToFriend.controls.purchasedHouses ~= nil and index ~= nil and PortToFriend.controls.purchasedHouses[index] ~= nil then
+		PortToFriend.controls.purchasedHouses[index].backDrop:SetCenterColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, PortToFriend.config.color.backDropLine.A)
+		PortToFriend.controls.purchasedHouses[index].backDrop:SetEdgeColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, 0.0)
+	end
+end
+
+function PortToFriend.BdMyHousesOnMouseExit(index)
+	if PortToFriend.controls.purchasedHouses ~= nil and index ~= nil and PortToFriend.controls.purchasedHouses[index] ~= nil then
+		PortToFriend.controls.purchasedHouses[index].backDrop:SetCenterColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, 0.0)
+		PortToFriend.controls.purchasedHouses[index].backDrop:SetEdgeColor(PortToFriend.config.color.backDropLine.R, PortToFriend.config.color.backDropLine.G, PortToFriend.config.color.backDropLine.B, 0.0)
 	end
 end
 
@@ -1828,6 +2177,10 @@ function PortToFriend.PortToFavorite(id)
 	end
 end
 
+function PortToFriend.PortToMyHousesById(id, outside)
+	RequestJumpToHouse(id, outside)
+end
+
 function PortToFriend.RemoveFavorite(id)
 	if id ~= nil and id > 0 then
 		local favorites = PortToFriend.savedVars.favorites
@@ -1988,6 +2341,29 @@ function PortToFriend.CreateCategoryDropdownEntries(dropdown)
 	for i = 1, #entries do
 		local entry = dropdown:CreateItemEntry(entries[i], PortToFriend.CategoryDropdownCallback)
 		entry.filterId = i
+		dropdown:AddItem(entry, ZO_COMBOBOX_SUPRESS_UPDATE)
+    end
+end
+
+function PortToFriend.SortDropdownCallback(control, text, choice)
+	PortToFriend.addonState.selectedMyHousesSort = choice.sortId
+	if PortToFriend.addonState.sortInitialized == true then
+		PortToFriend.controls.myHouses.slider:SetValue(1)
+		PortToFriend.UpdateMyHouses()
+	end
+end
+
+function PortToFriend.CreateSortDropdownEntries(dropdown)
+	dropdown:SetSortsItems(false)
+	dropdown:ClearItems()
+	
+	local entries = {}
+	entries[PortToFriend.constants.SORT_ID_HOUSE] = PortToFriend.constants.SORT_HOUSE
+	entries[PortToFriend.constants.SORT_ID_LOCATION] = PortToFriend.constants.SORT_LOCATION
+	
+	for i = 1, #entries do
+		local entry = dropdown:CreateItemEntry(entries[i], PortToFriend.SortDropdownCallback)
+		entry.sortId = i
 		dropdown:AddItem(entry, ZO_COMBOBOX_SUPRESS_UPDATE)
     end
 end

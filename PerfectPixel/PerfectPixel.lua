@@ -3,7 +3,7 @@ PP.SV = {}
 PP.ADDON_NAME		= "PerfectPixel"
 PP.ADDON_AUTHOR		= "@KL1SK"
 PP.ADDON_WEBSITE	= "https://www.esoui.com/downloads/info2103-PerfectPixel.html"
-PP.ADDON_VERSION 	= "0.11.06"
+PP.ADDON_VERSION 	= "0.11.08"
 
 -- media
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

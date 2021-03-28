@@ -294,9 +294,9 @@ PP.ScrollBar = function(control, --[[sb_c]] sb_r, sb_g, sb_b, sb_a, --[[bg_c]] b
 	up:SetHidden(true)
 	down:SetHidden(true)
 
-	sb:SetBackgroundTopTexture(tex)
 	sb:SetBackgroundMiddleTexture(tex)
-	sb:SetBackgroundBottomTexture(tex)
+	sb:SetBackgroundTopTexture(nil)
+	sb:SetBackgroundBottomTexture(nil)
 	-- sb:SetColor(0, 0, 0, .6)
 	sb:SetColor(50/255, 50/255, 50/255, 1)
 	-- sb:SetColor( sb_r/255, sb_g/255, sb_b/255, sb_a)
@@ -479,7 +479,7 @@ PP.ResetStyle = function()
 	ZO_Scroll_SetMaxFadeDistance(ZO_LootAlphaContainerList, PP.SV.list_skin.list_fade_distance)
 	ZO_LootAlphaContainerList.uniformControlHeight = PP.SV.list_skin.list_uniform_control_height
 	
-	ZO_Scroll_SetMaxFadeDistance(ZO_MailInboxList, PP.SV.list_skin.list_fade_distance)
+	ZO_Scroll_SetMaxFadeDistance(MAIL_INBOX.navigationTree.scrollControl, PP.SV.list_skin.list_fade_distance)
 
 	if not TRADING_HOUSE.searchResultsList then return end
 	ZO_Scroll_SetMaxFadeDistance(TRADING_HOUSE.searchResultsList, PP.SV.list_skin.list_fade_distance)

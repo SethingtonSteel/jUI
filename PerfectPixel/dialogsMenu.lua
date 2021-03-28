@@ -1,8 +1,29 @@
 PP.dialogsMenu = function()
--- ZO_Dialogs menu
-	for _, v in ipairs(PP.DialogsMenu) do
-		if not v then return end
+	local MAX_NUM_DIALOGS	= 1																		--zo_dialog.lua -> local MAX_NUM_DIALOGS = 1, _G['ESO_Dialogs']
+	local tinsert			= table.insert
 
+	local function GetDialogControls()
+		local dialogControls = {}
+		for name, dialogInfo in pairs(ESO_Dialogs) do
+			local dialog
+			if not dialogInfo.gamepadInfo and dialogInfo.customControl then
+				if type(dialogInfo.customControl) == "function" then
+					dialog = dialogInfo.customControl()
+				else
+					dialog = dialogInfo.customControl
+				end
+			end
+			tinsert(dialogControls, dialog)
+		end
+		for i = 1, MAX_NUM_DIALOGS do
+			local dialog = GetControl("ZO_Dialog" .. i)
+			ZO_Dialogs_InitializeDialog(dialog, isGamepad)
+			tinsert(dialogControls, dialog)
+		end
+		return dialogControls
+	end
+
+	for _, v in ipairs(GetDialogControls()) do
 		local bg				= v:GetNamedChild("BG")
 		local bgMungeOverlay	= v:GetNamedChild("BGMungeOverlay")
 		local modalUnderlay		= v:GetNamedChild("ModalUnderlay")
@@ -16,17 +37,16 @@ PP.dialogsMenu = function()
 		local listBgRight		= v:GetNamedChild("ListBgRight")
 		local title				= v:GetNamedChild("Title")
 
-		ZO_PreHookHandler(v, "OnShow", function()
-			if v.animation then
-				-- v.animation:GetAnimation():SetDuration(1)
-				-- v.animation:GetAnimation():SetStartAlpha(1)
-				-- v.animation:GetFirstAnimation():SetDuration(1)
-				-- v.animation:GetFirstAnimation():SetStartAlpha(1)
-				v.animation:GetLastAnimation():SetDuration(1)
-				-- v.animation:GetLastAnimation():SetStartScale(1)
-			end
-			return false
-		end)
+		--ANIMATION******************
+		-- local anim = CreateSimpleAnimation(ANIMATION_ALPHA, hl)
+		-- anim:SetEndAlpha(.8)
+		-- anim:SetStartAlpha(0)
+		-- anim:SetDuration(200)
+		-- check.anim = anim:GetTimeline()
+
+		if not v.animation then																		--zo_dialog.xml -> OnEffectivelyShown
+			v.animation = ANIMATION_MANAGER:CreateTimelineFromVirtual("DialogModalUnderlay", v)
+		end
 
 		if bg:GetType() == CT_BACKDROP then
 			bg:SetCenterTexture(PP.t.bg1, 4, 1)
@@ -54,13 +74,10 @@ PP.dialogsMenu = function()
 			PP.Font(title,	--[[Font]] PP.f.u67, 22, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 		end
 		if list then
-			-- PP.ListBackdrop(list, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-			-- list:GetNamedChild("Backdrop"):SetDrawTier(1)
 			list:SetWidth(v:GetWidth() - 30)
 			PP.Anchor(list, --[[#1]] nil, nil, nil, 2, nil)
 			
 			PP.ScrollBar(list, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
-			-- list:GetNamedChild("ScrollBar_BG"):SetDrawTier(1)
 
 			if listBgLeft and listBgRight then
 				listBgLeft:SetHidden(true)
@@ -71,7 +88,6 @@ PP.dialogsMenu = function()
 			pane:SetWidth(v:GetWidth() - 30)
 			PP.Anchor(pane, --[[#1]] nil, nil, nil, 2, nil)
 			PP.ScrollBar(pane, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
-			-- pane:GetNamedChild("ScrollBar_BG"):SetDrawTier(1)
 		end
 	end
 end
