@@ -1,0 +1,22 @@
+## Title: Rewards Tracker
+## Author: Aleksandr Zelenin
+## Version: 0.1.6
+## AddOnVersion: 16
+## APIVersion: 100033 100034
+## Description:
+## SavedVariables: RewardsTrackerCharacterRewardsData RewardsTrackerAccountRewardsData RewardsTrackerSettingsData RewardsTrackerCampaignData
+## DependsOn: LibSimpleSavedVars LibCharacter LibAddonMenu-2.0
+## OptionalDependsOn:
+
+lang/en.lua
+lang/$(language).lua
+
+RewardsTracker.lua
+Settings.lua
+Ui.xml
+Bindings.xml
+
+Campaign.lua
+Campaign.xml
+
+Opener.lua

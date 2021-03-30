@@ -1,0 +1,12 @@
+## Title: LibSimpleSavedVars
+## Version: 0.0.2
+## AddOnVersion: 2
+## Author: Aleksandr Zelenin
+## APIVersion: 100032 100033
+## IsLibrary: true
+## Description:
+## SavedVariables:
+## DependsOn:
+## OptionalDependsOn:
+
+LibSimpleSavedVars.lua

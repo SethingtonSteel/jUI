@@ -1,0 +1,24 @@
+## Title: UESP Log v2.60
+## APIVersion: 100034
+## Version: 2.56
+## Author: Daveh from uesp.net (dave@uesp.net)
+## Description: Logs game data for uesp.net and a few other useful crafting related functions.
+## DependsOn: LibAddonMenu-2.0
+## OptionalDependsOn: uespLogSalesPrices
+## SavedVariables: uespLogSavedVars
+
+uespLog.lua
+uespLogTradeData.lua
+uespLogSalesData.lua
+uespLogUI.lua
+uespLogCharData.lua
+uespSkillCoef.lua
+uespLog.xml
+uespdescription.lua
+uespLogDaily.lua
+uespLogPerformanceMeter.lua
+uespLogPerformanceMeter.xml
+uespCopyItemLinkDialog.xml
+
+lang/en.lua
+lang/$(language).lua

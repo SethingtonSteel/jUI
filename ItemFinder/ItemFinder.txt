@@ -1,0 +1,10 @@
+﻿;All of the good addons have comments here.
+
+## Title: Item Finder
+## APIVersion: 100033 100034
+## Author: |c7f0000Rhyono|r
+## Description: Finds items and shows upgraded qualities. /ifhelp for help.
+## Version: 1.28
+## SavedVariables: ItemFinderVars
+
+ItemFinder.lua
