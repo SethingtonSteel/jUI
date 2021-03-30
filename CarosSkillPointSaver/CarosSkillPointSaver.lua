@@ -973,7 +973,7 @@ function CSPS.hbLinkToSkills(hbTables)
 end
 
 function CSPS.cpExtract()
-	if CSPS.cpComp == "" then CSPS.cpComp = "0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0" end
+	if CSPS.cpComp == "" or CSPS.cpComp == nil then CSPS.cpComp = "0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0" end
 	CSPS.cpColorSum = {0,0,0}
 	CSPS.cpStarSum = {0,0,0,0,0,0,0,0,0}
 	local k = {3, 2, 2, 2, 1, 1, 1, 3, 3}
@@ -992,11 +992,11 @@ end
 function CSPS.loadBuild()
 	CSPS.showElement("apply", true)
 	CSPS.showElement("save", true)
-	if CSPS.currentCharData.werte == nil and CSPS.profiles == {} then d(CSPS.msgNoSavedData) return end
+	if CSPS.currentCharData.werte == nil and CSPS.profiles == {} then d(GS(CSPS_NoSavedData)) return end
 	local skillTableClean, attrComp, hbComp, cp2Comp, cp2HbComp = {}, "", "", "", ""
 	if CSPS.currentProfile == 0 then
 		skillTableClean = CSPS.currentCharData.werte
-		CSPS.cpComp = CSPS.currentCharData.cpwerte
+		CSPS.cpComp = CSPS.currentCharData.cpwerte or ""
 		cp2Comp = CSPS.currentCharData.cp2werte or ""
 		cp2HbComp = CSPS.currentCharData.cp2hbwerte or ""
 		attrComp = CSPS.currentCharData.attribute

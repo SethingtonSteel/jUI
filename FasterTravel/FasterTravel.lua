@@ -4,7 +4,7 @@ local addon = {
     name = "FasterTravel",
     displayName = zo_strformat("|c40FF40Faster|r Travel"),
     author = "XanDDemoX, upyachka, Valandil, SimonIllyan",
-    version = "2.5.2",
+    version = "2.5.3",
     website = "https://www.esoui.com/downloads/info1089-FasterTravelWayshrinesmenuTeleporter.html",
 }
 FasterTravel.addon = addon
@@ -547,7 +547,7 @@ local function Setup()
 		if enabled then
 			ZO_PreHook("ZO_Dialogs_ShowPlatformDialog", FasterTravel.__Hook_Checker)
 		else
-			ZO_PreHook("ZO_Dialogs_ShowPlatformDialog", nil)
+			ZO_PreHook("ZO_Dialogs_ShowPlatformDialog", function() return false end)
 		end
 	end
 

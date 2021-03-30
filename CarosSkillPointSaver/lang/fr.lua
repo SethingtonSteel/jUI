@@ -217,7 +217,7 @@ local L = {}
 	L.CSPS_CPCustomIcons = "Icônes PC personnalisées"
 	
 	-- Presets
-	L.CSPS_MSG_SwitchCP = "Investissez des points dans '<<1>>' au lieu de l'un des autres emplacements de barre de champion chaque fois que vous pourriez en profiter."
+	L.CSPS_MSG_SwitchCP = "Investissez des points dans |c<<1>>'<<2>>'|r au lieu de l'un des autres emplacements de barre de champion chaque fois que vous pourriez en profiter."
 	L.CSPS_MSG_SituationalCP = "Envisagez de remplacer les emplacements de barre de champions par l'une des compétences suivantes en fonction de la situation:"
 	
 	-- Import/Export

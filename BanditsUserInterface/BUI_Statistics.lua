@@ -359,7 +359,7 @@ local function EquipementInfo()
 --		..zo_strformat("<<!aC:1>>",EsoStrings[SI_DERIVEDSTATS1143]).." "..b_mitigation.."%"
 	local stat3=BUI.UI.Label("BUI_Report_Einfo_Stats3", ui, {w-w1-10,sfs*1.4*4}, {TOPLEFT,BOTTOMLEFT,0,10,stat2}, BUI.UI.Font("standard",sfs,true), {.8,.8,.8,1}, {0,0}, text)
 
-	--Champion system
+	--Champion system v2
 	ui.champ=BUI.UI.Control("BUI_Report_Einfo_Champion", ui, {w3,fs*3.5*9}, {TOPLEFT,TOPLEFT,w+(BUFF_W-w3)/2,0},not(BUI.Vars.StatsBuffs and BuffsSection))
 --	BUI.UI.Line("BUI_Report_Einfo_L2", ui.champ, {w-w1-2,0}, {TOPLEFT,TOPLEFT,0,0}, {.7,.7,.5,.3}, 2)
 --	for di=1, GetNumChampionDisciplines() do
@@ -402,7 +402,7 @@ local function EquipementInfo()
 			label:SetText(s_value>0 and s_value or "-")
 --		end
 	end
---[[
+--[[	Champion system v1
 	for i=0,8 do
 		local line=i<8 and i+2 or i-7
 		--Discipline
@@ -1270,7 +1270,7 @@ function BUI.Stats.SetupReport(context,header_button)	--Setup player report
 		local Direct_Damage=0
 		local Spell_Damage=0
 		local Weapon_Damage=0
-		local Element_Damage={[0]=0,[1]=0,[2]=0,[3]=0,[4]=0,[5]=0,[6]=0,[7]=0,[8]=0,[9]=0,[10]=0,[11]=0}
+		local Element_Damage={[0]=0,[1]=0,[2]=0,[3]=0,[4]=0,[5]=0,[6]=0,[7]=0,[8]=0,[9]=0,[10]=0,[11]=0,[12]=0,[13]=0,[14]=0}
 		for name,data in pairs(Report.Damage.Total) do
 --			if not BUI.Stats.IsSingleAttack(ability) then Dot_Damage=Dot_Damage+data.total end
 			if GetAbilityUptime(data.id,name)==0 then Direct_Damage=Direct_Damage+data.total end
@@ -1290,7 +1290,8 @@ function BUI.Stats.SetupReport(context,header_button)	--Setup player report
 			title=
 			"|cbbbbbbPhysical|r "..math.floor(Element_Damage[DAMAGE_TYPE_PHYSICAL]*100/Report.damage).."%"..
 			"  |c33bb33Poison|r "..math.floor(Element_Damage[11]*100/Report.damage).."%"..
-			"  |cbb33bbDisease|r "..math.floor(Element_Damage[DAMAGE_TYPE_DISEASE]*100/Report.damage).."%"
+			"  |cbb33bbDisease|r "..math.floor(Element_Damage[DAMAGE_TYPE_DISEASE]*100/Report.damage).."%"..
+			"  |cbb3333Bleed|r "..math.floor(Element_Damage[DAMAGE_TYPE_BLEED]*100/Report.damage).."%"
 		end
 			title=title.."\n"..
 			"|cAAAAAADoT|r ".. 100-Direct_Damage.."%"..	--math.floor(Dot_Damage*100/Report.damage)

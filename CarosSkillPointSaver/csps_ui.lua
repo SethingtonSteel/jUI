@@ -13,6 +13,44 @@ CSPS.colTbl = {
 }
 
 
+local function initCSPSHelp()
+	local helpOversectionsCtr = CSPSWindowHelpSection:GetNamedChild("Oversections")
+	local ovBefore = 0
+	for i=1, 42 do
+		local myTitle = GS("CSPS_Help_Head", i)
+		if myTitle == "" then break end
+		local myText = GS("CSPS_Help_Sect", i)
+		local myOversection = GS("CSPS_Help_Oversection", i)
+		helpSections[i] = WINDOW_MANAGER:CreateControlFromVirtual("CSPSWindowHelpSectionSection"..i, CSPSWindowHelpSection, "CSPSHelpSectionPres")
+		local ctrBefore = helpOversectionsCtr
+		if myOversection ~= "" then
+			helpOversections[i] = WINDOW_MANAGER:CreateControlFromVirtual("CSPSWindowHelpSectionOversection"..i, CSPSWindowHelpSectionOversections, "CSPSHelpOversectionPres")
+			if i == 1 then
+				helpOversections[i]:SetAnchor(TOPLEFT, helpOversectionsCtr, TOPLEFT, 0, 0)
+				helpOversectionsCtr:SetWidth(100)
+			else
+				helpOversections[i]:SetAnchor(LEFT, helpOversections[ovBefore], RIGHT, 5, 0)
+				helpOversectionsCtr:SetWidth(helpOversectionsCtr:GetWidth()+105)
+			end
+			helpOversections[i]:SetText(myOversection)
+			helpOversections[i].myIndex = i
+			ovBefore = i
+		end
+		if i > 1 and i ~= ovBefore then ctrBefore = helpSections[i-1] end
+		helpSections[i]:SetAnchor(TOP, ctrBefore, BOTTOM, 0, 5)
+		helpSections[i]:GetNamedChild("Btn"):SetText(myTitle)
+		helpSections[i]:GetNamedChild("Btn").myIndex = i
+		helpSections[i]:GetNamedChild("Btn"):SetHeight(0)
+		helpSections[i]:GetNamedChild("Btn"):SetHidden(true)
+		helpSections[i]:GetNamedChild("Lbl").auxText = myText
+	end
+end
+
+function CSPS.showHelp()
+	if #helpSections == 0 then initCSPSHelp() end
+	CSPSWindowHelpSection:SetHidden(not CSPSWindowHelpSection:IsHidden())
+end
+
 function CSPS:InitLocalText()
 	-- Loading localized text data
 	CSPS.skillTypeNames = {
@@ -71,41 +109,7 @@ function CSPS:InitLocalText()
 	CSPSWindowImportExportCleanUpText:SetText(GS(CSPS_ImpExp_CleanUp))
 	CSPSWindowImportExportTransferCPHkCopyReplace:SetText(GS(CSPS_ImpExp_Transfer_CopyReplace))
 	CSPSWindowImportExportTransferCPHkCopyAdd:SetText(GS(CSPS_ImpExp_Transfer_CopyAdd))
-	local helpOversectionsCtr = CSPSWindowHelpSection:GetNamedChild("Oversections")
-	local ovBefore = 0
-	for i=1, 42 do
-		local myTitle = GS("CSPS_Help_Head", i)
-		if myTitle == "" then break end
-		local myText = GS("CSPS_Help_Sect", i)
-		local myOversection = GS("CSPS_Help_Oversection", i)
-		helpSections[i] = WINDOW_MANAGER:CreateControlFromVirtual("CSPSWindowHelpSectionSection"..i, CSPSWindowHelpSection, "CSPSHelpSectionPres")
-		local ctrBefore = helpOversectionsCtr
-		if myOversection ~= "" then
-			helpOversections[i] = WINDOW_MANAGER:CreateControlFromVirtual("CSPSWindowHelpSectionOversection"..i, CSPSWindowHelpSectionOversections, "CSPSHelpOversectionPres")
-			if i == 1 then
-				helpOversections[i]:SetAnchor(TOPLEFT, helpOversectionsCtr, TOPLEFT, 0, 0)
-				helpOversectionsCtr:SetWidth(100)
-			else
-				helpOversections[i]:SetAnchor(LEFT, helpOversections[ovBefore], RIGHT, 5, 0)
-				helpOversectionsCtr:SetWidth(helpOversectionsCtr:GetWidth()+105)
-			end
-			helpOversections[i]:SetText(myOversection)
-			helpOversections[i].myIndex = i
-			ovBefore = i
-		end
-		if i > 1 and i ~= ovBefore then ctrBefore = helpSections[i-1] end
-		helpSections[i]:SetAnchor(TOP, ctrBefore, BOTTOM, 0, 5)
-		helpSections[i]:GetNamedChild("Btn"):SetText(myTitle)
-		helpSections[i]:GetNamedChild("Btn").myIndex = i
-		helpSections[i]:GetNamedChild("Btn"):SetHeight(0)
-		helpSections[i]:GetNamedChild("Btn"):SetHidden(true)
-		helpSections[i]:GetNamedChild("Lbl").auxText = myText
-	end
-	
-	CSPS.Tooltiptext_Apply = GS(CSPS_Tooltiptext_Apply)
-	
-	CSPS.txtCP = GS(CSPS_TxtCp) -- CP Abbreviation
-	CSPS.msgNoSavedData = GS(CSPS_NoSavedData)
+
 	CSPS.skillErrors = {
 		GS(CSPS_ErrorNumber1),
 		GS(CSPS_ErrorNumber2),
@@ -395,10 +399,6 @@ function CSPS:RestorePosition()
   local hbtop = CSPS.savedVariables.settings.hbtop
   CSPSCpHotbar:ClearAnchors()
   CSPSCpHotbar:SetAnchor(TOPLEFT, GuiRoot, TOPLEFT, hbleft, hbtop)
-end
-
-function CSPS.hilfeFenster()
-	ZO_Dialogs_ShowDialog(CSPS.name.."_ShowHelp")
 end
 
 function CSPS.showElement(myElement, arg)

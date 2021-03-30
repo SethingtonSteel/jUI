@@ -44,7 +44,7 @@
 					<Dimensions x="24" y="24" />
 					<Anchor point="CENTER" relativeTo="$(parent)Circle" relativePoint="CENTER" />			  
 				</Texture>
-				<Label font="$(MEDIUM_FONT)|$(KB_15)|soft-shadow-thin" wrapMode="0" horizontalAlignment="1" name="$(parent)Label" >
+				<Label font="$(MEDIUM_FONT)|$(KB_15)|soft-shadow-thin" wrapMode="0" horizontalAlignment="1" name="$(parent)Label" mouseEnabled="true" >
 					<Anchor point="LEFT" relativeTo="$(parent)Circle" relativePoint="RIGHT" offsetX="5" />		
 					<Dimensions x="130" y="24" />
 				</Label>
@@ -409,7 +409,7 @@
 					<Dimensions y="25" x="25" />
 					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$(parent)CloseButton" offsetX="-5"   />
 					<Textures normal="esoui/art/menubar/menubar_help_up.dds" pressed="esoui/art/menubar/menubar_help_down.dds" mouseOver="esoui/art/menubar/menubar_help_over.dds" />
-					<OnClicked>CSPSWindowHelpSection:SetHidden(not CSPSWindowHelpSection:IsHidden())</OnClicked>
+					<OnClicked>CSPS.showHelp()</OnClicked>
 					<OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, RIGHT, GetString(CSPS_Tooltiptext_Help))</OnMouseEnter>
 					<OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
 				</Button>

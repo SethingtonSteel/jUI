@@ -646,7 +646,7 @@ local function OnActivated()
 	end
 	BUI.PvPzone=PvPzone
 	--Vanity Pet
-	if not PvPzone and not (RaidNotifier and RaidNotifier.Vars.general.last_pet) then
+	if not PvPzone then	--and not (RaidNotifier and RaidNotifier.Vars.general.last_pet) then
 		local TrialLobby={sunspirehall001_base=true,cloudresttrial_base=true,hofabriccaves_base=true,maw_of=true,mawlorkajsevenriddles_base=true,arenaslobbyexterior_base=true,trl_so=true,helracitadelentry_base=true,aetherianarchivebottom_base=true,gladiatorsassembly_base=true,blackroseprison01_base=true,kynesaegismap001_0=true,vateshransrites01_0=true}
 		if TrialLobby[BUI.MapId] then
 			local id=GetActiveCollectibleByType(COLLECTIBLE_CATEGORY_TYPE_VANITY_PET)

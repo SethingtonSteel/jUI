@@ -1,7 +1,7 @@
 -- MENU OPTIONS COMPONENT
 local MenuOptions,MenuPanel,MenuHandlers={},{},{}
 local TexturesList={} for t in pairs(BUI.Textures) do table.insert(TexturesList,t) end
-local MoveMode_1,MoveMode_2=true,false
+local MoveMode_1,MoveMode_2=true,true
 local move_init,move_anchor
 local PinTypes={
 --	[MAP_PIN_TYPE_PLAYER]={name="Player",icon="/EsoUI/Art/MapPins/UI-WorldMapPlayerPip.dds"},
@@ -189,7 +189,7 @@ local function MenuOptions_Init()	--Menu options
 	--Change language
 	{	type		="dropdown",
 		name		="ChangeLanguage",
-		choices	={"en", "ru", "de", "fr", "jp"},
+		choices	={"en", "ru", "de", "fr", "jp","it"},
 		getFunc	=function() return BUI.language end,
 		setFunc	=function(i,value) SCENE_MANAGER:SetInUIMode(false) BUI.OnScreen.Notification(8,"Reloading UI") BUI.CallLater("Language",1000,SetCVar,"Language.2",value) end,
 		warning	="ChangeLanguageWarn",

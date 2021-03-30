@@ -8,6 +8,7 @@ local TargetResistance={
 local CPcap
 local Attributes={[POWERTYPE_HEALTH]="health", [POWERTYPE_MAGICKA]="magicka", [POWERTYPE_STAMINA]="stamina",[POWERTYPE_ULTIMATE]="ultimate"}
 local PreferredTargetValid,rotation_value,rotation_step,rotation_dir=false,math.pi*.05,0,1
+local STAT_CRIT_DMG_MAG,STAT_CRIT_DMG_PHIS,STAT_BLOCK_COST,STAT_BLOCK_MITIGATION=1140,1141,1142,1143
 
 function BUI.Player:Initialize()
 	--Setup initial character information

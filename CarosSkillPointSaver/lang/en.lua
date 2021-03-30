@@ -216,7 +216,7 @@ local L = {}
 	L.CSPS_CPCustomIcons = "Custom CP icons"
 	
 	-- Presets
-	L.CSPS_MSG_SwitchCP = "Invest points into '<<1>>' instead of one of the other slottables whenever you might profit from it."
+	L.CSPS_MSG_SwitchCP = "Invest points into |c<<1>>'<<2>>'|r instead of one of the other slottables whenever you might profit from it."
 	L.CSPS_MSG_SituationalCP = "Consider replacing the slottables by one of the following skills depending on the situation:"
 	L.CSPS_CPP_Tank = "Tank"
 	

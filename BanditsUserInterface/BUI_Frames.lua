@@ -1562,8 +1562,12 @@ function BUI.Frames:UpdateAltBar(powerValue, powerMax, powerEffectiveMax,context
 end
 
 function BUI.Frames:SafetyCheck()
-	--Don't update the player in combat
-	if BUI.inCombat then return end
+	--Group frames
+	if BUI.Vars.RaidFrames then
+		BUI.InGroup=IsUnitGrouped('player')
+		if BUI.InGroup then BUI.Frames:SetupGroup() elseif not BUI.inMenu and not BUI.move then BUI_RaidFrame:SetHidden(true) end
+	end
+	if BUI.inCombat then return end --Don't update the player in combat
 	if BUI.Vars.PlayerFrame then
 		--Make sure attributes are up to date
 		if not BUI.inMenu then
@@ -1572,10 +1576,5 @@ function BUI.Frames:SafetyCheck()
 			BUI.Player:UpdateAttribute(	'player',POWERTYPE_STAMINA,nil,nil,nil)
 			BUI.Player:UpdateShield(	'player',nil,nil)
 		end
-	end
-	--Group frames
-	if BUI.Vars.RaidFrames then
-		BUI.InGroup=IsUnitGrouped('player')
-		if BUI.InGroup then BUI.Frames:SetupGroup() elseif not BUI.inMenu then BUI_RaidFrame:SetHidden(true) end
 	end
 end

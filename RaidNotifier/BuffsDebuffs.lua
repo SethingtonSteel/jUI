@@ -251,6 +251,8 @@ maw_lorkhaj.rakkhat_lunarbastion[74352] = true
 maw_lorkhaj.rakkhat_lunarbastion[74357] = true
 maw_lorkhaj.rakkhat_lunarbastion[74362] = true
 maw_lorkhaj.rakkhat_lunarbastion[74367] = true
+-- Armor Weakened debuff provided by Hulk's Thunderous Smash attack
+maw_lorkhaj.rakkhat_hulk_armorweakened = 74672
 
 --Mobs
 -- Eclipse Field (Sun-Eater)
@@ -575,3 +577,25 @@ sunspire.flame_split = 119485
 sunspire.agony_totem = 118411
 
 RaidNotifier.BuffsDebuffs[RAID_SUNSPIRE] = sunspire
+
+-- ------------------------------------------------------
+-- -- Kyne's Aegis---------------------------------------
+-- -- ---------------------------------------------------
+local kynes_aegis = {}
+
+-- Half-Giant Tidebreaker's Crashing Wall
+kynes_aegis.tidebreaker_crashing_wall = 134196
+-- Bitter Knight's Sanguine Prison
+kynes_aegis.bitter_knight_sanguine_prison = 132473
+-- Bloodknight's Blood Fountain
+kynes_aegis.bloodknight_blood_fountain = 140294
+-- Dragon Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_dragon_totem_spawn = 133264
+-- Harpy Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_harpy_totem_spawn = 133511
+-- Gargoyle Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_gargoyle_totem_spawn = 133514
+-- Chaurus Totem spawn at Yandir the Butcher boss
+kynes_aegis.yandir_chaurus_totem_spawn = 133516
+
+RaidNotifier.BuffsDebuffs[RAID_KYNES_AEGIS] = kynes_aegis

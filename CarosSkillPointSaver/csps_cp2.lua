@@ -509,7 +509,7 @@ function CSPS.showCpBar()
 				end
 			else
 				local myZoIcon = WINDOW_MANAGER:GetControlByName(string.format("ZO_ChampionPerksActionBarSlot%sIcon", mySlot))
-				if myZoIcon ~= nil and mySk ~= nil then myZoIcon:SetTexture(CSPS.customCpIcons[mySk]) end
+				if myZoIcon ~= nil and mySk ~= nil and mySk > 0 then myZoIcon:SetTexture(CSPS.customCpIcons[mySk]) end
 			end
 		end
 	end
@@ -1531,7 +1531,11 @@ end
 function CSPS.CPListRowMouseEnter(control)
 	CSPS.cppList:Row_OnMouseEnter(control)
 	if control.data and control.data.type == 4 then
-		ZO_Tooltips_ShowTextTooltip(control, RIGHT, zo_strformat(GS(CSPS_Tooltip_CPPreset), control.data.updated[1], control.data.updated[2], control.data.updated[3], control.data.website))
+		InitializeTooltip(InformationTooltip, control, LEFT)	
+		InformationTooltip:AddLine(control.data.name, "ZoFontWinH2")
+		ZO_Tooltip_AddDivider(InformationTooltip)
+		InformationTooltip:AddLine(zo_strformat(GS(CSPS_Tooltip_CPPreset), control.data.updated[1], control.data.updated[2], control.data.updated[3], control.data.website), "ZoFontGame")
+		
 	end
 end
 

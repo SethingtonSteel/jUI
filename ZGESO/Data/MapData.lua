@@ -617,7 +617,7 @@ ZGV.MapData = {
 		["Deep-Root"] = [[UI_Map_DeepRoot_base01]],
 		["Remnant of Argon"] = [[remnantofargon_base]],
 
-		-- ELSWEYR
+		-- NORTHERN ELSWEYR
 		["Elsweyr"] = [[elsweyr_base]],
 		["Rimmen"] = [[rimmen_base]],
 		["Rimmen Palace Recesses"] = [[rimmensewer_base]],
@@ -660,15 +660,15 @@ ZGV.MapData = {
 		["Jode's Core"]	= [[moonsurface_base]],
 		["Darkpool Mine"] = [[thescab_base]],
 		["The Tangle"] = [[thetangle_base]],
-
-		--Greymoor
+		
+		-- WESTERN SKYRIM
+		["Western Skyrim"] = [[westernskryim_base]],
 		["Riften Ratway"] = [[riftenratwaytop_base]],
 		["Riften Ratway"] = [[riftenratwaybottom_base]],
 		["Blackreach: Mzark Cavern"] = [[blackreach_teaser_base]],
 		["Palace of Kings"] = [[palaceofkingsmain_base]],
 		["Palace of Kings"] = [[palaceofkingsback_base]],
 		["Palace of Kings"] = [[palaceofkingslower_base]],
-		["Western Skyrim"] = [[westernskryim_base]],
 		["Solitude"] = [[solitudecity_base]],
 		["Kilkreath"] = [[kilkreath_base]],
 		["Shadowgreen"] = [[shadowgreen_upper_base]],
@@ -688,7 +688,7 @@ ZGV.MapData = {
 		["Tzinghalis's Tower"] = [[Tzingalas_base]],
 		["Lightless Hollow Mine"] = [[lightlesshollow_mines01_base]],
 		["Bthang Outpost"] = [[lightlesshollow_ruins01_base]],
-		["Dark Moon Grotto Refuge"] = [[darkmoongrottorefuge_base]],
+		["Dark Moon Grotto Refuge"] = [[darkmoongrottorefuge_base]], 
 		["The Scraps"] = [[thescraps_base]],
 		["Midnight Barrow"] = [[midnightbarrow_base]],
 		["The Undergrove"] = [[MidnightSK5Barrow]],
@@ -699,8 +699,8 @@ ZGV.MapData = {
 		["Greymoor Keep"] = [[greymooreintsec02_base]],
 		["Greymoor Keep"] = [[greymooreintsec03_base]],
 		["Gray Host Tunnels"] = [[solitudetemplecave]],
-
-		--Markarth
+		
+		-- THE REACH
 		["Gray Host Sanctuary"] = [[SecretHideout_base]],
 		["Grayhome"] = [[GrayHostBase_base]],
 		["Castle Grayhome"] = [[GrayHostBase1FloorPast_base]],
@@ -882,7 +882,7 @@ ZGV.MapData = {
 		["UI_Map_DeepRoot_base01"] =		{ name = "Deep-Root",						id = 446, xoffset = 0.76208050261367, yoffset = 0.74632332557616, xscale = 0.0022949879744312, },
 		["remnantofargon_base"] =			{ name = "Remnant of Argon",				id = 447, xoffset = 0.76284289412495, yoffset = 0.74563348419786, xscale = 0.00059357049039193, },
 
-		-- ELSWEYR
+		-- NORTHERN ELSWEYR
 		["elsweyr_base"] =					{ name = "Elsweyr",							id = 448, xoffset = 0.45640256807954, yoffset = 0.57828674362147, xscale = 0.1449014005214, },
 		["rimmen_base"] =					{ name = "Rimmen",							id = 449, xoffset = 0.5673620104789733887, yoffset = 0.6207519769668579102, xscale = 0.0195800814447080231, },
 		["riverholdcity_base"] =			{ name = "Riverhold",						id = 450, xoffset = 0.5673620104789733887, yoffset = 0.6207519769668579102, xscale = 0.0195800814447080231, },
@@ -925,8 +925,8 @@ ZGV.MapData = {
 		["moonsurface_base"] =				{ name = "Jode's Core",						id = 475, xoffset = 0.58902459270864, yoffset = 1.3638879949588, xscale = -0.64374272427174, },
 		["thescab_base"] =					{ name = "Darkpool Mine",					id = 476, xoffset = -0.09350672985143, yoffset = -0.068329917242788, xscale = 1.1000791747227, },
 		["thetangle_base"] =				{ name = "The Tangle",						id = 477, xoffset = 1.1163170573778, yoffset = 0.85366619048082, xscale = 0.85366619048082, },
-
-		--Greymoor
+		
+		-- WESTERN SKYRIM
 		["riftenratwaytop_base"] =          { name = "Riften Ratway",                   id = 478, xoffset = 0.005464, yoffset = 0.144269, xscale = 0.010268, },
 		["riftenratwaybottom_base"] =       { name = "Riften Ratway",                   id = 479, xoffset = 0.005391, yoffset = 0.144266, xscale = 0.0103328, },
 		["blackreach_teaser_base"] =        { name = "Blackreach: Mzark Cavern",        id = 480, xoffset = 0.700414, yoffset = 1.551162, xscale = 0.021448, },
@@ -964,23 +964,23 @@ ZGV.MapData = {
 		["greymooreintsec02_base"] =        { name = "Greymoor Keep",                   id = 512, xoffset = 0.671282, yoffset = 1.511585, xscale = 0.004890, },
 		["greymooreintsec03_base"] =        { name = "Greymoor Keep",                   id = 513, xoffset = 0.672208, yoffset = 1.511351, xscale = 0.004718, },
 		["solitudetemplecave"] =            { name = "Gray Host Tunnels",               id = 514, xoffset = 0.427004, yoffset = 0.209152, xscale = 0.005310, },
-
-		--Markarth
+		
+		-- THE REACH
 		["SecretHideout_base"] =           { name = "Gray Host Sanctuary",              id = 515, xoffset = 0.314608, yoffset = 0.323837, scale = 0.001967, },
 		["GrayHostBase_base"] =            { name = "Grayhome",                         id = 516, xoffset = 0.250000, yoffset = 0.124777, scale = 0.015706, },
 		["GrayHostBase1FloorPast_base"] =  { name = "Castle Grayhome",                  id = 517, xoffset = 0.254464, yoffset = 0.121001, scale = 0.004598, },
-		["GrayHostBase2ndFloorPast_base"] = { name = "Castle Grayhome",                 id = 518, xoffset = 0.256563, yoffset = 0.121203, scale = 0.004744, },
+		["GrayHostBase2ndFloorPast_base"] = { name = "Castle Grayhome",                 id = 518, xoffset = 0.256563, yoffset = 0.121203, scale = 0.004744, }, 
 		["GrayHostBase1FloorPres_base"] =   { name = "Castle Grayhome",                 id = 519, xoffset = 0.254374, yoffset = 0.126192, scale = 0.004794, },
 		["GrayHostBase2ndFloorPres_base"] = { name = "Castle Grayhome",                 id = 520, xoffset = 0.256583, yoffset = 0.126521, scale = 0.004721, },
 		["VerandisLab_base"] =              { name = "Grayhome Ritual Chamber",         id = 521, xoffset = 0.254373, yoffset = 0.126191, scale = 0.004794, },
 		["reach_base"] =                    { name = "The Reach",                       id = 522, xoffset = 0.314774, yoffset = 0.227548, scale = 0.015080, },
-		["markarthcity_base"] =             { name = "Markarth",                        id = 523, xoffset = 0.314067, yoffset = 0.237430, scale = 0.010808, },
+		["markarthcity_base"] =             { name = "Markarth",                        id = 523, xoffset = 0.314067, yoffset = 0.237430, scale = 0.010808, }, 
 		["markunderstonekeep_base"] =       { name = "Understone Keep",                 id = 524, xoffset = 0.316961, yoffset = 0.242608, scale = 0.002163, },
 		["valthume_base"] =                 { name = "Valthume",                        id = 525, xoffset = 0.323415, yoffset = 0.237027, scale = 0.013335, },
 		["halls_of_the_betrayed1_base"] =   { name = "Reachwind Depths",                id = 526, xoffset = 0.322612, yoffset = 0.237209, scale = 0.005127, },
 		["halls_of_the_betrayed2_base"] =   { name = "Reachwind Depths",                id = 527, xoffset = 0.322142, yoffset = 0.240194, scale = 0.0054056, },
 		["halls_of_the_betrayed3_base"] =   { name = "Reachwind Depths",                id = 528, xoffset = 0.374820, yoffset = 0.300291, scale = 0.006537, },
-		["halls_of_the_betrayed5_base"] =   { name = "Reachwind Depths",                id = 529, xoffset = 0.374196, yoffset = 0.300694, scale = 0.006550, },
+		["halls_of_the_betrayed5_base"] =   { name = "Reachwind Depths",                id = 529, xoffset = 0.374196, yoffset = 0.300694, scale = 0.006550, }, 
 		["halls_of_the_betrayed4_base"] =   { name = "Reachwind Depths",                id = 530, xoffset = 0.374826, yoffset = 0.300786, scale = 0.001530, },
 		["halls_of_the_betrayed6_base"] =   { name = "Reachwind Depths",                id = 531, xoffset = 0.374834, yoffset = 0.300978, scale = 0.004202, },
 		["briarrockruins_ext_base"] =       { name = "Briar Rock Ruins",                id = 532, xoffset = 0.305184, yoffset = 0.230830, scale = 0.018396, },
@@ -990,7 +990,7 @@ ZGV.MapData = {
 		["u28_shatterstonemine_base"] =      { name = "Sanuarach Mine",                 id = 535, xoffset = 0.327219, yoffset = 0.234300, scale = 0.01150, },
 		["btharzel_base"] =                  { name = "Bthar-Zel",                      id = 536, xoffset = 0.323490,  yoffset = 0.231099, scale = 0.010350, },
 		["btharzelbank_base"] =              { name = "Bthar-Zel Bank",                 id = 537, xoffset = 0.344090, yoffset = 0.244430, scale = 0.010350, },
-		["btharzelvault_base"] =             { name = "Bthar-Zel Vault",                id = 538, xoffset = 0.354205, yoffset = 0.244463, scale = 0.010350, },
+		["btharzelvault_base"] =             { name = "Bthar-Zel Vault",                id = 538, xoffset = 0.354205, yoffset = 0.244463, scale = 0.010350, }, 
 		["U28_blackreach_base"] =            { name = "Blackreach: Arkthzand",          id = 539, xoffset = 0.586430, yoffset = 1.550663, scale = 0.006565, },
 		["u28_hallsofarthzand_base"] =       { name = "Halls of Arkthzand",             id = 540, xoffset = 0.587016, yoffset = 1.552307, scale = 0.004846, },
 		["u28_OrreryTop_base"] =             { name = "Arkthzand Orrery",               id = 541, xoffset = 0.565744, yoffset = 1.521486, scale = 0.010651, },
@@ -1002,7 +1002,7 @@ ZGV.MapData = {
 		["Gloomreach4_base"]  =              { name = "Gloomereach",                    id = 547, xoffset = 0.317346, yoffset = 0.233350, scale = 0.021529, },
 		["Gloomreach5_base"]  =              { name = "Gloomereach",                    id = 548, xoffset = 0.317346, yoffset = 0.233350, scale = 0.021529, },
 		["LostValleyBarrow_base"] =          { name = "Lost Valley Redoubt",            id = 549, xoffset = 0.323746, yoffset = 0.238951, scale = 0.004298, },
-		["DarkDescent_base"] =               { name = "The Dark Descent",               id = 550, xoffset = 0.408919, yoffset = 0.320780, scale = 0.003330, },
+		["DarkDescent_base"] =               { name = "The Dark Descent",               id = 550, xoffset = 0.408919, yoffset = 0.320780, scale = 0.003330, }, 
 		["nighthollowkeep1_base"] =          { name = "Nighthollow Keep",               id = 551, xoffset = 0.592021, yoffset = 1.552504, scale = 0.005010, },
 		["nighthollowkeep2_base"] =          { name = "Nighthollow Keep",               id = 552, xoffset = 0.592021, yoffset = 1.552504, scale = 0.002117, },
 		["nighthollowkeep3_base"] =          { name = "Nighthollow Keep",               id = 553, xoffset = 0.592021, yoffset = 1.552504, scale = 0.005490, },
@@ -1019,7 +1019,7 @@ ZGV.MapData = {
 		["UI_MAP_SKR_RBC2_base"] =          { name = "Gray Haven",                     id = 564, xoffset = 0.06862,  yoffset = 0.153471, scale = 0.055104, },
 		["markunderstone_capper_base"] =    { name = "Understone Keep",                id = 565, xoffset = 0.316709,  yoffset = 0.241811, scale = 0.000476, },
 		["btharzelcapper_base"] =           { name = "Bthar-Zel Repository",           id = 566, xoffset = 0.326590,  yoffset = 0.231099, scale = 0.010350, },
-
+				
 		-- EXISTING
 		["aba-loria_base"] = { name = "Aba-Loria", id = 212, xoffset = 0.403340, yoffset = 0.529272, scale = 0.016623, },
 		["abahslanding_base"] = { xoffset = 0.233167, yoffset = 0.486680, scale = 0.031971, },

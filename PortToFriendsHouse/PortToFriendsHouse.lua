@@ -4,7 +4,7 @@
 PortToFriend = {}
 PortToFriend.addonName = "PortToFriendsHouse"
 PortToFriend.version = 1 -- saved vars
-PortToFriend.versionString = "2.1.0"
+PortToFriend.versionString = "2.1.1"
 PortToFriend.updateInterval = 20 -- in ms, not used in this addon [default construct]
 PortToFriend.author = "@s0rdrak (PC / EU)"
 PortToFriend.credits = "@Neltje, @Graham82, @Nita65"

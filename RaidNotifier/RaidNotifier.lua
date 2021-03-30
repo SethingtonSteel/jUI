@@ -5,7 +5,7 @@ local RaidNotifier = RaidNotifier
 
 RaidNotifier.Name           = "RaidNotifier"
 RaidNotifier.DisplayName    = "Raid Notifier"
-RaidNotifier.Version        = "2.16"
+RaidNotifier.Version        = "2.17"
 RaidNotifier.Author         = "|c009ad6Kyoma, Memus, Woeler, silentgecko|r"
 RaidNotifier.SV_Name        = "RNVars"
 RaidNotifier.SV_Version     = 4
@@ -22,6 +22,7 @@ RAID_ASYLUM_SANCTORIUM      = 8
 RAID_CLOUDREST              = 9
 RAID_BLACKROSE_PRISON       = 10
 RAID_SUNSPIRE               = 11
+RAID_KYNES_AEGIS            = 12
 
 -- Debugging
 local function p() end
@@ -578,6 +579,7 @@ do ----------------------
 		[RAID_CLOUDREST]             = 1051,
 		[RAID_BLACKROSE_PRISON]      = 1082,
 		[RAID_SUNSPIRE]              = 1121,
+		[RAID_KYNES_AEGIS]           = 1196,
 	}
 
 	local RaidZones = {}
@@ -672,7 +674,14 @@ do ----------------------
 
 				if (effectChangedCallback) then
 					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_EFFECT_CHANGED, effectChangedCallback)
-					EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
+
+					-- Better to introduce more flexible way of filtering EVENT_EFFECT_CHANGED, but let's start with this
+					if (self.raidId == RAID_HALLS_OF_FABRICATION) then
+						EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_UNIT_TAG, "player")
+					end
+					if (self.raidId == RAID_MAW_OF_LORKHAJ) then
+						EVENT_MANAGER:AddFilterForEvent(self.Name, EVENT_EFFECT_CHANGED, REGISTER_FILTER_ABILITY_ID, self.BuffsDebuffs[RAID_MAW_OF_LORKHAJ].rakkhat_hulk_armorweakened)
+					end
 				end
 				if (bossesChangedCallback) then
 					EVENT_MANAGER:RegisterForEvent(self.Name, EVENT_BOSSES_CHANGED, bossesChangedCallback)
@@ -897,8 +906,9 @@ do ---------------------------
 	RaidNotifier.AS = RaidNotifier.AS or {}
 	RaidNotifier.CR = RaidNotifier.CR or {}
 	RaidNotifier.SS = RaidNotifier.SS or {}
-	
-	RaidNotifier.Trial = 
+	RaidNotifier.KA = RaidNotifier.KA or {}
+
+	RaidNotifier.Trial =
 	{
 		[RAID_AETHERIAN_ARCHIVE]     = RaidNotifier.AA,
 		[RAID_HEL_RA_CITADEL]        = RaidNotifier.HRC,
@@ -910,6 +920,7 @@ do ---------------------------
 		[RAID_ASYLUM_SANCTORIUM]     = RaidNotifier.AS,
 		[RAID_CLOUDREST]             = RaidNotifier.CR,
 		[RAID_SUNSPIRE]	             = RaidNotifier.SS,
+		[RAID_KYNES_AEGIS]           = RaidNotifier.KA,
 	}
 	
 	-------------------

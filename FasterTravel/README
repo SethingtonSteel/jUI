@@ -63,6 +63,9 @@ n > 2 - for debugging only
 /ft listlen - shows the max length of "Recent" list
 
 RECENT CHANGE LOG
+Version 2.5.3 (by SimonIllyan 2021-03-30)
+	- minor fixes
+	
 Version 2.5.2 (by SimonIllyan 2021-03-05)
 	- added the option (can be set to Never, Always or Ask) to jump to random zone 
 	  if "Jump to This Zone" is impossible for lack of eligible players 

@@ -319,6 +319,12 @@ function PortToFriendData.CreateEuDataList()
 		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
 	}
 	list[#list + 1] = {
+		name = "@Nalos",
+		houseId = 66,
+		description = "Jump'n Run, bitte beachten, das Haus ist ein PvP Gebiet: Ihr könnt euch heilen, an Ort und Stelle wieder beleben und euch auch gegenseitig liebevoll behandeln :D\r\nFür den optimalen Genuss bitte alle 3 Hebel im Raum links ziehen.",
+		category = {PortToFriend.constants.FILTER_ID_JUMPNRUN, PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
 		name = "@Grila",
 		houseId = 81,
 		description = "Dschungelhaus",

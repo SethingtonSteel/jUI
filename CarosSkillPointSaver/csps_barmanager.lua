@@ -121,19 +121,34 @@ function CSPS.barManagerRefreshGroup()
 			groupSlots[i][1]:GetParent():GetNamedChild("Profiles").comboBox:SetSelectedItem(myProfile.name)
 			local myHb = {SplitString(",", myProfile["hbComp"])}
 			for j=1,4 do
+				local myIconCtr = groupSlots[i][j]:GetNamedChild("Icon")
+				local myLabelCtr = groupSlots[i][j]:GetNamedChild("Label")
 				if myHb[j] ~= "-" then	
-					groupSlots[i][j]:GetNamedChild("Icon"):SetHidden(false)
-					groupSlots[i][j]:GetNamedChild("Label"):SetText(zo_strformat("<<C:1>>", GetChampionSkillName(tonumber(myHb[j]))))
+					local myId = tonumber(myHb[j])
+					local myValue = myId and CSPS.cp2Table[myId] and CSPS.cp2Table[myId][2] or 0
+					if myId and CSPS.customCpIcons[myId] then
+						myIconCtr:SetTexture(CSPS.customCpIcons[myId])
+					else
+						myIconCtr:SetTexture("esoui/art/champion/champion_icon_32.dds")
+					end
+					myIconCtr:SetHidden(false)
+					myLabelCtr:SetText(zo_strformat("<<C:1>>", GetChampionSkillName(myId)))
+					myLabelCtr:SetHandler("OnMouseEnter", function() CSPS.showCpTT(groupSlots[i][j]:GetNamedChild("Label"), myId, myValue, true) end)
+					myLabelCtr:SetHandler("OnMouseExit", function() ZO_Tooltips_HideTextTooltip() end)
 				else
-					groupSlots[i][j]:GetNamedChild("Icon"):SetHidden(true)
-					groupSlots[i][j]:GetNamedChild("Label"):SetText("-")
+					myIconCtr:SetHidden(true)
+					myLabelCtr:SetHandler("OnMouseEnter", function() end)
+					myLabelCtr:SetText("-")
+					
 				end
 			end
 		else
 			groupSlots[i][1]:GetParent():GetNamedChild("Profiles").comboBox:SetSelectedItem("")
 			for j=1,4 do
 				groupSlots[i][j]:GetNamedChild("Icon"):SetHidden(true)
+				groupSlots[i][j]:GetNamedChild("Label"):SetHandler("OnMouseEnter", function() end)
 				groupSlots[i][j]:GetNamedChild("Label"):SetText("-")
+				
 			end
 		end	
 	end

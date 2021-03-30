@@ -5,9 +5,9 @@ local function LoadSettings()
     local gettext = AGS.internal.gettext
 
     local info = {
-        fullVersion = "1.5.2.2717",
-        version = "1.5.2",
-        build = "2717",
+        fullVersion = "1.5.3.2719",
+        version = "1.5.3",
+        build = "2719",
     }
     AGS.info = info
 

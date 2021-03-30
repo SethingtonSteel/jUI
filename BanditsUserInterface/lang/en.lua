@@ -51,8 +51,8 @@ HelperToolTip=
 	.."\n"
 	.."Need to:\n"
 	.."Keep listed buffs on self\n"
-	.."Keep listed debuffs on target skeleton\n"
-	.."Use listed abilitys on target skeleton\n"
+	.."Keep listed debuffs on target dummy\n"
+	.."Use listed abilitys on target dummy\n"
 	.."\n"
 	.."To start test: Use Light attack",
 

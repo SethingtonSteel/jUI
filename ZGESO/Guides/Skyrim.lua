@@ -2,306 +2,768 @@ local ZGV = _G.ZGV
 if ZGV:DoMutex("Skyrim") then return end
 ZGV.GuideMenuTier = "MOR"
 
-ZGV:RegisterGuide("LEVELING\\DLC\\Greymoor",[[
+ZGV:RegisterGuide("LEVELING\\Western Skyrim",[[
 loadingimage loadscreen_westernskyrim_01.dds
 description Sundered from Eastern Skyrim in years past, High King Svargrim rules the cold and unforgiving land known as Western Skyrim. Consisting of the holds of Haafingar, Karthald, and Hjaalmarch, the realm gives rise to hardy natures, brave warriors, and suspicious townsfolk.
 step
-'Open Map Auridon
-click Vulkhel Guard Wayshrine
-'Travel to Vulkhel Guard in Audridon
-goto vulkhelguard_base 11.04,59.05
-|tip She's inside the Fighters Guild.
-|tip Manually skip to the next step.
-|only if ZGV.Utils.GetFaction("player","notvet")=="AD"
+
+
+-- BEGIN: WESTERN SKYRIM INTRO GUIDE FOR NEW PLAYERS
+'Press _U_ to open your _Collections_
+'Click over to the _Stories_ tab and look under the _Chapter_ section:
+'Select _Greymoor_ in the list of Chapters
+'Click the _Accept Quest_ button at the bottom
+accept The Gathering Storm
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
 step
+goto westernskryim_base 28.58,46.84
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 29.39,46.97
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 32.09,47.31
+wayshrine Deepwood Vale
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 33.43,46.57
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 34.88,47.11
+talk Lieutenant Korleva
+accept Crisis at Dragon Bridge
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 36.59,50.80
+wayshrine Dragon Bridge
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 37.58,50.79
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 39.76,54.72
+|tip Find Captain Hingrid
+talk Captain Hingrid |q Crisis at Dragon Bridge/Talk to Captain Hingrid
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 39.40,58.65
+'Examine Arrow
+'Find the Missing Caravan |q Crisis at Dragon Bridge/.*Find the Missing Caravan.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 39.43,59.34
+'Examine Crate
+'Find the Missing Caravan |q Crisis at Dragon Bridge/.*Find the Missing Caravan.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 37.59,59.64
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 35.96,56.15
+|tip Meet Captain Hingrid at the Overlook
+talk Captain Hingrid |q Crisis at Dragon Bridge/Talk to Captain Hingrid
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 38.22,55.86
+click Letter from Ena
+'Search the Overlook |q Crisis at Dragon Bridge/Search the Overlook
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 35.99,56.09
+talk Captain Hingrid |q Crisis at Dragon Bridge/Talk to Captain Hingrid
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 34.97,55.11
+|tip Drop down carefully
+|tip Manually skip to the next step
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 33.83,54.05
+'Find the Waterfall Camp |q Crisis at Dragon Bridge/Find the Waterfall Camp
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 32.24,53.60
+|tip Find Ena White-Eye
+'Free Ena White-Eye |q Crisis at Dragon Bridge/Free Ena White-Eye
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 32.24,53.60
+talk Ena White-Eye |q Crisis at Dragon Bridge/Talk to Ena White-Eye
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 37.22,50.45
+talk Captain Hingrid
+talk Ena White-Eye |q Crisis at Dragon Bridge/Talk to Ena White-Eye
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 36.58,50.24
+|tip Search Crate
+'Retrieve the Kindlepitch |q Crisis at Dragon Bridge/Retrieve the Kindlepitch
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 36.37,50.28
+click Barrel
+'Retrieve the Fire salts |q Crisis at Dragon Bridge/Retrieve the Fire Salts
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 35.63,50.56
+|tip Leave barn
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 33.97,50.52
+'Seal the Smuggler Bolt Holes |q Crisis at Dragon Bridge/.*Seal the Smuggler Bolt Holes.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 34.35,52.30
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 35.32,53.39
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 36.40,54.71
+'Seal the Smuggler Bolt Holes |q Crisis at Dragon Bridge/.*Seal the Smuggler Bolt Holes.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto 35.77,53.85
+click the Smuggler Caves |q Crisis at Dragon Bridge/Enter the Smuggler Caves
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+goto Dragonbridge_base 53.64,82.93
+'Rescue Ulang |q Crisis at Dragon Bridge/Rescue Ulang
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 22.07,75.28
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 38.59,37.01
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 48.18,24.36
+'Defuse the Reach Explosives |q Crisis at Dragon Bridge/.*Defuse the Reach Explosives.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 55.80,37.44
+'Defuse the Reach Explosives |q Crisis at Dragon Bridge/.*Defuse the Reach Explosives.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 61.99,26.45
+'Defuse the Reach Explosives |q Crisis at Dragon Bridge/.*Defuse the Reach Explosives.* |count 3
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 82.51,32.04
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 76.66,60.27
+|tip Jump down
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto 74.80,53.60
+click Western Skyrim
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 436
+step
+goto westernskryim_base 36.79,53.58
+talk Captain Hingrid
+turnin Crisis at Dragon Bridge
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+'Open your map.
+'Travel to the _Solitude Docks_ Wayshrine
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() < 6 and _G.GetCurrentMapZoneIndex() == 743
+step
+-- END: WESTERN SKYRIM INTRO GUIDE FOR NEW PLAYERS (GUIDE JUMPS TO BEGIN: WESTERN SKYRIM GUIDE FOR NEW AND EXISTING PLAYERS STEP)
+
+
+-- BEGIN: WESTERN SKYRIM INTRO GUIDE FOR EXISTING PLAYERS
+
+-- Start: Aldmeri Dominion Faction
+'Open your map. Right click until you see the Tamriel map.
+'Travel to _Vulkhel Guard_ Wayshrine in Audridon
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto vulkhelguard_base 49.43,44.72
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto vulkhelguard_base 37.62,45.37
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto vulkhelguard_base 26.54,56.90
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto vulkhelguard_base 16.34,59.53
+click Fighters Guild
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto vulkhelguard_base 11.15,59.01
 talk Lyris Titanborn
 accept The Coven Conspiracy
-|only if ZGV.Utils.GetFaction("player","notvet")=="AD"
-step
-'Open Map Glunumbra
-click Daggerfall Wayshrine
-'Travel to Daggerfall in Glunumbra
-goto daggerfall_base 45.51,29.44
-|tip Manually skip to the next step.
-|only if ZGV.Utils.GetFaction("player","notvet")=="DC"
-step 
-goto davonswatch_base 70.28,51.02
-|tip She's inside the Fighters Guild.
-talk Lyris Titanborn
-accept The Coven Conspiracy
-|only if ZGV.Utils.GetFaction("player","notvet")=="EP"
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto grahtwood_base 64.07,40.00
 talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
-goto 69.52,34.61 
+goto 69.52,34.61
 talk Lyris
-|tip Turn around and use Icereach Coven Medallion 
+|tip Turn around and use Icereach Coven Medallion
 'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 'Examine the Corpse |q The Coven Conspiracy/Examine the Corpse
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
+goto 68.63,34.32
 talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
-goto 61.83,39.61
+'Open Map Grahtwood
 click Elden Root Temple Wayshrine
 'Travel to Ossuary in Grahtwood
-|tip Follow the road.
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
-goto 77.71,60.72
+goto 77.95,60.60
 'Use Icereach Coven Medallion
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
  goto 78.19,57.07
 'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 'Examine Harrowfiend
 'Examine the Corpse |q The Coven Conspiracy/Examine the Corpse
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 'Open Map Grahtwood
 click Fallinesti Winter Wayshrine
 'Travel to Fallinesti Winter in Grahtwood
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
+goto 36.33,59.75
 'Jump down carefully to the ground
 'Use Icereach Coven Medallion
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 31.66,60.81
 'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 'Examine Witch Pike
 'Examine Ritual Object |q The Coven Conspiracy/Examine Ritual Object
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 34.04,59.99
 talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="AD" and ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
+-- End: Aldmeri Dominion Faction
+
+-- Start: Daggerfall Covenant Faction
+'Open your map. Right click until you see the Tamriel map.
+'Travel to _Daggerfall_ Wayshrine in Glenumbra
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto daggerfall_base 46.61,30.94
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto daggerfall_base 55.19,36.27
+click Fighters Guild
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto daggerfall_base 54.21,34.42
+talk Lyris Titanborn
+accept The Coven Conspiracy
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto stormhaven_base 80.66,48.45
+talk Lyris
+|tip Turn around and use Icereach Coven Medallion
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 86.30,46.75
+'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Examine the Corpse |q The Coven Conspiracy/Examine the Corpse
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 86.66,46.77
+talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Open Stormhaven Map
+click Pariah Abbey Wayshrine
+'Travel to Pariah Abbey in Stormhaven
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 53.97,43.83
+'Use Icereach Coven Medallion
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 56.51,40.05
+'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Examine Harrowfiend
+'Examine the Corpse |q The Coven Conspiracy/Examine the Corpse
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Open Map Stormhaven
+click Soulshriven Wayshrine
+'Travel to Soulshriven in Stormhaven
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 39.28,54.34
+'Use Icereach Coven Medallion
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 36.54,49.60
+'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Examine Witch Pike
+'Examine Ritual Object |q The Coven Conspiracy/Examine Ritual Object
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 38.00,50.68
+talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="DC" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+-- End: Daggerfall Covenant Faction
+
+-- Start: Ebonheart Pact Faction
+'Open your map. Right click until you see the Tamriel map.
+'Travel to _Davon's Watch_ Wayshrine in Stonefalls
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto davonswatch_base 70.32,76.86
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 67.08,65.73
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 71.65,59.58
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 69.39,53.85
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 71.52,52.32
+click Fighters Guild
+|tip Go Downstairs.
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 70.26,51.07
+talk Lyris Titanborn
+accept The Coven Conspiracy
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto deshaan_base 50.75,57.66
+talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 50.75,57.66
+talk Lyris
+|tip Turn around and use Icereach Coven Medallion
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 55.73,55.88
+'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Examine the Corpse |q The Coven Conspiracy/Examine the Corpse
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 55.76,56.03
+talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Open Deshaan Map
+click Eidolon's Hollow Wayshrine
+'Travel to Eidolon's Hollow in Deshaan
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 89.23,42.56
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 91.15,40.92
+'Use Icereach Coven Medallion
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 90.75,37.12
+'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 90.32,38.10
+'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Examine Harrowfiend
+'Examine the Corpse |q The Coven Conspiracy/Examine the Corpse
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Open Map Deshaan
+click Shad Astula Wayshrine
+'Travel to Shad Astula in Deshaan
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 55.68,38.65
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 52.31,41.65
+'Use Icereach Coven Medallion
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 53.57,37.98
+'Follow the Magic Trail |q The Coven Conspiracy/Follow the Magic Trail
+tip Manually skip to the next step
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+'Examine Witch Pike
+'Examine Ritual Object |q The Coven Conspiracy/Examine Ritual Object
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 53.80,38.43
+'Jump down carefully
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 54.19,40.02
+talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetFaction("player","notvet")=="EP" and ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+-- End: Ebonheart Pact Faction
+
+-- Begin: All Factions converged to this Prologue step
 goto riften_base 54.19,50.34
 click the Withered Tree
-'Enter the Withered Tree
+'Enter the Withered Tree |q The Coven Conspiracy/Enter the Withered Tree
+step
 talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 'Wait for Goharth Ironbelly |q The Coven Conspiracy/Wait for Goharth Ironbelly
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 55.72,65.53
 |tip He walks out of the bar. Keep him in your sight without him seeing you, and don't get too close.
 'Follow Goharth Ironbelly |q The Coven Conspiracy/Follow Goharth Ironbelly
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 55.76,65.40
-click The Ratway
-|tip Manually skip to the next step.
+|tip Go Center of Room.
+'Explore the Ratway |q The Coven Conspiracy/Explore the Ratway
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto riftenratwaytop_base 45.45,46.01
 talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto riftenratwaytop_base 45.56,33.86
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 55.25,18.95
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 62.99,26.19
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 62.58,62.55
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 32.54,77.21
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 18.15,76.65
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto riftenratwaybottom_base 14.75,72.09
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 23.91,58.33
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto riftenratwaybottom_base 25.31,58.35
 'Take Goharth Ironbelly's Key |q The Coven Conspiracy/Take Goharth Ironbelly's Key
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto riftenratwaybottom_base 36.05,65.01
 click Upper Ratway
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
+goto 28.74,69.11
 step
 goto riftenratwaytop_base 25.88,69.74
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 25.77,59.69
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 click Lucrative Oppertunity in Eastmarch
 talk Lyris Titanborn |q The Coven Conspiracy/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 45.49,43.63
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 45.67,57.24
 click Riften
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto riften_base 55.58,68.08
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 50.67,68.07
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 57.55,66.76
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 44.64,87.58
-talk Lyris Titanborn 
+talk Lyris Titanborn
 turnin The Coven Conspiracy
 accept The Coven Conundrum
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 click Cart to Eastmarch
+'Travel to Eastmarch |q The Coven Conundrum/Travel to Eastmarch
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
-goto eastmarch_base 30.61,30.52
-click the Grinning Horker
-|tip Manually skip to the next step.
+goto eastmarch_base 30.29,30.30
+'Enter the Grinning Horker |q The Coven Conundrum/Enter the Grinning Horker
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 talk Lyris Titanborn |q The Coven Conundrum/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 30.33,30.21
 'Examine Half-Eaten Dinner
 'Search the Grinning Horker |q The Coven Conundrum/.*Search the Grinning Horker.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 30.39,30.00
 |tip up the stairs.
 'Examine Used Bedroll
 'Search the Grinning Horker |q The Coven Conundrum/.*Search the Grinning Horker.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 30.12,30.55
 |tip Down the stairs.
 'Examine Blood Trail
 'Search the Grinning Horker |q The Coven Conundrum/.*Search the Grinning Horker.* |count 3
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
-click Basement
-|tip Manually skip to the next step.
 goto 30.14,30.30
-click Cabinet
-click Secret Passage
-|tip Manually skip to the next step.
+click Basement
+click Back Left Cabinet
+'Search the Basement |q The Coven Conundrum/Search the Basement
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
-goto blackreach_teaser_base 75.81,77.58
+click Secret Passage
+'Explore the Secret Passage |q The Coven Conundrum/Explore the Secret Passage
+goto blackreach_teaser_base 75.39,77.44
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 talk Hrolt |q The Coven Conundrum/Talk to Hrolt
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 70.84,68.63
 talk Lyris Titanborn |q The Coven Conundrum/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 72.93,62.87
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 80.34,57.29
-step 
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
+step
 'Destroy the Witch Pike
 'Explore Blackreach |q The Coven Conundrum/.*Explore Blackreach.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 83.34,55.03
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 91.93,45.80
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 88.34,25.68
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 69.81,17.87
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 68.86,20.18
 'Examine icereach Coven Note
 'Explore Blackreach |q The Coven Conundrum/.*Explore Blackreach.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 44.25,24.80
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 32.44,22.32
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 30.59,17.23
 click cell gate
 talk Amberic Daigre
 'Explore Blackreach |q The Coven Conundrum/.*Explore Blackreach.* |count 3
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 21.87,31.02
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 14.36,35.50
 talk Lyris Titanborn |q The Coven Conundrum/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 click Kagalthar Ruins
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 13.09,34.60
-|tip glitch on ZeniMax side same coordinates from one end of tunnel to other so go to other end and talk.
+|tip Glitch on ZeniMax side same coordinates from one end of tunnel to other so go to other end.
 talk Sentry Darfal
 talk Lyris Titanborn |q The Coven Conundrum/Talk to Lyris Titanborn
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto windhelm_base 51.07,65.75
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 48.53,34.59
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 talk Housecarl Vaer |q The Coven Conundrum/Talk to Housecarl Vaer
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 click Palace of Kings
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto palaceofkingsmain_base 22.65,48.02
 click Skyrim Reconnaissance Map
 |tip Manually skip to the next step
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 31.46,33.00
 click Palace of Kings Inner Chambers
+|tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto palaceofkingsback_base 35.00,32.90
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 46.67,20.96
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 63.92,08.39
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 60.76,21.58
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 72.27,32.06
 click Palace of Kings Lower Chambers
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto palaceofkingsmain_base 75.22,33.59
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 76.82,63.16
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 talk Sentry Alma |q The Coven Conundrum/Talk to Sentry Alma
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 click Palace of Kings Dungeon Stairs
 |tip Manually skip to thte next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto palaceofkingslower_base 69.60,21.88
 click Palace of Kings Dungeon
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 51.80,30.99
 click Palace of Kings Dungeon
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 46.78,45.12
 click Palace of Kings Dungeon
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto 45.71,71.26
 'Kill Sister Balra
 'Save Jorunn the Skald-King |q The Coven Conundrum/Save Jorunn the Skald-King
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 click Palace Throne Room
 talk Jorunn the Skald-King
 talk Lyris Titanborn
 turnin The Coven Conundrum
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 'Press _U_ to open your _Collections_
-click over to the _Stories_ tab and look under the _Chapter_ section:
+'Click over to the _Stories_ tab and look under the _Chapter_ section:
 'Select _Greymoor_ in the list of Chapters
-click the _Accept Quest_ button at the bottom
+'Click the _Accept Quest_ button at the bottom
 accept The Gathering Storm
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto palaceofkingsmain_base 48.02,76.05
 click Windhelm
 |tip Manually skip to next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
 goto windhelm_base 45.72, 38.16
 click Windhelm Wayshrine
 'Travel to Solitude Docks in Western Skyrim
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 10
 step
+-- END: WESTERN SKYRIM INTRO GUIDE FOR EXISTING PLAYERS
+
+
+-- BEGIN: WESTERN SKYRIM GUIDE FOR NEW AND EXISTING PLAYERS
 goto westernskryim_base 51.25,43.10
-talk Brondold 
+talk Brondold
 talk Shield-Corporal Thjol |q The Gathering Storm/Talk to Shield-Corporal Thjol
 step
 'Read Brondold's Papers |q The Gathering Storm/Read Brondold's Papers
 step
 goto 48.06,44.49
 |tip Follow path to barn.
-talk Korvynn 
+talk Korvynn
 'Meet Brondold's Contact |q The Gathering Storm/Meet Brondold's Contact
 step
 goto 52.17,42.91
@@ -309,7 +771,7 @@ step
 goto 54.58,43.35
 'Search a Marked Crate |q The Gathering Storm/Search a Marked Crate
 step
-goto 54.38,46.83 
+goto 54.38,46.83
 |tip Jump in water and swim across to Follow the Cryptic Directions.
 'click Brondold's Hidden Belongings
 'Follow the Cryptic Directions |q The Gathering Storm/Follow the Cryptic Directions
@@ -416,7 +878,7 @@ click Unmarked Door
 step
 talk the Sapphire Broker |q Orchestrations/Talk to the Sapphire Broker
 step
-goto 51.46,41.77 
+goto 51.46,41.77
 talk Saphhire Magnate
 'Tell her _"I'm sure it will look good in your collection."_
 'Tell her _"Enjoy the rest of the auction. [Steal the Lute]"_
@@ -665,9 +1127,10 @@ goto 36.95,43.31
 step
 talk Fennorian |q The Gathering Storm/Talk to Fennorian
 step
-goto 38.78,46.63
+goto 34.88,47.11
 talk Lieutenant Korleva
 accept Crisis at Dragon Bridge
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743 -- New players will have already accepted the quest. Setting the level check at 15 ensures new player who passed level 6 can skip this step.
 step
 goto 40.19,44.82
 talk Pilgrim Melda
@@ -783,8 +1246,8 @@ step
 goto 40.37,37.25
 step
 goto 44.70,32.14
-|tip Jump Down Carefully.
-|tip Manually skip to the next step.
+|tip Drop down carefully
+|tip Manually skip to the next step
 step
 goto 44.24,31.01
 step
@@ -851,9 +1314,9 @@ step
 goto 35.56,48.24
 kill Ya'intha
 'Explore Shadowgreen |achieve 2643
-step 
+step
 goto 54.67,44.43
-step 
+step
 goto shadowgreen_upper_base 71.42,44.11
 step
 goto 79.80,38.62
@@ -931,7 +1394,7 @@ step
 goto westernskryim_base 51.22,43.83
 step
 goto 56.58,50.65
-talk Fennorian 
+talk Fennorian
 talk Mjolen |q Dark Clouds Over Solitude/Talk to Old Mjolen
 step
 goto 59.70,50.17
@@ -960,105 +1423,146 @@ step
 talk to Fennorian
 |tip Manually skip to the next step
 step
+-- END: WESTERN SKYRIM GUIDE FOR NEW AND EXISTING PLAYERS
+
+
+-- BEGIN: CRISIS AT DRAGON BRIDGE FOR EXISTING PLAYERS
+-- New players will have already completed quest. Increasing level check at 15 ensures new player who passed level 6 can skip this step.
 goto 39.89,54.96
 |tip Find Captain Hingrid
 talk Captain Hingrid |q Crisis at Dragon Bridge/Talk to Captain Hingrid
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 39.40,58.65
 'Examine Arrow
 'Find the Missing Caravan |q Crisis at Dragon Bridge/.*Find the Missing Caravan.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 39.43,59.34
 'Examine Crate
 'Find the Missing Caravan |q Crisis at Dragon Bridge/.*Find the Missing Caravan.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 37.59,59.64
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 35.96,56.15
 |tip Meet Captain Hingrid at the Overlook
 talk Captain Hingrid |q Crisis at Dragon Bridge/Talk to Captain Hingrid
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 38.22,55.86
 click Letter from Ena
 'Search the Overlook |q Crisis at Dragon Bridge/Search the Overlook
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 35.96,56.15
 talk Captain Hingrid |q Crisis at Dragon Bridge/Talk to Captain Hingrid
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 34.97,55.11
-|tip Jump down Carefully 
+|tip Drop down carefully
+|tip Manually skip to the next step
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 33.83,54.05
 'Find the Waterfall Camp |q Crisis at Dragon Bridge/Find the Waterfall Camp
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 32.24,53.60
 |tip Find Ena White-Eye
 'Free Ena White-Eye |q Crisis at Dragon Bridge/Free Ena White-Eye
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 talk Ena White-Eye |q Crisis at Dragon Bridge/Talk to Ena White-Eye
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 36.59,50.80
 wayshrine Dragon Bridge
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 37.22,50.45
 talk Captain Hingrid
 talk Ena White-Eye |q Crisis at Dragon Bridge/Talk to Ena White-Eye
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 36.58,50.24
 |tip Search Crate
 'Retrieve the Kindlepitch |q Crisis at Dragon Bridge/Retrieve the Kindlepitch
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 36.37,50.28
 click Barrel
 'Retrieve the Fire salts |q Crisis at Dragon Bridge/Retrieve the Fire Salts
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 35.63,50.56
 |tip Leave barn
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 33.97,50.52
 'Seal the Smuggler Bolt Holes |q Crisis at Dragon Bridge/.*Seal the Smuggler Bolt Holes.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 34.35,52.30
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 35.32,53.39
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 36.40,54.71
 'Seal the Smuggler Bolt Holes |q Crisis at Dragon Bridge/.*Seal the Smuggler Bolt Holes.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto 35.77,53.85
 click the Smuggler Caves |q Crisis at Dragon Bridge/Enter the Smuggler Caves
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
 step
 goto Dragonbridge_base 53.64,82.93
 'Rescue Ulang |q Crisis at Dragon Bridge/Rescue Ulang
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 22.07,75.28
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 38.59,37.01
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 48.18,24.36
 'Defuse the Reach Explosives |q Crisis at Dragon Bridge/.*Defuse the Reach Explosives.* |count 1
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 55.80,37.44
 'Defuse the Reach Explosives |q Crisis at Dragon Bridge/.*Defuse the Reach Explosives.* |count 2
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 61.99,26.45
 'Defuse the Reach Explosives |q Crisis at Dragon Bridge/.*Defuse the Reach Explosives.* |count 3
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 82.51,32.04
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 76.66,60.27
 |tip Jump down
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto 74.80,53.60
 click Western Skyrim
 |tip Manually skip to the next step.
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 436
 step
 goto westernskryim_base 36.79,53.58
-talk Captain Hingrid 
+talk Captain Hingrid
 turnin Crisis at Dragon Bridge
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743
+-- END: CRISIS AT DRAGON BRIDGE FOR EXISTING PLAYERS
+
+
+-- BEGIN: WESTERN SKYRIM GUIDE FOR NEW AND EXISTING PLAYERS
 step
 goto 38.84,52.66
 step
@@ -1068,6 +1572,7 @@ goto 33.56,46.58
 step
 goto 32.09,47.31
 wayshrine Deepwood Vale
+|only if ZGV.Utils.GetPlayerPreciseLevel() > 15 and _G.GetCurrentMapZoneIndex() == 743 -- New players will have already discovered this wayshrine. Setting the level check at 15 ensures new player who passed level 6 can skip this step.
 step
 goto 25.86,42.09
 talk Heiruna Doll
@@ -1151,7 +1656,7 @@ step
 goto westernskryim_base 30.38,44.65
 step
 goto 28.91,43.54
-step 
+step
 goto 25.83,45.97
 talk Umgaak
 accept A Clan Divided
@@ -1174,7 +1679,7 @@ step
 goto 14.81,49.25
 step
 goto 14.37,49.79
-click Storeroom 
+click Storeroom
 |tip Manually skip to the next step.
 step
 |tip Talk Mazog in the back of the room.
@@ -1215,7 +1720,7 @@ step
 goto 33.34,77.23
 'Rescue Miners |q A Clan Divided/.*Rescue Miners.* |count 3
 step
-goto 27.91,82.57 
+goto 27.91,82.57
 'Rescue Miners |q A Clan Divided/.*Rescue Miners.* |count 4
 step
 goto 28.72,78.72
@@ -1237,8 +1742,8 @@ step
 goto 31.56,54.94
 |click Vial
 'Gather Bear Bile |q A Clan Divided/.*Gather Bear Bile.*
-step 
-goto 43.01,60.88 
+step
+goto 43.01,60.88
 |tip click Jewelry Box
 'Gather Ashpit Powder |q A Clan Divided/.*Gather Ashpit Powder.*
 step
@@ -1290,7 +1795,7 @@ step
 goto 77.10,48.18
 step
 goto 90.07,12.48
-|tip Follow Path behind Overseer Thulsgreg 
+|tip Follow Path behind Overseer Thulsgreg
 |tip Use Stonemelt Solution
 'Find a Path Out |q A Clan Divided/Find a Path Out
 step
@@ -1377,7 +1882,7 @@ click Chillwind Depths Delve
 |tip Manually skip to the next step.
 step
 goto chillwinddepths_base 73.42,23.49
-talk Rigurt the Brash 
+talk Rigurt the Brash
 |tip Manually skip to the next step.
 step
 goto 63.36,53.42
@@ -1441,7 +1946,7 @@ goto 33.42,37.99
 step
 goto 33.02,29.53
 step
-goto 42.95,20.40 
+goto 42.95,20.40
 kill Zrem-Zram & Mother Krkktkk
 'Explore Chillwind Depths |achieve 2639
 step
@@ -1508,7 +2013,7 @@ goto 31.81,64.38
 |tip Manually skip to the next step.
 step
 goto 33.24,64.23
-talk Narsis Dren 
+talk Narsis Dren
 |tip to Solve the puzzle notice the amount of flowers at each sconce
 |tip Two Flowers
 |tip Four Flowers
@@ -1602,7 +2107,7 @@ goto 35.74,75.70
 step
 goto 32.88,77.34
 'Disrupt the Witches Spell |q The Blood of Old Karth/.*Disrupt the Witches.* |count 3
-step 
+step
 goto 31.14,73.08
 talk Bjora |q The Blood of Old Karth/Talk to Bjora
 step
@@ -1615,8 +2120,8 @@ talk Hafskjar
 turnin The Blood of Old Karth
 step
 goto 39.65,68.98
-|tip Jump Down Carefully
-|tip Manually skip to the next step.
+|tip Drop Down Carefully
+|tip Manually skip to the next step
 step
 goto 43.07,71.37
 talk Lyris Titanborn |q Dark Clouds Over Solitude/Talk to Lyris Titanborn
@@ -1871,7 +2376,7 @@ talk Fennorian |q Dark Clouds Over Solitude/Talk to Fennorian
 step
 goto 55.10,77.46
 step
-goto 51.85,75.63 
+goto 51.85,75.63
 step
 goto 53.54,75.30
 click Skyshard |achieve 2687/4
@@ -1966,7 +2471,7 @@ step
 goto 60.54,43.86
 |tip Killing Sabre cats along the way for Of Ice and Death.
 |tip Some searching maybe required.
-'Gather Raw Meat |q Of Ice and Death/.*Gather Raw Meat.* 
+'Gather Raw Meat |q Of Ice and Death/.*Gather Raw Meat.*
 step
 goto 60.76,46.26
 step
@@ -2046,7 +2551,7 @@ goto 45.04,56.61
 step
 goto 35.92,57.92
 click Skyshard |achieve 2687/15
-step 
+step
 goto 38.45,50.58
 'Search for Nelfthea |q The Fate of the Frozen/.*Search for Nelfthea.* |count 1
 step
@@ -2214,7 +2719,7 @@ goto 67.14,65.15
 click Skyshard |achieve 2687/8
 step
 goto 70.50,61.82
-talk Swordthane Enyra 
+talk Swordthane Enyra
 |tip Go down the stairs.
 |tip Go Downstairs.
 click Morthal Borrow
@@ -2263,10 +2768,10 @@ goto 50.73,59.07
 step
 goto 50.59,57.86
 click Skyshard |achieve 2687/10
-step 
+step
 goto 50.24,64.36
 |tip Use Ancient Relief
-'Make Rubbing at Southern Mound |q The Aspiring Scholar/Make Rubbing at Southern Mound 
+'Make Rubbing at Southern Mound |q The Aspiring Scholar/Make Rubbing at Southern Mound
 step
 goto 43.49,75.89
 'Open your map to Western Skyrim
@@ -2411,7 +2916,7 @@ step
 goto 65.49,52.24
 click Antiquarian Circle
 |tip Manually skip to the next step.
-|tip Go Upstairs 
+|tip Go Upstairs
 talk to Yvara
 turnin The Aspiring Scholar
 step
@@ -2466,8 +2971,8 @@ click Blackreach: Greymoor Caverns
 |tip Manually skip to the next step.
 step
 goto 35.08,79.86
-|tip Jump down Carefully
-|tip Manually skip to the next step.
+|tip Drop down carefully
+|tip Manually skip to the next step
 step
 goto 37.46,72.91
 step
@@ -2522,7 +3027,7 @@ goto Tzingalas_base 92.02,55.35
 click Puzzle Block 1 Time.
 |tip Manually skip to the next step.
 step
-goto 87.11,55.67 
+goto 87.11,55.67
 click Puzzle Block 1 Time.
 |tip Manually skip to the next step.
 step
@@ -2538,7 +3043,7 @@ goto 89.49,53.86
 click Tzinghalis's Laboratory
 |tip Manually skip to the next step.
 step
-goto 83.25,45.38 
+goto 83.25,45.38
 click Netherroot Notes
 |tip Manually skip to the next step.
 step
@@ -2625,7 +3130,7 @@ goto 91.34,46.41
 click Skyshard |achieve 2687/1
 step
 'Open Blackreach: Greymoor Caverns Map
-click Lightless Hollow 
+click Lightless Hollow
 'Travel to Lightless Hollow in Blackreach: Greymoor Caverns
 |tip Manually skip to the next step.
 goto 89.28,38.12
@@ -2665,7 +3170,7 @@ talk Skeg |q One Last Adventure/Talk to Skeg
 step
 talk Pickle |q One Last Adventure/Talk to Pickle
 step
-|tip Follow Pickle 
+|tip Follow Pickle
 'Find Viggol |q One Last Adventure/Find Viggol
 step
 goto 89.59,56.28
@@ -2727,7 +3232,7 @@ click Blue Palace
 |tip Manually skip to the next step.
 step
 click Svana's Chambers
-talk Svana 
+talk Svana
 turnin The Vampire Scholar
 accept The Gray Host
 step
@@ -2935,7 +3440,7 @@ step
 goto 18.36,61.70
 click Blackreach: Dark Moon Groto
 |tip Manually skip to the next step.
-step 
+step
 goto 21.77,64.59
 talk Tranya
 turnin Hounds of Hircine
@@ -3000,7 +3505,7 @@ goto 67.32,54.23
 step
 goto 61.41,54.30
 'Take
-'Gather Power Nodes |q Scraps Matter/.*Gather Power Nodes.* |count 1 
+'Gather Power Nodes |q Scraps Matter/.*Gather Power Nodes.* |count 1
 step
 goto 63.73,45.35
 step
@@ -3015,7 +3520,7 @@ step
 goto 74.23,30.70
 'Take
 'Gather Power Nodes |q Scraps Matter/.*Gather Power Nodes.* |count 2
-step 
+step
 goto 73.66,23.80
 step
 goto 78.38,30.85
@@ -3154,14 +3659,14 @@ goto 33.58,49.69
 step
 goto 56.18,46.59
 step
-goto 61.35,59.01 
+goto 61.35,59.01
 'Find Jarl Hagridden's Remains |q Prisoner of the Past/.*Find Jarl Hagridden's Remains.* |count 2
 step
 goto 70.33,40.25
 click Skyshard |achieve 2687/16
 step
-goto 61.35,59.01 
-step 
+goto 61.35,59.01
+step
 goto 41.99,46.31
 step
 goto 45.81,36.71
@@ -3189,7 +3694,7 @@ goto 34.57,42.63
 step
 goto 38.35,30.99
 step
-goto 31.45,09.04 
+goto 31.45,09.04
 'Find Jarl Hagridden's Remains |q Prisoner of the Past/.*Find Jarl Hagridden's Remains.* |count 3
 step
 goto 48.86,15.81
@@ -3204,8 +3709,8 @@ goto 74.81,09.32
 step
 goto 77.04,15.79
 click Blackreach: Lightless Hollow
-|tip Jump Down Carefully.
-|tip Manually skip to the next step.
+|tip Drop down carefully
+|tip Manually skip to the next step
 step
 goto blackreach_base 82.57,31.04
 talk Alwyn
@@ -3274,7 +3779,7 @@ goto 69.13,21.16
 step
 goto 67.80,19.36
 step
-goto 
+goto
 click Skyshard |achieve 2687/3
 step
 'Open Blackreach: Greymoor Caverns Map
@@ -3449,7 +3954,6 @@ goto blackreach_base 52.19,11.77
 |tip Go Down in the Gallery
 |tip Manually skip to the next step
 step
-step
 goto 52.99,10.72
 step
 goto 53.46,09.16
@@ -3458,7 +3962,7 @@ goto 54.79,08.67
 step
 goto 56.35,09.36
 step
-goto 58.02,12.70 
+goto 58.02,12.70
 'Escape the Stone Husk Gallery
 |tip Defend Fennorian from enemies they attack in waves.
 click Greymoor Keep Upper Levels
@@ -3518,7 +4022,7 @@ step
 |tip Go down the steps.
 goto 36.03,28.91
 click Temple Courtyard
-talk Fennorian 
+talk Fennorian
 talk Lyris Titanborn |q Daughter of the Wolf/Talk to Lyris Titanborn
 step
 goto 37.31,29.15
@@ -3556,7 +4060,8 @@ turnin Daughter of the Wolf
 step
 'Congratulations, you have completed the Greymoor guide!
 ]])
-ZGV:RegisterGuide("LEVELING\\DLC\\Markarth",[[
+
+ZGV:RegisterGuide("LEVELING\\The Reach",[[
 loadingimage loadscreen_thereach_01.dds
 description The Gray Host marches on the Reach in The Elder Scrolls Online: Markarth, the epic conclusion to the Dark Heart of Skyrim storyline. Explore a dangerous new zone, gather a band of unlikely allies, and confront a Vampire Lord and his ancient army.
 step
@@ -3580,14 +4085,14 @@ talk Gwendis
 accept The Ravenwatch Inquiry
 |only if ZGV.Utils.GetFaction("player","notvet")=="EP"
 step
-'Oepn Map Glunumbra
+'Open Map Glenumbra
 click Baelbourn Rock Wayshrine
-'Travel to Baelbourn Rock in Glunumbra
+'Travel to Baelbourn Rock in Glenumbra
 goto glenumbra_base 74.90,45.97
 talk Gwendis
 accept The Ravenwatch Inquiry
 |only if ZGV.Utils.GetFaction("player","notvet")=="DC"
-step 
+step
 click Gwendis's Cart to Bankorai Garrison
 goto bangkorai_base 53.31,54.21
 talk Scholar Laurette Diel |q The Ravenwatch Inquiry/Talk to Scholar Laurette Diel
@@ -3622,7 +4127,7 @@ step
 goto 80.02,75.60
 click Bankorai
 |tip Manually skip to the next step.
-step 
+step
 goto bangkorai_base 45.61,50.33
 talk Shelaria |q The Ravenwatch Inquiry/Talk to Shelaria
 step
@@ -3850,7 +4355,7 @@ goto reach_base 34.00,54.71
 step
 goto 33.06,51.31
 step
-goto 42.87,50.46 
+goto 42.87,50.46
 'Gather Information |q The Despot of Markarth/.*Gather Information.* |count 2
 step
 goto 44.45,49.93
@@ -3880,7 +4385,7 @@ step
 goto markarthcity_base 61.23,27.20
 talk Scout Fulgof
 accept Red Eagle's Song
-step 
+step
 goto 38.84,40.04
 step
 goto 38.37,52.58
@@ -3923,7 +4428,7 @@ goto 59.91,59.80
 'Examine Work for Hire
 accept Help Wanted in Markarth
 step
-talk Consul Cardea 
+talk Consul Cardea
 turnin Help Wanted in Markarth
 step
 goto 60.65,52.11
@@ -4001,7 +4506,7 @@ goto 31.46,59.87
 step
 goto 33.99,73.21
 step
-goto  57.66,70.54 
+goto  57.66,70.54
 'Eavesdrop on Lady Belain |q The Despot of Markarth/Eavesdrop on Lady Belain
 step
 goto 65.84,48.84
@@ -4041,7 +4546,7 @@ goto 19.33,44.08
 step
 goto 46.06,63.91
 step
-goto 
+goto
 'Observe the Confrontation |q By Love Betrayed/Observe the Confrontation
 step
 goto 66.37,68.64
@@ -4091,7 +4596,7 @@ goto 17.60,24.15
 click Servant's Quarters
 |tip Manually skip to the next step.
 step
-goto 32.21,49.08 
+goto 32.21,49.08
 talk Adusa-daro |q By Love Betrayed/Talk to Adusa-daro
 step
 goto halls_of_the_betrayed4_base 53.07,46.32
@@ -4121,7 +4626,7 @@ step
 step
 talk Freyleth |q By Love Betrayed/Talk to Freyleth
 step
-goto 81.66,51.48 
+goto 81.66,51.48
 click Reachwind Depths
 |tip Manually skip to the next step.
 step
@@ -4165,7 +4670,7 @@ step
 goto 48.77,34.31
 step
 goto 42.52,07.76
-step 
+step
 goto 53.76,07.09
 click Briar Rock Ruins
 |tip Manually skip to the next step.
@@ -4209,7 +4714,7 @@ goto briarrockruins_ext_base
 kill Matron Grygarsnit
 'Explore Briar Rock Ruins |achieve 2853
 step
-goto 
+goto
 'Burn the Briarheart Tree |q Betrayal at Briar Rock/Burn the Briarheart Tree
 step
 'Open Map The Reach
@@ -4241,7 +4746,7 @@ step
 goto markunderstonekeep_base 35.58,32.79
 talk Count Verandis Ravenwatch |q The Despot of Markarth/Talk to Count Verandis Ravenwatch
 step
-talk Ard Caddach 
+talk Ard Caddach
 talk Count Count Verandis Ravenwatch
 turnin The Despot of Markarth
 accept Blood of the Reach
@@ -4513,7 +5018,7 @@ step
 talk Arana |q Blood of the Reach/Talk to Arana
 step
 goto 33.77,23.10
-wayshrine Druadach Mountains 
+wayshrine Druadach Mountains
 step
 goto 39.67,22.84
 step
@@ -4529,7 +5034,7 @@ accept The Symbol of Gulibeg
 step
 'Retrive the Symbol of Gulibeg |q The Symbol of Gulibeg/Retrieve the Symbol of Gulibeg
 step
-'Follow Snowy |q Lost in the Reach/Follow Snowy 
+'Follow Snowy |q Lost in the Reach/Follow Snowy
 step
 goto 47.57,21.66
 talk Bolfalgar
@@ -4645,7 +5150,7 @@ step
 |tip Manually skip to the next s tep.
 step
 goto 35.70,38.33
-'Read Falkfyr's Notes, Page 3 |q The Lost Scout's Report/Read Falkfyr's Notes, Page 3 
+'Read Falkfyr's Notes, Page 3 |q The Lost Scout's Report/Read Falkfyr's Notes, Page 3
 step
 goto 33.41,36.09
 step
@@ -4711,7 +5216,7 @@ step
 goto 22.22,57.68
 'Jump up the Rubble.
 |tip Manually skip to the next step.
-step 
+step
 goto 29.67,57.77
 click Containment Chamber
 |tip Manually skip to the next step.
@@ -4818,7 +5323,7 @@ step
 goto 62.90,40.07
 'Read Falkfyr's Notes, Page 7 |q The Lost Scout's Report/Read Falkfyr's Notes, Page 7
 step
-'Search the Scout's Pack 
+'Search the Scout's Pack
 turnin The Lost Scout's Report
 step
 'Open Map The Reach
@@ -5187,7 +5692,7 @@ goto 27.36,33.04
 step
 click Nighthollow Keep
 |tip Manually skip to the next step.
-step 
+step
 goto 42.41,33.22
 step
 goto 45.71,29.10
@@ -5402,7 +5907,6 @@ goto reach_base 69.68,74.93
 step
 goto 74.89,78.79
 step
-step
 goto 77.87,77.22
 step
 goto 79.46,78.92
@@ -5440,7 +5944,7 @@ step
 talk Count Verandis Ravenwatch
 accept The End of Eternity
 step
-'Open Map The Reach 
+'Open Map The Reach
 click Druadach Mountains
 'Travel to Druadach Mountains in The Reach.
 |tip Manually skip to the next step.
@@ -5552,7 +6056,7 @@ click Void Portal on the bridge
 step
 goto 80.20,53.28
 step
-goto 77.38,49.66 
+goto 77.38,49.66
 step
 goto 81.45,51.02
 click Bthar-Zel Repository
@@ -5593,7 +6097,7 @@ click Forbidden Great Lift
 |tip Manually skip to the next step.
 step
 goto nchuandzelC_base 19.51,64.13
-click The Reach 
+click The Reach
 |tip Manually skip to the next step.
 step
 goto reach_base 14.92,44.01
@@ -5690,7 +6194,7 @@ step
 goto UI_MAP_SKR_RBC2_base 77.53,60.24
 'Find Lyris |q Kingdom of Ash/Find Lyris
 step
-goto 56.84,54.55 
+goto 56.84,54.55
 'Search for Count Verandis Ravenwatch |q Kingdom of Ash/Search for Count Verandis Ravenwatch
 step
 goto 57.68,58.32
@@ -5763,5 +6267,5 @@ talk Arana
 talk Ard Caddach
 turnin Second Chances
 step
-'Congratulations, you have completed the Greymoor guide!
+'Congratulations, you have completed The Reach guide!
 ]])

@@ -469,7 +469,7 @@ function CSPS.transferProfile(cpPSub)
 		
 		if myTable == nil then return end
 		
-		if myTable.werte == nil then d(CSPS.msgNoSavedData) return end
+		if myTable.werte == nil then d(GS(CSPS_NoSavedData)) return end
 	elseif cpPSub == 1 then
 		myTable = CSPSSavedVariables[transferLevels[1]][transferLevels[2]]["$AccountWide"]["charData"][transferLevels[3]]["cpProfiles"][transferLevels[4]]
 	elseif cpPSub == 2 then

@@ -1,6 +1,6 @@
 ## Title: |c40FF40Faster|r Travel
 ## Author: SimonIllyan, XanDDemoX, upyachka, Valandil
-## Version 2.5.2
+## Version 2.5.3
 ## APIVersion: 100033 100034
 ## Description: Better travel using wayshrines
 ## SavedVariables: FasterTravel_Data
