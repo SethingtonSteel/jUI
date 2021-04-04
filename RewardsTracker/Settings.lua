@@ -1,13 +1,7 @@
-local settings = ZO_Object:Subclass()
+local settings = ZO_InitializingObject:Subclass()
 rewardsTrackerSettings = settings
 
-function settings:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
-
-function settings:initialize(owner)
+function settings:Initialize(owner)
     self.owner = owner
     self.name = string.format("%sSettings", self.owner.name)
     self.data = LibSimpleSavedVars:NewInstallationWide(string.format("%sData", self.name), 1, {

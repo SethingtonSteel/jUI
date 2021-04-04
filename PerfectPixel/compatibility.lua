@@ -89,6 +89,8 @@ PP.compatibility = function()
 		--==AwesomeGuildStore==--
 		if AwesomeGuildStore then
 			local function func()
+				PP.Anchor(AwesomeGuildStoreFooter, --[[#1]] nil, nil, nil, nil, 42)
+				PP.Anchor(AwesomeGuildStoreActivityStatusLine, --[[#1]] nil, nil, nil, nil, -2)
 				PP.Anchor(AwesomeGuildStoreGuildSelector, --[[#1]] LEFT, ZO_TradingHouseTitle, LEFT, 0, -2)
 				PP.Anchor(AwesomeGuildStoreGuildSelectorComboBoxOpenDropdown, --[[#1]] LEFT, AwesomeGuildStoreGuildSelectorComboBoxSelectedItemText, RIGHT, 3, 5)
 				PP.Font(AwesomeGuildStoreGuildSelectorComboBoxSelectedItemText, --[[Font]] PP.f.u67, 30, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
@@ -100,6 +102,18 @@ PP.compatibility = function()
 				EVENT_MANAGER:UnregisterForEvent(PP.ADDON_NAME .. 'AwesomeGuildStore' .. 'tradingHouseScene', EVENT_OPEN_TRADING_HOUSE, func)
 			end
 			EVENT_MANAGER:RegisterForEvent(PP.ADDON_NAME .. 'AwesomeGuildStore' .. 'tradingHouseScene', EVENT_OPEN_TRADING_HOUSE, func)
+		end
+		--===============================================================================================--
+
+		--==MasterMerchant==--
+		if MasterMerchant then
+			PP.Anchor(ZO_TradingHouseBrowseItemsLeftPane, --[[#1]] nil, nil, nil, nil, nil, --[[#2]] true, nil, nil, nil, nil, -30)
+		end
+		--===============================================================================================--
+
+		--==ArkadiusTradeTools==--
+		if ArkadiusTradeTools then
+			PP.Anchor(ZO_TradingHouseBrowseItemsLeftPane, --[[#1]] nil, nil, nil, nil, nil, --[[#2]] true, nil, nil, nil, nil, -60)
 		end
 		--===============================================================================================--
 

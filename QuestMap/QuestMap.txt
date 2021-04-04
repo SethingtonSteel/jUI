@@ -1,11 +1,11 @@
-## Title: Quest Map v2.90
-## Version: 2.90
-## AddOnVersion: 290
+## Title: Quest Map v2.92
+## Version: 2.92
+## AddOnVersion: 292
 ## Author: CaptainBlagbird, Sharlikran
 ## APIVersion: 100033 100034
 ## Description: Displays quest givers on the world map
 ## SavedVariables: QuestMap_SavedVariables
-## DependsOn: LibMapPins-1.0>=10030 LibGPS>=65 LibQuestData>=208
+## DependsOn: LibMapPins-1.0>=10030 LibGPS>=65 LibQuestData>=213
 ## OptionalDependsOn: LibAddonMenu-2.0>=32 LibMsgWin-1.0>=11 LibDebugLogger>=196 DebugLogViewer
 
 ; Resources

@@ -1122,7 +1122,7 @@ function Teleporter.clickOnTeleportToOwnHouseButton_2(button, message, jumpOutsi
 	end
 	
 	-- port to own house anyway
-	Teleporter.portToOwnHouse(false, message.houseId, jumpOutside)
+	Teleporter.portToOwnHouse(false, message.houseId, jumpOutside, message.parentZoneName)
 end
 
 
@@ -1756,7 +1756,7 @@ function Teleporter.portToGroupLeader()
 end
 
 
-function Teleporter.portToOwnHouse(primary, houseId, jumpOutside)
+function Teleporter.portToOwnHouse(primary, houseId, jumpOutside, parentZoneName)
 	-- houseId is nil when primary == true
 	local zoneId = GetHouseZoneId(houseId)
 	
@@ -1768,10 +1768,19 @@ function Teleporter.portToOwnHouse(primary, houseId, jumpOutside)
 			d("[" .. Teleporter.var.appNameAbbr .. "]: " .. SI.get(SI.TELE_CHAT_PORT_TO_OWN_PRIMARY_HOUSE_FAILED))
 			return
 		end
+		-- get parentZoneName
+		if jumpOutside then
+			parentZoneName = Teleporter.formatName(GetZoneNameById(Teleporter.getParentZoneId(zoneId)), false)
+		end
 	end
 	
 	-- print info to chat
-	d("[" .. Teleporter.var.appNameAbbr .. "]: " .. SI.get(SI.TELE_CHAT_PORT_TO_OWN_HOUSE) .. " " .. Teleporter.formatName(GetZoneNameById(zoneId), false))
+	if jumpOutside then
+		d("[" .. Teleporter.var.appNameAbbr .. "]: " .. SI.get(SI.TELE_CHAT_PORT_TO_OWN_HOUSE) .. " " .. parentZoneName .. " (" .. Teleporter.formatName(GetZoneNameById(zoneId), false) .. ")")
+	else
+		d("[" .. Teleporter.var.appNameAbbr .. "]: " .. SI.get(SI.TELE_CHAT_PORT_TO_OWN_HOUSE) .. " " .. Teleporter.formatName(GetZoneNameById(zoneId), false))
+	end
+	
 	-- start port process
 	RequestJumpToHouse(houseId, jumpOutside)
 	

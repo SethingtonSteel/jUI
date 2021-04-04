@@ -373,6 +373,15 @@ local function SetupOptionsMenu(index) --index == Addon name
 			  submenu = "bl",
          },
 		 {
+              type = "checkbox",
+              name = SI.get(SI.TELE_SETTINGS_HIDE_OWN_HOUSES),
+              tooltip = SI.get(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP) .. " [DEFAULT: " .. tostring(teleporterDefs["hideOwnHouses"]) .. "]",
+              getFunc = function() return mTeleSavedVars.hideOwnHouses end,
+              setFunc = function(value) mTeleSavedVars.hideOwnHouses = value end,
+			  default = teleporterDefs["hideOwnHouses"],
+			  submenu = "bl",
+         },
+		 {
               type = "description",
               text = SI.get(SI.TELE_SETTINGS_PRIORITIZATION_DESCRIPTION),
 			  submenu = "prio",
@@ -898,7 +907,7 @@ local function SetupUI()
 		teleporterWin.guildTexturebutton:SetHandler("OnClicked", function(self, button)
 			Teleporter.requestGuildData()
 			Teleporter.clearInputFields()
-			zo_callLater(function() Teleporter.createTableGuilds() end, 250)
+			zo_callLater(function() Teleporter.createTableGuilds() end, 300)
 		end)
 			  
 		teleporterWin.guildTexturebutton:SetHandler("OnMouseEnter", function(self)
@@ -1715,8 +1724,7 @@ end
 -- Initialize and show dialogs with libDialog
 function Teleporter.showDialog(dialogName, dialogTitle, dialogBody, callbackYes, callbackNo)
 	local libDialog = Teleporter.LibDialog
-	-- load already existing dialogs
-	local existingDialogs = libDialog.dialogs
+	local forceUpdate = true -- update/re-register every dialog to prevent errors or outdated/wrong dialog callbacks
 	local callbackSetup = nil
 	local textParams = nil
 	local additionalOptions = nil
@@ -1732,12 +1740,7 @@ function Teleporter.showDialog(dialogName, dialogTitle, dialogBody, callbackYes,
 		},
 	}
 	--]]
-	
-	-- setup dialog if not already there
-	if existingDialogs == nil or existingDialogs[Teleporter.var.appName] == nil or existingDialogs[Teleporter.var.appName][Teleporter.var.appName .. dialogName] == nil then
-		libDialog:RegisterDialog(Teleporter.var.appName, Teleporter.var.appName .. dialogName, dialogTitle, dialogBody, callbackYes, callbackNo, callbackSetup, true, additionalOptions, textParams)
-	end
-	
+	libDialog:RegisterDialog(Teleporter.var.appName, Teleporter.var.appName .. dialogName, dialogTitle, dialogBody, callbackYes, callbackNo, callbackSetup, forceUpdate, additionalOptions, textParams)
 	-- Optional: Add radio buttons
 	--libDialog:AddRadioButtons(Teleporter.var.appName, Teleporter.var.appName .. dialogName, radioButtonsParams, "radio1", rb1Data, rb1ClickedCallback, "rb2Text", rb2Data, rb2ClickedCallback, rb3Text, rb3Data, rb3ClickedCallback, rb4Text, rb4Data, rb4ClickedCallback, rb5Text, rb5Data, rb5ClickedCallback)
 	
@@ -1874,7 +1877,7 @@ end
 
 function Teleporter.surveyMapUsed(bagId, slotIndex, slotData)
 	if bagId ~= nil and slotData ~= nil then
-		if bagId == BAG_BACKPACK and slotData.specializedItemType == SPECIALIZED_ITEMTYPE_TROPHY_SURVEY_REPORT then
+		if bagId == BAG_BACKPACK and slotData.specializedItemType == SPECIALIZED_ITEMTYPE_TROPHY_SURVEY_REPORT and not IsBankOpen() then
 			-- d("Item Name: " .. Teleporter.formatName(slotData.rawName, false))
 			-- d("Anzahl übrig: " .. slotData.stackCount - 1)
 			if slotData.stackCount > 1 then

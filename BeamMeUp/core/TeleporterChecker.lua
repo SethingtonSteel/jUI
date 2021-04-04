@@ -233,45 +233,48 @@ function Teleporter.createTable(index, inputString, fZoneId, dontDisplay, filter
 		end
 	end
 	
-	-- 4. go over own houses
-	-- player can port outside own houses -> check own houses and add parent zone entries if not already in list
-	WORLD_MAP_HOUSES_DATA:RefreshHouseList()
-    local houses = WORLD_MAP_HOUSES_DATA:GetHouseList()
-    for i = 1, #houses do
-        local house = houses[i]
-		-- check if owned
-		if house.unlocked then
-			local houseZoneId = GetHouseZoneId(house.houseId)
-			local mapIndex, parentZoneId = Teleporter.identifyMapIndex(houseZoneId)
-			-- check if parent zone not already in result list
-			---if not allZoneIds[parentZoneId] then
-				local e = {}
-				-- add infos
-				e.parentZoneId = parentZoneId
-				e.zoneId = e.parentZoneId
-				e.displayName = ""
-				e.houseId = house.houseId
-				e.isOwnHouse = true
-				-- add flag to port outside the house
-				e.forceOutside = true
-				e.zoneNameUnformatted = GetZoneNameById(e.zoneId)
-				e.zoneName = Teleporter.formatName(e.zoneNameUnformatted)
-				e.houseNameUnformatted = GetZoneNameById(houseZoneId)
-				e.houseNameFormatted = Teleporter.formatName(e.houseNameUnformatted)
-				e.collectibleId = GetCollectibleIdForHouse(e.houseId)
-				e.nickName = Teleporter.formatName(GetCollectibleNickname(e.collectibleId))
-				e.houseTooltip = {e.houseNameFormatted, "\"" .. e.nickName .. "\""}
-				
-				e = Teleporter.addInfo_1(e, currentZoneId, playersZoneId, "")
-				if Teleporter.filterAndDecide(index, e, inputString, currentZoneId, fZoneId, filterSourceIndex) then
-					e = Teleporter.addInfo_2(e)
-					-- overwrite
-					e.mapIndex, e.parentZoneId = Teleporter.identifyMapIndex(houseZoneId)
-					-- add manually
-					--allZoneIds[e.zoneId] = allZoneIds[e.zoneId] + 1
-					table.insert(TeleportAllPlayersTable, e)
-				end
-			---end
+	if not mTeleSavedVars.hideOwnHouses then
+		-- 4. go over own houses
+		-- player can port outside own houses -> check own houses and add parent zone entries if not already in list
+		WORLD_MAP_HOUSES_DATA:RefreshHouseList()
+		local houses = WORLD_MAP_HOUSES_DATA:GetHouseList()
+		for i = 1, #houses do
+			local house = houses[i]
+			-- check if owned
+			if house.unlocked then
+				local houseZoneId = GetHouseZoneId(house.houseId)
+				local mapIndex, parentZoneId = Teleporter.identifyMapIndex(houseZoneId)
+				-- check if parent zone not already in result list
+				---if not allZoneIds[parentZoneId] then
+					local e = {}
+					-- add infos
+					e.parentZoneId = parentZoneId
+					e.parentZoneName = Teleporter.formatName(GetZoneNameById(e.parentZoneId))
+					e.zoneId = e.parentZoneId
+					e.displayName = ""
+					e.houseId = house.houseId
+					e.isOwnHouse = true
+					-- add flag to port outside the house
+					e.forceOutside = true
+					e.zoneNameUnformatted = GetZoneNameById(e.zoneId)
+					e.zoneName = Teleporter.formatName(e.zoneNameUnformatted)
+					e.houseNameUnformatted = GetZoneNameById(houseZoneId)
+					e.houseNameFormatted = Teleporter.formatName(e.houseNameUnformatted)
+					e.collectibleId = GetCollectibleIdForHouse(e.houseId)
+					e.nickName = Teleporter.formatName(GetCollectibleNickname(e.collectibleId))
+					e.houseTooltip = {e.houseNameFormatted, "\"" .. e.nickName .. "\""}
+					
+					e = Teleporter.addInfo_1(e, currentZoneId, playersZoneId, "")
+					if Teleporter.filterAndDecide(index, e, inputString, currentZoneId, fZoneId, filterSourceIndex) then
+						e = Teleporter.addInfo_2(e)
+						-- overwrite
+						e.mapIndex, e.parentZoneId = Teleporter.identifyMapIndex(houseZoneId)
+						-- add manually
+						--allZoneIds[e.zoneId] = allZoneIds[e.zoneId] + 1
+						table.insert(TeleportAllPlayersTable, e)
+					end
+				---end
+			end
 		end
 	end
 	
@@ -1778,8 +1781,15 @@ function Teleporter.createTableGuilds()
 				entry.size = guildData.size
 				local prefixMembers = GetString("SI_GUILDMETADATAATTRIBUTE", GUILD_META_DATA_ATTRIBUTE_SIZE) .. ": "
 				local prefixLanguage = GetString("SI_GUILDMETADATAATTRIBUTE", GUILD_META_DATA_ATTRIBUTE_LANGUAGES) .. ": "
-				entry.guildTooltip = {guildData.headerMessage, Teleporter.textures.tooltipSeperator, prefixMembers .. guildData.size .. "/500", prefixLanguage .. GetString("SI_GUILDLANGUAGEATTRIBUTEVALUE", guildData.language)}
-				entry.zoneName = GetString("SI_GUILDLANGUAGEATTRIBUTEVALUE", guildData.language) .. " || " .. guildData.size .. "/500"
+				local guildSizeText = guildData.size .. "/500"
+				entry.prio = 1
+				-- change text color if guild almost full and reduce prio
+				if guildData.size >= 495 then
+					entry.prio = 2
+					guildSizeText = Teleporter.var.color.colRed .. guildSizeText .. "|r"
+				end
+				entry.guildTooltip = {guildData.headerMessage, Teleporter.textures.tooltipSeperator, prefixMembers .. guildSizeText, prefixLanguage .. GetString("SI_GUILDLANGUAGEATTRIBUTEVALUE", guildData.language)}
+				entry.zoneName = GetString("SI_GUILDLANGUAGEATTRIBUTEVALUE", guildData.language) .. " || " .. guildSizeText
 				table.insert(tempList, entry)
 			end
 		else
@@ -1790,6 +1800,9 @@ function Teleporter.createTableGuilds()
 	table.sort(tempList, function(a, b)
 		if a.languageCode ~= b.languageCode then
 			return a.languageCode < b.languageCode
+		end
+		if a.prio ~= b.prio then
+			return a.prio < b.prio
 		end
 		if a.size ~= b.size then
 			return a.size > b.size
@@ -1802,7 +1815,7 @@ function Teleporter.createTableGuilds()
 	
 	if not success then
 		-- try again
-		zo_callLater(function() Teleporter.createTableGuilds() end, 500)
+		zo_callLater(function() Teleporter.createTableGuilds() end, 550)
 	end
 end
 

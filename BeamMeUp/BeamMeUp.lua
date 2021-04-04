@@ -43,9 +43,15 @@ function Teleporter.PortalHandlerKeyPress(index, favorite)
 		return
 	end
 	
-	-- Port to own Primary Residence
+	-- Port into own Primary Residence
 	if index == 13 then
-		Teleporter.portToOwnHouse(true)
+		Teleporter.portToOwnHouse(true, nil, false, nil)
+		return
+	end
+	
+	-- Port outside own Primary Residence
+	if index == 18 then
+		Teleporter.portToOwnHouse(true, nil, true, nil)
 		return
 	end
 	
@@ -567,6 +573,7 @@ local function OnAddOnLoaded(eventCode, addOnName)
 		["surveyMapsNotificationSound"] = true,
 		["wayshrineTravelAutoConfirm"] = false,
 		["currentZoneAlwaysTop"] = false,
+		["hideOwnHouses"] = false,
     }
     Teleporter.DefaultsChar = {
 		["prioritizationSource"] = {TELEPORTER_SOURCE_INDEX_FRIEND, TELEPORTER_SOURCE_INDEX_GUILD1, TELEPORTER_SOURCE_INDEX_GUILD2, TELEPORTER_SOURCE_INDEX_GUILD3, TELEPORTER_SOURCE_INDEX_GUILD4, TELEPORTER_SOURCE_INDEX_GUILD5} -- default: friends - guild1 - guild2 - guild3 - guild4 - guild5

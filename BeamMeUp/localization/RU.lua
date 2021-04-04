@@ -204,7 +204,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "Автоматическ�
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "Отключить диалог подтверждения при быстром перемещении")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "Текущая зона всегда первая")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "Показывать текущую зону всегда в начале списка.")
-
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
 
 
 -----------------------------------------------------------------------------
@@ -218,9 +219,10 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "Обновить")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "Разблокировка дорожных святилищ")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "Перемещение к Лидеру Группы")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "Активные квесты")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Переместиться в основной дом")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Посетить гильдхолл BeamMeUp")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Перемещение в текущее локацие")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
 
 
 

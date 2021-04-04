@@ -1,13 +1,7 @@
-local addon = ZO_Object:Subclass()
+local addon = ZO_InitializingObject:Subclass()
 rewardsTrackerCampaign = addon
 
-function addon:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
-
-function addon:initialize(owner)
+function addon:Initialize(owner)
     self.owner = owner
     self.name = string.format("%sCampaign", self.owner.name)
     self.data = LibSimpleSavedVars:NewInstallationWide(string.format("%sData", self.name), 1, {

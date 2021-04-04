@@ -204,7 +204,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "旅の祠へのファス�
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "旅の祠へファストトラベルする時の確認メッセージを表示しません。")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "現在のゾーンを常に一番上に表示")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "現在のゾーンを常にリストの一番上に表示します。")
-
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
 
 
 -----------------------------------------------------------------------------
@@ -218,9 +219,10 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "更新")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "旅の祠を解除する")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "グループリーダーへのテレポート")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "クエスト関連ゾーン")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "自分の本邸へのテレポート")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "BeamMeUpギルドハウスを訪ねる")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "現在のゾーンにテレポート")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
 
 
 

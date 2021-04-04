@@ -204,6 +204,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "Auto confirm wayshrine tr
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "Disable the confirmation dialog when you teleport to other wayshrines.")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "Show current zone always on top")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "Show current zone always on top of the list.")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
 
 
 -----------------------------------------------------------------------------
@@ -217,9 +219,10 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "Refresh result list")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "Unlock current zone wayshrines")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "Port to group leader")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "Active quests")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Visit your Primary Residence")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Visit BeamMeUp Guild House")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Port to current zone")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
 
 
 

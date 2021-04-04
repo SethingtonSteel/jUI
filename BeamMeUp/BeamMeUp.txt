@@ -3,8 +3,8 @@
 ## Author: DeadSoon, Gamer1986PAN
 ## APIVersion: 100034
 ## SavedVariables: BeamMeUp_SV
-## Version: 2.2.0
-## AddOnVersion: 22000
+## Version: 2.2.2
+## AddOnVersion: 222
 ## IsLibrary: false
 ## DependsOn: LibAddonMenu-2.0 LibDialog LibMapPing LibCustomMenu LibSlashCommander LibZone
 ## OptionalDependsOn: BanditsUserInterface PortToFriendsHouse

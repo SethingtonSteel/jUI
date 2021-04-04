@@ -161,6 +161,10 @@ local function LootAllHook(boxType) -- technically not a hook.
 			lootOutput(itemLink, ITEMTYPE_MASTER_WRIT, quantity)
 			updateSavedVars(vars, "master", quantity)
 			updateSavedVars(vars, "voucher", toVoucherCount(itemLink))
+		elseif specializedType == SPECIALIZED_ITEMTYPE_RACIAL_STYLE_MOTIF_CHAPTER then
+			lootOutput(itemLink, nil, quantity)
+		elseif specializedType == SPECIALIZED_ITEMTYPE_CONTAINER_STYLE_PAGE then
+			lootOutput(itemLink, nil, quantity)
 		else
 			if vars["other"]==nil then vars["other"] = {} end
 			updateSavedVars(vars, "other", quantity)
@@ -209,9 +213,10 @@ local function OnLootUpdated(event)
 	local lootInfo = {GetLootTargetInfo()}
 	local writRewardNames = WritCreater.langWritRewardBoxes ()
 	if not writRewardNames[9] then
-		-- writRewardNames[9] = GetItemLinkName("|H1:item:157534:124:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h")
-		-- writRewardNames[9] = string.gsub(writRewardNames[9], "%(","%%%(")
-		-- writRewardNames[9] = string.gsub(writRewardNames[9], "%)","%%%)")
+		-- |H1:item:171779:124:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h
+		writRewardNames[9] = GetItemLinkName("|H1:item:171779:124:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h")
+		writRewardNames[9] = string.gsub(writRewardNames[9], "%(","%%%(")
+		writRewardNames[9] = string.gsub(writRewardNames[9], "%)","%%%)")
 	end
 	if lootInfo[1] == "" and ((GetGameTimeMilliseconds() - cooldown) < 1000 )then
 		-- zo_callLater(EndLooting, 100)
@@ -242,9 +247,33 @@ local function OnLootUpdated(event)
 			if shouldSaveStats(i,boxRank) and not fatiguedLoot[i] then 
 				LootAllHook(i,boxRank)
 				fatiguedLoot[i] = true
+			else
+				local loot = {}
+				for j = 1, GetNumLootItems() do
+
+					local lootId, name, _, quantity = GetLootItemInfo(j)
+					local itemLink = GetLootItemLink(lootId, 0)
+					local itemId = GetItemIDFromLink(itemLink)
+					--d(itemLink)
+					local quality = GetItemLinkQuality(itemLink)
+					local itemType, specializedType = GetItemLinkItemType(itemLink) 
+					if specializedType == SPECIALIZED_ITEMTYPE_RACIAL_STYLE_MOTIF_CHAPTER then
+						lootOutput(itemLink, nil, quantity)
+					elseif specializedType == SPECIALIZED_ITEMTYPE_CONTAINER_STYLE_PAGE then
+						lootOutput(itemLink, nil, quantity)
+					elseif quality>=ITEM_QUALITY_ARCANE then
+						lootOutput(itemLink, nil, quantity)
+					elseif itemId == 56863 or itemId == 56862 then
+						lootOutput(itemLink, nil, quantity)
+					end
+				end
+				fatiguedLoot[i] = true
 			end
 			if autoLoot then
 				if numLootTransmute==0 or numTransmute + numLootTransmute <=GetMaxPossibleCurrency( 5 , CURRENCY_LOCATION_ACCOUNT) then
+					if numLootTransmute > 0 then
+						d(numLootTransmute.." Transmute Stone recieved (You have "..(numTransmute + numLootTransmute)..")")
+					end
 					LootAll()
 				else
 					-- GetLootItemInfo(number lootIndex)
@@ -274,14 +303,14 @@ local flavours = {
 	[GetItemLinkFlavorText("|H1:item:147603:3:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h")] = true, -- Jewelry shipment reward type 2 (for German only)
 	[GetItemLinkFlavorText("|H1:item:142175:3:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h")] = true, -- Shipment reward
 }
--- local anniversaryBoxie = GetItemLinkFlavorText("|H1:item:157534:124:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h")
+local anniversaryBoxie = GetItemLinkFlavorText("|H1:item:171779:124:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h")
 local plunderSkulls = GetItemLinkFlavorText("|H1:item:153502:123:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h")
 local flavourTexts = {}
 setmetatable(flavourTexts, {__index = function(t, i)
 	if flavours[i] then return true end
-	-- if i == anniversaryBoxie then
-	-- 	return WritCreater:GetSettings().lootJubileeBoxes
-	-- end
+	if i == anniversaryBoxie then
+		return WritCreater:GetSettings().lootJubileeBoxes
+	end
 	if i==plunderSkulls and GetDisplayName()=="@Dolgubon" then
 		return true
 	end

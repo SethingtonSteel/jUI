@@ -1,5 +1,37 @@
 ScrySpy = {}
 
+-------------------------------------------------
+----- early helper                          -----
+-------------------------------------------------
+
+local function is_in(search_value, search_table)
+    for k, v in pairs(search_table) do
+        if search_value == v then return true end
+        if type(search_value) == "string" then
+            if string.find(string.lower(v), string.lower(search_value)) then return true end
+        end
+    end
+    return false
+end
+
+-------------------------------------------------
+----- lang setup                            -----
+-------------------------------------------------
+
+ScrySpy.client_lang = GetCVar("language.2")
+ScrySpy.effective_lang = nil
+ScrySpy.supported_lang = { "de", "en", "es", "fr", "kb", "kr", "pl", "ru", }
+if is_in(ScrySpy.client_lang, ScrySpy.supported_lang) then
+  ScrySpy.effective_lang = ScrySpy.client_lang
+else
+  ScrySpy.effective_lang = "en"
+end
+ScrySpy.supported_lang = ScrySpy.client_lang == ScrySpy.effective_lang
+
+-------------------------------------------------
+----- mod                                   -----
+-------------------------------------------------
+
 --[[
 Some settings moved to Init.lua to make them global to other files
 ]]--
@@ -13,12 +45,11 @@ scryspy_defaults = {
 ScrySpy_SavedVars.show_pins
 ]]--
 ScrySpy.addon_name = "ScrySpy"
-ScrySpy.addon_version = "1.28"
+ScrySpy.addon_version = "1.31"
 ScrySpy.addon_website = "https://www.esoui.com/downloads/info2647-ScrySpy.html"
 ScrySpy.custom_compass_pin = "compass_digsite" -- custom compas pin pin type
 ScrySpy.scryspy_map_pin = "scryspy_map_pin"
 ScrySpy.dig_site_pin = "dig_site_pin"
-ScrySpy.client_lang = GetCVar("language.2")
 ScrySpy.should_update_digsites = true
 
 ScrySpy.pin_textures = {
@@ -31,6 +62,7 @@ ScrySpy.pin_textures = {
     [7] = "esoui/art/antiquities/keyboard/trackedantiquityicon.dds",
     [8] = "esoui/art/inventory/inventory_icon_visible.dds",
     [9] = "esoui/art/inventory/inventory_quest_tabicon_active.dds",
+    [10] = "ScrySpy/img/cute_spade.dds",
 }
 
 function ScrySpy.unpack_color_table(the_table)
@@ -72,9 +104,9 @@ ScrySpy.scryspy_defaults = {
 		[ScrySpy.dig_site_pin] = true, -- toggle show 3d pin in overland
 	},
     ["digsite_spike_color"] = {
-        [1] = 1,
-        [2] = 1,
-        [3] = 1,
+        [1] = 0.0862745121,
+        [2] = 0.7215686440,
+        [3] = 0.9490196109,
         [4] = 1,
     },
 }

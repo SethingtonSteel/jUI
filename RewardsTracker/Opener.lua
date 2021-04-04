@@ -1,11 +1,5 @@
-local addon = ZO_Object:Subclass()
+local addon = ZO_InitializingObject:Subclass()
 rewardsTrackerOpener = addon
-
-function addon:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
 
 local geodQuantity = {
     -- strict
@@ -21,7 +15,7 @@ local geodQuantity = {
     [134623] = 10,
 }
 
-function addon:initialize(owner)
+function addon:Initialize(owner)
     self.owner = owner
     self.name = string.format("%sOpener", self.owner.name)
 
@@ -29,27 +23,33 @@ function addon:initialize(owner)
         return
     end
 
-    self.geods = {}
+    self.geodes = {}
+    self.slots = {}
     self.cooldown = 300
 
     SLASH_COMMANDS["/open-geodes"] = function(cmd)
         if cmd == "" then
-            self:open()
+            self:openGeodes()
+        end
+    end
+    SLASH_COMMANDS["/open-anniversary-boxes"] = function(cmd)
+        if cmd == "" then
+            self:openAnniversaryBoxes()
         end
     end
 end
 
-function addon:open()
-    self.geods = {}
+function addon:openGeodes()
+    self.geodes = {}
     for itemId, quantity in pairs(geodQuantity) do
-        table.insert(self.geods, {
+        table.insert(self.geodes, {
             id = itemId,
             quantity = quantity,
             slots = {}
         })
     end
 
-    table.sort(self.geods, function(a, b)
+    table.sort(self.geodes, function(a, b)
         return a.quantity < b.quantity
     end)
 
@@ -59,7 +59,7 @@ function addon:open()
         itemData.itemLink = GetItemLink(itemData.bagId, itemData.slotIndex)
 
         if geodQuantity[itemData.itemId] ~= nil then
-            for _, geod in ipairs(self.geods) do
+            for _, geod in ipairs(self.geodes) do
                 if geod.id == itemData.itemId then
                     table.insert(geod.slots, itemData)
                 end
@@ -73,7 +73,7 @@ function addon:open()
 end
 
 function addon:handleGeods()
-    for _, geod in ipairs(self.geods) do
+    for _, geod in ipairs(self.geodes) do
         for _, slot in ipairs(geod.slots) do
             local remain, duration = GetItemCooldownInfo(slot.bagId, slot.slotIndex)
 
@@ -85,7 +85,7 @@ function addon:handleGeods()
         end
     end
 
-    self.geods = {}
+    self.geodes = {}
 end
 
 function addon:openGeode(geod, slot)
@@ -120,7 +120,7 @@ function addon:lootGeode(geod, slot)
         end, self.cooldown)
         CHAT_ROUTER:AddSystemMessage("too much")
 
-        self.geods = {}
+        self.geodes = {}
     end
 end
 
@@ -166,4 +166,57 @@ function addon:lootHandler(name, actionName, isOwned)
     end
 
     return false
+end
+
+function addon:openAnniversaryBoxes()
+    self.slots = {}
+
+    -- ZO_SharedInventoryManager:CreateOrUpdateSlotData
+    SHARED_INVENTORY:GenerateFullSlotData(function(itemData)
+        itemData.itemId = GetItemId(itemData.bagId, itemData.slotIndex)
+        itemData.itemLink = GetItemLink(itemData.bagId, itemData.slotIndex)
+
+        if itemData.itemId == 171779 then
+            table.insert(self.slots, itemData)
+        end
+
+        return false
+    end, BAG_BACKPACK)
+
+    self:handleSlots()
+end
+
+function addon:handleSlots()
+    for _, slot in ipairs(self.slots) do
+        local remain, duration = GetItemCooldownInfo(slot.bagId, slot.slotIndex)
+
+        zo_callLater(function()
+            self:openSlot(slot)
+        end, remain)
+
+        return
+    end
+
+    self.slots = {}
+end
+
+function addon:openSlot(slot)
+    if IsProtectedFunction("UseItem") then
+        CallSecureProtected("UseItem", slot.bagId, slot.slotIndex)
+    else
+        UseItem(slot.bagId, slot.slotIndex)
+    end
+
+    zo_callLater(function()
+        self:lootSlot(slot)
+    end, self.cooldown)
+end
+
+function addon:lootSlot(slot)
+    zo_callLater(function()
+        LootAll(false)
+        table.remove(self.slots, 1)
+
+        self:handleSlots()
+    end, self.cooldown)
 end

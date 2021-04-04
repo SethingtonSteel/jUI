@@ -104,8 +104,56 @@ function PortToFriendData.CreateEuDataList()
 	}
 	list[#list + 1] = {
 		name = "@seecodenotgames",
-		houseId = 25,
-		description = "Mad Scientists House\r\n\r\nWorkshop in the garage with an experimental De-lore-ean",
+		houseId = 61,
+		description = "Hircine's Hunt Club\r\n\r\nA relaxing villa for all werewolves to come and feast in the ever flowing hunting grounds",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 82,
+		description = "Lost Dwarven Kingdom\r\n\r\nThe palace of a lost Dwemer king has been found in a mage's pocket realm",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 49,
+		description = "Witch Tower Inn\r\n\r\nAn abandoned witch tower, converted into a little inn",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 40,
+		description = "Topal Fishing Resort\r\n\r\nA resort in the middle of a fishing lake on a private island",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 59,
+		description = "Castleton Manor\r\n\r\nThe house of Lord Castleton and his daughter Sonja",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 41,
+		description = "Cave of BBQ N Ribs\r\n\r\nA secret dome, built inside a dank and secluded cavern, hosts the best BBQ and ribs restaurant",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 11,
+		description = "Who Lived in a Shoe\r\n\r\nThere was an old reach witch who lived in a shoe",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 70,
+		description = "Dwemer Party Tower\r\n\r\nA dwarven flying tower redesigned for parties",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 23,
+		description = "A Taste of Alinor\r\n\r\nA small piece of Alinor situated beside a Rawl’kha creek",
 		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
 	}
 	list[#list + 1] = {

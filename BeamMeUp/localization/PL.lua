@@ -204,7 +204,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "Automatyczne potwierdzeni
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "Wyłącz potwierdzanie podróży do kapliczki oknem dialogowym.")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "Pokaż aktualną strefę zawsze na górze")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "Pokazuj aktualną strefę zawsze na górze listy.")
-
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
 
 
 -----------------------------------------------------------------------------
@@ -218,9 +219,10 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "Odśwież listę wyników")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "Odblokuj kapliczki w obecnej strefie")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "Podróżuj do lidera grupy")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "Aktywne zadania")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Odwiedź swoją Gówną Resydencję")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Odwiedź siedzibę BeamMeUp")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Podróżuj do obecnej strefy")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
 
 
 

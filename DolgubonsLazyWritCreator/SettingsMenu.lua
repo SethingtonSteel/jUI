@@ -1030,7 +1030,7 @@ function WritCreater.Options() --Sentimental
 				
 			})
 	end
-	if GetTimeStamp() < 1586872800 then
+	if GetTimeStamp() < 1618322400 then
 		local jubileeOption = {
 			type = "checkbox",
 			name = WritCreater.optionStrings["jubilee"]  ,
@@ -1041,7 +1041,7 @@ function WritCreater.Options() --Sentimental
 			end,
 		}
 		table.insert(options, 4, jubileeOption)
-		table.insert(timesaverOptions, 8, jubileeOption)
+		-- table.insert(timesaverOptions, 8, jubileeOption)
 	end
 
 	return options

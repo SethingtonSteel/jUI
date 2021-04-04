@@ -204,7 +204,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "Auto-confirmation du voya
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "Désactive le dialogue de confirmation quand vous vous téléportez vers d'autres oratoires.")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "Afficher d'abord la zone courante")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "Toujours afficher la zone courante en début de liste.")
-
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
 
 
 -----------------------------------------------------------------------------
@@ -218,9 +219,10 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "Actualiser")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "Déblocage des oratoires")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "Voyage vers le chef de groupe")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "Quêtes actives")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Visiter votre résidence principale")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Visiter la maison de guilde BeamMeUp")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Voyage dans la zone actuelle")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
 
 
 

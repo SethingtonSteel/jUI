@@ -1,31 +1,30 @@
 PP.allianceWarSceneGroup = function()
+	local scenes = {
+		{ scene = CAMPAIGN_OVERVIEW_SCENE,	gVar = CAMPAIGN_OVERVIEW,	},
+		{ scene = CAMPAIGN_BROWSER_SCENE,	gVar = CAMPAIGN_BROWSER,	},
+	}
+	local fragments	= { FRAME_PLAYER_FRAGMENT, RIGHT_BG_FRAGMENT, TREE_UNDERLAY_FRAGMENT, TITLE_FRAGMENT, ALLIANCE_WAR_TITLE_FRAGMENT, }
+
+	for i=1, #scenes do
+		local scene			= scenes[i].scene
+		local gVar			= scenes[i].gVar
+		
+		for i=1, #fragments do
+			scene:RemoveFragment(fragments[i])
+		end
+
+		local tlc	= gVar.control
+		local list	= gVar.list
+
+		PP:CreateBackground(tlc, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
+		PP.Anchor(tlc, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
+		-- ZO_ScrollList_Commit(list)
+	end
 
 --ZO_CampaignOverview------------------------------------------------------------------------------------------------------------------------------
-	CAMPAIGN_OVERVIEW_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	CAMPAIGN_OVERVIEW_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	CAMPAIGN_OVERVIEW_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	CAMPAIGN_OVERVIEW_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	CAMPAIGN_OVERVIEW_SCENE:RemoveFragment(ALLIANCE_WAR_TITLE_FRAGMENT)
-	-- CAMPAIGN_OVERVIEW_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
-
-	-- PP.SetBackdrop(1, ZO_CampaignOverview,		CAMPAIGN_OVERVIEW_SCENE, -10, -10, 0, 10)
-	PP:CreateBackground(ZO_CampaignOverview, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	PP.Anchor(ZO_CampaignOverview, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120,	--[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 	PP.Anchor(ZO_CampaignOverviewCategories, --[[#1]] TOPLEFT, ZO_CampaignOverview, TOPLEFT, 0, 68)
 	PP.Anchor(ZO_CampaignSelector, --[[#1]] BOTTOMRIGHT, ZO_CampaignOverviewTopDivider, TOPRIGHT, -165, 25)
 
 --ZO_CampaignBrowser
-	CAMPAIGN_BROWSER_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	CAMPAIGN_BROWSER_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	CAMPAIGN_BROWSER_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	CAMPAIGN_BROWSER_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	CAMPAIGN_BROWSER_SCENE:RemoveFragment(ALLIANCE_WAR_TITLE_FRAGMENT)
-	-- CAMPAIGN_BROWSER_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
-
-	-- PP.SetBackdrop(1, ZO_CampaignBrowser,		CAMPAIGN_BROWSER_SCENE, -10, -10, 0, 10)
-	PP:CreateBackground(ZO_CampaignBrowser, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	PP.Anchor(ZO_CampaignBrowser, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, 	--[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 ---------------------------------------------------------------------------------------------------
 end

@@ -103,6 +103,52 @@ function PP:PostHookSetupCallback(dataType, postHookFunction)
 		postHookFunction(control, data, ...)
 	end
 end
+
+function PP:BlockFunction(objectTable, existingFnName)
+	local existingFn	= objectTable[existingFnName]
+	local marker		= 'locked_' .. existingFnName
+	objectTable[marker]	= true
+
+	local newFn = function(...)
+		if not objectTable[marker] then
+			objectTable[marker] = true
+			return existingFn(...)
+		end
+	end
+	objectTable[existingFnName] = newFn
+end
+
+function PP:PostHooksSetupCallback(list, mode, dataTypeId, onCreateFn, onUpdateFn)
+	local dataType				= ZO_ScrollList_GetDataTypeTable(list, dataTypeId)
+	local existingSetupCallback	= dataType.setupCallback
+	local postHooks				= dataType.postHooksSetupCallback
+
+	if not postHooks then
+		dataType.postHooksSetupCallback = {}
+	end
+
+	dataType.postHooksSetupCallback[mode] = { OnCreate = onCreateFn, OnUpdate = onUpdateFn, }
+
+	if not postHooks then
+		postHooks = dataType.postHooksSetupCallback
+
+		dataType.setupCallback = function(control, data, ...)
+			existingSetupCallback(control, data, ...)
+
+			local hook = postHooks[list.mode]
+			if control.isUpdate then
+				hook.OnUpdate(control, data, ...)
+			else
+				hook.OnCreate(control, data, ...)
+				control.isUpdate = true
+			end
+		end
+	end
+end
+
+-- OnСreation
+-- OnUpdatingControl
+-- updating list controls
 ---------------------------------------------------------------------------------------------------
 
 --(3)--TOPLEFT		(1)---TOP		(9)---TOPRIGHT

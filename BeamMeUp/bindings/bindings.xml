@@ -42,6 +42,10 @@
 			<Action name="BMU_PRIMARY_RESIDENCE">
 				<Down>Teleporter.PortalHandlerKeyPress(13)</Down>
 			</Action>
+
+			<Action name="BMU_PRIMARY_RESIDENCE_OUTSIDE">
+				<Down>Teleporter.PortalHandlerKeyPress(18)</Down>
+			</Action>
 			
 			<Action name="BMU_GUILD_HOUSE">
 				<Down>Teleporter.PortalHandlerKeyPress(14)</Down>

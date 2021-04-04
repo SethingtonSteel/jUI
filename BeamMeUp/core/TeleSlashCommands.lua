@@ -15,8 +15,10 @@ function Teleporter.activateSlashCommands()
 	LSC:Register("/bmu/misc/current_zone_id", function(option) Teleporter.sc_getCurrentZoneId() end, "Print current zone id")
 	-- Port to goup leader
 	LSC:Register("/bmutp/leader", function(option) Teleporter.portToGroupLeader() end, "Port to group leader")
-	-- Port to own primary residence
-	LSC:Register("/bmutp/house", function(option) Teleporter.portToOwnHouse(true) end, "Port to primary residence")
+	-- Port into own primary residence
+	LSC:Register("/bmutp/house", function(option) Teleporter.portToOwnHouse(true, nil, false, nil) end, "Port into primary residence")
+	-- Port outside own primary residence
+	LSC:Register("/bmutp/house_out", function(option) Teleporter.portToOwnHouse(true, nil, true, nil) end, "Port outside primary residence")
 	-- Advertise addon
 	LSC:Register("/bmu/advertise", function(option) StartChatInput("Fast Travel addon BeamMeUp. Check it out: http://bit.ly/bmu4eso") end, "Advertise BeamMeUp")
 	

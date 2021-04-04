@@ -36,12 +36,12 @@ Teleporter.var = {
 	["NA Megaserver"]	= {591705, 666643, 708141, 720529},
   },
   partnerGuilds = {
- 	["EU Megaserver"] = {635942, 570448, 7871, 631764, 661070, 389326, 634734, 677494, 418220},
-	["NA Megaserver"]	= {698893, 601183, 738065, 738317, 630823, 677323},
+ 	["EU Megaserver"] = {635942, 570448, 7871, 631764, 661070, 389326, 634734, 677494, 418220, 649984},
+	["NA Megaserver"]	= {698893, 601183, 738065, 738317, 630823, 677323, 704951},
   },
   guildHouse			= {
 	-- displayName and houseId
-	["EU Megaserver"]	= {"@Pandora959", 62},
+	["EU Megaserver"]	= {"@DeadSoon", 81},
 	["NA Megaserver"]	= {"@ZoLatKam", 62},
   },
   playerName = ""

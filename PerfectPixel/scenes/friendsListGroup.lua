@@ -1,31 +1,28 @@
 PP.friendsListGroup = function()
+	local scenes = {
+		{ scene = FRIENDS_LIST_SCENE,	gVar = FRIENDS_LIST,	},
+		{ scene = IGNORE_LIST_SCENE,	gVar = IGNORE_LIST,		},
+	}
+	local fragments	= { FRAME_PLAYER_FRAGMENT, RIGHT_BG_FRAGMENT, TITLE_FRAGMENT, CONTACTS_TITLE_FRAGMENT, }
 
---friendsList--ZO_KeyboardFriendsList--------------------------------------------------------------------
-	-- local friendsListScene = SCENE_MANAGER:GetScene('friendsList')
-	FRIENDS_LIST_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	FRIENDS_LIST_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_SOCIAL)
-	FRIENDS_LIST_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	FRIENDS_LIST_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	FRIENDS_LIST_SCENE:RemoveFragment(CONTACTS_TITLE_FRAGMENT)
+	for i=1, #scenes do
+		local scene			= scenes[i].scene
+		local gVar			= scenes[i].gVar
+		
+		for i=1, #fragments do
+			scene:RemoveFragment(fragments[i])
+		end
 
-	PP:CreateBackground(ZO_KeyboardFriendsList, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
+		local tlc	= gVar.control
+		local list	= gVar.list
 
-	ZO_ScrollList_Commit(ZO_KeyboardFriendsListList)
-	PP.Anchor(ZO_KeyboardFriendsList, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
+		PP:CreateBackground(tlc, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
+		PP.Anchor(tlc, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 
---ignoreList--ZO_KeyboardIgnoreList--------------------------------------------------------------------
-	-- local ignoreListScene = SCENE_MANAGER:GetScene('ignoreList')
-	IGNORE_LIST_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	IGNORE_LIST_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_SOCIAL)
-	IGNORE_LIST_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	IGNORE_LIST_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	IGNORE_LIST_SCENE:RemoveFragment(CONTACTS_TITLE_FRAGMENT)
-
-	PP:CreateBackground(ZO_KeyboardIgnoreList, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	ZO_ScrollList_Commit(ZO_KeyboardIgnoreListList)
-	PP.Anchor(ZO_KeyboardIgnoreList, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
-
+		PP.Anchor(list, --[[#1]] nil, nil, nil, 0, 3, --[[#2]] true, nil, nil, nil, 0, 0)
+		PP.ScrollBar(list,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
+		ZO_ScrollList_Commit(list)
+	end
 end
 
 

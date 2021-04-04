@@ -20,24 +20,40 @@ PP.journalSceneGroup = function()
 		},
 	})
 --===============================================================================================--
+	local scenes = {
+		{ scene = QUEST_JOURNAL_SCENE,							gVar = QUEST_JOURNAL_KEYBOARD,		},
+		{ scene = ANTIQUITY_JOURNAL_KEYBOARD_SCENE,				gVar = ANTIQUITY_JOURNAL_KEYBOARD,	},
+		{ scene = SCENE_MANAGER:GetScene('cadwellsAlmanac'),	gVar = CADWELLS_ALMANAC,			},
+		{ scene = LORE_LIBRARY_SCENE,							gVar = LORE_LIBRARY,				},
+		{ scene = SCENE_MANAGER:GetScene('achievements'),		gVar = ACHIEVEMENTS,				},
+		{ scene = LEADERBOARDS_SCENE,							gVar = LEADERBOARDS,				},
+	}
+	local fragments	= { FRAME_PLAYER_FRAGMENT, RIGHT_BG_FRAGMENT, TREE_UNDERLAY_FRAGMENT, TITLE_FRAGMENT, JOURNAL_TITLE_FRAGMENT, }
+
+	for i=1, #scenes do
+		local scene			= scenes[i].scene
+		local gVar			= scenes[i].gVar
+		
+		for i=1, #fragments do
+			scene:RemoveFragment(fragments[i])
+		end
+
+		local tlc	= gVar.control
+		-- local list	= gVar.list
+
+		PP:CreateBackground(tlc, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
+		PP.Anchor(tlc, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
+
+		-- PP.Anchor(list, --[[#1]] nil, nil, nil, 0, 3, --[[#2]] true, nil, nil, nil, 0, 0)
+		-- PP.ScrollBar(list,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
+		-- ZO_ScrollList_Commit(list)
+	end
+
 --questJournal--ZO_QuestJournal--------------------------------------------------------------------
-	-- local questJournalScene = SCENE_MANAGER:GetScene('questJournal')
-	QUEST_JOURNAL_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	QUEST_JOURNAL_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_JOURNAL)
-	QUEST_JOURNAL_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	QUEST_JOURNAL_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	QUEST_JOURNAL_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	QUEST_JOURNAL_SCENE:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-
-	PP:CreateBackground(ZO_QuestJournal, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
 	PP.ScrollBar(ZO_QuestJournalNavigationContainer, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
-
-	PP.Anchor(ZO_QuestJournal, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
 	PP.Anchor(ZO_QuestJournalQuestCount, --[[#1]] TOPLEFT, nil, TOPLEFT, 0, -6)
 	PP.Anchor(ZO_QuestJournalNavigationContainerScroll, --[[#1]] TOPLEFT, nil, TOPLEFT, 5, 0, --[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, 0, 0)
 	PP.Font(ZO_QuestJournalQuestCount, --[[Font]] PP.f.Expressway, 24, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-
 	ZO_Scroll_SetMaxFadeDistance(ZO_QuestJournalNavigationContainer, 10)
 
 	if SV.largeQuestList then
@@ -117,75 +133,9 @@ PP.journalSceneGroup = function()
 		QUEST_JOURNAL_KEYBOARD.listDirty = true
 	end
 
-
 --Antiquities--ZO_Cadwell--------------------------------------------------------------------
-	local antiquitiesQuestScene = ANTIQUITY_JOURNAL_KEYBOARD_SCENE
-
-	antiquitiesQuestScene:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	antiquitiesQuestScene:RemoveFragment(FRAME_EMOTE_FRAGMENT_JOURNAL)
-	antiquitiesQuestScene:RemoveFragment(RIGHT_BG_FRAGMENT)
-	antiquitiesQuestScene:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	antiquitiesQuestScene:RemoveFragment(TITLE_FRAGMENT)
-	antiquitiesQuestScene:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-
-	PP:CreateBackground(ZO_AntiquityJournal_Keyboard_TopLevel, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	PP.Anchor(ZO_AntiquityJournal_Keyboard_TopLevel, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
-
 --cadwellsAlmanac--ZO_Cadwell--------------------------------------------------------------------
-	local cadwellsAlmanacScene = SCENE_MANAGER:GetScene('cadwellsAlmanac')
-	
-	cadwellsAlmanacScene:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	cadwellsAlmanacScene:RemoveFragment(FRAME_EMOTE_FRAGMENT_JOURNAL)
-	cadwellsAlmanacScene:RemoveFragment(RIGHT_BG_FRAGMENT)
-	cadwellsAlmanacScene:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	cadwellsAlmanacScene:RemoveFragment(TITLE_FRAGMENT)
-	cadwellsAlmanacScene:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-
-	PP:CreateBackground(ZO_Cadwell, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	PP.Anchor(ZO_Cadwell, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -70)
-
-
 --loreLibrary--ZO_LoreLibrary----------------------------------------------------------------------
-	-- local loreLibraryScene = SCENE_MANAGER:GetScene('loreLibrary')
-
-	LORE_LIBRARY_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	LORE_LIBRARY_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_JOURNAL)
-	LORE_LIBRARY_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	LORE_LIBRARY_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	LORE_LIBRARY_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	LORE_LIBRARY_SCENE:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-
-	PP:CreateBackground(ZO_LoreLibrary, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	PP.Anchor(ZO_LoreLibrary, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT,	0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
-
 --achievements--ZO_Achievements--------------------------------------------------------------------
-	local achievementsScene = SCENE_MANAGER:GetScene('achievements')
-
-	achievementsScene:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	achievementsScene:RemoveFragment(FRAME_EMOTE_FRAGMENT_JOURNAL)
-	achievementsScene:RemoveFragment(RIGHT_BG_FRAGMENT)
-	achievementsScene:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	achievementsScene:RemoveFragment(TITLE_FRAGMENT)
-	achievementsScene:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-
-	PP:CreateBackground(ZO_Achievements, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	PP.Anchor(ZO_Achievements, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT,	0, 120,	--[[#2]] true, BOTTOMRIGHT,	GuiRoot, BOTTOMRIGHT,	0, -70)
-
 --leaderboards--ZO_Leaderboards--------------------------------------------------------------------
-	-- local leaderboardsScene = SCENE_MANAGER:GetScene('leaderboards')
-
-	LEADERBOARDS_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	LEADERBOARDS_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_JOURNAL)
-	LEADERBOARDS_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	LEADERBOARDS_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
-	LEADERBOARDS_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	LEADERBOARDS_SCENE:RemoveFragment(JOURNAL_TITLE_FRAGMENT)
-
-	PP:CreateBackground(ZO_Leaderboards, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10)
-
-	PP.Anchor(ZO_Leaderboards, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT,	0, 120,	--[[#2]] true, BOTTOMRIGHT,	GuiRoot, BOTTOMRIGHT,	0, -70)
 end

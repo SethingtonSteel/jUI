@@ -1,5 +1,5 @@
 ## APIVersion: 100034
-## Version: 0.11.08
+## Version: 0.11.09
 ## Title: PerfectPixel
 ## Author: @KL1SK
 ## Description: PerfectPixle changes a lot UI elements |cf44336Attention!!!|r For correct display, the screen resolution must be at least 1920x1080. UI scaling should be disabled.
@@ -21,7 +21,6 @@ tooltips.lua
 reticle.lua
 tabs.lua
 dialogsMenu.lua
-chatWindow.lua
 
 scenes\inventoryScene.lua
 
@@ -56,3 +55,4 @@ compatibility.lua
 modules\compass.lua
 modules\scrolling.lua
 modules\playerProgressBar.lua
+modules\chatWindow.lua

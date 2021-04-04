@@ -22,108 +22,122 @@ PP.tradingHouseScene = function()
 		local list = TRADING_HOUSE.searchResultsList
 		list.uniformControlHeight = rowHeight
 		ZO_Scroll_SetMaxFadeDistance(list, PP.SV.list_skin.list_fade_distance)
-		for i=1, 3 do
-			if ZO_ScrollList_GetDataTypeTable(list, i) then
-				local dataType = ZO_ScrollList_GetDataTypeTable(list, i)
-				local orig_SetupCallback = dataType.setupCallback
-				dataType.height = rowHeight
-				dataType.setupCallback = function(rowControl, result)
-					orig_SetupCallback(rowControl, result)
-					rowControl:SetHeight(controlHeight)
+		
+		-- for i=1, 3 do
+			-- if ZO_ScrollList_GetDataTypeTable(list, i) then
+		local dataType = ZO_ScrollList_GetDataTypeTable(list, 1)
+		dataType.height = rowHeight
 
-					local button			= rowControl:GetNamedChild("Button")
-					local stack				= rowControl:GetNamedChild("ButtonStackCount")
-					local name				= rowControl:GetNamedChild("Name")
-					local sellPrice			= rowControl:GetNamedChild("SellPrice")
-					local pricePerUnit		= rowControl:GetNamedChild("SellPricePerUnit")
-					local timeRemaining		= rowControl:GetNamedChild("TimeRemaining")
-					local trait				= rowControl:GetNamedChild("TraitInfo")
-					local bg				= rowControl:GetNamedChild("Bg")
-					local hl				= rowControl:GetNamedChild("Highlight")
+		local function onUpdateFn(rowControl,  result)
+			local pricePerUnit	= rowControl:GetNamedChild("SellPricePerUnit")
+			local sellPrice		= rowControl:GetNamedChild("SellPrice")
+			local sellerName	= rowControl:GetNamedChild("SellerName")
 
-					--"Button"-------------
-					if button then
-						button:SetDimensions(36, 36)
-						PP.Anchor(button, --[[#1]] LEFT, nil, LEFT, 5, 0)
-					end
-					--"ButtonStackCount"-------------
-					if stack then
-						PP.Font(stack, --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-						PP.Anchor(stack, --[[#1]] BOTTOMRIGHT, nil, BOTTOMRIGHT, 8, 2)
-					end
-					--"Name"-------------
-					if name then
-						PP.Font(name, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-						PP.Anchor(name, --[[#1]] TOPLEFT, nil, TOPLEFT, 60, 2)
-						name:SetWidth(250)
-						name:SetLineSpacing(0)
-						name:SetVerticalAlignment(0)
-						name:SetMaxLineCount(1)
-						name:SetWrapMode(1)
-					end
-					-- "SellPrice"--------------------
-					if sellPrice then
-						PP.Font(sellPrice, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-						if result["stackCount"] == 1 then
-							PP.Anchor(sellPrice, --[[#1]] RIGHT, rowControl, RIGHT, -5, 0)
-							pricePerUnit:SetHidden(true)
-						else
-							PP.Anchor(sellPrice, --[[#1]] TOPRIGHT, rowControl, TOPRIGHT, -5, 2)
-							pricePerUnit:SetHidden(false)
-						end
-					end
-					--SellPricePerUnit--------------------
-					if pricePerUnit then
-						PP.Font(pricePerUnit, --[[Font]] PP.f.Expressway, 14, "shadow", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-						PP.Anchor(pricePerUnit, --[[#1]] TOPRIGHT, sellPrice, BOTTOMRIGHT, 0, -2)
-						if not AwesomeGuildStore then
-							pricePerUnit:SetText("@" .. pricePerUnit:GetText():gsub("|t.-:.-:", "|t14:14:"))
-						end
-					end
-					--TimeRemaining--------------------
-					if timeRemaining then
-						PP.Font(timeRemaining, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-						if MasterMerchant then
-							PP.Anchor(timeRemaining, --[[#1]] TOPRIGHT, rowControl, TOPRIGHT, -110, 2)
-						else
-							PP.Anchor(timeRemaining, --[[#1]] RIGHT, rowControl, RIGHT, -110, 0)
-						end
-					end
-					--"Bg"-------------
-					if bg then
-						bg:SetTexture(PP.t.clear)
-					end
-					--"Highlight"-------------
-					if hl then
-						hl:SetHidden(true)
-					end
-					--New Control--*
-					--"SellerName"--------------------
-					if rowControl:GetNamedChild("SellerName") and not AwesomeGuildStore then
-						rowControl:GetNamedChild("SellerName"):SetText(result.sellerName)
-					else
-						if not AwesomeGuildStore then
-							CreateControl("$(parent)SellerName", rowControl, CT_LABEL)
-						end
-						local sellerName = rowControl:GetNamedChild("SellerName")
-						sellerName:SetText(result.sellerName)
-						sellerName:SetAnchor(TOPLEFT, name, BOTTOMLEFT, 0, -4)
-						sellerName:SetWidth(130)
-						sellerName:SetMaxLineCount(1)
-						sellerName:SetWrapMode(1)
-						PP.Font(sellerName, --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] .4, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-					end
-					--"Backdrop"-------------
-					local backdrop = PP.CreateBackdrop(rowControl)
-					backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_col))
-					backdrop:SetCenterTexture(PP.SV.list_skin.list_skin_backdrop, PP.SV.list_skin.list_skin_backdrop_tile_size, PP.SV.list_skin.list_skin_backdrop_tile and 1 or 0)
-					backdrop:SetEdgeColor(unpack(PP.SV.list_skin.list_skin_edge_col))
-					backdrop:SetEdgeTexture(PP.SV.list_skin.list_skin_edge, PP.SV.list_skin.list_skin_edge_file_width, PP.SV.list_skin.list_skin_edge_file_height, PP.SV.list_skin.list_skin_edge_thickness, 0)
-					backdrop:SetInsets(PP.SV.list_skin.list_skin_backdrop_insets, PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets)
-					backdrop:SetIntegralWrapping(PP.SV.list_skin.list_skin_edge_integral_wrapping)
-				end
+			if result.stackCount == 1 then
+				-- PP.Anchor(sellPrice, --[[#1]] RIGHT, rowControl, RIGHT, -5, 0)
+				sellPrice:SetHeight(30)
+				pricePerUnit:SetHidden(true)
+			else
+				-- PP.Anchor(sellPrice, --[[#1]] TOPRIGHT, rowControl, TOPRIGHT, -5, 2)
+				sellPrice:SetHeight(21)
+				pricePerUnit:SetAlpha(.8)
+				pricePerUnit:SetHidden(false)
+			end
+
+			sellerName:SetText(result.sellerName)
+
+			if not AwesomeGuildStore then
+				pricePerUnit:SetText("@" .. pricePerUnit:GetText():gsub("|t.-:.-:", "|t13:13:"))
+			else
+				pricePerUnit:SetText(pricePerUnit:GetText():gsub("|t.-:.-:", "|t13:13:"))
 			end
 		end
+		-- else
+		local function onCreateFn(rowControl,  result)
+			rowControl:SetHeight(controlHeight)
+
+			local button			= rowControl:GetNamedChild("Button")
+			local stack				= rowControl:GetNamedChild("ButtonStackCount")
+			local name				= rowControl:GetNamedChild("Name")
+			local timeRemaining		= rowControl:GetNamedChild("TimeRemaining")
+			local trait				= rowControl:GetNamedChild("TraitInfo")
+			local bg				= rowControl:GetNamedChild("Bg")
+			local hl				= rowControl:GetNamedChild("Highlight")
+			local pricePerUnit		= rowControl:GetNamedChild("SellPricePerUnit")
+			local sellPrice			= rowControl:GetNamedChild("SellPrice")
+			local sellerName		= rowControl:GetNamedChild("SellerName")
+
+			--"TraitInfo"-------------
+			trait:SetDimensions(24, 24)
+			PP.Anchor(trait, --[[#1]] LEFT, name, RIGHT, 6, 8)
+			--"Button"-------------
+			button:SetDimensions(36, 36)
+			PP.Anchor(button, --[[#1]] LEFT, nil, LEFT, 5, 0)
+			--"ButtonStackCount"-------------
+			PP.Font(stack, --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Anchor(stack, --[[#1]] BOTTOMRIGHT, nil, BOTTOMRIGHT, 8, 2)
+			--"Name"-------------
+			PP.Font(name, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Anchor(name, --[[#1]] TOPLEFT, nil, TOPLEFT, 60, 2)
+			name:SetWidth(250)
+			name:SetLineSpacing(0)
+			name:SetVerticalAlignment(0)
+			name:SetMaxLineCount(1)
+			name:SetWrapMode(1)
+			-- "SellPrice"--------------------
+			PP.Anchor(sellPrice, --[[#1]] TOPRIGHT, rowControl, TOPRIGHT, -5, 2)
+			PP.Font(sellPrice, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			sellPrice:SetVerticalAlignment(TEXT_ALIGN_BOTTOM)
+			if result.stackCount == 1 then
+				sellPrice:SetHeight(30)
+				pricePerUnit:SetHidden(true)
+			else
+				sellPrice:SetHeight(21)
+				pricePerUnit:SetHidden(false)
+			end
+			--SellPricePerUnit--------------------
+			PP.Font(pricePerUnit, --[[Font]] PP.f.Expressway, 14, "shadow", --[[Alpha]] .8, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Anchor(pricePerUnit, --[[#1]] TOPRIGHT, sellPrice, BOTTOMRIGHT, -2, -2)
+			if not AwesomeGuildStore then
+				pricePerUnit:SetText("@" .. pricePerUnit:GetText():gsub("|t.-:.-:", "|t13:13:"))
+			end
+			--TimeRemaining--------------------
+			PP.Font(timeRemaining, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			PP.Anchor(timeRemaining, --[[#1]] LEFT, trait, RIGHT, 10, 0)
+			--"Bg"-------------
+			-- bg:SetTexture(PP.t.clear)
+			bg:SetHidden(true)
+			--"Highlight"-------------
+			hl:SetHidden(true)
+			--New Controls--*
+			--"SellerName"--------------------
+			sellerName = sellerName or CreateControl("$(parent)SellerName", rowControl, CT_LABEL)
+			sellerName:SetText(result.sellerName)
+			sellerName:SetAnchor(TOPLEFT, name, BOTTOMLEFT, 0, -4)
+			sellerName:SetWidth(130)
+			sellerName:SetMaxLineCount(1)
+			sellerName:SetWrapMode(1)
+			PP.Font(sellerName, --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] .4, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
+			--"Backdrop"-------------
+			local backdrop = PP.CreateBackdrop(rowControl)
+			backdrop:SetCenterColor(unpack(PP.SV.list_skin.list_skin_backdrop_col))
+			backdrop:SetCenterTexture(PP.SV.list_skin.list_skin_backdrop, PP.SV.list_skin.list_skin_backdrop_tile_size, PP.SV.list_skin.list_skin_backdrop_tile and 1 or 0)
+			backdrop:SetEdgeColor(unpack(PP.SV.list_skin.list_skin_edge_col))
+			backdrop:SetEdgeTexture(PP.SV.list_skin.list_skin_edge, PP.SV.list_skin.list_skin_edge_file_width, PP.SV.list_skin.list_skin_edge_file_height, PP.SV.list_skin.list_skin_edge_thickness, 0)
+			backdrop:SetInsets(PP.SV.list_skin.list_skin_backdrop_insets, PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets, -PP.SV.list_skin.list_skin_backdrop_insets)
+			backdrop:SetIntegralWrapping(PP.SV.list_skin.list_skin_edge_integral_wrapping)
+
+		--compobility others addons
+			PP:BlockFunction(sellPrice, 'SetFont')
+			PP:BlockFunction(sellPrice, 'SetAnchor')
+			PP:BlockFunction(sellPrice, 'ClearAnchors')
+			PP:BlockFunction(pricePerUnit, 'SetFont')
+			PP:BlockFunction(pricePerUnit, 'SetAnchor')
+			PP:BlockFunction(pricePerUnit, 'ClearAnchors')
+		end
+
+		PP:PostHooksSetupCallback(list, 1, 1, onCreateFn, onUpdateFn)
+		PP:PostHooksSetupCallback(list, 2, 1, onCreateFn, onUpdateFn)
 	end
 
 	PP.Anchor(ZO_TradingHouse,							--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -80)
@@ -190,14 +204,15 @@ PP.tradingHouseScene = function()
 
 	local money = ZO_TradingHouseSearchControlsMoney
 	PP.Anchor(money,	--[[#1]] TOPRIGHT,	nil, TOPRIGHT, -4, 4)
-	-- PP.Font(money,		--[[Font]] PP.f.Expressway, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
+	-- PP.Font(money,		--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
 	-- ZO_PreHookHandler(money, 'OnTextChanged', function()
-		-- money:SetFont(PP.f.Expressway .. "|18|outline")
+		-- money:SetFont(PP.f.u67 .. "|18|outline")
 	-- end)
 
 
 --==ZO_TradingHouseBrowseItemsLeftPane===========================================================--
 	PP.Anchor(ZO_TradingHouseBrowseItemsLeftPaneCategoryListContainer, --[[#1]] TOPLEFT, ZO_TradingHouseBrowseItemsLeftPaneGlobalFeatureArea, BOTTOMLEFT, -15, 10, --[[#2]] true, BOTTOMRIGHT, ZO_TradingHouseBrowseItemsLeftPane, BOTTOMRIGHT, 0, 0)
+	PP.ScrollBar(ZO_TradingHouseBrowseItemsLeftPaneCategoryListContainer, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 
 	PP.Anchor(ZO_TradingHouseBrowseItemsLeftPaneGlobalFeatureArea, --[[#1]] TOPLEFT, ZO_TradingHouseBrowseItemsLeftPane, TOPLEFT, 0, 0, --[[#2]] true, TOPRIGHT, ZO_TradingHouseBrowseItemsLeftPane, TOPRIGHT, 0, 0)
 

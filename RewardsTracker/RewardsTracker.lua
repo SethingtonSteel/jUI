@@ -1,13 +1,7 @@
 local addonId = "RewardsTracker"
 
-local accountRewardSingle = ZO_Object:Subclass()
-function accountRewardSingle:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
-
-function accountRewardSingle:initialize(itemLink, time)
+local accountRewardSingle = ZO_InitializingObject:Subclass()
+function accountRewardSingle:Initialize(itemLink, time)
     self.itemLink = itemLink
     self.itemId = GetItemLinkItemId(self.itemLink)
     self.time = time
@@ -40,14 +34,8 @@ function accountRewardSingle:IsRewardItem(itemId)
     return self.itemId == itemId
 end
 
-local accountRewardMultiple = ZO_Object:Subclass()
-function accountRewardMultiple:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
-
-function accountRewardMultiple:initialize(itemLinks, time, name)
+local accountRewardMultiple = ZO_InitializingObject:Subclass()
+function accountRewardMultiple:Initialize(itemLinks, time, name)
     self.itemId = 0
     self.itemLinks = {}
     for _, itemLink in ipairs(itemLinks) do
@@ -91,14 +79,8 @@ function accountRewardMultiple:IsRewardItem(itemId)
     return self.itemLinks[itemId] ~= nil
 end
 
-local weeklyTrialReward = ZO_Object:Subclass()
-function weeklyTrialReward:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
-
-function weeklyTrialReward:initialize(itemIds, abbrName, fullName)
+local weeklyTrialReward = ZO_InitializingObject:Subclass()
+function weeklyTrialReward:Initialize(itemIds, abbrName, fullName)
     self.itemIds = itemIds
     self.itemIdsSet = ZO_CreateSetFromArguments(unpack(itemIds))
     self.abbrName = abbrName
@@ -126,14 +108,8 @@ function weeklyTrialReward:IsRewardItem(itemId)
     return self.itemIdsSet[itemId] == true
 end
 
-local randomActivityReward = ZO_Object:Subclass()
-function randomActivityReward:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
-
-function randomActivityReward:initialize(abbrName, fullName)
+local randomActivityReward = ZO_InitializingObject:Subclass()
+function randomActivityReward:Initialize(abbrName, fullName)
     self.abbrName = abbrName
     self.fullName = fullName
     self.time = nil
@@ -159,15 +135,8 @@ function randomActivityReward:IsRewardItem(itemId)
     return false
 end
 
-local addon = ZO_Object:Subclass()
-
-function addon:New(...)
-    local instance = ZO_Object.New(self)
-    instance:initialize(...)
-    return instance
-end
-
-function addon:initialize(name)
+local addon = ZO_InitializingObject:Subclass()
+function addon:Initialize(name)
     self.name = name
     self.data = {
         characterRewards = LibSimpleSavedVars:NewCharacterWide(string.format("%sCharacterRewardsData", self.name), 1, {}),
@@ -187,28 +156,20 @@ function addon:initialize(name)
         weeklyTrialReward:New({ 138711, 138712, 141738, 141739 }, "cr", GetString(SI_REWARDS_TRACKER_CR)),
         weeklyTrialReward:New({ 151970, 151971 }, "ss", GetString(SI_REWARDS_TRACKER_SS)),
         weeklyTrialReward:New({ 165421, 165422 }, "ka", GetString(SI_REWARDS_TRACKER_KA)),
-        
     }
 
-    -- local newMoonMotives = {}
-    -- for i = 156609, 156622 do
-    --     table.insert(newMoonMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
-    -- end
-
-    -- local seaGiantMotives = {}
-    -- for i = 160560, 160573 do
-    --     table.insert(seaGiantMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
-    -- end
-    
-    local MarkarthRewardCoffer = {}
-    for i = 170223, 170224, 170225 do
-        table.insert(MarkarthRewardCoffer, string.format('|H1:item:%d:122:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
+    local newMoonMotives = {}
+    for i = 156609, 156622 do
+        table.insert(newMoonMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
+    end
+    local seaGiantMotives = {}
+    for i = 160560, 160573 do
+        table.insert(seaGiantMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
     end
 
     self.accountRewards = {
         -- geode
         accountRewardSingle:New('|H1:item:134618:124:1:0:0:0:5:10000:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
-
         -- 20 Runebox: Reach-Mage Ceremonial Skullcap 500-600k
         -- 20 Random Armor Style Page: Knight of the Circle 100-1100k
         -- 20 Runebox: Arena Gladiator Helm 200-400k
@@ -216,25 +177,15 @@ function addon:initialize(name)
         -- 40 Random Weapon Style Page: Knight of the Circle 400-1700k
         -- 40 Runebox: Elinhir Arena Lion 800-1100k
         -- 50 Runebox: Arena Gladiator Costume 1200-1600k
-        
         -- arena gladiators proof
-        -- accountRewardSingle:New('|H1:item:138783:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
-
+        --accountRewardSingle:New('|H1:item:138783:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
         -- 20 Runebox: Siegemaster's Close Helm 200-300k
         -- 50 Runebox: Siegemaster's Uniform 1200-1600k
         -- 50 Runebox: Timbercrow Wanderer Costume 3300-4200k
-        
         -- siege of cyrodiil merit
-        -- accountRewardSingle:New('|H1:item:151939:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
-
-        -- New Moon Priest Motifs
-        -- accountRewardMultiple:New(newMoonMotives, 24 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM81)),
-
-        -- Sea Giant Motifs
-        -- accountRewardMultiple:New(seaGiantMotives, 20 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM86)),
-
-        -- Markarth Dailies
-        accountRewardMultiple:New(MarkarthRewardCoffer, 24 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_MRC)),
+        --accountRewardSingle:New('|H1:item:151939:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
+        --accountRewardMultiple:New(newMoonMotives, 24 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM81)),
+        --accountRewardMultiple:New(seaGiantMotives, 20 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM86)),
     }
 
     self.settings = rewardsTrackerSettings:New(self)

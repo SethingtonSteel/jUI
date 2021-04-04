@@ -204,7 +204,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "Automatische Bestätigung
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "Deaktiviert den Bestätigungsdialog, wenn du zu anderen Wegschreinen reist.")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "Aktuelle Zone immer oben anzeigen")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "Aktuelle Zone immer an oberster Stelle der Liste anzeigen.")
-
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Ausblenden von EIGENEN Häusern")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Blende alle eigene Häuser (außerhalb reisen) in der Hauptliste aus.")
 
 
 -----------------------------------------------------------------------------
@@ -218,9 +219,10 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "Trefferliste aktualisieren")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "Wegschrein-Freischaltung")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "Schnellreise zum Gruppenanführer")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "Aktive Quests")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Eigenen Hauptwohnsitz besuchen")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Schnellreise in den Hauptwohnsitz")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "BeamMeUp Gildenhaus besuchen")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Schnellreise ins aktuelle Gebiet")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Schnellreise vor den Hauptwohnsitz")
 
 
 

@@ -275,7 +275,8 @@ WritCreater.optionStrings["fragmentRewardTooltip"]						= "What to do with psiji
 WritCreater.optionStrings["writRewards submenu"]						= "Writ Reward Handling"
 WritCreater.optionStrings["writRewards submenu tooltip"]				= "What to do with all the rewards from writs"
 
-
+WritCreater.optionStrings["jubilee"]									= "Loot Anniversary Boxes"
+WritCreater.optionStrings["jubilee tooltip"]							= "Auto Loot Anniversary Boxes"
 
 
 WritCreater.optionStrings["rewardChoices"]								= {"Nothing","Deposit","Junk", "Destroy"}

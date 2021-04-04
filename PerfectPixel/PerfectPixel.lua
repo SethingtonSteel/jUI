@@ -3,7 +3,7 @@ PP.SV = {}
 PP.ADDON_NAME		= "PerfectPixel"
 PP.ADDON_AUTHOR		= "@KL1SK"
 PP.ADDON_WEBSITE	= "https://www.esoui.com/downloads/info2103-PerfectPixel.html"
-PP.ADDON_VERSION 	= "0.11.08"
+PP.ADDON_VERSION 	= "0.11.09"
 
 -- media
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -594,7 +594,7 @@ local function OnAddonLoaded(eventType, addonName)
 		PP.reticle()
 		PP.tabs()
 		PP.dialogsMenu()
-		PP.chatWindow()
+		-- PP.chatWindow()
 		--
 		PP.inventoryScene()
 
@@ -628,7 +628,7 @@ local function OnAddonLoaded(eventType, addonName)
 		PP.scrolling()
 		-- PP.playerProgressBar()
 		--
-		EVENT_MANAGER:RegisterForEvent(PP.ADDON_NAME .. "searchBox", EVENT_PLAYER_ACTIVATED, PP.searchBox)
+		EVENT_MANAGER:RegisterForEvent(PP.ADDON_NAME .. "searchBox", EVENT_PLAYER_ACTIVATED, function() PP.searchBox() end) --< PP.chatWindow()
 		--
 		if LibAddonMenu2 then
 			LibAddonMenu2:RegisterOptionControls("PerfectPixelOptions", PP.optionsData)

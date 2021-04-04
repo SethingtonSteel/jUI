@@ -340,8 +340,7 @@ local function CreatePins()
     or (shouldDisplay and updatePins[c.PINS_COMPASS] and db.filters[c.PINS_COMPASS]) then
 		local zoneIndex = GetUnitZoneIndex("player")
 		if IsValidZone(zoneIndex) then 
-			local zone, subzone = LoreBooks_GetZoneAndSubzone()
-			local lorebooks = LoreBooks_GetLocalData(zone, subzone)
+			local lorebooks = LoreBooks_GetLocalData(GetCurrentMapId())
 			if lorebooks then
 				for _, pinData in ipairs(lorebooks) do
 					local _, _, known = GetLoreBookInfo(1, pinData[3], pinData[4])
@@ -378,9 +377,8 @@ local function CreatePins()
 				mapIndex = GetImperialCityMapIndex()
 			elseif mapContentType ~= MAP_CONTENT_DUNGEON then
 				local measurements = GPS:GetCurrentMapMeasurement()
-				mapIndex = measurements:GetMapIndex()
+				--mapIndex = measurements:GetMapIndex()
 			end
-			
 		end
 		
 		if mapIndex then
@@ -1299,17 +1297,15 @@ local function OnRowMouseUp(control, button)
 		if control.categoryIndex == 1 then
 			local lorebookInfoOnBook = LoreBooks_GetDataOfBook(control.categoryIndex, control.collectionIndex, control.bookIndex)
 			for resultEntry, resultData in ipairs(lorebookInfoOnBook) do
-				
-				local mapIndex = LoreBooks_GetMapIndexFromMapTile(resultData.zoneName, resultData.subZoneName)
-				
-				if mapIndex then
-					AddCustomMenuItem(zo_strformat("<<1>> : <<2>>x<<3>>", zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetMapNameByIndex(mapIndex)), (resultData.locX * 100), (resultData.locY * 100)),
+
+				if resultData.mapId then
+					AddCustomMenuItem(zo_strformat("<<1>> : <<2>>x<<3>>", zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetMapNameById(resultData.mapId)), (resultData.locX * 100), (resultData.locY * 100)),
 					function()
-						
-						ZO_WorldMap_SetMapByIndex(mapIndex)
 						PingMap(MAP_PIN_TYPE_RALLY_POINT, MAP_TYPE_LOCATION_CENTERED, resultData.locX, resultData.locY)
 						PingMap(MAP_PIN_TYPE_PLAYER_WAYPOINT, MAP_TYPE_LOCATION_CENTERED, resultData.locX, resultData.locY)
 						
+						ZO_WorldMap_SetMapByIndex(1) -- dummy call needed since we cannot access g_playerChoseCurrentMap 
+						SetMapToMapId(resultData.mapId)
 						if(not ZO_WorldMap_IsWorldMapShowing()) then
 							if IsInGamepadPreferredMode() then
 								SCENE_MANAGER:Push("gamepad_worldMap")
@@ -1320,7 +1316,6 @@ local function OnRowMouseUp(control, button)
 							mapAvailable = false
 							zo_callLater(function() ZO_WorldMap_GetPanAndZoom():PanToNormalizedPosition(resultData.locX, resultData.locY) end, 1000)
 						end
-						
 					end)
 				end
 				
