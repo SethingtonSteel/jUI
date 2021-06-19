@@ -1,8 +1,8 @@
 ## Title: |cFEE854ESO|r |cFF9900Master Recipe List|r
 ## Author: |c66ccffPhinix|r
 ## Description: Search for & track recipes & ingredients, find writ requirements, and display detailed information on customizable food and furniture tooltips. Set up auto-junk & auto-destroy filters. Link any recipe, ingredient, or craftable food or furniture item in chat. More!
-## Version: 1.56.55
-## APIVersion: 100033 100034
+## Version: 1.56.59
+## APIVersion: 100034 100035
 ## SavedVariables: MasterRecipeList
 ## OptionalDependsOn: AwesomeGuildStore CraftStoreFixedAndImproved
 ## DependsOn: LibPhinixFunctions>=11 LibAddonMenu-2.0>=30

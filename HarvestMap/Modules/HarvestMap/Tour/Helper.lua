@@ -1,5 +1,4 @@
 
-local GPS = LibGPS2
 local LAM = LibAddonMenu2
 
 local CallbackManager = Harvest.callbackManager

@@ -59,8 +59,8 @@ CSPS = {
 	cpAutoOpen = false,
 	cpImportCap = false,
 	cpImportReverse = false,
-	cpCustomBar,
-	useCustomIcons,
+	cpCustomBar = false,
+	useCustomIcons = false,
 	hbTables = {{},{}},
 	attrPoints = {0, 0, 0},
 	applyAttr = false,
@@ -69,6 +69,7 @@ CSPS = {
 	showHotbar = true,
 	skillForHB = nil,
 	updNeedMapping = false,
+	upd30 = false,
 	formatImpExp = "sf",
 	bindings = {},
 	profiles = {
@@ -339,7 +340,7 @@ end
 -- migration for version compability
 
 local function migrateSV()
-	d("CSPS: Migrating data after v.0.9.3")
+	d("[CSPS] Migrating data after v.0.9.3")
 	if not CSPS.savedVariables or CSPS.savedVariables.wasMigrated == true then return end
 	local changedCount = 0
 	local accountName = GetDisplayName()
@@ -354,7 +355,7 @@ local function migrateSV()
 		--Also migrate them to server dependent SVs	
 		local copyFrom = CSPSSavedVariables["Default"] and CSPSSavedVariables["Default"][accountName] and CSPSSavedVariables["Default"][accountName][charName]
 		if copyFrom ~= nil then
-			d( string.format(">Migrating Data for %s --> ID %s, server %s", charName, characterId, worldName) )
+			d( string.format("[CSPS] Migrating Data for %s --> ID %s, server %s", charName, characterId, worldName) )
 			--Create new subtable for the characterId
 			CSPS.savedVariables.charData = CSPS.savedVariables.charData or {}
 			CSPS.savedVariables.charData[characterId] = {}
@@ -369,7 +370,7 @@ local function migrateSV()
 	if copyFrom2 ~= nil then ZO_ShallowTableCopy(copyFrom2, CSPS.savedVariables.settings) end
 	CSPSSavedVariables["Default"] = nil
 	CSPS.savedVariables.wasMigrated = true -- important to avoid reload-loop
-	d("Done migrating.")
+	d("[CSPS] Done migrating.")
 	-- ReloadUI now to save the data.
 	CSPS.changedCount = changedCount -- wieder rauswerfen nach der Testphase
 	if changedCount > 0 then
@@ -402,6 +403,8 @@ function CSPS:Initialize()
 	local svProfile = GetWorldName()
 	CSPS.worldName = svProfile
 	local svDisplayName = nil 
+	
+	if GetAPIVersion() > 100034 then CSPS.upd30 = true end
 	
 	CSPS.savedVariables = ZO_SavedVars:NewAccountWide(svName, svVersion, svNamesSpace, svDefaults, svProfile, svDisplayName) -- savedvars account wide, server dependent
 	if not CSPS.savedVariables.wasMigrated then migrateSV() end
@@ -476,6 +479,9 @@ function CSPS:Initialize()
 			if #CSPS.cp2hbpHotkeys == 20 then break end
 		end
 	end
+	
+	local strictOrder = CSPS.savedVariables.settings.strictOrder or false
+	CSPS.toggleStrictOrder(strictOrder)
 	local cpRemindMe = CSPS.savedVariables.settings.cpReminder or false
 	CSPS.toggleCPReminder(cpRemindMe)
 	local cpAutoOpen = CSPS.savedVariables.settings.cpAutoOpen or false
@@ -603,7 +609,7 @@ function CSPS.mapSkills(myKeys)
 	end
 	
 	if CSPS.needMapping then 
-		d(GS(CSPS_TxtLangDiff)) 
+		d(string.format("[CSPS] %s", GS(CSPS_TxtLangDiff)))
 		CSPS.habeGemappt1 = true 
 	end
 	if CSPS.updNeedMapping then CSPS.habeGemappt2 = true end
@@ -686,7 +692,12 @@ function CSPS.populateTable(doNotFill)
 		CSPS.skTypeCountPT[i] = 0
 		CSPS.skLineCountPT[i] = {}
 		while nochSkillLinien do
-			local mySkillLine = GetSkillLineName(i, j)
+			local mySkillLine = "" 
+			if not CSPS.upd30 then 
+				mySkillLine = GetSkillLineName(i, j)
+			else
+				mySkillLine = GetSkillLineNameById(GetSkillLineId(i, j))
+			end
 			mySkillLine = zo_strformat("<<C:1>>", mySkillLine)
 			skillTableH[i][j] = {mySkillLine, {}}
 			CSPS.skLineCountPT[i][j] = 0
@@ -739,7 +750,7 @@ function CSPS.populateTable(doNotFill)
 				
 			end
 			j = j + 1
-			if GetSkillLineName(i, j) == "" then nochSkillLinien = false end
+			if GetSkillLineId(i, j) == 0 then nochSkillLinien = false end
 			if i==1 and j==4 then nochSkillLinien = false end
 			if i==7 and j==2 then nochSkillLinien = false end
 		end
@@ -800,7 +811,7 @@ function CSPS.skTableExtract(progTab, passTab)
 			l = 0
 			upgrades[#upgrades+1] = {i, j, k, l}
 			local myName = GetSkillAbilityInfo(i,j,k)
-			d(zo_strformat(GS(CSPS_LoadingError), myName))
+			d(string.format("[CSPS] %s", zo_strformat(GS(CSPS_LoadingError), myName)))
 		else 
 			morphs[#morphs + 1] = {i, j, k, l}
 		end
@@ -859,14 +870,14 @@ function CSPS.skTableExtract(progTab, passTab)
 					end
 					l = maxRank
 					local myName = GetSkillAbilityInfo(i,j,k)
-					d(zo_strformat(GS(CSPS_LoadingError), myName))
+					d(string.format("[CSPS] %s", zo_strformat(GS(CSPS_LoadingError), myName)))
 				end
 			end
 			upgrades[#upgrades + 1] = {i, j, k, l}
 		else
 			l = 0 
 			local myName = GetSkillAbilityInfo(i,j,k)
-			d(zo_strformat(GS(CSPS_LoadingError), myName))
+			d(string.format("[CSPS] %s", zo_strformat(GS(CSPS_LoadingError), myName)))
 			morphs[#morphs+1] = {i, j, k, l}
 		end
 	end
@@ -992,7 +1003,7 @@ end
 function CSPS.loadBuild()
 	CSPS.showElement("apply", true)
 	CSPS.showElement("save", true)
-	if CSPS.currentCharData.werte == nil and CSPS.profiles == {} then d(GS(CSPS_NoSavedData)) return end
+	if CSPS.currentCharData.werte == nil and CSPS.profiles == {} then d(string.format("[CSPS] %s", GS(CSPS_NoSavedData))) return end
 	local skillTableClean, attrComp, hbComp, cp2Comp, cp2HbComp = {}, "", "", "", ""
 	if CSPS.currentProfile == 0 then
 		skillTableClean = CSPS.currentCharData.werte
@@ -1251,7 +1262,7 @@ function CSPS.hbPopulate()
 end
 
 function CSPS.carotest42(args)
-	d('Congratulations, you found my internal function for testing purposes. Have a good day and remember to always bring a towel! (Irniben)')
+	d('[CSPS] Congratulations, you found my internal function for testing purposes. Have a good day and remember to always bring a towel! (Irniben)')
 	--EVENT_MANAGER:RegisterForEvent("CSPS_LUA_ERROR_CP", EVENT_LUA_ERROR, CSPS.test42b)	
 	--blobb = table.concat(blobb)
 	--d(blobb)
@@ -1289,6 +1300,9 @@ end
 function CSPS.isShown()
 	CSPS.showElement("load") -- Show, if theres data to load
 	CSPSWindow:SetHidden(not CSPSWindow:IsHidden())
+	if CSPSWindow:IsHidden() then
+		CSPS.checkCpOnClose()
+	end
 	if CSPS.freshlyMigrated then 
 		CSPS.freshlyMigrated = false
 		ZO_Dialogs_ShowDialog(CSPS.name.."_DiagMigriert")

@@ -12,7 +12,7 @@ function MapPins:OnChangedNodeHiddenState(map, nodeId, newState)
 		local pinTypeId = self.mapCache.pinTypeId[nodeId]
 		if not pinTypeId then return end
 		
-		if not Harvest.IsMapPinTypeVisible(pinTypeId) then
+		if not self.filterProfile[pinTypeId] then
 			return
 		end
 		-- remove the node, if it was hidden.
@@ -52,7 +52,7 @@ function MapPins:OnNodeChangedCallback(event, mapCache, nodeId)
 	local pinTypeId = mapCache.pinTypeId[nodeId]
 	assert(pinTypeId)
 	-- if the node's pin type is visible, then we do not have to manipulate any pins
-	if not Harvest.IsMapPinTypeVisible(pinTypeId) then
+	if not self.filterProfile[pinTypeId] then
 		return
 	end
 	
@@ -146,17 +146,23 @@ function MapPins:RegisterCallbacks()
 		self:RefreshVisibleDistance()
 	end)
 	
-	-- make sure the queue does not reference old divisions
-	CallbackManager:RegisterForEvent(Events.MAP_CACHE_ZONE_MEASUREMENT_CHANGED, function(event, mapCache)
-		if mapCache == self.mapCache then
-			self:RedrawPins()
-		end
-	end)
+	CallbackManager:RegisterForEvent(Events.FILTER_PROFILE_CHANGED, 
+		function(event, profile, pinTypeId, visible)
+			if profile == self.filterProfile then
+				local checkbox = self.checkboxes[pinTypeId]
+				if checkbox then
+					ZO_CheckButton_SetCheckState(checkbox, self.filterProfile[pinTypeId])
+				end
+				self:RedrawPins()
+			end
+		end)
+	
 end
 
 local function OnButtonToggled(pinTypeId, button, visible)
-	Harvest.SetMapPinTypeVisible( pinTypeId, visible )
-	CALLBACK_MANAGER:FireCallbacks("LAM-RefreshPanel", Harvest.optionsPanel)
+	local filterProfile = Harvest.mapPins.filterProfile
+	filterProfile[pinTypeId] = visible
+	CallbackManager:FireCallbacks(Events.FILTER_PROFILE_CHANGED, filterProfile, pinTypeId, visible)
 end
 -- code based on LibMapPin, see Libs/LibMapPin-1.0/LibMapPins-1.0.lua for credits
 function MapPins:AddCheckbox(panel, text)
@@ -180,6 +186,7 @@ end
 function MapPins:AddResourceCheckbox(panel, pinTypeId)
 	local text = Harvest.GetLocalization( "pintype" .. pinTypeId )
 	local checkbox = self:AddCheckbox(panel, text)
+	self.checkboxes[pinTypeId] = checkbox
 	--self.checkboxForPinType[pinTypeId] = checkbox
 	-- on mouse over the color is switched to "highlight"
 	-- this removed the color of the texture, so we have to change the setColor behaviour
@@ -189,7 +196,7 @@ function MapPins:AddResourceCheckbox(panel, pinTypeId)
 	label.pinTypeId = pinTypeId
 	
 	ZO_CheckButton_SetLabelText(checkbox, text)
-	ZO_CheckButton_SetCheckState(checkbox, Harvest.IsMapPinTypeVisible(pinTypeId))
+	ZO_CheckButton_SetCheckState(checkbox, self.filterProfile[pinTypeId])
 	ZO_CheckButton_SetToggleFunction(checkbox, function(...) OnButtonToggled(pinTypeId, ...) end)
 	ZO_CheckButtonLabel_ColorText(label, false)
 	
@@ -265,6 +272,8 @@ function MapPins:Initialize()
 	-- coords of the last pin update for the "display only nearby pins" option
 	self.lastViewedX = -10
 	self.lastViewedY = -10
+	self.checkboxes = {}
+	self.filterProfile = Harvest.filterProfiles:GetMapProfile()
 	
 	self:RegisterCallbacks()
 	
@@ -325,7 +334,7 @@ function MapPins:AddAndRemoveVisblePins(map, x, y)
 	
 	-- add creation and removal commands to the pin queue.
 	local shouldSaveCoords
-	shouldSaveCoords = self.mapCache:SetPrevAndCurVisibleNodesToTable(self.lastViewedX, self.lastViewedY, x, y, self.visibleDistance, self.queue)
+	shouldSaveCoords = self.mapCache:SetPrevAndCurVisibleNodesToTable(self.lastViewedX, self.lastViewedY, x, y, self.visibleDistance, self.filterProfile, self.queue)
 	-- the queue is only updated if the distance of the player's current position and the position of the last update is large enough.
 	-- if the distance was large enough, we have to save the current position
 	if shouldSaveCoords then
@@ -358,7 +367,8 @@ function MapPins:SetToMapAndPosition(mapMetaData, worldX, worldY)
 	self.lastViewedY = worldY
 	
 	for _, pinTypeId in ipairs(Harvest.PINTYPES) do
-		if Harvest.IsMapPinTypeVisible(pinTypeId) then
+		if self.filterProfile[pinTypeId] then
+			Harvest.Data:CheckPinTypeInCache(pinTypeId, self.mapCache)
 			self.mapCache:GetVisibleNodes(self.lastViewedX, self.lastViewedY, pinTypeId, self.visibleDistance, self.queue)
 		end
 	end
@@ -387,7 +397,7 @@ function MapPins:PinTypeRefreshCallback()
 	local validMinimapMode = Harvest.AreMinimapPinsVisible() and Harvest.mapMode:IsInMinimapMode()
 	if not (validMapMode or validMinimapMode) then return end
 	
-	local mapMetaData, globalX, globalY = Harvest.mapTools:GetViewedMapMetaDataAndPlayerGlobalPosition()
+	local mapMetaData = Harvest.mapTools:GetViewedMapMetaData()
 	local worldX, worldY = Harvest.GetPlayer3DPosition()
 	self:SetToMapAndPosition(mapMetaData, worldX, worldY)
 	self:RefreshUpdateHandler()
@@ -417,20 +427,36 @@ MapPins.clickHandler = {-- debugHandler = {
 			end
 			-- otherwise request the node to be deleted
 			local nodeId = pin.m_PinTag
-			local pinTypeId = MapPins.mapCache.pinTypeId[nodeId]
-			local nodeIndex = MapPins.mapCache.nodeIndex[nodeId]
-			local submodule = Harvest.submoduleManager:GetSubmoduleForMap( MapPins.mapCache.map )
+			local mapCache = MapPins.mapCache
+			local worldX = mapCache.worldX[nodeId]
+			local worldY = mapCache.worldY[nodeId]
+			local worldZ = mapCache.worldZ[nodeId]
+			local pinTypeId = mapCache.pinTypeId[nodeId]
+			local timestamp = GetTimeStamp()
 			
 			CallbackManager:FireCallbacks(Events.NODE_DELETED,
-					MapPins.mapCache, nodeId)
-					
-			MapPins.mapCache:Delete(nodeId)
-			submodule.savedVars[MapPins.mapCache.mapMetaData.zoneId][ MapPins.mapCache.map ][ pinTypeId ][ nodeIndex ] = nil
+					mapCache, nodeId)
+			mapCache:Delete(nodeId)
 			
+			local submodule = Harvest.submoduleManager:GetSubmoduleForMap( mapCache.map )
+			local data = submodule.savedVars
+			
+			data[mapCache.mapMetaData.zoneId] = data[mapCache.mapMetaData.zoneId] or {}
+			data = data[mapCache.mapMetaData.zoneId]
+			
+			data[mapCache.map] = data[mapCache.map] or {}
+			data = data[mapCache.map]
+			
+			data[pinTypeId] = data[pinTypeId] or {}
+			data = data[pinTypeId]
+			
+			local serializedNode = Harvest.serialization:Serialize(worldX, worldY, worldZ, timestamp, Harvest.nodeVersion, Harvest.deleteFlag)
+			table.insert(data, serializedNode)
 		end,
 		show = function() return Harvest.IsPinDeletionEnabled() and not IsInGamepadPreferredMode() end,
 	}
 }
+
 
 -- these settings are handled by simply refreshing the map pins.
 local redrawOnSetting = {
@@ -447,7 +473,6 @@ local refreshOnSetting = {
 	pinTypeSize = true,
 	mapPinTexture = true,
 	pinTypeColor = true,
-	mapPinMinSize = true,
 	pinAbovePoi = true,
 }
 function MapPins:OnSettingsChanged(event, setting, ...)
@@ -457,6 +482,15 @@ function MapPins:OnSettingsChanged(event, setting, ...)
 		self:RefreshPins()
 	elseif setting == "hasVisibleDistance" or setting == "visibleDistance" then
 		self:RefreshVisibleDistance()
+	elseif setting == "mapFilterProfile" then
+		self.filterProfile = Harvest.filterProfiles:GetMapProfile()
+		for pinTypeId, checkbox in pairs(self.checkboxes) do
+			ZO_CheckButton_SetCheckState(checkbox, self.filterProfile[pinTypeId])
+		end
+		self:RedrawPins()
+		if Harvest.IsHeatmapActive() then
+			HarvestHeat.RefreshHeatmap()
+		end
 	elseif setting == "cacheCleared" then
 		local map = ...
 		if map == self.currentMap or not map then

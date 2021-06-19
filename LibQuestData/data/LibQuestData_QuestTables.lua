@@ -67,6 +67,14 @@ quest giver.
 6612 = "A Mortal's Touch",
 5013 = "Hushed Whispers", "Dominion Correspondence"
 6370 = "Ache for Cake", "Jubilee Cake Voucher"
+4379 = "Lover's Torment", "Shard of Alanwe"
+3970 = "An Ill-Fated Venture", "Letter to Tavo"
+4656 = "Tharayya's Trail", "Tharayya Journal Entry: 19"
+6144 = "Pearls Before Traitors", "To Chief Justiciar Carawen"
+6314 = "Scariest in Show", "Tahara's Traveling Menagerie",
+6596 = "The Symbol of Hrokkibeg", "Letter to Apprentice Gwerina"
+6631 = "Giving Up the Ghost", "Phantasmal Discovery Awaits!"
+6337 = "A Battle of Silk and Flame", "Morgane's Guild Orders"
 
 ID   = Quest Name, Object for comments
 --]]
@@ -128,6 +136,15 @@ lib.questid_giver_lookup = {
     [6612] = 79001,
     [5013] = 100169,
     [6370] = 100173,
+    [4379] = 33961,
+    [3970] = 100186,
+    [4656] = 100183,
+    [6144] = 100182,
+    [6314] = 100181,
+    [6596] = 90004,
+    [6631] = 95012,
+    [6646] = 95033,
+    [6337] = 95034,
 }
 
 --[[ List of what the numbers mean
@@ -192,7 +209,7 @@ and the quests in the Dragonguard place
 ]]--
 lib.quest_giver_moves = {
 -- regular quests
-  5450, 4220, 5058, 4264, 3992, 5923, 5950, 2251, 5742, 5102, 3856, 3858, 3885, 2451, 728, 
+  5450, 4220, 5058, 4264, 3992, 5923, 5950, 2251, 5742, 5102, 3856, 3858, 3885, 2451, 728,
 
 --[[
 [6428] = "Sticks and Bones",
@@ -228,7 +245,9 @@ lib.quest_has_skill_point = { 465, 467, 575, 1633, 2192, 2222, 2997, 3006, 3235,
 -- new
 6560, 6547, 6548, 6550, 6551, 6552, 6570, 6554, 6566, 4296, 5540, 6399, 6349, 6394, 6351, 5534,
 --also new
-5889, 3910, 5447, 4555, 4813, 6414, 4303, 6416, 4822, 5595, 5532, 5597, 5598, 5599, 5600, 4641, 5481, 4202, 6507, 6188, 5549, 5545, 6576, 4145, 6578, 5468, 5556, 4469, 5403, 6505,4336, 5113, 5342, 6186, 6249, 5596, 5702, 5567, 4246, 4589, 4675, 4831,
+5889, 3910, 5447, 4555, 4813, 6414, 4303, 6416, 4822, 5595, 5532, 5597, 5598, 5599, 5600, 4641, 5481, 4202, 6507, 6188, 5549, 5545, 6576, 4145, 6578, 5468, 5556, 4469, 5403, 6505, 4336, 5113, 5342, 6186, 6249, 5596, 5702, 5567, 4246, 4589, 4675, 4831, 6304, 6113, 6315, 6126, 6336, 6048, 5922, 4867, 6052, 6025, 6063, 5136, 6003, 6132, 4597, 4379, 4538, 5531, 5948, 5120, 6046, 6047, 6432,
+--blackwood
+6616, 6660, 6619,
 
 }
 
@@ -236,7 +255,7 @@ lib.quest_cadwell = quest_ids { 465, 467, 737, 736, 1341, 1346, 1437, 1529, 1536
 
 -- list of map ID numbers using GetCurrentMapId()
 -- 1552 Norg-Tzel
-lib.zone_id_list = { 75, 74, 13, 61, 26, 7, 125, 30, 20, 227, 1, 10, 12, 201, 143, 9, 300, 258, 22, 256, 1429, 1747, 1313, 1348, 1354, 255, 1126, 1006, 994, 1484, 1552, 1555, 1654, 1349, 1060, 1719, 667, 16, 660, 108, 1207, 1208, }
+lib.zone_id_list = { 75, 74, 13, 61, 26, 7, 125, 30, 20, 227, 1, 10, 12, 201, 143, 9, 300, 258, 22, 256, 1429, 1747, 1313, 1348, 1354, 255, 1126, 1006, 994, 1484, 1552, 1555, 1654, 1349, 1060, 1719, 667, 16, 660, 108, 1207, 1208, 1261, }
 
 lib.zone_names_list = {
     [75] = "balfoyen_base_0",
@@ -281,6 +300,7 @@ lib.zone_names_list = {
     [108] = "eyevea_base_0",
     [1207] = "reach_base_0",
     [1208] = "u28_blackreach_base_0",
+    [1261] = "blackwood_base_0",
 }
 
 --[[
@@ -523,6 +543,31 @@ lib.conditional_quest_list = {
     [1536] = { -- Fire in the Fields"
         1735, -- Unanswered Questions
     },
+    [5071] = { --Curinure's Invitation
+        5074,
+        5076,
+    },
+    [5074] = { --Rudrasa's Invitation
+        5071,
+        5076,
+    },
+    [5076] = { --Nemarc's Invitation
+        5071,
+        5074,
+    },
+    [5073] = { --Aicessar's Invitation
+        5077,
+        5075,
+    },
+    [5077] = { --Basile's Invitation
+        5073,
+        5075,
+    },
+    [5075] = { --Hilan's Invitation
+        5073,
+        5077,
+    },
+
 }
 
 --[[

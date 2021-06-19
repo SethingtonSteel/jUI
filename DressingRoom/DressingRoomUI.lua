@@ -335,7 +335,7 @@ function DressingRoom:CreateAddonMenu()
     type = "panel",
     name = "Dressing Room",
     author = "@amuridee, dividee",
-    version = "0.6.4",
+    version = "0.6.5",
     slashCommand = "/dressingroom",
   }
   
@@ -353,6 +353,15 @@ function DressingRoom:CreateAddonMenu()
       getFunc = function() return self.sv.options.clearEmptyGear end,
       setFunc = function(value) self.sv.options.clearEmptyGear = value end,
     },
+--	{
+--     type = "checkbox",
+--      name = txt.clearEmptyPoisons.name,
+--      tooltip = txt.clearEmptyPoisons.tooltip,
+--      default = defaults.clearEmptyPoisons,      
+--      getFunc = function() return self.sv.options.clearEmptyPoisons or self.sv.options.clearEmptyGear end,
+--      setFunc = function(value) self.sv.options.clearEmptyPoisons = value end,
+--      disabled = function() return self.sv.options.clearEmptyGear end,
+--    },
     {
       type = "checkbox",
       name = txt.clearEmptySkill.name,

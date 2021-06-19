@@ -12,6 +12,8 @@ local g_BuffsMovingEnabled = false -- Helper local flag
 
 local rotationOptions     = { "Horizontal", "Vertical" }
 local rotationOptionsKeys = { ["Horizontal"] = 1, ["Vertical"] = 2 }
+local globalIconOptions = { "All Crowd Control", "NPC CC Only", "Player CC Only" }
+local globalIconOptionsKeys = { ["All Crowd Control"] = 1, ["NPC CC Only"] = 2, ["Player CC Only"] = 3 }
 
 -- Variables for custom generated tables
 local PromBuffs, PromBuffsValues = {}
@@ -36,6 +38,62 @@ local function GenerateCustomList(input)
     return options, values
 end
 
+local dialogs = {
+    [1] = { -- Clear Blacklist
+        identifier = "LUIE_CLEAR_ABILITY_BLACKLIST",
+        title = GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR),
+        text = zo_strformat(GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_DIALOG), GetString(SI_LUIE_CUSTOM_LIST_AURA_BLACKLIST)),
+        callback = function(dialog)
+            SpellCastBuffs.ClearCustomList(SpellCastBuffs.SV.BlacklistTable)
+            LUIE_Blacklist:UpdateChoices(GenerateCustomList(SpellCastBuffs.SV.BlacklistTable))
+        end,
+    },
+    [2] = { -- Clear Prominent Buffs
+        identifier = "LUIE_CLEAR_PROMINENT_BUFFS",
+        title = GetString(SI_LUIE_LAM_UF_PROMINENT_CLEAR_BUFFS),
+        text = zo_strformat(GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_DIALOG_LIST), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS)),
+        callback = function(dialog)
+            SpellCastBuffs.ClearCustomList(SpellCastBuffs.SV.PromBuffTable)
+            LUIE_Prominent_Buffs_List:UpdateChoices(GenerateCustomList(SpellCastBuffs.SV.PromBuffTable))
+        end,
+    },
+    [3] = { -- Clear Prominent Debuffs
+        identifier = "LUIE_CLEAR_PROMINENT_DEBUFFS",
+        title = GetString(SI_LUIE_LAM_UF_PROMINENT_CLEAR_DEBUFFS),
+        text = zo_strformat(GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_DIALOG_LIST), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS)),
+        callback = function(dialog)
+            SpellCastBuffs.ClearCustomList(SpellCastBuffs.SV.PromDebuffTable)
+            LUIE_Prominent_Debuffs_List:UpdateChoices(GenerateCustomList(SpellCastBuffs.SV.PromDebuffTable))
+        end,
+    },
+
+    [4] = { -- Clear Priority Buffs
+        identifier = "LUIE_CLEAR_PRIORITY_BUFFS",
+        title = GetString(SI_LUIE_LAM_UF_PRIORITY_CLEAR_BUFFS),
+        text = zo_strformat(GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_DIALOG_LIST), GetString(SI_LUIE_CUSTOM_LIST_PRIORITY_BUFFS)),
+        callback = function(dialog)
+            SpellCastBuffs.ClearCustomList(SpellCastBuffs.SV.PriorityBuffTable)
+            LUIE_Priority_Buffs_List:UpdateChoices(GenerateCustomList(SpellCastBuffs.SV.PriorityBuffTable))
+        end,
+    },
+    [5] = { -- Clear Priority Debuffs
+        identifier = "LUIE_CLEAR_PRIORITY_DEBUFFS",
+        title = GetString(SI_LUIE_LAM_UF_PRIORITY_CLEAR_DEBUFFS),
+        text = zo_strformat(GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_DIALOG_LIST), GetString(SI_LUIE_CUSTOM_LIST_PRIORITY_DEBUFFS)),
+        callback = function(dialog)
+            SpellCastBuffs.ClearCustomList(SpellCastBuffs.SV.PriorityDebuffTable)
+            LUIE_Priority_Debuffs_List:UpdateChoices(GenerateCustomList(SpellCastBuffs.SV.PriorityDebuffTable))
+        end,
+    },
+}
+
+local function loadDialogButtons()
+    for i = 1, #dialogs do
+        local dialog = dialogs[i]
+        LUIE.RegisterDialogueButton(dialog.identifier, dialog.title, dialog.text, dialog.callback)
+    end
+end
+
 function SpellCastBuffs.CreateSettings()
     -- Load LibAddonMenu
     local LAM = LibAddonMenu2
@@ -55,6 +113,9 @@ function SpellCastBuffs.CreateSettings()
     for key, _ in pairs(LUIE.StatusbarTextures) do
         table.insert(StatusbarTexturesList, key)
     end
+
+    -- Load Dialog Buttons
+    loadDialogButtons()
 
     local panelDataBuffsDebuffs = {
         type = "panel",
@@ -133,7 +194,7 @@ function SpellCastBuffs.CreateSettings()
                 name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SHOWPLAYERBUFF)),
                 tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWPLAYERBUFF_TP),
                 getFunc = function() return not Settings.HidePlayerBuffs end,
-                setFunc = function(value) Settings.HidePlayerBuffs = not value end,
+                setFunc = function(value) Settings.HidePlayerBuffs = not value SpellCastBuffs.ReloadEffects("player") end,
                 width = "half",
                 default = not Defaults.HidePlayerBuffs,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
@@ -143,7 +204,7 @@ function SpellCastBuffs.CreateSettings()
                 name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SHOWPLAYERDEBUFF)),
                 tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWPLAYERDEBUFF_TP),
                 getFunc = function() return not Settings.HidePlayerDebuffs end,
-                setFunc = function(value) Settings.HidePlayerDebuffs = not value end,
+                setFunc = function(value) Settings.HidePlayerDebuffs = not value SpellCastBuffs.ReloadEffects("player") end,
                 width = "half",
                 default = not Defaults.HidePlayerDebuffs,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
@@ -173,7 +234,7 @@ function SpellCastBuffs.CreateSettings()
                 name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SHOWGROUNDBUFFDEBUFF)),
                 tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWGROUNDBUFFDEBUFF_TP),
                 getFunc = function() return not Settings.HideGroundEffects end,
-                setFunc = function(value) Settings.HideGroundEffects = not value end,
+                setFunc = function(value) Settings.HideGroundEffects = not value SpellCastBuffs.ReloadEffects("player") end,
                 width = "half",
                 default = not Settings.HideGroundEffects,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
@@ -256,502 +317,31 @@ function SpellCastBuffs.CreateSettings()
         },
     }
 
-    -- Buffs&Debuffs - Icon Options Submenu
+    -- Buffs&Debuffs - Long & Short Term Effects Filters
     optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
         type = "submenu",
-        name = GetString(SI_LUIE_LAM_BUFF_ICON_HEADER),
+        name = GetString(SI_LUIE_LAM_BUFF_LONG_SHORT_HEADER),
         controls = {
             {
-                -- Buff Icon Size
-                type = "slider",
-                name = GetString(SI_LUIE_LAM_BUFF_ICONSIZE),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_ICONSIZE_TP),
-                min = 30, max = 60, step = 2,
-                getFunc = function() return Settings.IconSize end,
-                setFunc = function(value) Settings.IconSize = value SpellCastBuffs.Reset() end,
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_SHORTTERM_SELF),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_SHORTTERM_SELF_TP),
+                getFunc = function() return Settings.ShortTermEffects_Player end,
+                setFunc = function(value) Settings.ShortTermEffects_Player = value SpellCastBuffs.ReloadEffects("player") end,
                 width = "full",
-                default = Defaults.IconSize,
+                default = Defaults.ShortTermEffects_Player,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Buff Show Remaining Time Label
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_SHOWREMAINTIMELABEL),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWREMAINTIMELABEL_TP),
-                getFunc = function() return Settings.RemainingText end,
-                setFunc = function(value) Settings.RemainingText = value SpellCastBuffs.Reset() end,
+                name = GetString(SI_LUIE_LAM_BUFF_SHORTTERM_TARGET),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_SHORTTERM_TARGET_TP),
+                getFunc = function() return Settings.ShortTermEffects_Target end,
+                setFunc = function(value) Settings.ShortTermEffects_Target = value SpellCastBuffs.ReloadEffects("player") end,
                 width = "full",
-                default = Defaults.RemainingText,
+                default = Defaults.ShortTermEffects_Target,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
-            {
-                -- Buff Label Position
-                type = "slider",
-                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_CI_SHARED_POSITION)),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_LABEL_POSITION_TP),
-                min = -64, max = 64, step = 2,
-                getFunc = function() return Settings.LabelPosition end,
-                setFunc = function(value) Settings.LabelPosition = value SpellCastBuffs.Reset() end,
-                width = "full",
-                default = Defaults.LabelPosition,
-                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
-            },
-            {
-                -- Buff Label Font
-                type = "dropdown",
-                scrollable = true,
-                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_FONT)),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_FONT_TP),
-                choices = FontsList,
-                sort = "name-up",
-                getFunc = function() return Settings.BuffFontFace end,
-                setFunc = function(var) Settings.BuffFontFace = var SpellCastBuffs.ApplyFont() end,
-                width = "full",
-                default = Defaults.BuffFontFace,
-                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
-            },
-            {
-                -- Buff Font Size
-                type = "slider",
-                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_FONT_SIZE)),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_FONTSIZE_TP),
-                min = 10, max = 30, step = 1,
-                getFunc = function() return Settings.BuffFontSize end,
-                setFunc = function(value) Settings.BuffFontSize = value SpellCastBuffs.ApplyFont() end,
-                width = "full",
-                default = Defaults.BuffFontSize,
-                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
-            },
-            {
-                -- Buff Font Style
-                type = "dropdown",
-                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_FONT_STYLE)),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_FONTSTYLE_TP),
-                choices = { "normal", "outline", "shadow", "soft-shadow-thick", "soft-shadow-thin", "thick-outline" },
-                sort = "name-up",
-                getFunc = function() return Settings.BuffFontStyle end,
-                setFunc = function(var) Settings.BuffFontStyle = var SpellCastBuffs.ApplyFont() end,
-                width = "full",
-                default = Defaults.BuffFontStyle,
-                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
-            },
-            {
-                -- Buff Colored Label
-                type = "checkbox",
-                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_CI_POTION_COLOR)),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_LABELCOLOR_TP),
-                getFunc = function() return Settings.RemainingTextColoured end,
-                setFunc = function(value) Settings.RemainingTextColoured = value SpellCastBuffs.Reset() end,
-                width = "full",
-                default = Defaults.RemainingTextColoured,
-                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
-            },
-            {
-                -- Buff Show Seconds Fractions
-                type = "checkbox",
-                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_SHOWSECONDFRACTIONS)),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWSECONDFRACTIONS_TP),
-                getFunc = function() return Settings.RemainingTextMillis end,
-                setFunc = function(value) Settings.RemainingTextMillis = value end,
-                width = "full",
-                default = Defaults.RemainingTextMillis,
-                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
-            },
-            {
-                -- Buff Glow Icon Border
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_GLOWICONBORDER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_GLOWICONBORDER_TP),
-                getFunc = function() return Settings.GlowIcons end,
-                setFunc = function(value) Settings.GlowIcons = value SpellCastBuffs.Reset() end,
-                width = "full",
-                default = Defaults.GlowIcons,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-            {
-                -- Buff Show Border Cooldown
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_SHOWBORDERCOOLDOWN),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWBORDERCOOLDOWN_TP),
-                getFunc = function() return Settings.RemainingCooldown end,
-                setFunc = function(value) Settings.RemainingCooldown = value SpellCastBuffs.Reset() end,
-                width = "full",
-                default = Defaults.RemainingCooldown,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-            {
-                -- Buff Fade Expiring Icon
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_FADEEXPIREICON),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_FADEEXPIREICON_TP),
-                getFunc = function() return Settings.FadeOutIcons end,
-                setFunc = function(value) Settings.FadeOutIcons = value end,
-                width = "full",
-                default = Defaults.FadeOutIcons,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-        },
-    }
-
-    -- Buffs&Debuffs - Alignment & Sorting Options Submenu
-    optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
-        type = "submenu",
-        name = GetString(SI_LUIE_LAM_BUFF_SORTING_HEADER),
-        controls = {
-            -- Buffs/Debuffs Alignment & Sorting
-            {
-                type = "header",
-                name = GetString(SI_LUIE_LAM_BUFF_SORTING_NORMAL_HEADER),
-                width = "full",
-            },
-            {
-                -- Buff Alignment (BuffsPlayer)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
-                choices = { "Left", "Centered", "Right" },
-                getFunc = function() return Settings.AlignmentBuffsPlayer end,
-                setFunc = function(value) Settings.AlignmentBuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentBuffsPlayer,
-            },
-            {
-                -- Buff Sort Direction (BuffsPlayer)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
-                choices = {"Left to Right", "Right to Left"},
-                getFunc = function() return Settings.SortBuffsPlayer end,
-                setFunc = function(value) Settings.SortBuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortBuffsPlayer,
-            },
-            {
-                -- Buff Alignment (DebuffsPlayer)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
-                choices = { "Left", "Centered", "Right" },
-                getFunc = function() return Settings.AlignmentDebuffsPlayer end,
-                setFunc = function(value) Settings.AlignmentDebuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentDebuffsPlayer,
-            },
-            {
-                -- Buff Sort Direction (DebuffsPlayer)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
-                choices = {"Left to Right", "Right to Left"},
-                getFunc = function() return Settings.SortDebuffsPlayer end,
-                setFunc = function(value) Settings.SortDebuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortDebuffsPlayer,
-            },
-            {
-                -- Buff Alignment (BuffsTarget)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
-                choices = { "Left", "Centered", "Right" },
-                getFunc = function() return Settings.AlignmentBuffsTarget end,
-                setFunc = function(value) Settings.AlignmentBuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentBuffsTarget,
-            },
-            {
-                -- Buff Sort Direction (BuffsTarget)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
-                choices = {"Left to Right", "Right to Left"},
-                getFunc = function() return Settings.SortBuffsTarget end,
-                setFunc = function(value) Settings.SortBuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortBuffsTarget,
-            },
-            {
-                -- Buff Alignment (DebuffsTarget)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
-                choices = { "Left", "Centered", "Right" },
-                getFunc = function() return Settings.AlignmentDebuffsTarget end,
-                setFunc = function(value) Settings.AlignmentDebuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentDebuffsTarget,
-            },
-            {
-                -- Buff Sort Direction (DebuffsTarget)
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
-                choices = {"Left to Right", "Right to Left"},
-                getFunc = function() return Settings.SortDebuffsTarget end,
-                setFunc = function(value) Settings.SortDebuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortDebuffsTarget,
-            },
-
-
-            -- Long Term Alignment & Sorting
-            {
-                type = "header",
-                name = GetString(SI_LUIE_LAM_BUFF_SORTING_LONGTERM_HEADER),
-                width = "full",
-            },
-            {
-                -- Container Orientation (Long Term)
-                type = "dropdown",
-                name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_CONTAINER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_CONTAINER_TP),
-                choices = rotationOptions,
-                getFunc = function() return rotationOptions[Settings.LongTermEffectsSeparateAlignment] end,
-                setFunc = function(value) Settings.LongTermEffectsSeparateAlignment = rotationOptionsKeys[value] SpellCastBuffs.Reset() end,
-                width = "full",
-                warning = GetString(SI_LUIE_LAM_RELOADUI_WARNING),
-                default = rotationOptions[2],
-            },
-            {
-                -- Horizontal Long Term Icons Alignment
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                choices = { "Left", "Centered", "Right" },
-                getFunc = function() return Settings.AlignmentLongHorz end,
-                setFunc = function(value) Settings.AlignmentLongHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentLongHorz,
-                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 2 end,
-            },
-            {
-                -- Horizontal Long Term Sort
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                choices = {"Left to Right", "Right to Left"},
-                getFunc = function() return Settings.SortLongHorz end,
-                setFunc = function(value) Settings.SortLongHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortLongHorz,
-                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 2 end,
-            },
-            {
-                -- Vertical Long Term Icons Alignment
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                choices = { "Top", "Centered", "Bottom" },
-                getFunc = function() return Settings.AlignmentLongVert end,
-                setFunc = function(value) Settings.AlignmentLongVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentLongVert,
-                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 1 end,
-            },
-            {
-                -- Vertical Long Term Sort
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
-                choices = {"Bottom to Top", "Top to Bottom"},
-                getFunc = function() return Settings.SortLongVert end,
-                setFunc = function(value) Settings.SortLongVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortLongVert,
-                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 1 end,
-            },
-
-            -- Prominent Alignment & Sorting
-            {
-                type = "header",
-                name = GetString(SI_LUIE_LAM_BUFF_SORTING_PROMINET_HEADER),
-                width = "full",
-            },
-
-            {
-                -- Prominent Buff Container Orientation
-                type = "dropdown",
-                name = GetString(SI_LUIE_LAM_BUFF_PROM_BUFFCONTAINER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_BUFFCONTAINER_TP),
-                choices = rotationOptions,
-                getFunc = function() return rotationOptions[Settings.ProminentBuffContainerAlignment] end,
-                setFunc = function(value) Settings.ProminentBuffContainerAlignment = rotationOptionsKeys[value] SpellCastBuffs.Reset() end,
-                width = "full",
-                warning = GetString(SI_LUIE_LAM_RELOADUI_WARNING),
-                default = rotationOptions[2],
-            },
-            {
-                -- Horizontal Prominent Buffs Icons Alignment
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                choices = { "Left", "Centered", "Right" },
-                getFunc = function() return Settings.AlignmentPromBuffsHorz end,
-                setFunc = function(value) Settings.AlignmentPromBuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentPromBuffsHorz,
-                disabled = function() return Settings.ProminentBuffContainerAlignment == 2 end,
-            },
-            {
-                -- Horizontal Prominent Buffs Sort
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                choices = {"Left to Right", "Right to Left"},
-                getFunc = function() return Settings.SortPromBuffsHorz end,
-                setFunc = function(value) Settings.SortPromBuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortPromBuffsHorz,
-                disabled = function() return Settings.ProminentBuffContainerAlignment == 2 end,
-            },
-            {
-                -- Vertical Prominent Buffs Icons Alignment
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                choices = { "Top", "Centered", "Bottom" },
-                getFunc = function() return Settings.AlignmentPromBuffsVert end,
-                setFunc = function(value) Settings.AlignmentPromBuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentPromBuffsVert,
-                disabled = function() return Settings.ProminentBuffContainerAlignment == 1 end,
-            },
-            {
-                -- Vertical Prominent Buffs Sort
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
-                choices = {"Bottom to Top", "Top to Bottom"},
-                getFunc = function() return Settings.SortPromBuffsVert end,
-                setFunc = function(value) Settings.SortPromBuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortPromBuffsVert,
-                disabled = function() return Settings.ProminentBuffContainerAlignment == 1 end,
-            },
-            {
-            type = "divider",
-            },
-			{
-                -- Prominent Debuff Container Orientation
-                type = "dropdown",
-                name = GetString(SI_LUIE_LAM_BUFF_PROM_DEBUFFCONTAINER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_DEBUFFCONTAINER_TP),
-                choices = rotationOptions,
-                getFunc = function() return rotationOptions[Settings.ProminentDebuffContainerAlignment] end,
-                setFunc = function(value) Settings.ProminentDebuffContainerAlignment = rotationOptionsKeys[value] SpellCastBuffs.Reset() end,
-                width = "full",
-                warning = GetString(SI_LUIE_LAM_RELOADUI_WARNING),
-                default = rotationOptions[2],
-            },
-            {
-                -- Horizontal Prominent Debuffs Icons Alignment
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                choices = { "Left", "Centered", "Right" },
-                getFunc = function() return Settings.AlignmentPromDebuffsHorz end,
-                setFunc = function(value) Settings.AlignmentPromDebuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentPromDebuffsHorz,
-                disabled = function() return Settings.ProminentDebuffContainerAlignment == 2 end,
-            },
-            {
-                -- Horizontal Prominent Debuffs Sort
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                choices = {"Left to Right", "Right to Left"},
-                getFunc = function() return Settings.SortPromDebuffsHorz end,
-                setFunc = function(value) Settings.SortPromDebuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortPromDebuffsHorz,
-                disabled = function() return Settings.ProminentDebuffContainerAlignment == 2 end,
-            },
-            {
-                -- Vertical Prominent Debuffs Icons Alignment
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                choices = { "Top", "Centered", "Bottom" },
-                getFunc = function() return Settings.AlignmentPromDebuffsVert end,
-                setFunc = function(value) Settings.AlignmentPromDebuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.AlignmentPromDebuffsVert,
-                disabled = function() return Settings.ProminentDebuffContainerAlignment == 1 end,
-            },
-            {
-                -- Vertical Prominent Debuffs Sort
-                type = "dropdown",
-                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
-                choices = {"Bottom to Top", "Top to Bottom"},
-                getFunc = function() return Settings.SortPromDebuffsVert end,
-                setFunc = function(value) Settings.SortPromDebuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
-                width = "half",
-                default = Defaults.SortPromDebuffsVert,
-                disabled = function() return Settings.ProminentDebuffContainerAlignment == 1 end,
-            },
-        },
-    }
-
-    -- Buffs&Debuffs - Tooltip Options Submenu
-    optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
-        type = "submenu",
-        name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_HEADER),
-        controls = {
-            {
-                -- Tooltip Enable
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ENABLE),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ENABLE_TP),
-                getFunc = function() return Settings.TooltipEnable end,
-                setFunc = function(value) Settings.TooltipEnable = value end,
-                width = "full",
-                default = Defaults.TooltipEnable,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-            {
-                -- Tooltip Ability Id
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ABILITY_ID),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ABILITY_ID_TP),
-                getFunc = function() return Settings.TooltipAbilityId end,
-                setFunc = function(value) Settings.TooltipAbilityId = value end,
-                width = "full",
-                default = Defaults.TooltipAbilityId,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-            {
-                -- Tooltip Buff Type
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_BUFF_TYPE),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_BUFF_TYPE_TP),
-                getFunc = function() return Settings.TooltipBuffType end,
-                setFunc = function(value) Settings.TooltipBuffType = value end,
-                width = "full",
-                default = Defaults.TooltipBuffType,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-            {
-                -- Sticky Tooltip Slider
-                type = "slider",
-                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_STICKY),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_STICKY_TP),
-                min = 0, max = 5000, step = 100,
-                getFunc = function() return Settings.TooltipSticky end,
-                setFunc = function(value) Settings.TooltipSticky = value end,
-                width = "full",
-                default = Defaults.TooltipSticky,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-        },
-    }
-
-    -- Buffs&Debuffs - Long Term Effects Options Submenu
-    optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
-        type = "submenu",
-        name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_HEADER),
-        controls = {
             {
                 type = "checkbox",
                 name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SELF),
@@ -763,6 +353,17 @@ function SpellCastBuffs.CreateSettings()
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
+                -- Separate control for player effects
+                type = "checkbox",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_LONGTERM_SEPCTRL)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SEPCTRL_TP),
+                getFunc = function() return Settings.LongTermEffectsSeparate end,
+                setFunc = function(value) Settings.LongTermEffectsSeparate = value SpellCastBuffs.Reset() end,
+                width = "full",
+                default = Defaults.LongTermEffectsSeparate,
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.LongTermEffects_Player ) end,
+            },
+            {
                 type = "checkbox",
                 name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_TARGET),
                 tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_TARGET_TP),
@@ -772,25 +373,167 @@ function SpellCastBuffs.CreateSettings()
                 default = Defaults.LongTermEffects_Target,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
-            {
-                -- Seperate control for player effects
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SEPCTRL),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SEPCTRL_TP),
-                getFunc = function() return Settings.LongTermEffectsSeparate end,
-                setFunc = function(value) Settings.LongTermEffectsSeparate = value SpellCastBuffs.Reset() end,
-                width = "full",
-                default = Defaults.LongTermEffectsSeparate,
-                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.LongTermEffects_Player ) end,
-            },
-        },
-    }
 
-    -- Buffs&Debuffs - Long Term Effect Filters Options Submenu
-    optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
-        type = "submenu",
-        name = GetString(SI_LUIE_LAM_BUFF_FILTER_LONG_HEADER),
-        controls = {
+            {
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_HEADER),
+                width = "full",
+            },
+
+            --[[
+            {
+                -- Show Sprint Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSPRINT),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSPRINT_TP),
+                getFunc = function() return Settings.ShowSprint end,
+                setFunc = function(value) Settings.ShowSprint = value end,
+                width = "full",
+                default = Defaults.ShowSprint,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Show Gallop Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWGALLOP),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWGALLOP_TP),
+                getFunc = function() return Settings.ShowGallop end,
+                setFunc = function(value) Settings.ShowGallop = value end,
+                width = "full",
+                default = Defaults.ShowGallop,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            ]]--
+            {
+                -- Show Rezz Immunity Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWREZZ),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWREZZ_TP),
+                getFunc = function() return Settings.ShowResurrectionImmunity end,
+                setFunc = function(value) Settings.ShowResurrectionImmunity = value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.ShowResurrectionImmunity,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Show Recall Cooldown Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWRECALL),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWRECALL_TP),
+                getFunc = function() return Settings.ShowRecall end,
+                setFunc = function(value) Settings.ShowRecall = value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.ShowRecall,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Show Werewolf Timer Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWWEREWOLF),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWWEREWOLF_TP),
+                getFunc = function() return Settings.ShowWerewolf end,
+                setFunc = function(value) Settings.ShowWerewolf = value SpellCastBuffs.RegisterWerewolfEvents() SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.ShowWerewolf,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Short Term - Set ICD - Player
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SETICDPLAYER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SETICDPLAYER_TP),
+                getFunc = function() return not Settings.IgnoreSetICDPlayer end,
+                setFunc = function(value) Settings.IgnoreSetICDPlayer = not value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = not Defaults.IgnoreSetICDPlayer,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Short Term - Ability ICD - Player
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_ABILITYICDPLAYER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_ABILITYICDPLAYER_TP),
+                getFunc = function() return not Settings.IgnoreAbilityICDPlayer end,
+                setFunc = function(value) Settings.IgnoreAbilityICDPlayer = not value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = not Defaults.IgnoreAbilityICDPlayer,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            --[[ TODO: Reimplement if possible
+            {
+                -- Show Block Player Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKPLAYER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKPLAYER_TP),
+                getFunc = function() return Settings.ShowBlockPlayer end,
+                setFunc = function(value) Settings.ShowBlockPlayer = value SpellCastBuffs.UpdateContextHideList() SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.ShowBlockPlayer,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            ]]--
+            {
+                -- Show Block Target Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKTARGET),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKTARGET_TP),
+                getFunc = function() return Settings.ShowBlockTarget end,
+                setFunc = function(value) Settings.ShowBlockTarget = value SpellCastBuffs.UpdateContextHideList() SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.ShowBlockTarget,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Show Stealth Player Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHPLAYER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHPLAYER_TP),
+                getFunc = function() return Settings.StealthStatePlayer end,
+                setFunc = function(value) Settings.StealthStatePlayer = value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.StealthStatePlayer,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Show Stealth Target Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHTARGET),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHTARGET_TP),
+                getFunc = function() return Settings.StealthStateTarget end,
+                setFunc = function(value) Settings.StealthStateTarget = value SpellCastBuffs.ReloadEffects("reticleover") end,
+                width = "full",
+                default = Defaults.StealthStateTarget,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Show Disguise Player Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISEPLAYER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISEPLAYER_TP),
+                getFunc = function() return Settings.DisguiseStatePlayer end,
+                setFunc = function(value) Settings.DisguiseStatePlayer = value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.DisguiseStatePlayer,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Show Disguise Target Icon
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISETARGET),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISETARGET_TP),
+                getFunc = function() return Settings.DisguiseStateTarget end,
+                setFunc = function(value) Settings.DisguiseStateTarget = value SpellCastBuffs.ReloadEffects("reticleover") end,
+                width = "full",
+                default = Defaults.DisguiseStateTarget,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+
+            {
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_HEADER),
+                width = "full",
+            },
+
             {
                 -- Long Term - Disguises
                 type = "checkbox",
@@ -825,15 +568,15 @@ function SpellCastBuffs.CreateSettings()
                 disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and ( Settings.LongTermEffects_Player or Settings.LongTermEffects_Target ) ) end,
             },
             {
-                -- Long Term - Set ICD - Player
+                -- Use Generic Pet Icon
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SETICDPLAYER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_SETICDPLAYER_TP),
-                getFunc = function() return not Settings.IgnoreSetICDPlayer end,
-                setFunc = function(value) Settings.IgnoreSetICDPlayer = not value SpellCastBuffs.UpdateContextHideList() SpellCastBuffs.ReloadEffects("player") end,
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_LONGTERM_PET_ICON)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_PET_ICON_TP),
+                getFunc = function() return Settings.PetDetail end,
+                setFunc = function(value) Settings.PetDetail = value SpellCastBuffs.OnPlayerActivated() end,
                 width = "full",
-                default = not Defaults.IgnoreSetICDPlayer,
-                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and ( Settings.LongTermEffects_Player or Settings.LongTermEffects_Target ) ) end,
+                default = not Defaults.PetDetail,
+                disabled = function() return Settings.IgnorePet end,
             },
             {
                 -- Long Term - Mounts (Player)
@@ -1136,155 +879,836 @@ function SpellCastBuffs.CreateSettings()
                 default = not Defaults.IgnoreSoulSummonsTarget,
                 disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and ( Settings.LongTermEffects_Player or Settings.LongTermEffects_Target ) ) end,
             },
+
         },
     }
 
-    -- Buffs&Debuffs - Short Term Effect Filters Options Submenu
+    -- Buffs&Debuffs - Icon Options Submenu
     optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
         type = "submenu",
-        name = GetString(SI_LUIE_LAM_BUFF_MISC_HEADER),
+        name = GetString(SI_LUIE_LAM_BUFF_ICON_HEADER),
         controls = {
-            --[[
             {
-                -- Show Sprint Icon
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSPRINT),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSPRINT_TP),
-                getFunc = function() return Settings.ShowSprint end,
-                setFunc = function(value) Settings.ShowSprint = value end,
+                -- Buff Icon Size
+                type = "slider",
+                name = GetString(SI_LUIE_LAM_BUFF_ICONSIZE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_ICONSIZE_TP),
+                min = 30, max = 60, step = 2,
+                getFunc = function() return Settings.IconSize end,
+                setFunc = function(value) Settings.IconSize = value SpellCastBuffs.Reset() end,
                 width = "full",
-                default = Defaults.ShowSprint,
+                default = Defaults.IconSize,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Gallop Icon
+                -- Buff Show Remaining Time Label
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWGALLOP),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWGALLOP_TP),
-                getFunc = function() return Settings.ShowGallop end,
-                setFunc = function(value) Settings.ShowGallop = value end,
+                name = GetString(SI_LUIE_LAM_BUFF_SHOWREMAINTIMELABEL),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWREMAINTIMELABEL_TP),
+                getFunc = function() return Settings.RemainingText end,
+                setFunc = function(value) Settings.RemainingText = value SpellCastBuffs.Reset() end,
                 width = "full",
-                default = Defaults.ShowGallop,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
-            },
-            ]]--
-            {
-                -- Show Rezz Immunity Icon
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWREZZ),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWREZZ_TP),
-                getFunc = function() return Settings.ShowResurrectionImmunity end,
-                setFunc = function(value) Settings.ShowResurrectionImmunity = value end,
-                width = "full",
-                default = Defaults.ShowResurrectionImmunity,
+                default = Defaults.RemainingText,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Recall Cooldown Icon
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWRECALL),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWRECALL_TP),
-                getFunc = function() return Settings.ShowRecall end,
-                setFunc = function(value) Settings.ShowRecall = value SpellCastBuffs.ReloadEffects("player") end,
+                -- Buff Label Position
+                type = "slider",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_CI_SHARED_POSITION)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_LABEL_POSITION_TP),
+                min = -64, max = 64, step = 2,
+                getFunc = function() return Settings.LabelPosition end,
+                setFunc = function(value) Settings.LabelPosition = value SpellCastBuffs.Reset() end,
                 width = "full",
-                default = Defaults.ShowRecall,
+                default = Defaults.LabelPosition,
+                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
+            },
+            {
+                -- Buff Label Font
+                type = "dropdown",
+                scrollable = true,
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_FONT)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_FONT_TP),
+                choices = FontsList,
+                sort = "name-up",
+                getFunc = function() return Settings.BuffFontFace end,
+                setFunc = function(var) Settings.BuffFontFace = var SpellCastBuffs.ApplyFont() end,
+                width = "full",
+                default = Defaults.BuffFontFace,
+                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
+            },
+            {
+                -- Buff Font Size
+                type = "slider",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_FONT_SIZE)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_FONTSIZE_TP),
+                min = 10, max = 30, step = 1,
+                getFunc = function() return Settings.BuffFontSize end,
+                setFunc = function(value) Settings.BuffFontSize = value SpellCastBuffs.ApplyFont() end,
+                width = "full",
+                default = Defaults.BuffFontSize,
+                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
+            },
+            {
+                -- Buff Font Style
+                type = "dropdown",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_FONT_STYLE)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_FONTSTYLE_TP),
+                choices = { "normal", "outline", "shadow", "soft-shadow-thick", "soft-shadow-thin", "thick-outline" },
+                sort = "name-up",
+                getFunc = function() return Settings.BuffFontStyle end,
+                setFunc = function(var) Settings.BuffFontStyle = var SpellCastBuffs.ApplyFont() end,
+                width = "full",
+                default = Defaults.BuffFontStyle,
+                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
+            },
+            {
+                -- Buff Colored Label
+                type = "checkbox",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_CI_POTION_COLOR)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_LABELCOLOR_TP),
+                getFunc = function() return Settings.RemainingTextColoured end,
+                setFunc = function(value) Settings.RemainingTextColoured = value SpellCastBuffs.Reset() end,
+                width = "full",
+                default = Defaults.RemainingTextColoured,
+                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
+            },
+            {
+                -- Buff Show Seconds Fractions
+                type = "checkbox",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_SHOWSECONDFRACTIONS)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWSECONDFRACTIONS_TP),
+                getFunc = function() return Settings.RemainingTextMillis end,
+                setFunc = function(value) Settings.RemainingTextMillis = value end,
+                width = "full",
+                default = Defaults.RemainingTextMillis,
+                disabled = function() return not (Settings.RemainingText and LUIE.SV.SpellCastBuff_Enable) end,
+            },
+            {
+                -- Buff Glow Icon Border
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_GLOWICONBORDER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_GLOWICONBORDER_TP),
+                getFunc = function() return Settings.GlowIcons end,
+                setFunc = function(value) Settings.GlowIcons = value SpellCastBuffs.Reset() end,
+                width = "full",
+                default = Defaults.GlowIcons,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Werewolf Timer Icon
+                -- Buff Show Border Cooldown
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWWEREWOLF),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWWEREWOLF_TP),
-                getFunc = function() return Settings.ShowWerewolf end,
-                setFunc = function(value) Settings.ShowWerewolf = value SpellCastBuffs.RegisterWerewolfEvents() SpellCastBuffs.ReloadEffects("player") end,
+                name = GetString(SI_LUIE_LAM_BUFF_SHOWBORDERCOOLDOWN),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_SHOWBORDERCOOLDOWN_TP),
+                getFunc = function() return Settings.RemainingCooldown end,
+                setFunc = function(value) Settings.RemainingCooldown = value SpellCastBuffs.Reset() end,
                 width = "full",
-                default = Defaults.ShowWerewolf,
+                default = Defaults.RemainingCooldown,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Block Player Icon
+                -- Buff Fade Expiring Icon
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKPLAYER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKPLAYER_TP),
-                getFunc = function() return Settings.ShowBlockPlayer end,
-                setFunc = function(value) Settings.ShowBlockPlayer = value SpellCastBuffs.UpdateContextHideList() SpellCastBuffs.ReloadEffects("player") end,
+                name = GetString(SI_LUIE_LAM_BUFF_FADEEXPIREICON),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_FADEEXPIREICON_TP),
+                getFunc = function() return Settings.FadeOutIcons end,
+                setFunc = function(value) Settings.FadeOutIcons = value end,
                 width = "full",
-                default = Defaults.ShowBlockPlayer,
+                default = Defaults.FadeOutIcons,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+
+            -- Icon Normalization Options
+            {
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_NORMALIZE_HEADER),
+                width = "full",
+            },
+            {
+                -- Use Generic Icon for CC Type
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON),
+                tooltip = GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON_TP),
+                getFunc = function() return Settings.UseDefaultIcon end,
+                setFunc = function(newValue) Settings.UseDefaultIcon = newValue end,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+                default = Defaults.UseDefaultIcon,
+            },
+            {
+                -- Generic Icon Options
+                type = "dropdown",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON_OPTIONS)),
+                tooltip = GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON_OPTIONS_TP),
+                choices = globalIconOptions,
+                getFunc = function() return globalIconOptions[Settings.DefaultIconOptions] end,
+                setFunc = function(value) Settings.DefaultIconOptions = globalIconOptionsKeys[value] end,
+                width = "full",
+                disabled = function() return not Settings.UseDefaultIcon end,
+                default = Defaults.DefaultIconOptions,
+            },
+
+        },
+    }
+
+    -- Buffs&Debuffs - Color Options Submenu
+    optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs +1] = {
+        type = "submenu",
+        name = GetString(SI_LUIE_LAM_BUFF_COLOR_HEADER),
+        controls = {
+            {
+                -- Basic Color Options
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_COLOR_HEADER_BASIC),
+                width = "full",
+            },
+            {
+                -- buff
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_BUFF),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_BUFF_TP),
+                getFunc = function() return unpack(Settings.colors.buff) end,
+                setFunc = function(r, g, b, a) Settings.colors.buff = { r, g, b, a } end,
+                default = {r=Defaults.colors.buff[1], g=Defaults.colors.buff[2], b=Defaults.colors.buff[3]},
+                width = "half",
+            },
+            {
+                -- debuff
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_DEBUFF),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_DEBUFF_TP),
+                getFunc = function() return unpack(Settings.colors.debuff) end,
+                setFunc = function(r, g, b, a) Settings.colors.debuff = { r, g, b, a } end,
+                default = {r=Defaults.colors.debuff[1], g=Defaults.colors.debuff[2], b=Defaults.colors.debuff[3]},
+                width = "half",
+            },
+            {
+                -- prioritybuff
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_PRIORITYBUFF),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_PRIORITYBUFF_TP),
+                getFunc = function() return unpack(Settings.colors.prioritybuff) end,
+                setFunc = function(r, g, b, a) Settings.colors.prioritybuff = { r, g, b, a } end,
+                default = {r=Defaults.colors.prioritybuff[1], g=Defaults.colors.prioritybuff[2], b=Defaults.colors.prioritybuff[3]},
+                width = "half",
+            },
+            {
+                -- prioritydebuff
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_PRIORITYDEBUFF),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_PRIORITYDEBUFF_TP),
+                getFunc = function() return unpack(Settings.colors.prioritydebuff) end,
+                setFunc = function(r, g, b, a) Settings.colors.prioritydebuff = { r, g, b, a } end,
+                default = {r=Defaults.colors.prioritydebuff[1], g=Defaults.colors.prioritydebuff[2], b=Defaults.colors.prioritydebuff[3]},
+                width = "half",
+            },
+            {
+                -- Unbreakable & Cosmetic Header
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_COLOR_HEADER_UNBREAKABLE),
+                width = "full",
+            },
+            {
+                -- Unbreakable Toggle
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_COLOR_UNBREAKABLE_TOGGLE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_UNBREAKABLE_TOGGLE_TP),
+                getFunc = function() return Settings.ColorUnbreakable end,
+                setFunc = function(value) Settings.ColorUnbreakable = value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.ColorUnbreakable,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Block Target Icon
+                -- unbreakable
+                type    = "colorpicker",
+                name    = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_COLOR_UNBREAKABLE)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_UNBREAKABLE_TP),
+                getFunc = function() return unpack(Settings.colors.unbreakable) end,
+                setFunc = function(r, g, b, a) Settings.colors.unbreakable = { r, g, b, a } end,
+                default = {r=Defaults.colors.unbreakable[1], g=Defaults.colors.unbreakable[2], b=Defaults.colors.unbreakable[3]},
+                disabled = function() return not Settings.ColorUnbreakable end,
+            },
+
+            {
+                -- Cosmetic Toggle
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKTARGET),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWBLOCKTARGET_TP),
-                getFunc = function() return Settings.ShowBlockTarget end,
-                setFunc = function(value) Settings.ShowBlockTarget = value SpellCastBuffs.UpdateContextHideList() SpellCastBuffs.ReloadEffects("player") end,
+                name = GetString(SI_LUIE_LAM_BUFF_COLOR_COSMETIC_TOGGLE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_COSMETIC_TOGGLE_TP),
+                getFunc = function() return Settings.ColorCosmetic end,
+                setFunc = function(value) Settings.ColorCosmetic = value SpellCastBuffs.ReloadEffects("player") end,
                 width = "full",
-                default = Defaults.ShowBlockTarget,
+                default = Defaults.ColorCosmetic,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Stealth Player Icon
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHPLAYER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHPLAYER_TP),
-                getFunc = function() return Settings.StealthStatePlayer end,
-                setFunc = function(value) Settings.StealthStatePlayer = value SpellCastBuffs.ReloadEffects("player") end,
+                -- cosmetic
+                type    = "colorpicker",
+                name    = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_COLOR_COSMETIC)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_COSMETIC_TP),
+                getFunc = function() return unpack(Settings.colors.cosmetic) end,
+                setFunc = function(r, g, b, a) Settings.colors.cosmetic = { r, g, b, a } end,
+                default = {r=Defaults.colors.cosmetic[1], g=Defaults.colors.cosmetic[2], b=Defaults.colors.cosmetic[3]},
+                disabled = function() return not Settings.ColorCosmetic end,
+            },
+            {
+                -- Crowd Control Header
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_COLOR_HEADER_CROWD_CONTROL),
                 width = "full",
-                default = Defaults.StealthStatePlayer,
+            },
+            {
+                -- CC Toggle
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_COLOR_BY_CC),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_BY_CC_TP),
+                getFunc = function() return Settings.ColorCC end,
+                setFunc = function(value) Settings.ColorCC = value SpellCastBuffs.ReloadEffects("player") end,
+                width = "full",
+                default = Defaults.ColorCC,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Stealth Target Icon
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHTARGET),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_SHOWSTEALTHTARGET_TP),
-                getFunc = function() return Settings.StealthStateTarget end,
-                setFunc = function(value) Settings.StealthStateTarget = value SpellCastBuffs.ReloadEffects("reticleover") end,
+                -- nocc
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_NOCC),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_NOCC_TP),
+                getFunc = function() return unpack(Settings.colors.nocc) end,
+                setFunc = function(r, g, b, a) Settings.colors.nocc = { r, g, b, a } end,
+                default = {r=Defaults.colors.nocc[1], g=Defaults.colors.nocc[2], b=Defaults.colors.nocc[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- stun
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_STUN),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_STUN_TP),
+                getFunc = function() return unpack(Settings.colors.stun) end,
+                setFunc = function(r, g, b, a) Settings.colors.stun = { r, g, b, a } end,
+                default = {r=Defaults.colors.stun[1], g=Defaults.colors.stun[2], b=Defaults.colors.stun[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- knockback
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_KNOCKBACK),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_KNOCKBACK_TP),
+                getFunc = function() return unpack(Settings.colors.knockback) end,
+                setFunc = function(r, g, b, a) Settings.colors.knockback = { r, g, b, a } end,
+                default = {r=Defaults.colors.knockback[1], g=Defaults.colors.knockback[2], b=Defaults.colors.knockback[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- levitate
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_LEVITATE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_LEVITATE_TP),
+                getFunc = function() return unpack(Settings.colors.levitate) end,
+                setFunc = function(r, g, b, a) Settings.colors.levitate = { r, g, b, a } end,
+                default = {r=Defaults.colors.levitate[1], g=Defaults.colors.levitate[2], b=Defaults.colors.levitate[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- disorient
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_DISORIENT),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_DISORIENT_TP),
+                getFunc = function() return unpack(Settings.colors.disorient) end,
+                setFunc = function(r, g, b, a) Settings.colors.disorient = { r, g, b, a } end,
+                default = {r=Defaults.colors.disorient[1], g=Defaults.colors.disorient[2], b=Defaults.colors.disorient[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- fear
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_FEAR),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_FEAR_TP),
+                getFunc = function() return unpack(Settings.colors.fear) end,
+                setFunc = function(r, g, b, a) Settings.colors.fear = { r, g, b, a } end,
+                default = {r=Defaults.colors.fear[1], g=Defaults.colors.fear[2], b=Defaults.colors.fear[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- stagger
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_STAGGER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_STAGGER_TP),
+                getFunc = function() return unpack(Settings.colors.stagger) end,
+                setFunc = function(r, g, b, a) Settings.colors.stagger = { r, g, b, a } end,
+                default = {r=Defaults.colors.stagger[1], g=Defaults.colors.stagger[2], b=Defaults.colors.stagger[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- silence
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_SILENCE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_SILENCE_TP),
+                getFunc = function() return unpack(Settings.colors.silence) end,
+                setFunc = function(r, g, b, a) Settings.colors.silence = { r, g, b, a } end,
+                default = {r=Defaults.colors.silence[1], g=Defaults.colors.silence[2], b=Defaults.colors.silence[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- snare
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_SNARE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_SNARE_TP),
+                getFunc = function() return unpack(Settings.colors.snare) end,
+                setFunc = function(r, g, b, a) Settings.colors.snare = { r, g, b, a } end,
+                default = {r=Defaults.colors.snare[1], g=Defaults.colors.snare[2], b=Defaults.colors.snare[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+            {
+                -- root
+                type    = "colorpicker",
+                name    = GetString(SI_LUIE_LAM_BUFF_COLOR_ROOT),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_COLOR_ROOT_TP),
+                getFunc = function() return unpack(Settings.colors.root) end,
+                setFunc = function(r, g, b, a) Settings.colors.root = { r, g, b, a } end,
+                default = {r=Defaults.colors.root[1], g=Defaults.colors.root[2], b=Defaults.colors.root[3]},
+                width = "half",
+                disabled = function() return not Settings.ColorCC end,
+            },
+        },
+    }
+
+    -- Buffs&Debuffs - Alignment & Sorting Options Submenu
+    optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
+        type = "submenu",
+        name = GetString(SI_LUIE_LAM_BUFF_SORTING_HEADER),
+        controls = {
+            -- Buffs/Debuffs Alignment & Sorting
+            {
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_SORTING_NORMAL_HEADER),
                 width = "full",
-                default = Defaults.StealthStateTarget,
+            },
+            {
+                -- Buff Alignment (BuffsPlayer)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
+                choices = { "Left", "Centered", "Right" },
+                getFunc = function() return Settings.AlignmentBuffsPlayer end,
+                setFunc = function(value) Settings.AlignmentBuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentBuffsPlayer,
+            },
+            {
+                -- Buff Sort Direction (BuffsPlayer)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERBUFFS) ),
+                choices = {"Left to Right", "Right to Left"},
+                getFunc = function() return Settings.SortBuffsPlayer end,
+                setFunc = function(value) Settings.SortBuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortBuffsPlayer,
+            },
+            {
+                -- Buff Alignment (DebuffsPlayer)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
+                choices = { "Left", "Centered", "Right" },
+                getFunc = function() return Settings.AlignmentDebuffsPlayer end,
+                setFunc = function(value) Settings.AlignmentDebuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentDebuffsPlayer,
+            },
+            {
+                -- Buff Sort Direction (DebuffsPlayer)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERDEBUFFS) ),
+                choices = {"Left to Right", "Right to Left"},
+                getFunc = function() return Settings.SortDebuffsPlayer end,
+                setFunc = function(value) Settings.SortDebuffsPlayer = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortDebuffsPlayer,
+            },
+            {
+                -- Buff Alignment (BuffsTarget)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
+                choices = { "Left", "Centered", "Right" },
+                getFunc = function() return Settings.AlignmentBuffsTarget end,
+                setFunc = function(value) Settings.AlignmentBuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentBuffsTarget,
+            },
+            {
+                -- Buff Sort Direction (BuffsTarget)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETBUFFS) ),
+                choices = {"Left to Right", "Right to Left"},
+                getFunc = function() return Settings.SortBuffsTarget end,
+                setFunc = function(value) Settings.SortBuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortBuffsTarget,
+            },
+            {
+                -- Buff Alignment (DebuffsTarget)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_GENERIC_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
+                choices = { "Left", "Centered", "Right" },
+                getFunc = function() return Settings.AlignmentDebuffsTarget end,
+                setFunc = function(value) Settings.AlignmentDebuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentDebuffsTarget,
+            },
+            {
+                -- Buff Sort Direction (DebuffsTarget)
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_GENERIC_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_TARGETDEBUFFS) ),
+                choices = {"Left to Right", "Right to Left"},
+                getFunc = function() return Settings.SortDebuffsTarget end,
+                setFunc = function(value) Settings.SortDebuffsTarget = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortDebuffsTarget,
+            },
+
+
+            -- Long Term Alignment & Sorting
+            {
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_SORTING_LONGTERM_HEADER),
+                width = "full",
+            },
+            {
+                -- Container Orientation (Long Term)
+                type = "dropdown",
+                name = GetString(SI_LUIE_LAM_BUFF_LONGTERM_CONTAINER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_LONGTERM_CONTAINER_TP),
+                choices = rotationOptions,
+                getFunc = function() return rotationOptions[Settings.LongTermEffectsSeparateAlignment] end,
+                setFunc = function(value) Settings.LongTermEffectsSeparateAlignment = rotationOptionsKeys[value] SpellCastBuffs.ResetContainerOrientation() SpellCastBuffs.Reset() end,
+                width = "full",
+                default = rotationOptions[2],
+            },
+            {
+                -- Horizontal Long Term Icons Alignment
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                choices = { "Left", "Centered", "Right" },
+                getFunc = function() return Settings.AlignmentLongHorz end,
+                setFunc = function(value) Settings.AlignmentLongHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentLongHorz,
+                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 2 end,
+            },
+            {
+                -- Horizontal Long Term Sort
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                choices = {"Left to Right", "Right to Left"},
+                getFunc = function() return Settings.SortLongHorz end,
+                setFunc = function(value) Settings.SortLongHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortLongHorz,
+                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 2 end,
+            },
+            {
+                -- Vertical Long Term Icons Alignment
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                choices = { "Top", "Centered", "Bottom" },
+                getFunc = function() return Settings.AlignmentLongVert end,
+                setFunc = function(value) Settings.AlignmentLongVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentLongVert,
+                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 1 end,
+            },
+            {
+                -- Vertical Long Term Sort
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PLAYERLONGTERMEFFECTS) ),
+                choices = {"Bottom to Top", "Top to Bottom"},
+                getFunc = function() return Settings.SortLongVert end,
+                setFunc = function(value) Settings.SortLongVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortLongVert,
+                disabled = function() return Settings.LongTermEffectsSeparateAlignment == 1 end,
+            },
+
+            -- Prominent Alignment & Sorting
+            {
+                type = "header",
+                name = GetString(SI_LUIE_LAM_BUFF_SORTING_PROMINET_HEADER),
+                width = "full",
+            },
+
+            {
+                -- Prominent Buff Container Orientation
+                type = "dropdown",
+                name = GetString(SI_LUIE_LAM_BUFF_PROM_BUFFCONTAINER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_BUFFCONTAINER_TP),
+                choices = rotationOptions,
+                getFunc = function() return rotationOptions[Settings.ProminentBuffContainerAlignment] end,
+                setFunc = function(value) Settings.ProminentBuffContainerAlignment = rotationOptionsKeys[value] SpellCastBuffs.ResetContainerOrientation() SpellCastBuffs.Reset() end,
+                width = "full",
+                default = rotationOptions[2],
+            },
+            {
+                -- Horizontal Prominent Buffs Icons Alignment
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                choices = { "Left", "Centered", "Right" },
+                getFunc = function() return Settings.AlignmentPromBuffsHorz end,
+                setFunc = function(value) Settings.AlignmentPromBuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentPromBuffsHorz,
+                disabled = function() return Settings.ProminentBuffContainerAlignment == 2 end,
+            },
+            {
+                -- Horizontal Prominent Buffs Sort
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                choices = {"Left to Right", "Right to Left"},
+                getFunc = function() return Settings.SortPromBuffsHorz end,
+                setFunc = function(value) Settings.SortPromBuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortPromBuffsHorz,
+                disabled = function() return Settings.ProminentBuffContainerAlignment == 2 end,
+            },
+            {
+                -- Vertical Prominent Buffs Icons Alignment
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                choices = { "Top", "Centered", "Bottom" },
+                getFunc = function() return Settings.AlignmentPromBuffsVert end,
+                setFunc = function(value) Settings.AlignmentPromBuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentPromBuffsVert,
+                disabled = function() return Settings.ProminentBuffContainerAlignment == 1 end,
+            },
+            {
+                -- Vertical Prominent Buffs Sort
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTBUFFS) ),
+                choices = {"Bottom to Top", "Top to Bottom"},
+                getFunc = function() return Settings.SortPromBuffsVert end,
+                setFunc = function(value) Settings.SortPromBuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortPromBuffsVert,
+                disabled = function() return Settings.ProminentBuffContainerAlignment == 1 end,
+            },
+            {
+            type = "divider",
+            },
+			{
+                -- Prominent Debuff Container Orientation
+                type = "dropdown",
+                name = GetString(SI_LUIE_LAM_BUFF_PROM_DEBUFFCONTAINER),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_DEBUFFCONTAINER_TP),
+                choices = rotationOptions,
+                getFunc = function() return rotationOptions[Settings.ProminentDebuffContainerAlignment] end,
+                setFunc = function(value) Settings.ProminentDebuffContainerAlignment = rotationOptionsKeys[value] SpellCastBuffs.ResetContainerOrientation() SpellCastBuffs.Reset() end,
+                width = "full",
+                default = rotationOptions[2],
+            },
+            {
+                -- Horizontal Prominent Debuffs Icons Alignment
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_HORIZONTAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                choices = { "Left", "Centered", "Right" },
+                getFunc = function() return Settings.AlignmentPromDebuffsHorz end,
+                setFunc = function(value) Settings.AlignmentPromDebuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentPromDebuffsHorz,
+                disabled = function() return Settings.ProminentDebuffContainerAlignment == 2 end,
+            },
+            {
+                -- Horizontal Prominent Debuffs Sort
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_HORIZONTAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                choices = {"Left to Right", "Right to Left"},
+                getFunc = function() return Settings.SortPromDebuffsHorz end,
+                setFunc = function(value) Settings.SortPromDebuffsHorz = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortPromDebuffsHorz,
+                disabled = function() return Settings.ProminentDebuffContainerAlignment == 2 end,
+            },
+            {
+                -- Vertical Prominent Debuffs Icons Alignment
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_VERTICAL_ALIGN_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                choices = { "Top", "Centered", "Bottom" },
+                getFunc = function() return Settings.AlignmentPromDebuffsVert end,
+                setFunc = function(value) Settings.AlignmentPromDebuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.AlignmentPromDebuffsVert,
+                disabled = function() return Settings.ProminentDebuffContainerAlignment == 1 end,
+            },
+            {
+                -- Vertical Prominent Debuffs Sort
+                type = "dropdown",
+                name = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                tooltip = zo_strformat(GetString(SI_LUIE_LAM_BUFF_SORTING_SORT_VERTICAL_TP), GetString(SI_LUIE_SCB_WINDOWTITLE_PROMINENTDEBUFFS) ),
+                choices = {"Bottom to Top", "Top to Bottom"},
+                getFunc = function() return Settings.SortPromDebuffsVert end,
+                setFunc = function(value) Settings.SortPromDebuffsVert = value SpellCastBuffs.SetupContainerAlignment() SpellCastBuffs.SetupContainerSort() end,
+                width = "half",
+                default = Defaults.SortPromDebuffsVert,
+                disabled = function() return Settings.ProminentDebuffContainerAlignment == 1 end,
+            },
+        },
+    }
+
+    -- Buffs&Debuffs - Tooltip Options Submenu
+    optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
+        type = "submenu",
+        name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_HEADER),
+        controls = {
+            {
+                -- Tooltip Enable
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ENABLE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ENABLE_TP),
+                getFunc = function() return Settings.TooltipEnable end,
+                setFunc = function(value) Settings.TooltipEnable = value end,
+                width = "full",
+                default = Defaults.TooltipEnable,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Disguise Player Icon
+                -- Tooltip Ability Id
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISEPLAYER),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISEPLAYER_TP),
-                getFunc = function() return Settings.DisguiseStatePlayer end,
-                setFunc = function(value) Settings.DisguiseStatePlayer = value SpellCastBuffs.ReloadEffects("player") end,
+                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ABILITY_ID),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_ABILITY_ID_TP),
+                getFunc = function() return Settings.TooltipAbilityId end,
+                setFunc = function(value) Settings.TooltipAbilityId = value end,
                 width = "full",
-                default = Defaults.DisguiseStatePlayer,
+                default = Defaults.TooltipAbilityId,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
             {
-                -- Show Disguise Target Icon
+                -- Tooltip Buff Type
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISETARGET),
-                tooltip = GetString(SI_LUIE_LAM_BUFF_MISC_LOOTSHOWDISGUISETARGET_TP),
-                getFunc = function() return Settings.DisguiseStateTarget end,
-                setFunc = function(value) Settings.DisguiseStateTarget = value SpellCastBuffs.ReloadEffects("reticleover") end,
+                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_BUFF_TYPE),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_BUFF_TYPE_TP),
+                getFunc = function() return Settings.TooltipBuffType end,
+                setFunc = function(value) Settings.TooltipBuffType = value end,
                 width = "full",
-                default = Defaults.DisguiseStateTarget,
+                default = Defaults.TooltipBuffType,
+                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+            },
+            {
+                -- Sticky Tooltip Slider
+                type = "slider",
+                name = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_STICKY),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_TOOLTIP_STICKY_TP),
+                min = 0, max = 5000, step = 100,
+                getFunc = function() return Settings.TooltipSticky end,
+                setFunc = function(value) Settings.TooltipSticky = value end,
+                width = "full",
+                default = Defaults.TooltipSticky,
                 disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
             },
         },
     }
 
-    -- Buffs&Debuffs - Custom Icon & Normalization Options
+    -- Buffs&Debuffs - Priority Buffs & Debuffs Options Submenu
     optionsDataBuffsDebuffs[#optionsDataBuffsDebuffs + 1] = {
         type = "submenu",
-        name = GetString(SI_LUIE_LAM_BUFF_NORMALIZE_HEADER),
+        name = GetString(SI_LUIE_LAM_BUFF_PRIORITY_HEADER),
         controls = {
             {
-                -- Slayer/Courage Etc Use Default
-                type = "checkbox",
-                name = GetString(SI_LUIE_LAM_GENERIC_MAJOR_MINOR),
-                tooltip = GetString(SI_LUIE_LAM_GENERIC_MAJOR_MINOR_TP),
-                getFunc = function() return Settings.GenericMajorMinor end,
-                setFunc = function(value) Settings.GenericMajorMinor = value SpellCastBuffs.UpdateMajorMinorList(true) SpellCastBuffs.ReloadEffects("player") end,
-                width = "full",
-                default = Defaults.GenericMajorMinor,
-                disabled = function() return not LUIE.SV.SpellCastBuff_Enable end,
+                -- Prominent Buffs & Debuffs Description
+                type = "description",
+                text = GetString(SI_LUIE_LAM_BUFF_PRIORITY_DESCRIPTION),
+            },
+            {
+                type = "divider",
+            },
+            {
+                type = "description",
+                text = GetString(SI_LUIE_LAM_BUFF_PRIORITY_DIALOGUE_DESCRIPT),
+            },
+            {
+                -- Priority Buffs List (Add)
+                type = "editbox",
+                name = GetString(SI_LUIE_LAM_BUFF_PRIORITY_BUFF_ADDLIST),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PRIORITY_BUFF_ADDLIST_TP),
+                getFunc = function() end,
+                setFunc = function(value) SpellCastBuffs.AddToCustomList(Settings.PriorityBuffTable, value) LUIE_Priority_Buffs_List:UpdateChoices(GenerateCustomList(Settings.PriorityBuffTable)) end,
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable ) end,
+            },
+            {
+                -- Priority Buffs List (Remove)
+                type = "dropdown",
+                name = GetString(SI_LUIE_LAM_BUFF_PRIORITY_BUFF_REMLIST),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PRIORITY_BUFF_REMLIST_TP),
+                choices = PromBuffs,
+                choicesValues = PromBuffsValues,
+                scrollable = true,
+                sort = "name-up",
+                getFunc = function() LUIE_Priority_Buffs_List:UpdateChoices(GenerateCustomList(Settings.PriorityBuffTable)) end,
+                setFunc = function(value) SpellCastBuffs.RemoveFromCustomList(Settings.PriorityBuffTable, value) LUIE_Priority_Buffs_List:UpdateChoices(GenerateCustomList(Settings.PriorityBuffTable)) end,
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable ) end,
+                reference = "LUIE_Priority_Buffs_List"
+            },
+            {
+                -- Clear Priority Buffs
+                type = "button",
+                name = GetString(SI_LUIE_LAM_UF_PRIORITY_CLEAR_BUFFS),
+                tooltip = GetString(SI_LUIE_LAM_UF_PRIORITY_CLEAR_BUFFS_TP),
+                func = function() ZO_Dialogs_ShowDialog("LUIE_CLEAR_PRIORITY_BUFFS") end,
+                width = "half",
+            },
+            {
+                -- Priority Debuffs List (Add)
+                type = "editbox",
+                name = GetString(SI_LUIE_LAM_BUFF_PRIORITY_DEBUFF_ADDLIST),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PRIORITY_DEBUFF_ADDLIST_TP),
+                getFunc = function() end,
+                setFunc = function(value) SpellCastBuffs.AddToCustomList(Settings.PriorityDebuffTable, value) LUIE_Priority_Debuffs_List:UpdateChoices(GenerateCustomList(Settings.PriorityDebuffTable)) end,
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable ) end,
+            },
+            {
+                -- Priority Debuffs List (Remove)
+                type = "dropdown",
+                name = GetString(SI_LUIE_LAM_BUFF_PRIORITY_DEBUFF_REMLIST),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PRIORITY_DEBUFF_REMLIST_TP),
+                choices = PromDebuffs,
+                choicesValues = PromDebuffsValues,
+                scrollable = true,
+                sort = "name-up",
+                getFunc = function() LUIE_Priority_Debuffs_List:UpdateChoices(GenerateCustomList(Settings.PriorityDebuffTable)) end,
+                setFunc = function(value) SpellCastBuffs.RemoveFromCustomList(Settings.PriorityDebuffTable, value) LUIE_Priority_Debuffs_List:UpdateChoices(GenerateCustomList(Settings.PriorityDebuffTable)) end,
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable ) end,
+                reference = "LUIE_Priority_Debuffs_List"
+            },
+            {
+                -- Clear Priority Debuffs
+                type = "button",
+                name = GetString(SI_LUIE_LAM_UF_PRIORITY_CLEAR_DEBUFFS),
+                tooltip = GetString(SI_LUIE_LAM_UF_PRIORITY_CLEAR_DEBUFFS_TP),
+                func = function() ZO_Dialogs_ShowDialog("LUIE_CLEAR_PRIORITY_DEBUFFS") end,
+                width = "half",
             },
        },
     }
@@ -1396,6 +1820,30 @@ function SpellCastBuffs.CreateSettings()
                 default = {r=Settings.ProminentProgressBuffC2[1], g=Settings.ProminentProgressBuffC2[2], b=Settings.ProminentProgressBuffC2[3]},
                 disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.ProminentProgress ) end,
             },
+
+            {
+                -- Prominent Buffs Gradient Color 1 (Priority)
+                type    = "colorpicker",
+                name    = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_PROM_COLORBUFFPRIORITY1)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_COLORBUFFPRIORITY1_TP),
+                getFunc = function() return unpack(Settings.ProminentProgressBuffPriorityC1) end,
+                setFunc = function(r, g, b, a) Settings.ProminentProgressBuffPriorityC1 = { r, g, b, a } SpellCastBuffs.Reset() end,
+                width = "half",
+                default = {r=Settings.ProminentProgressBuffPriorityC1[1], g=Settings.ProminentProgressBuffPriorityC1[2], b=Settings.ProminentProgressBuffPriorityC1[3]},
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.ProminentProgress ) end,
+            },
+            {
+                -- Prominent Buffs Gradient Color 2 (Priority)
+                type    = "colorpicker",
+                name    = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_PROM_COLORBUFFPRIORITY2)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_COLORBUFFPRIORITY2_TP),
+                getFunc = function() return unpack(Settings.ProminentProgressBuffPriorityC2) end,
+                setFunc = function(r, g, b, a) Settings.ProminentProgressBuffPriorityC2 = { r, g, b, a } SpellCastBuffs.Reset() end,
+                width = "half",
+                default = {r=Settings.ProminentProgressBuffPriorityC2[1], g=Settings.ProminentProgressBuffPriorityC2[2], b=Settings.ProminentProgressBuffPriorityC2[3]},
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.ProminentProgress ) end,
+            },
+
             {
                 -- Prominent Debuffs Gradient Color 1
                 type    = "colorpicker",
@@ -1418,6 +1866,30 @@ function SpellCastBuffs.CreateSettings()
                 default = {r=Settings.ProminentProgressDebuffC2[1], g=Settings.ProminentProgressDebuffC2[2], b=Settings.ProminentProgressDebuffC2[3]},
                 disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.ProminentProgress ) end,
             },
+
+            {
+                -- Prominent Debuffs Gradient Color 1 (Priority)
+                type    = "colorpicker",
+                name    = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_PROM_COLORDEBUFFPRIORITY1)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_COLORDEBUFFPRIORITY1_TP),
+                getFunc = function() return unpack(Settings.ProminentProgressDebuffPriorityC1) end,
+                setFunc = function(r, g, b, a) Settings.ProminentProgressDebuffPriorityC1 = { r, g, b, a } SpellCastBuffs.Reset() end,
+                width = "half",
+                default = {r=Settings.ProminentProgressDebuffPriorityC1[1], g=Settings.ProminentProgressDebuffPriorityC1[2], b=Settings.ProminentProgressDebuffPriorityC1[3]},
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.ProminentProgress ) end,
+            },
+            {
+                -- Prominent Debuffs Gradient Color 2 (Priority)
+                type    = "colorpicker",
+                name    = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_BUFF_PROM_COLORDEBUFFPRIORITY2)),
+                tooltip = GetString(SI_LUIE_LAM_BUFF_PROM_COLORDEBUFFPRIORITY2_TP),
+                getFunc = function() return unpack(Settings.ProminentProgressDebuffPriorityC2) end,
+                setFunc = function(r, g, b, a) Settings.ProminentProgressDebuffPriorityC2 = { r, g, b, a } SpellCastBuffs.Reset() end,
+                width = "half",
+                default = {r=Settings.ProminentProgressDebuffPriorityC2[1], g=Settings.ProminentProgressDebuffPriorityC2[2], b=Settings.ProminentProgressDebuffPriorityC2[3]},
+                disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and Settings.ProminentProgress ) end,
+            },
+
             {
                 -- Prominent Buffs Label/Progress Bar Direction
                 type = "dropdown",
@@ -1443,6 +1915,9 @@ function SpellCastBuffs.CreateSettings()
                 width = "full",
                 default = Defaults.ProminentDebuffLabelDirection,
                 disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable and (Settings.ProminentLabel or Settings.ProminentProgress) ) end,
+            },
+            {
+                type = "divider",
             },
             {
                 type = "description",
@@ -1472,6 +1947,14 @@ function SpellCastBuffs.CreateSettings()
                 reference = "LUIE_Prominent_Buffs_List"
             },
             {
+                -- Clear Prominent Buffs
+                type = "button",
+                name = GetString(SI_LUIE_LAM_UF_PROMINENT_CLEAR_BUFFS),
+                tooltip = GetString(SI_LUIE_LAM_UF_PROMINENT_CLEAR_BUFFS_TP),
+                func = function() ZO_Dialogs_ShowDialog("LUIE_CLEAR_PROMINENT_BUFFS") end,
+                width = "half",
+            },
+            {
                 -- Prominent Debuffs List (Add)
                 type = "editbox",
                 name = GetString(SI_LUIE_LAM_BUFF_PROM_DEBUFF_ADDLIST),
@@ -1493,6 +1976,14 @@ function SpellCastBuffs.CreateSettings()
                 setFunc = function(value) SpellCastBuffs.RemoveFromCustomList(Settings.PromDebuffTable, value) LUIE_Prominent_Debuffs_List:UpdateChoices(GenerateCustomList(Settings.PromDebuffTable)) end,
                 disabled = function() return not ( LUIE.SV.SpellCastBuff_Enable ) end,
                 reference = "LUIE_Prominent_Debuffs_List"
+            },
+            {
+                -- Clear Prominent Debuffs
+                type = "button",
+                name = GetString(SI_LUIE_LAM_UF_PROMINENT_CLEAR_DEBUFFS),
+                tooltip = GetString(SI_LUIE_LAM_UF_PROMINENT_CLEAR_DEBUFFS_TP),
+                func = function() ZO_Dialogs_ShowDialog("LUIE_CLEAR_PROMINENT_DEBUFFS") end,
+                width = "half",
             },
        },
     }
@@ -1547,7 +2038,7 @@ function SpellCastBuffs.CreateSettings()
                 type = "button",
                 name = GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR),
                 tooltip = GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_TP),
-                func = function() SpellCastBuffs.ClearCustomList(Settings.BlacklistTable) LUIE_Blacklist:UpdateChoices(GenerateCustomList(Settings.BlacklistTable)) end,
+                func = function() ZO_Dialogs_ShowDialog("LUIE_CLEAR_ABILITY_BLACKLIST") end,
                 width = "half",
             },
             {

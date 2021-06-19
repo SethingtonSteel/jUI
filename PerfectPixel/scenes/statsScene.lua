@@ -49,7 +49,6 @@ PP.statsScene = function()
 	ZO_ClaimLevelUpRewardsScreen_KeyboardTitleDivider:SetHidden(true)
 	ZO_Scroll_SetMaxFadeDistance(ZO_ClaimLevelUpRewardsScreen_KeyboardList, PP.SV.list_skin.list_fade_distance)
 
-	-- PP.ListBackdrop(ZO_ClaimLevelUpRewardsScreen_KeyboardList, -11, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 10, 10, 10, .6, --[[edge]] 30, 30, 30, .6)
 	PP.ScrollBar(ZO_ClaimLevelUpRewardsScreen_KeyboardList, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 
 --ZO_KEYBOARD_UPCOMING_LEVEL_UP_REWARDS

@@ -5,6 +5,9 @@ PP.craftStationScenes = function()
 	}
 	local SV = ZO_SavedVars:NewAccountWide(PP.ADDON_NAME, SV_VER, "CraftStations", DEF, GetWorldName())
 
+	local TopOffsetY			= 110
+	local BottomOffsetY			= -90
+
 --===============================================================================================--
 --==ZO_WritAdvisor==--
 	local waTLC = ZO_WritAdvisor_Keyboard_TopLevel
@@ -26,43 +29,33 @@ PP.craftStationScenes = function()
 	PP:ForceRemoveFragment(SMITHING_SCENE, THIN_LEFT_PANEL_BG_FRAGMENT)
 	PP:ForceRemoveFragment(SMITHING_SCENE, MEDIUM_LEFT_PANEL_BG_FRAGMENT)
 
-	PP:CreateBackground(ZO_SmithingTopLevelRefinementPanel,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
-	PP:CreateBackground(ZO_SmithingTopLevelDeconstructionPanel,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
-	PP:CreateBackground(ZO_SmithingTopLevelImprovementPanel,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
-	PP:CreateBackground(ZO_SmithingTopLevelCreationPanel,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
-	PP:CreateBackground(ZO_SmithingTopLevelResearchPanel,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(ZO_SmithingTopLevelRefinementPanel,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
+	PP:CreateBackground(ZO_SmithingTopLevelDeconstructionPanel,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
+	PP:CreateBackground(ZO_SmithingTopLevelImprovementPanel,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
+	PP:CreateBackground(ZO_SmithingTopLevelCreationPanel,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
+	PP:CreateBackground(ZO_SmithingTopLevelResearchPanel,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
 
 	for _, v in ipairs(smithingTab) do
 		PP.ScrollBar(v:GetNamedChild("InventoryBackpack"),	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 		PP.Anchor(v:GetNamedChild("Inventory"), --[[#1]] TOPLEFT, v, TOPLEFT, 0, 0, --[[#2]] true, BOTTOMRIGHT, v, BOTTOMRIGHT, 0, 0)
-		PP.Anchor(v, --[[#1]] TOPRIGHT, ZO_SmithingTopLevel, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, ZO_SmithingTopLevel, BOTTOMRIGHT, 0, -80)
+		PP.Anchor(v, --[[#1]] TOPRIGHT, ZO_SmithingTopLevel, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, ZO_SmithingTopLevel, BOTTOMRIGHT, 0, BottomOffsetY)
 		PP.Anchor(v:GetNamedChild("InventoryFilterDivider"),	--[[#1]] TOP, v:GetNamedChild("Inventory"), TOP, 0, 60)
 	end
 	PP.Anchor(ZO_SmithingTopLevelImprovementPanelInventory, --[[#1]] TOPLEFT, ZO_SmithingTopLevelImprovementPanel, TOPLEFT, 0, 0, --[[#2]] true, BOTTOMRIGHT, ZO_SmithingTopLevelImprovementPanel, BOTTOMRIGHT, 0, -145)
 	ZO_SmithingTopLevelImprovementPanelBoosterContainerDivider:SetHidden(true)
 
-	PP.Anchor(ZO_SmithingTopLevelCreationPanel, --[[#1]] TOPRIGHT, ZO_SmithingTopLevel, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, ZO_SmithingTopLevel, BOTTOMRIGHT, 0, -80)
+	PP.Anchor(ZO_SmithingTopLevelCreationPanel, --[[#1]] TOPRIGHT, ZO_SmithingTopLevel, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, ZO_SmithingTopLevel, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Anchor(ZO_SmithingTopLevelCreationPanelTabsDivider,	--[[#1]] TOP, ZO_SmithingTopLevelCreationPanel, TOP, 0, 60)
 
-	PP.Anchor(ZO_SmithingTopLevelResearchPanel, --[[#1]] TOPRIGHT, ZO_SmithingTopLevel, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, ZO_SmithingTopLevel, BOTTOMRIGHT, 0, -80)
-	PP.Anchor(ZO_SmithingTopLevelResearchPanelResearchLineList,	--[[#1]] TOP, ZO_SmithingTopLevelResearchPanel, TOP, 0, 60)
-	ZO_SmithingTopLevelResearchPanelButtonDivider:SetHidden(true)
-	ZO_SmithingTopLevelResearchPanelContainerDivider:SetHidden(true)
+	PP.Anchor(ZO_SmithingTopLevelResearchPanel, --[[#1]] TOPRIGHT, ZO_SmithingTopLevel, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, ZO_SmithingTopLevel, BOTTOMRIGHT, 0, BottomOffsetY)
+	PP.Anchor(ZO_SmithingTopLevelResearchPanelResearchLineList,	--[[#1]] TOP, ZO_SmithingTopLevelResearchPanel, TOP, 0, 104)
 
-	--AdvancedFilters compatibility
-	if AdvancedFilters then
-		local function delayReanchorForResearchAdvancedFilters(delay)
-			zo_callLater(function()
-				PP.Anchor(ZO_SmithingTopLevelResearchPanelResearchLineListList, TOP, ZO_SmithingTopLevelResearchPanelResearchLineListSelectedLabel, BOTTOM, 0, 0)
-			end, delay)
-		end
-		ZO_PostHookHandler(SMITHING.researchPanel.control, "OnEffectivelyShown", function() delayReanchorForResearchAdvancedFilters(60) end)
-		--ZO_SmithingTopLevelResearchPanelResearchLineListSelectedLabel:SetHandler("OnEffectivelyShown", function() delayReanchorForResearchAdvancedFilters(60) end, "PerfectPixel")
-		SecurePostHook(SMITHING.researchPanel, "ChangeTypeFilter", function() delayReanchorForResearchAdvancedFilters(60) end)
-	end
+	PP.Anchor(ZO_SmithingTopLevelResearchPanelButtonDivider, --[[#1]] TOP, ZO_SmithingTopLevelResearchPanel, TOP, 0, 60)
 
 	PP.Anchor(ZO_SmithingTopLevelModeMenu, --[[#1]] BOTTOM, ZO_SmithingTopLevelRefinementPanel, TOP, -40, 0)
 
+	-- PP.Anchor(ZO_SmithingTopLevelDeconstructionPanelInventorySortBy, --[[#1]] nil, nil, nil, -8, nil)
+	
 --===============================================================================================--
 --==KEYBOARD_RETRAIT_ROOT_SCENE==-- --==SCENE_MANAGER:GetScene('retrait_keyboard_root')==--ZO_RETRAIT_KEYBOARD
 	local retrait_station	= ZO_RETRAIT_STATION_KEYBOARD
@@ -77,11 +70,11 @@ PP.craftStationScenes = function()
 	PP:ForceRemoveFragment(KEYBOARD_RETRAIT_ROOT_SCENE, RIGHT_BG_FRAGMENT)
 	PP:ForceRemoveFragment(KEYBOARD_RETRAIT_ROOT_SCENE, TREE_UNDERLAY_FRAGMENT)
 	
-	PP:CreateBackground(retrait_panel.control,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(retrait_panel.control,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
 
 	PP.ScrollBar(ZO_RetraitStation_KeyboardTopLevelRetraitPanelInventoryBackpack,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 
-	PP.Anchor(ZO_RetraitStation_KeyboardTopLevelRetraitPanel, --[[#1]] TOPRIGHT, ZO_RetraitStation_KeyboardTopLevel, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, ZO_RetraitStation_KeyboardTopLevel, BOTTOMRIGHT, 0, -80)
+	PP.Anchor(ZO_RetraitStation_KeyboardTopLevelRetraitPanel, --[[#1]] TOPRIGHT, ZO_RetraitStation_KeyboardTopLevel, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, ZO_RetraitStation_KeyboardTopLevel, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Anchor(ZO_RetraitStation_KeyboardTopLevelRetraitPanelInventory, --[[#1]] TOPLEFT, ZO_RetraitStation_KeyboardTopLevelRetraitPanel, TOPLEFT, 0, 0, --[[#2]] true, BOTTOMRIGHT, ZO_RetraitStation_KeyboardTopLevelRetraitPanel, BOTTOMRIGHT, 0, 0)
 
 	function retrait_station:RefreshModeMenuAnchors() end
@@ -98,14 +91,9 @@ PP.craftStationScenes = function()
 	PP.Anchor(ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerBG, --[[#1]] TOPLEFT, traitList, TOPLEFT, -6, -6, --[[#2]] true, BOTTOMRIGHT, traitList, BOTTOMRIGHT, 0, 6)
 	PP.Anchor(ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerSelectTraitLabel, --[[#1]] BOTTOM, traitContainer, TOP, 0, -6)
 
-	-- PP.ListBackdrop(traitList, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
 	PP.ScrollBar(traitList,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 
-	-- traitContainer:SetDrawLayer(0)
-	-- traitContainer:SetHeight(400)
-	
-	PP.Font(ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerSelectTraitLabel, --[[Font]] PP.f.Expressway, 22, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-	
+PP.Font(ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerSelectTraitLabel, --[[Font]] PP.f.Expressway, 22, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)	
 	ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerDivider:SetHidden(true)
 	ZO_RetraitStation_KeyboardTopLevelRetraitPanelTraitContainerBGMungeOverlay:SetHidden(true)
 
@@ -156,11 +144,9 @@ PP.craftStationScenes = function()
 	ENCHANTING_SCENE:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
 	ENCHANTING_SCENE:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
 
-	PP:CreateBackground(ZO_EnchantingTopLevelInventory,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
-
+	PP:CreateBackground(ZO_EnchantingTopLevelInventory,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
 	PP.ScrollBar(ZO_EnchantingTopLevelInventoryBackpack,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
-
-	PP.Anchor(ZO_EnchantingTopLevelInventory,				--[[#1]] TOPRIGHT, ZO_EnchantingTopLevel, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, ZO_EnchantingTopLevel, BOTTOMRIGHT, 0, -80)
+	PP.Anchor(ZO_EnchantingTopLevelInventory,				--[[#1]] TOPRIGHT, ZO_EnchantingTopLevel, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, ZO_EnchantingTopLevel, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Anchor(ZO_EnchantingTopLevelModeMenu,				--[[#1]] BOTTOM, ZO_EnchantingTopLevelInventory, TOP, -40, 0)
 	PP.Anchor(ZO_EnchantingTopLevelInventoryFilterDivider,	--[[#1]] TOP, ZO_EnchantingTopLevelInventory, TOP, 0, 60)
 
@@ -169,13 +155,9 @@ PP.craftStationScenes = function()
 	ALCHEMY_SCENE:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
 	ALCHEMY_SCENE:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_MEDIUM_LEFT_PANEL_FRAGMENT)
 
-	PP:CreateBackground(ZO_AlchemyTopLevelInventory,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
-
-	-- PP.ListBackdrop(ZO_EnchantingTopLevelInventoryBackpack, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-	-- PP.ScrollBar(ZO_EnchantingTopLevelInventoryBackpack,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
-
-	PP.Anchor(ZO_AlchemyTopLevelInventory,				--[[#1]] TOPRIGHT, ZO_AlchemyTopLevel, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, ZO_AlchemyTopLevel, BOTTOMRIGHT, 0, -80)
-	
+	PP:CreateBackground(ZO_AlchemyTopLevelInventory,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
+	PP.ScrollBar(ZO_AlchemyTopLevelInventoryBackpack,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
+	PP.Anchor(ZO_AlchemyTopLevelInventory,				--[[#1]] TOPRIGHT, ZO_AlchemyTopLevel, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, ZO_AlchemyTopLevel, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Anchor(ZO_AlchemyTopLevelModeMenu,				--[[#1]] BOTTOM, ZO_AlchemyTopLevelInventory, TOP, -40, 0)
 	PP.Anchor(ZO_AlchemyTopLevelInventoryFilterDivider,	--[[#1]] TOP, ZO_AlchemyTopLevelInventory, TOP, 0, 60)
 
@@ -183,7 +165,8 @@ PP.craftStationScenes = function()
 --==PROVISIONER_SCENE==-- --==SCENE_MANAGER:GetScene('provisioner')==--
 	PROVISIONER_SCENE:RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
 	PROVISIONER_SCENE:AddFragment(FRAME_TARGET_BLUR_CENTERED_FRAGMENT)
-
+	
+	local PROVISIONER				= PROVISIONER
 	local ingredientRowsContainer	= PROVISIONER.ingredientRowsContainer
 	local ingredientRows			= PROVISIONER.ingredientRows
 	local multiCraftContainer		= PROVISIONER.multiCraftContainer
@@ -193,66 +176,29 @@ PP.craftStationScenes = function()
 
 	local provisionerPanel = CreateControl("$(parent)Panel", ZO_ProvisionerTopLevel, CT_CONTROL)
 	provisionerPanel:SetWidth(565)
-	PP.Anchor(provisionerPanel,				--[[#1]] TOPRIGHT, ZO_ProvisionerTopLevel, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, ZO_ProvisionerTopLevel, BOTTOMRIGHT, 0, -80)
-	PP:CreateBackground(provisionerPanel,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP.Anchor(provisionerPanel,				--[[#1]] TOPRIGHT, ZO_ProvisionerTopLevel, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, ZO_ProvisionerTopLevel, BOTTOMRIGHT, 0, BottomOffsetY)
+	PP:CreateBackground(provisionerPanel,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6, true)
 
 	PP.Anchor(ZO_ProvisionerTopLevelTabs, --[[#1]] TOPRIGHT, provisionerPanel, TOPRIGHT, -33, 14)
-	ZO_ProvisionerTopLevelTabs["m_object"]["m_buttonPadding"] = -5
-	ZO_ProvisionerTopLevelTabs["m_object"]["m_point"] = 8
-	ZO_ProvisionerTopLevelTabs["m_object"]["m_relativePoint"] = 2
+	ZO_ProvisionerTopLevelTabs.m_object.m_buttonPadding = -5
+	ZO_ProvisionerTopLevelTabs.m_object.m_point = 8
+	ZO_ProvisionerTopLevelTabs.m_object.m_relativePoint = 2
 	PP.Anchor(ZO_ProvisionerTopLevelTabsLabel,	--[[#1]] RIGHT, ZO_ProvisionerTopLevelTabs, LEFT, -20, 0)
-	PP.Anchor(ZO_ProvisionerTopLevelInfoBar, --[[#1]] TOPLEFT,	provisionerPanel, BOTTOMLEFT, 0, 0,	--[[#2]] true, TOPRIGHT, provisionerPanel, BOTTOMRIGHT, 0, 0)
 
-	PP.Anchor(ZO_ProvisionerTopLevelNavigationContainer, --[[#1]] TOPRIGHT,	provisionerPanel, TOPRIGHT, 0, 100,	--[[#2]] true, BOTTOMRIGHT, provisionerPanel, BOTTOMRIGHT, 0, 0)
+	PP.Anchor(ZO_ProvisionerTopLevelNavigationContainer, --[[#1]] TOPRIGHT,	provisionerPanel, TOPRIGHT, 0, TopOffsetY,	--[[#2]] true, BOTTOMRIGHT, provisionerPanel, BOTTOMRIGHT, 0, 0)
 	ZO_ProvisionerTopLevelNavigationContainer:SetWidth(565)
 	PP.ScrollBar(ZO_ProvisionerTopLevelNavigationContainer,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 	ZO_Scroll_SetMaxFadeDistance(ZO_ProvisionerTopLevelNavigationContainer, 10)
 	
-	ZO_ProvisionerTopLevelDetailsIngredientsLabel:SetHidden(true)
-	-- ZO_ProvisionerTopLevelNavigationDivider:SetHidden(true)
 	ZO_ProvisionerTopLevelDetailsDivider:SetHidden(true)
-	-- ZO_ProvisionerTopLevelMenuBarDivider:SetHidden(true
 
-	PP.Anchor(ZO_ProvisionerTopLevelNavigationDivider,	--[[#1]] nil, nil, nil, 0, 34)
+	PP.Anchor(ZO_ProvisionerTopLevelNavigationDivider,	--[[#1]] nil, nil, nil, 0, 40)
 	PP.Anchor(ZO_ProvisionerTopLevelMenuBarDivider,	--[[#1]] TOP, provisionerPanel, TOP, 0, 60)
 
-	PP.Anchor(ZO_ProvisionerTopLevelHaveIngredients,	--[[#1]] BOTTOMLEFT, ZO_ProvisionerTopLevelNavigationContainer, TOPLEFT, 6, -14)
-	PP.Anchor(ZO_ProvisionerTopLevelHaveSkills,			--[[#1]] LEFT, ZO_ProvisionerTopLevelHaveIngredientsLabel, RIGHT, 20, 0)
-
-	-- PP.Anchor(ZO_ProvisionerTopLevelTooltip, --[[#1]] BOTTOM, ZO_ProvisionerTopLevel, BOTTOM, 0, -300)
-	PP.Anchor(detailsPane, --[[#1]] BOTTOM, ZO_ProvisionerTopLevel, BOTTOM, 0, -160)
-	-- detailsPane:SetHidden(true)
-	ZO_PreHook(resultTooltip, 'SetHidden', function(self, hidden)
-		detailsPane:SetHidden(hidden)
-	end)
-
-	ZO_ProvisionerTopLevelDetailsIngredients:SetScale(1)
-	ZO_ProvisionerTopLevelDetailsIngredients:SetParent(detailsPane)
-
-	PP.Anchor(ingredientRowsContainer, --[[#1]] BOTTOM, multiCraftContainer, TOP, 0, 20)
-	PP.Anchor(resultTooltip, --[[#1]] BOTTOM, ingredientRowsContainer, TOP, 0, 10)
-
-	---PROVISIONER.ingredientRowsContainer
-    local ingredientAnchor = ZO_Anchor:New(TOPLEFT, ingredientRowsContainer, TOPLEFT, 0, 0)
-
-	local PROVISIONER_SLOT_ROW_WIDTH = 220
-	local PROVISIONER_SLOT_ROW_HEIGHT = 48
-
-	for i = 1, #ingredientRows do
-		local slot = ingredientRows[i]
-		ZO_Anchor_BoxLayout(ingredientAnchor, slot["control"], i - 1, 3, 3, 3, PROVISIONER_SLOT_ROW_WIDTH, PROVISIONER_SLOT_ROW_HEIGHT, 0, 0)
-
-		slot["control"]:SetDimensions(PROVISIONER_SLOT_ROW_WIDTH, PROVISIONER_SLOT_ROW_HEIGHT)
-		slot["control"]:GetNamedChild("Bg"):SetColor(5/255, 5/255, 5/255, .7)
-		slot["icon"]:SetDimensions(40, 40)
-		PP.Font(slot["nameLabel"], --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-		slot["countControl"]:SetHeight(PROVISIONER_SLOT_ROW_HEIGHT)
-		PP.Font(slot["countFractionDisplay"]["numeratorLabel"], --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-		PP.Font(slot["countFractionDisplay"]["denominatorLabel"], --[[Font]] PP.f.Expressway, 15, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
-	end
+	PP.Anchor(ZO_ProvisionerTopLevelHaveIngredients,		--[[#1]] nil, nil, nil, 30, 14)
 --------------------------------------
-	ZO_PreHook(ZO_Provisioner, "ConfigureFromSettings", function(self, settings)
 	-- function ZO_Provisioner:ConfigureFromSettings(settings)
+	ZO_PreHook(ZO_Provisioner, "ConfigureFromSettings", function(self, settings)
 		if self.settings ~= settings then
 			self.settings = settings
 
@@ -274,10 +220,10 @@ PP.craftStationScenes = function()
 		treeHeader.setupFunction = function(node, control, data, open, userRequested, enabled)
 			existingSetupCallback(node, control, data, open, userRequested, enabled)
 			control:SetHeight(48)
-			control["text"]:SetDimensionConstraints(0, 0, 400, 0)
+			control.text:SetDimensionConstraints(0, 0, 400, 0)
 		end
 	end
-	do
+	-- do
 		-- ["ZO_ProvisionerNavigationEntry"]
 		-- TreeEntrySetup(node, control, data, open, userRequested, enabled)
 		-- local treeHeader = recipeTree["templateInfo"]["ZO_ProvisionerNavigationEntry"]
@@ -297,93 +243,149 @@ PP.craftStationScenes = function()
 				-- control:SetText(string.rep(" " , 8) .. "   " .. text)
 			-- end
 		-- end
-	end
+	-- end
 	
 --------------------------------------
-	local buttonT = CreateControlFromVirtual("$(parent)ShowTooltip", ZO_ProvisionerTopLevel, "ZO_CheckButton")
-	buttonT:SetAnchor(LEFT, ZO_ProvisionerTopLevelHaveIngredientsLabel, LEFT, 0, -50)
-	ZO_CheckButton_SetLabelText(buttonT, GetString(PP_LAM_CRAFT_STATIONS_PROVISIONER_SHOWTOOLTIP))
+	detailsPane:SetHidden(true)
+	PROVISIONER.ingredientRows = {}
 
-	local function OnAutoCheckChanged()
-		SV.Provisioner_ShowTooltip = ZO_CheckButton_IsChecked(buttonT)
+--========================================================================	
+	local function OnCheckChanged()
+		local var = SV.Provisioner_ShowTooltip == false and true or false
+		SV.Provisioner_ShowTooltip = var
+		return var
 	end
 
-	ZO_CheckButton_SetToggleFunction(buttonT, OnAutoCheckChanged)
-	ZO_CheckButton_SetCheckState(buttonT, SV.Provisioner_ShowTooltip)
+	local cTooltip	= PP:CreateAnimatedButton(provisionerPanel, TOPLEFT, nil, TOPLEFT, 4, 10, "esoui/art/menubar/gamepad/gp_playermenu_icon_tutorial.dds", 32, 32, GetString(PP_LAM_CRAFT_STATIONS_PROVISIONER_SHOWTOOLTIP), SV.Provisioner_ShowTooltip, OnCheckChanged)
+	-- local cIngr		= PP:CreateAnimatedButton(ZO_ProvisionerTopLevelHaveIngredients, LEFT, cTooltip, RIGHT, 6, 0, "esoui/art/inventory/gamepad/gp_inventory_icon_miscellaneous.dds", 32, 32, GetString(SI_CRAFTING_HAVE_INGREDIENTS_TOOLTIP))
+	-- local cSkills	= PP:CreateAnimatedButton(ZO_ProvisionerTopLevelHaveSkills, LEFT, cIngr, RIGHT, 6, 0, "esoui/art/inventory/gamepad/gp_inventory_icon_materials.dds", 32, 32, GetString(SI_CRAFTING_HAVE_SKILLS_TOOLTIP))
+	-- PP:CreateAnimatedButton(ZO_ProvisionerTopLevelIsQuestItem, LEFT, cSkills, RIGHT, 6, 0, "esoui/art/inventory/gamepad/gp_inventory_icon_quest.dds", 32, 32, GetString(SI_CRAFTING_IS_QUEST_ITEM_TOOLTIP))
+	
+	-- PP:CreateAnimatedButton(ZO_SmithingTopLevelDeconstructionPanelInventoryIncludeBanked, nil, nil, nil, 20, 20, "/esoui/art/icons/servicemappins/servicepin_bank.dds", 32, 32)
+	--========================================================================
+	local _, _, maxWidth = resultTooltip:GetDimensionConstraints()
 
-	PROVISIONER.ingredientTooltipRow = {}
-	local _, _, maxWidth = ItemTooltip:GetDimensionConstraints()
-	for i = 1, GetMaxRecipeIngredients() do
-		local control = CreateControl("$(parent)IngredientTooltipRow" .. i, ingredientRowsContainer, CT_CONTROL)
+	local function Create(pool, objectKey)
+		local control	= CreateControl(nil, GuiRoot, CT_CONTROL)
+		local name		= CreateControl(nil, control, CT_LABEL)
+		local count		= CreateControl(nil, control, CT_LABEL)
+
+		control:SetHidden(true)
 		control:SetWidth(maxWidth)
 
-		control.name = CreateControl("$(parent)Name", control, CT_LABEL)
-		local name = control.name
 		name:SetFont(PP.f.Expressway)
 		name:SetAnchor(LEFT, control, LEFT, 5, 0)
+		name:SetAnchor(RIGHT, count, LEFT, -12, 0)
 		name:SetMaxLineCount(1)
 		name:SetWrapMode(TEXT_WRAP_MODE_ELLIPSIS)
 		name:SetHorizontalAlignment(TEXT_ALIGN_LEFT)
 
-		control.count = CreateControl("$(parent)Count", control, CT_LABEL)
-		local count = control.count
 		count:SetFont("PP.f.Expressway")
 		count:SetAnchor(RIGHT, control, RIGHT, -5, 0)
 		count:SetMaxLineCount(1)
 		count:SetWrapMode(TEXT_WRAP_MODE_ELLIPSIS)
 		count:SetHorizontalAlignment(TEXT_ALIGN_RIGHT)
 
-		name:SetAnchor(RIGHT, count, LEFT, -12, 0)
+		control.name	= name
+		control.count	= count
+		
+		return control
+	end
 
-		table.insert(PROVISIONER.ingredientTooltipRow, control)
+	local function Reset(control, pool)
+		control:SetHidden(true)
+		control:ClearAnchors()
+	end
+
+	PROVISIONER.ingredientRowsPool	= ZO_ObjectPool:New(Create, Reset)
+	local ingredientRowsPool		= PROVISIONER.ingredientRowsPool
+
+	ingredientRowsPool.customAcquireBehavior = function(control, key)
+		control:SetHidden(false)
+	end
+
+	function ingredientRowsPool:ReleaseIngredientRowsTo(listId)
+		list = self[listId]
+		for i = 1, #list do
+			self:ReleaseObject(list[i])
+		end
+		self[listId] = {}
+	end
+
+	function PROVISIONER:AddIngredientRowsTooltip(tooltip, numIngredients, recipeListIndex, recipeIndex, listId)
+		local ingredientRowsPool = self.ingredientRowsPool
+		
+		if not ingredientRowsPool[listId] then
+			ingredientRowsPool[listId] = {}
+		end
+		
+		ingredientRowsPool:ReleaseIngredientRowsTo(listId)
+
+		for ingredientIndex = 1, numIngredients do
+			local row, key									= ingredientRowsPool:AcquireObject()
+			local name, icon, requiredQuantity, _, quality	= GetRecipeIngredientItemInfo(recipeListIndex, recipeIndex, ingredientIndex)
+			local ingredientCount							= GetCurrentRecipeIngredientCount(recipeListIndex, recipeIndex, ingredientIndex)
+			local numIterations								= self:GetMultiCraftNumIterations()
+			local requiredQuantity							= numIterations > 1 and requiredQuantity * numIterations or requiredQuantity
+
+			ingredientRowsPool[listId][ingredientIndex] = key
+
+			row.name:SetText(zo_iconFormat(icon, 30, 30) .. "  " .. zo_strformat(SI_TOOLTIP_ITEM_NAME, name))
+			row.name:SetColor(GetInterfaceColor(INTERFACE_COLOR_TYPE_ITEM_QUALITY_COLORS, quality))
+			row.count:SetText(requiredQuantity .. " " .. zo_iconFormat("/esoui/art/treeicons/housing_indexicon_hearth_up.dds", 30, 30) .. string.rep(" " , 10 - string.len(ingredientCount) * 2) .. ingredientCount .. " " .. zo_iconFormat("EsoUI/Art/Tooltips/icon_craft_bag.dds", 26, 26))
+
+			tooltip:AddControl(row)
+			row:SetAnchor(CENTER)
+		end
+	end
+
+	local orig_SetProvisionerResultItem = resultTooltip.SetProvisionerResultItem
+	function resultTooltip:SetProvisionerResultItem(recipeListIndex, recipeIndex)
+		orig_SetProvisionerResultItem(self, recipeListIndex, recipeIndex)
+		local data				= PROVISIONER.recipeTree:GetSelectedData()
+		local numIngredients	= data.numIngredients
+		PROVISIONER:AddIngredientRowsTooltip(self, numIngredients, recipeListIndex, recipeIndex, 1)
 	end
 --------------------------------------
 	ZO_PreHook("ZO_ProvisionerNavigationEntry_OnMouseEnter", function(self)
-		if not SV.Provisioner_ShowTooltip then return end
-		ZO_SelectableLabel_OnMouseEnter(self)
-		InitializeTooltip(ItemTooltip, self, RIGHT, -64, 0)
+		if SV.Provisioner_ShowTooltip then
+			ZO_SelectableLabel_OnMouseEnter(self)
+			InitializeTooltip(ItemTooltip, self, RIGHT, -64, 0)
+			
+			local data				= self.data
+			local numIngredients	= data.numIngredients
+			local recipeListIndex	= data.recipeListIndex
+			local recipeIndex		= data.recipeIndex
 
-		local recipeListIndex		= self["data"]["recipeListIndex"]
-		local recipeIndex			= self["data"]["recipeIndex"]
+			ItemTooltip:SetProvisionerResultItem(recipeListIndex, recipeIndex)
+			PROVISIONER:AddIngredientRowsTooltip(ItemTooltip, numIngredients, recipeListIndex, recipeIndex, 2)
 
-		ItemTooltip:SetProvisionerResultItem(recipeListIndex, recipeIndex)
-
-		for ingredientIndex = 1, self["data"]["numIngredients"] do
-			local name, icon, requiredQuantity, _, quality = GetRecipeIngredientItemInfo(recipeListIndex, recipeIndex, ingredientIndex)
-			local ingredientCount = GetCurrentRecipeIngredientCount(recipeListIndex, recipeIndex, ingredientIndex)
-			local ingredientRow = PROVISIONER.ingredientTooltipRow[ingredientIndex]
-
-			ingredientRow.name:SetText(zo_iconFormat(icon, 30, 30) .. "  " .. zo_strformat(SI_TOOLTIP_ITEM_NAME, name))
-			ingredientRow.name:SetColor(GetInterfaceColor(INTERFACE_COLOR_TYPE_ITEM_QUALITY_COLORS, quality))
-			ingredientRow.count:SetText(requiredQuantity .. " " .. zo_iconFormat("/esoui/art/treeicons/housing_indexicon_hearth_up.dds", 30, 30) .. string.rep(" " , 10 - string.len(ingredientCount) * 2) .. ingredientCount .. " " .. zo_iconFormat("EsoUI/Art/Tooltips/icon_craft_bag.dds", 26, 26))
-
-			ItemTooltip:AddControl(ingredientRow)
-			ingredientRow:SetAnchor(CENTER)
-		end
-
-		if self.enabled and (not self.meetsLevelReq or not self.meetsQualityReq) then
-			--loop over tradeskills
-			if not self.meetsLevelReq then
-				 for tradeskill, levelReq in pairs(self.data.tradeskillsLevelReqs) do
-					local level = GetNonCombatBonus(GetNonCombatBonusLevelTypeForTradeskillType(tradeskill))
-					if level < levelReq then
-						local levelPassiveAbilityId = GetTradeskillLevelPassiveAbilityId(tradeskill)
-						local levelPassiveAbilityName = GetAbilityName(levelPassiveAbilityId)
-						ItemTooltip:AddLine(zo_strformat(SI_RECIPE_REQUIRES_LEVEL_PASSIVE, levelPassiveAbilityName, levelReq), "", ZO_ERROR_COLOR:UnpackRGBA())
+			if self.enabled and (not self.meetsLevelReq or not self.meetsQualityReq) then
+				--loop over tradeskills
+				if not self.meetsLevelReq then
+					 for tradeskill, levelReq in pairs(data.tradeskillsLevelReqs) do
+						local level = GetNonCombatBonus(GetNonCombatBonusLevelTypeForTradeskillType(tradeskill))
+						if level < levelReq then
+							local levelPassiveAbilityId = GetTradeskillLevelPassiveAbilityId(tradeskill)
+							local levelPassiveAbilityName = GetAbilityName(levelPassiveAbilityId)
+							ItemTooltip:AddLine(zo_strformat(SI_RECIPE_REQUIRES_LEVEL_PASSIVE, levelPassiveAbilityName, levelReq), "", ZO_ERROR_COLOR:UnpackRGBA())
+						end
 					end
 				end
+				if not self.meetsQualityReq then
+					ItemTooltip:AddLine(zo_strformat(SI_PROVISIONER_REQUIRES_RECIPE_QUALITY, data.qualityReq), "", ZO_ERROR_COLOR:UnpackRGBA())
+				end
 			end
-			if not self.meetsQualityReq then
-				ItemTooltip:AddLine(zo_strformat(SI_PROVISIONER_REQUIRES_RECIPE_QUALITY, self.data.qualityReq), "", ZO_ERROR_COLOR:UnpackRGBA())
-			end
+			return true
 		end
-		return true
 	end)
+
 	ZO_PreHook("ZO_ProvisionerNavigationEntry_OnMouseExit", function(self)
-		if not SV.Provisioner_ShowTooltip then return end
-		ZO_SelectableLabel_OnMouseExit(self)
-		ClearTooltip(ItemTooltip)
-		return true
+		if SV.Provisioner_ShowTooltip then
+			ZO_SelectableLabel_OnMouseExit(self)
+			ClearTooltip(ItemTooltip)
+			return true
+		end
 	end)
 --===============================================================================================--
 end

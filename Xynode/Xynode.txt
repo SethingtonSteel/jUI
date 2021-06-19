@@ -1,7 +1,7 @@
 ## Title: Xynode's All About Mechanics
 ## Description: Mechanics guides
 ## Author: XynodeGaming.com
-## Version 1.49
+## Version 1.51
 ## APIVersion: 100033 100034
 ## DependsOn: LibAddonMenu-2.0>=30
 ## SavedVariables: XynodeVariables

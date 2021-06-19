@@ -39,10 +39,11 @@ ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_JUMPHERE_CHOICE2", "Always")
 
 ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_WS_ORDER", "Order of wayshrines")
 ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_LOCATION_ORDER", "Order of locations")
+ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_SORTFAV", "Sort Favourites")
 
 ZO_CreateStringId("FASTER_TRAVEL_DIALOG_JUMPRANDOM_TITLE", "Jump elsewhere?")
 ZO_CreateStringId("FASTER_TRAVEL_DIALOG_JUMPRANDOM_TEXT", 
-"Sorry, can't jump to |cffaa00<<1>>|r.\nJump elsewhere?")
+"Sorry, can't jump to |cffaa00<<1>>|r.\nJump to a random zone?")
 ZO_CreateStringId("FASTER_TRAVEL_DIALOG_JUMPRANDOM_WARNING", 
 	"(you can turn off this question in Settings)")
 		

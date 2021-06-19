@@ -39,6 +39,16 @@ function Teleporter.dialogAutoUnlock()
 		return
 	end
 	
+	-- first check if the addon "GuildShrines" is active and if the incompatible option is set ("show unknown wayshrines" is enabled)
+	if GuildShrines_dat then
+		local sv = ZO_SavedVars:NewAccountWide("GuildShrines_dat", 1, nil, nil, nil)
+		if sv and sv.showUnknown and sv.showWayshrines then
+			-- show incompatibility dialog
+			Teleporter.showDialog("IncompatibilityGS", "Incompatibility with addon \"GuildShrines\"", "We have detected that you are using the addon \"GuildShrines\" with incompatible settings.\n\n" .. Teleporter.var.color.colRed .. "Please change the option \"Unknown Wayshrines\" to \"OFF\" in the settings of \"GuildShrines\"!|r\n\nOtherwise BeamMeUp cannot unlock unknown wayshrines.", nil, nil)
+			return
+		end
+	end
+	
 	if not Teleporter.isCurrentMapOverlandZone() then
 		-- current zone is no OverlandZone -> show dialog, that unlocking is not possible
 		Teleporter.showDialog("RefuseAutoUnlock2", SI.get(SI.TELE_DIALOG_REFUSE_AUTO_UNLOCK_TITLE2), SI.get(SI.TELE_DIALOG_REFUSE_AUTO_UNLOCK_BODY2), nil, nil)
@@ -409,8 +419,8 @@ local function _create_listview_row(self, i)
 
 
         list.frame = wm:CreateControl(nil, list, CT_TEXTURE)
-        list.frame:SetDimensions(controlWidth - 5*mTeleSavedVars.Scale, 3*mTeleSavedVars.Scale)
-        list.frame:SetAnchor(0, list, 0, LEFT, 42*mTeleSavedVars.Scale) -- ... 15
+        list.frame:SetDimensions(controlWidth + 30*mTeleSavedVars.Scale, 3*mTeleSavedVars.Scale)
+        list.frame:SetAnchor(0, list, 0, LEFT - 40*mTeleSavedVars.Scale, 42*mTeleSavedVars.Scale)
 
         list.frame:SetTexture("/esoui/art/guild/sectiondivider_left.dds")
         list.frame:SetTextureCoords(0, 1, 0, 1)
@@ -585,17 +595,17 @@ local function _initialize_listview(self, width, height, left, top)
 	
 	Teleporter.control_global.statisticGold = wm:CreateControl(name .. "_StatisticGold", Teleporter.control_global, CT_LABEL)
 	Teleporter.control_global.statisticGold:SetFont(Teleporter.font2)
-    Teleporter.control_global.statisticGold:SetAnchor(TOPLEFT, Teleporter.control_global, TOPLEFT, 15*mTeleSavedVars.Scale, 30*mTeleSavedVars.Scale)
+    Teleporter.control_global.statisticGold:SetAnchor(TOPLEFT, Teleporter.control_global, TOPLEFT, TOPLEFT-35*mTeleSavedVars.Scale, 25*mTeleSavedVars.Scale)
 	Teleporter.control_global.statisticGold:SetText(SI.get(SI.TELE_UI_GOLD) .. " " .. Teleporter.formatGold(mTeleSavedVars.savedGold))
 	
 	Teleporter.control_global.statisticTotal = wm:CreateControl(name .. "_StatisticTotal", Teleporter.control_global, CT_LABEL)
 	Teleporter.control_global.statisticTotal:SetFont(Teleporter.font2)
-    Teleporter.control_global.statisticTotal:SetAnchor(TOPLEFT, Teleporter.control_global, TOPLEFT, 15*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
+    Teleporter.control_global.statisticTotal:SetAnchor(TOPLEFT, Teleporter.control_global, TOPLEFT, TOPLEFT-35*mTeleSavedVars.Scale, 45*mTeleSavedVars.Scale)
 	Teleporter.control_global.statisticTotal:SetText(SI.get(SI.TELE_UI_TOTAL_PORTS) .. " " .. Teleporter.formatGold(mTeleSavedVars.totalPortCounter))
 		
 	Teleporter.control_global.total = wm:CreateControl(name .. "_Total", Teleporter.control_global, CT_LABEL)
     Teleporter.control_global.total:SetFont(Teleporter.font2)
-    Teleporter.control_global.total:SetAnchor(TOPLEFT, Teleporter.control_global, TOPLEFT, 15*mTeleSavedVars.Scale, 70*mTeleSavedVars.Scale)
+    Teleporter.control_global.total:SetAnchor(TOPLEFT, Teleporter.control_global, TOPLEFT, TOPLEFT-35*mTeleSavedVars.Scale, 65*mTeleSavedVars.Scale)
 
     -- slider
     local tex = self.slider_texture
@@ -627,7 +637,7 @@ local function _initialize_listview(self, width, height, left, top)
 		local control = moc() -- WINDOW_MANAGER:GetMouseOverControl()
 		-- show new tooltip
 		if control.tooltipText then
-			Teleporter:tooltipTextEnter(control, control.tooltipText, true)
+			Teleporter:tooltipTextEnter(control, control.tooltipText)
 		end
     end)
 	
@@ -774,7 +784,7 @@ function ListView:update()
 			
 				if 	#tooltipTextPlayer > 0 then
 					-- show tooltip handler
-					list.ColumnPlayerNameTooltip:SetHandler("OnMouseEnter", function(self) list.ColumnPlayerNameTooltip:SetAlpha(0.5) Teleporter:tooltipTextEnter(list.ColumnPlayerNameTooltip, tooltipTextPlayer, true) end)
+					list.ColumnPlayerNameTooltip:SetHandler("OnMouseEnter", function(self) list.ColumnPlayerNameTooltip:SetAlpha(0.5) Teleporter:tooltipTextEnter(list.ColumnPlayerNameTooltip, tooltipTextPlayer) end)
 					-- hide tooltip handler
 					list.ColumnPlayerNameTooltip:SetHandler("OnMouseExit", function(self) list.ColumnPlayerNameTooltip:SetAlpha(1) Teleporter:tooltipTextEnter(list.ColumnPlayerNameTooltip) end)
 					-- link tooltip text to control (for update on scroll / mouse wheel)
@@ -913,7 +923,7 @@ function ListView:update()
 						list.ColumnZoneNameTooltip:SetHandler("OnMouseUp", nil)
 					end
 					-- show tooltip + MouseOver handler
-					list.ColumnZoneNameTooltip:SetHandler("OnMouseEnter", function(self) Teleporter:tooltipTextEnter(list.ColumnZoneNameTooltip, tooltipTextZone, true) list.ColumnZoneNameTex:SetAlpha(0.8) end)
+					list.ColumnZoneNameTooltip:SetHandler("OnMouseEnter", function(self) Teleporter:tooltipTextEnter(list.ColumnZoneNameTooltip, tooltipTextZone) list.ColumnZoneNameTex:SetAlpha(0.8) end)
 					-- hide tooltip + MouseOver handler
 					list.ColumnZoneNameTooltip:SetHandler("OnMouseExit", function(self) Teleporter:tooltipTextEnter(list.ColumnZoneNameTooltip) list.ColumnZoneNameTex:SetAlpha(0) end)
 					-- link tooltip text to control (for update on scroll / mouse wheel)
@@ -992,9 +1002,17 @@ function ListView:update()
 					texture_normal = Teleporter.textures.raidDungeonBtn
 					texture_over = Teleporter.textures.raidDungeonBtnOver
 				elseif message.category == 6 then
-					-- Other Group Zones / Dungeons (Dragonstar, Group Dungeons in Craglorn)
+					-- Other Group Zones (Dungeons in Craglorn)
 					texture_normal = Teleporter.textures.groupZonesBtn
 					texture_over = Teleporter.textures.groupZonesBtnOver
+				elseif message.category == 7 then
+					-- Group Arenas
+					texture_normal = Teleporter.textures.groupDungeonBtn
+					texture_over = Teleporter.textures.groupDungeonBtnOver
+				elseif message.category == 8 then
+					-- Solo Arenas
+					texture_normal = Teleporter.textures.soloArenaBtn
+					texture_over = Teleporter.textures.soloArenaBtnOver
 				end
 			end
 			
@@ -1032,6 +1050,14 @@ function ListView:update()
 				else
 					list.portalToPlayerTex:SetHidden(true)
 				end
+				
+			elseif message.isDungeon then
+				-- Dungeon Finder -> use nodeIndecies instead of travel to zoneId
+				list.portalToPlayerTex:SetHidden(false)
+				list.portalToPlayerTex:SetTexture(texture_normal)
+				list.portalToPlayer:SetHandler("OnMouseEnter", function(self) list.portalToPlayerTex:SetTexture(texture_over) Teleporter:tooltipTextEnter(list.portalToPlayerTex, message.difficultyText) end)
+				list.portalToPlayer:SetHandler("OnMouseExit", function(self) list.portalToPlayerTex:SetTexture(texture_normal) Teleporter:tooltipTextEnter(list.portalToPlayerTex) end)
+				list.portalToPlayer:SetHandler("OnMouseUp", function(self, button) Teleporter.clickOnTeleportToDungeonButton(list.portalToPlayerTex, button, message) end)
 				
 			elseif message.displayName ~= "" then
 				-- player
@@ -1186,6 +1212,39 @@ end
 
 
 
+function Teleporter.clickOnTeleportToDungeonButton(textureControl, button, message)
+	-- click effect
+	textureControl:SetAlpha(0.65)
+	zo_callLater(function() textureControl:SetAlpha(1) end, 200)
+	
+	if button == MOUSE_BUTTON_INDEX_RIGHT and CanPlayerChangeGroupDifficulty() then
+		-- show context menu
+		ClearMenu()
+		AddCustomMenuItem(Teleporter.textures.dungeonDifficultyNormal .. GetString(SI_DUNGEONDIFFICULTY1), function() SetVeteranDifficulty(false) zo_callLater(function() Teleporter.clickOnTeleportToDungeonButton_2(message) end, 200) end)
+		AddCustomMenuItem(Teleporter.textures.dungeonDifficultyVeteran .. GetString(SI_DUNGEONDIFFICULTY2), function() SetVeteranDifficulty(true) zo_callLater(function() Teleporter.clickOnTeleportToDungeonButton_2(message) end, 200) end)
+		ShowMenu()		
+	else
+		-- just start teleport
+		Teleporter.clickOnTeleportToDungeonButton_2(message)
+	end
+end
+
+
+
+function Teleporter.clickOnTeleportToDungeonButton_2(message)
+	-- port to nodeIndex
+	d("[" .. Teleporter.var.appNameAbbr .. "]: " .. SI.get(SI.TELE_CHAT_TO_DUNGEON) .. " " .. message.zoneName)
+	FastTravelToNode(message.nodeIndex)
+	if mTeleSavedVars.closeOnPorting then
+		-- hide world map if open
+		SCENE_MANAGER:Hide("worldMap")
+		-- hide UI if open
+		Teleporter.HideTeleporter()
+	end
+end
+
+
+
 -- refresh in depending of current state
 function Teleporter.refreshListAuto()
 	local inputString = ""
@@ -1202,7 +1261,9 @@ function Teleporter.refreshListAuto()
 		Teleporter.createTableHouses()
 	elseif Teleporter.state == 12 then
 		Teleporter.createTablePTF()
-	elseif Teleporter.state == 13 then
+	elseif Teleporter.state == 13 then -- Guilds
+		return -- do nothing
+	elseif Teleporter.state == 14 then -- Dungeon Finder
 		return -- do nothing
 	else
 		Teleporter.createTable(Teleporter.state, inputString, Teleporter.stateZoneId, false, Teleporter.stateSourceIndex)
@@ -1251,16 +1312,12 @@ function Teleporter.clickOnZoneName(button, record)
 			if record.forceOutside then
 				toSearch = record.houseNameUnformatted
 			end
-			
-				
-			-- solve bug with "-"
-			--record.zoneName = string.gsub(record.zoneName, "-", "--")
 		
 			-- find out coordinates in order to Ping on Map (e.g. Delves, Public Dungeons)
 			local coordinate_x = 0
 			local coordinate_z = 0
 			local zoneIndex = GetZoneIndex(record.parentZoneId)
-	
+			
 			for i = 0, GetNumPOIs(zoneIndex) do
 				local e = {}
 				e.normalizedX, e.normalizedZ, e.poiPinType, e.icon, e.isShownInCurrentMap, e.linkedCollectibleIsLocked = GetPOIMapInfo(zoneIndex, i)
@@ -1271,9 +1328,15 @@ function Teleporter.clickOnZoneName(button, record)
 				local zoneNameWithArticle = string.lower(Teleporter.formatName(toSearch, false))
 				local objectiveNameWithoutArticle = string.lower(Teleporter.formatName(e.objectiveName, true))
 				local zoneNameWithoutArcticle = string.lower(Teleporter.formatName(toSearch, true))
-			
-				--if Teleporter.formatName(e.objectiveName) == record.zoneName then
-				if objectiveNameWithArticle == zoneNameWithArticle or objectiveNameWithoutArticle == zoneNameWithoutArcticle or objectiveNameWithArticle == zoneNameWithoutArcticle or objectiveNameWithoutArticle == zoneNameWithArticle then
+				
+				-- solve bug with "-"
+				if zoneNameWithArticle ~= nil then
+					zoneNameWithArticle = string.gsub(zoneNameWithArticle, "-", "--")
+				end
+				
+				-- do not find wayshsrines
+				if (string.match(string.lower(objectiveNameWithArticle), string.lower(zoneNameWithArticle)) or string.match(string.lower(objectiveNameWithArticle), string.lower(zoneNameWithoutArcticle))) and not string.match(string.lower(e.icon), string.lower("poi_wayshrine")) then
+				--if objectiveNameWithArticle == zoneNameWithArticle or objectiveNameWithoutArticle == zoneNameWithoutArcticle or objectiveNameWithArticle == zoneNameWithoutArcticle or objectiveNameWithoutArticle == zoneNameWithArticle then
 					-- Map Ping
 					PingMap(MAP_PIN_TYPE_RALLY_POINT, MAP_TYPE_LOCATION_CENTERED, e.normalizedX, e.normalizedZ)
 					--zo_callLater(function() RemoveRallyPoint() end, 6000)
@@ -1281,6 +1344,11 @@ function Teleporter.clickOnZoneName(button, record)
 			end
 		end
 	else -- button == MOUSE_BUTTON_INDEX_RIGHT
+		if record.isDungeon then
+			-- no context menu for dungeon entries so far
+			return
+		end
+		
 		ClearMenu()
 		
 		-- house tab only
@@ -1840,10 +1908,9 @@ function Teleporter.decideTryAgainPorting(errorCode, zoneId, displayName, source
 end
 
 
--- TOOLTIP
-function Teleporter:tooltipTextEnter(control, text, typeZ)
-	-- typeZ == true -> show tooltip
-    if typeZ == true then
+-- TOOLTIP (show and hide)
+function Teleporter:tooltipTextEnter(control, text)
+    if text then
         InitializeTooltip(InformationTooltip, control, LEFT, 0, 0, 0)
         InformationTooltip:SetHidden(false)
 		-- if text is table of strings -> add for each a separate line

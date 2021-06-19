@@ -1,5 +1,3 @@
-local ZGV = _G.ZGV
-
 -----------------------------------------
 -- INFORMATION
 -----------------------------------------
@@ -18,21 +16,18 @@ local ZGV = _G.ZGV
 
 	If none of these are overwritten then it will be just a very generic popup that hides itself when anything is done.
 --]]
+
 -----------------------------------------
--- LOCAL REFERENCES
+-- LOCALIZED GLOBAL VARIABLES
 -----------------------------------------
 
+local ZGV = _G.ZGV
 local tinsert,tremove,sort,zginherits,min,max,floor,type,pairs,ipairs,unpack = table.insert,table.remove,table.sort,table.zginherits,math.min,math.max,math.floor,type,pairs,ipairs,unpack
 local round = math.round
 local print = ZGV.print
 local CHAIN = ZGV.Utils.ChainCall
 local ui = ZGV.UI
 local L = ZGV.L
-
------------------------------------------
--- LOCAL VARIABLES
------------------------------------------
-
 local Popup = ZGV.Class:New("Popup")
 Popup.private = {}
 local Popup_mt = { __index = Popup }
@@ -58,20 +53,7 @@ local MIN_WIDTH = 400
 local MAX_WIDTH = 200
 
 local RESIZE_X_PADDING = 30
-local RESIZE_Y_PADDING = LOGO_Y_OFFSET + 5 --+ BUT_Y_OFFSET + TEXT_Y_OFFSET-- + 5
-
---[[
-local popupTypes = {
-	["sis"] = 0,
-	["monk"] = 1,
-	["dungeon"] = 2,
-	["mount"] = 3,
-	["gear"] = 4,
-	["panda"] = 5,
-	["loot"] = 6,
-	["default"] = 7,
-}
---]]
+local RESIZE_Y_PADDING = LOGO_Y_OFFSET + 5
 
 -----------------------------------------
 -- SAVED REFERENCES

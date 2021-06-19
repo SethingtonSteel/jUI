@@ -4,10 +4,6 @@ local internal       = _G["LibQuestData_Internal"]
 -- Local variables
 local questGiverName = nil
 local reward
-local last_map_id
-local last_zone
---local last_zone_index
-local last_map_zone_index
 -- Init saved variables table
 local GPS            = LibGPS3
 local LMP            = LibMapPins
@@ -274,6 +270,7 @@ local function has_undefined_data(info)
 end
 
 local function update_older_quest_info(source_data)
+  --internal.dm("Debug", "update_older_quest_info")
   local old_quest_giver_value = 9 -- Updated, was 9 now 6
   if not source_data then return end
   -- source data is the table of all the quests in the zone
@@ -282,24 +279,42 @@ local function update_older_quest_info(source_data)
   discard all quest information that needs updated because the new
   data is already correct
   ]]--
+  --internal.dm("Debug", #source_data)
   local result_table = {}
+  local found = false
   for num_entry, quest_entry in ipairs(source_data) do
     if #quest_entry <= 5 then
-      --d("info is in the old format add new information")
+      --internal.dm("Debug", "info is in the old format add new information")
       quest_entry[lib.quest_map_pin_index.quest_giver] = -1 -- Arbitrary number pointing to an NPC Name 81004, "Abnur Tharn"  << -1 = Undefined >>
       table.insert(result_table, quest_entry)
-    elseif #quest_entry > 6 then
+      found = true
+    end
+    if #quest_entry > 6 then
       local new_quest_entry
-      --d("info is in the new format we do nto need to add new information")
+      --internal.dm("Debug", "info is not in the old format so we need to convert it")
       new_quest_entry[lib.quest_map_pin_index.local_x]     = quest_entry[lib.quest_map_pin_index.local_x]
       new_quest_entry[lib.quest_map_pin_index.local_y]     = quest_entry[lib.quest_map_pin_index.local_y]
       new_quest_entry[lib.quest_map_pin_index.global_x]    = quest_entry[lib.quest_map_pin_index.global_x]
       new_quest_entry[lib.quest_map_pin_index.global_y]    = quest_entry[lib.quest_map_pin_index.global_y]
       new_quest_entry[lib.quest_map_pin_index.quest_id]    = quest_entry[lib.quest_map_pin_index.quest_id]
       new_quest_entry[lib.quest_map_pin_index.quest_giver] = quest_entry[old_quest_giver_value]
-      table.insert(result_table, quest_entry)
+      table.insert(result_table, new_quest_entry)
+      found = true
     end
+    if #quest_entry == 6 then
+      --internal.dm("Debug", "info is in the new format so no convertion needed")
+      table.insert(result_table, quest_entry)
+      found = true
+    end
+
+    if found then
+      --internal.dm("Debug", "We found something")
+    else
+      --internal.dm("Debug", "Shit Hit the fan")
+    end
+
   end
+  --internal.dm("Debug", #result_table)
   return result_table
 end
 
@@ -326,8 +341,8 @@ end
 
 -- Event handler function for EVENT_QUEST_REMOVED
 local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, zoneIndex, poiIndex, questID)
-  --d("OnQuestRemoved")
-  --d(questName)
+  --internal.dm("Debug", "OnQuestRemoved")
+  --internal.dm("Debug", questName)
   local quest_to_update     = nil
   local the_zone
   local the_entry
@@ -340,14 +355,14 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
     for num_entry, quest_from_table in pairs(zone_quests) do
       if quest_from_table.zone_index and quest_from_table.poi_index then
         if quest_from_table.zone_index == zoneIndex and quest_from_table.poi_index == poiIndex and quest_from_table.name == questName then
-          internal.dm("Debug", "Detailed quest info was all true")
+          --internal.dm("Debug", "Detailed quest info was all true")
           the_zone        = zone
           the_entry       = num_entry
           quest_to_update = quest_from_table
           break
         end
       elseif quest_from_table.name == questName then
-        internal.dm("Debug", "Quest name was true due to old information")
+        --internal.dm("Debug", "Quest name was true due to old information")
         the_zone        = zone
         the_entry       = num_entry
         quest_to_update = quest_from_table
@@ -361,18 +376,18 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
   end
 
   if quest_to_update.zone_name then
-    internal.dm("Debug", "zone_name: " .. quest_to_update.zone_name)
+    --internal.dm("Debug", "zone_name: " .. quest_to_update.zone_name)
   end
   if quest_to_update.zone_index then
-    internal.dm("Debug", "zone_index: " .. quest_to_update.zone_index)
-    internal.dm("Debug", "zoneIndex: " .. tostring(zoneIndex))
+    --internal.dm("Debug", "zone_index: " .. quest_to_update.zone_index)
+    --internal.dm("Debug", "zoneIndex: " .. tostring(zoneIndex))
   end
   if quest_to_update.poi_index then
-    internal.dm("Debug", "poi_index: " .. quest_to_update.poi_index)
-    internal.dm("Debug", "poiIndex: " .. tostring(poiIndex))
+    --internal.dm("Debug", "poi_index: " .. quest_to_update.poi_index)
+    --internal.dm("Debug", "poiIndex: " .. tostring(poiIndex))
   end
 
-  internal.dm("Debug", "questID: " .. questID)
+  --internal.dm("Debug", "questID: " .. questID)
   if questID >= 1 then
     if quest_to_update.questID == -1 then
       quest_to_update.questID = questID
@@ -383,8 +398,8 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
   --[[ Check if Quest Giver is an Object, Sign, Note ]]--
   LibQuestData_SavedVariables["giver_names"] = LibQuestData_SavedVariables["giver_names"] or {}
   local temp_giver                           = lib:get_giver_when_object(quest_to_update.questID)
-  --d("temp_giver was:")
-  --d(temp_giver)
+  --internal.dm("Debug", "temp_giver was:")
+  --internal.dm("Debug", temp_giver)
   if internal:is_empty_or_nil(temp_giver) then
     --d("The temp_giver was nil")
     -- meaning no giver object found
@@ -396,20 +411,20 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
     --d(quest_to_update.giver)
     --d(lib.quest_givers["en"][quest_to_update.giver])
   end
-  --d("quest giver table was")
+  --internal.dm("Debug", "quest giver table was")
   --quest_to_update.giver = "The Fish Object"
-  --d(quest_to_update.giver)
+  --internal.dm("Debug", quest_to_update.giver)
   giver_name_result = lib:get_npcids_table(quest_to_update.giver)
-  --d(giver_name_result)
+  --internal.dm("Debug", giver_name_result)
   if giver_name_result == nil then
     --[[ Check if Quest Giver is simply nil or empty, unassigned ]]--
     if internal:is_empty_or_nil(quest_to_update.giver) then
-      --d("Quest giver was nil, it is an empty table now from previous function")
+      --internal.dm("Debug", "Quest giver was nil, it is an empty table now from previous function")
       -- meaning set it to Unknown Target
       quest_to_update.giver = "Unknown Target"
       --d(quest_to_update.giver)
     else
-      --d("not empty or nil so continue")
+      --internal.dm("Debug", "not empty or nil so continue")
     end
     --[[
     At this point we know:
@@ -428,23 +443,23 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
     --d("quest giver lookup table is nil look in sv now")
     --d(giver_name_result)
     if is_giver_in_sv(quest_to_update.questID) then
-      --d("The giver was in the SV file")
+      --internal.dm("Debug", "The giver was in the SV file")
       -- meaning don't save it because the NPC name was not in
       -- the Lua file but was in the save vars and I need an
       -- arbitrary value, use the string for now
     else
-      --d("The giver was not in the SV file")
+      --internal.dm("Debug", "The giver was not in the SV file")
       LibQuestData_SavedVariables.giver_names[quest_to_update.questID] = quest_to_update.giver
     end
     giver_name_result = quest_to_update.giver
   else
-    --d("quest giver lookup table is not nil")
+    --internal.dm("Debug", "quest giver lookup table is not nil")
     -- meaning we found it don't add it but I need the number
     giver_name_result = lib:get_npcids_table(quest_to_update.giver)[1]
-    --d(giver_name_result)
+    --internal.dm("Debug", giver_name_result)
   end
-  --d("end result was")
-  --d(giver_name_result)
+  --internal.dm("Debug", "end result was")
+  --internal.dm("Debug", giver_name_result)
 
   --[[ set quest name ]]--
   --d(quest_to_update.questID)
@@ -592,56 +607,63 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
         --d("The quest from the main database was close to the quest to update")
         --d("However is it -10?")
         if has_undefined_data(quest_entry_table) then
-          --d("quest_entry_table had undefined data")
+          --internal.dm("Debug", "quest_entry_table had undefined data")
           -- save_quest_location = true
         else
-          --d("quest_entry_table was defined properly")
+          --internal.dm("Debug", "quest_entry_table was defined properly")
           save_quest_location = false
         end
         if quest_entry_table[lib.quest_map_pin_index.quest_giver] ~= giver_name_result then
-          --d("The giver name is different so this may need updated")
+          --internal.dm("Debug", "The giver name is different so this may need updated")
           save_quest_location = true
         else
-          --d("The giver name was the same")
+          --internal.dm("Debug", "The giver name was the same")
           -- save_quest_location = false
         end
       else
-        --d("The quest from the main database was NOT close to the quest to update")
-        --d("Could be set to true for saving to the SV file")
+        --internal.dm("Debug", "The quest from the main database was NOT close to the quest to update")
+        --internal.dm("Debug", "Could be set to true for saving to the SV file")
         -- meaning it should not be where I am standing
         -- consider saving the location
         -- question, how to avoid duplicates though
       end
     end
   end
-  --d("done first pass")
+  --internal.dm("Debug", "done first pass")
 
   --[[So save_quest_location is true by default in case it is a new
   quest that doesn't exist in the main database. If we are going to
   save it check saved vars first
   ]]--
-  --d("save_quest_location: "..tostring(save_quest_location))
+  --internal.dm("Debug", "save_quest_location: "..tostring(save_quest_location))
   -- the api changed so save the location regardless
-  LibQuestData_SavedVariables["location_info"]           = LibQuestData_SavedVariables["location_info"] or {}
+  if LibQuestData_SavedVariables["location_info"] == nil then
+    --internal.dm("Debug", "location_info was nil")
+    LibQuestData_SavedVariables["location_info"] = {}
+  end
+  if LibQuestData_SavedVariables["location_info"][the_zone] == nil then
+    --internal.dm("Debug", "location_info the_zone was nil")
+    LibQuestData_SavedVariables["location_info"][the_zone] = {}
+  end
   -- clear all old entries
   LibQuestData_SavedVariables["location_info"][the_zone] = update_older_quest_info(LibQuestData_SavedVariables["location_info"][the_zone])
   -- now look for duplicates
   if save_quest_location then
     saved_vars_quest_list = get_quest_list_sv(the_zone)
     for num_entry, sv_quest_entry in ipairs(saved_vars_quest_list) do
-      --d("Num Entry: "..num_entry)
-      --d(sv_quest_entry)
+      --internal.dm("Debug", "Num Entry: "..num_entry)
+      --internal.dm("Debug", sv_quest_entry)
       if sv_quest_entry[lib.quest_map_pin_index.quest_id] == quest_to_update.questID then
-        --d("found that the entry 5 was equal to the ID of this quest in the SV file")
+        --internal.dm("Debug", "found that the entry 5 was equal to the ID of this quest in the SV file")
         -- meaning it is in the saved vars file don't duplicate it
         local distance = zo_round(GPS:GetLocalDistanceInMeters(sv_quest_entry[lib.quest_map_pin_index.local_x],
           sv_quest_entry[lib.quest_map_pin_index.local_y], quest_to_update.x, quest_to_update.y))
-        --d("Distance: "..distance)
+        --internal.dm("Debug", "Distance: "..distance)
         if internal:is_in(quest_to_update.questID, lib.quest_giver_moves) then
-          --d("We found a quest giver that moves")
+          --internal.dm("Debug", "We found a quest giver that moves")
           save_quest_location = false
         else
-          --d("We did not find a quest giver that moves")
+          --internal.dm("Debug", "We did not find a quest giver that moves")
         end
         --[[
         This should prevent saving prologue quests however, when the
@@ -649,38 +671,38 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
         manually and added
         ]]--
         if internal:is_in(quest_to_update.questID, lib.prologue_quest_list) then
-          --d("We found a prologue quest that can be accepted anywhere")
+          --internal.dm("Debug", "We found a prologue quest that can be accepted anywhere")
           save_quest_location = false
         else
-          --d("We did not find a prologue quest")
+          --internal.dm("Debug", "We did not find a prologue quest")
         end
         if internal:is_in(quest_to_update.questID, lib.object_quest_starter_list) then
-          --d("This was a starter quest from an object like a note")
+          --internal.dm("Debug", "This was a starter quest from an object like a note")
           save_quest_location = false
         else
-          --d("This was not a starter quest from an object like a note")
+          --internal.dm("Debug", "This was not a starter quest from an object like a note")
         end
         if distance <= 25 then
-          --d("The quest to be saved is close to one already in the SV file")
+          --internal.dm("Debug", "The quest to be saved is close to one already in the SV file")
           save_quest_location = false
         else
-          --d("The quest to be saved is not close one in the SV file")
+          --internal.dm("Debug", "The quest to be saved is not close one in the SV file")
         end
         --[[
         This may save some quests even though they were set to false and
         need to be examined manually
         ]]--
         if has_undefined_data(sv_quest_entry) then
-          --d("sv_quest_entry had undefined data")
+          --internal.dm("Debug", "sv_quest_entry had undefined data")
           remove_older_quest_info(LibQuestData_SavedVariables["location_info"][the_zone], the_quest_loc_info)
           save_quest_location = true
         else
-          --d("sv_quest_entry was defined properly")
+          --internal.dm("Debug", "sv_quest_entry was defined properly")
         end
       end
     end
   end
-  --d("done second pass")
+  --internal.dm("Debug", "done second pass")
 
   --[[ Save the qest location
   Somehow the quest was in the constants file and the LibGPS was -10
@@ -689,13 +711,18 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
   entry for this quest in the zone so it needs to be saved.
   ]]--
   --save_quest_location = false
+  --internal.dm("Debug", "About To Save")
   if save_quest_location and lib.supported_lang then
-    --d("save_quest_location is true saving")
-    --d(the_zone)
-    if LibQuestData_SavedVariables["location_info"][the_zone] == nil then LibQuestData_SavedVariables["location_info"][the_zone] = {} end
+    --internal.dm("Debug", "save_quest_location is true saving")
+    --internal.dm("Debug", the_zone)
+    if LibQuestData_SavedVariables["location_info"][the_zone] == nil then
+      --internal.dm("Debug", "location_info was nil")
+      LibQuestData_SavedVariables["location_info"][the_zone] = {}
+    end
+    --internal.dm("Debug", "table insert into location_info")
     table.insert(LibQuestData_SavedVariables["location_info"][the_zone], the_quest_loc_info)
   else
-    --d("save_quest_location was false not saving")
+    --internal.dm("Debug", "save_quest_location was false not saving")
   end
 
   --d(the_zone)
@@ -703,7 +730,7 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
 
   table.remove(LibQuestData_SavedVariables.quests[the_zone], the_entry)
 
-  --d("Done")
+  --internal.dm("Debug", "Quest Recording Done")
   if not isCompleted then
     return
   end
@@ -718,18 +745,6 @@ local function OnQuestRemoved(eventCode, isCompleted, journalIndex, questName, z
 end
 EVENT_MANAGER:RegisterForEvent(lib.libName, EVENT_QUEST_REMOVED, OnQuestRemoved) -- Verified
 
--- Event handler function for EVENT_PLAYER_DEACTIVATED
-local function OnPlayerDeactivated(eventCode)
-  last_zone = LMP:GetZoneAndSubzone(true, false, true)
-  if SetMapToPlayerLocation() ~= SET_MAP_RESULT_FAILED then
-    last_map_id = GetCurrentMapId()
-  end
-  if not last_map_id then
-    internal.dm("Debug", "Could not get Map ID")
-  end
-end
-EVENT_MANAGER:RegisterForEvent(lib.libName, EVENT_PLAYER_DEACTIVATED, OnPlayerDeactivated) -- Verified
-
 local function show_quests()
   for zone, zone_quests in pairs(LibQuestData_SavedVariables.quests) do
     d("zone: " .. zone)
@@ -741,94 +756,103 @@ local function show_quests()
 end
 
 local function OnInteract(event_code, client_interact_result, interact_target_name)
-  internal.dm("Debug", "OnInteract Occured")
+  --internal.dm("Debug", "OnInteract Occured")
   --d(client_interact_result)
   local text = zo_strformat(SI_CHAT_MESSAGE_FORMATTER, interact_target_name)
-  internal.dm("Debug", text)
+  --internal.dm("Debug", text)
   lib.last_interaction_target = text
 end
 EVENT_MANAGER:RegisterForEvent(lib.libName, EVENT_CLIENT_INTERACT_RESULT, OnInteract)
 
+function lib.on_map_zone_changed()
+  internal.dm("Debug", "[5] on_map_zone_changed")
+
+  internal.dm("Debug", "[5] Updating last_mapid and current_mapid")
+  lib.last_mapid = lib.current_mapid
+  lib.last_zone = lib.current_zone
+  lib.current_mapid = GetCurrentMapId()
+  lib.current_zone = LMP:GetZoneAndSubzone(true, false, true)
+
+  if not lib.last_mapid then
+    internal.dm("Debug", "[5] LMP did not set the last_mapid properly")
+  end
+  if not lib.last_zone then
+    internal.dm("Debug", "[5] LMP did not set the last_zone properly")
+  end
+  if not lib.current_mapid then
+    internal.dm("Debug", "[5] LMP did not set the current_mapid properly")
+  end
+  if not lib.current_zone then
+    internal.dm("Debug", "[5] LMP did not set the current_zone properly")
+  end
+
+  local temp = string.format("[5] Last Mapid: %s", lib.last_mapid) or "[5] NA"
+  internal.dm("Debug", temp)
+  local temp = string.format("[5] Last Zone: %s", lib.last_zone) or "[5] NA"
+  internal.dm("Debug", temp)
+  local temp = string.format("[5] Current Mapid: %s", lib.current_mapid) or "[5] NA"
+  internal.dm("Debug", temp)
+  local temp = string.format("[5] Current Zone: %s", lib.current_zone) or "[5] NA"
+  internal.dm("Debug", temp)
+  lib.check_map_state()
+end
+
+function on_zone_changed(eventCode, zoneName, subZoneName, newSubzone, zoneId, subZoneId)
+  lib.on_map_zone_changed()
+end
+EVENT_MANAGER:RegisterForEvent(lib.libName .. "_zone_changed", EVENT_ZONE_CHANGED, on_zone_changed)
+
+-- Event handler function for EVENT_PLAYER_DEACTIVATED
+local function OnPlayerDeactivated(eventCode)
+  internal.dm("Debug", "[6] EVENT_PLAYER_DEACTIVATED")
+  internal.dm("Debug", "[6] Updating last_mapid")
+  lib.last_mapid = GetCurrentMapId()
+  lib.last_zone = LMP:GetZoneAndSubzone(true, false, true)
+
+  if not lib.last_mapid then
+    internal.dm("Debug", "[6] LMP did not set the last_mapid properly")
+  end
+  if not lib.last_zone then
+    internal.dm("Debug", "[6] LMP did not set the last_zone properly")
+  end
+
+  local temp = string.format("[6] Last Mapid: %s", lib.last_mapid) or "[6] NA"
+  internal.dm("Debug", temp)
+  local temp = string.format("[6] Last Zone: %s", lib.last_zone) or "[6] NA"
+  internal.dm("Debug", temp)
+end
+EVENT_MANAGER:RegisterForEvent(lib.libName, EVENT_PLAYER_DEACTIVATED, OnPlayerDeactivated) -- Verified
+
 -- Event handler function for EVENT_PLAYER_ACTIVATED
-local function OnPlayerActivated(eventCode)
+local function OnPlayerActivated(eventCode, initial)
   -- /script LibQuestData.logger:Debug(GetCurrentMapId())
-  internal.dm("Debug", "--------------------")
-  local current_map_id
-  local current_zone
-  --local current_zone_index
-  local current_map_zone_index
+  internal.dm("Debug", "[1] EVENT_PLAYER_ACTIVATED")
 
-  if SetMapToPlayerLocation() ~= SET_MAP_RESULT_FAILED then
-    current_map_id = GetCurrentMapId()
-  end
-  if not current_map_id then
-    internal.dm("Debug", "Could not get Current Map ID")
-  end
-  current_zone           = LMP:GetZoneAndSubzone(true, false, true)
-  --current_zone_index = GetZoneId(GetUnitZoneIndex("player"))
-  current_map_zone_index = GetZoneId(GetCurrentMapZoneIndex())
-
-  internal.dm("Debug", "Current Zone: " .. current_zone)
-  internal.dm("Debug", "Current Map ID: " .. current_map_id)
-  --internal.dm("Debug", "Current Zone Index Player: "..current_zone_index)
-  internal.dm("Debug", "Current Map Zone Index: " .. GetZoneId(GetCurrentMapZoneIndex()))
-
-  -- disable for now because only I use it
-  --[[
-  if last_map_id then
-      internal.dm("Debug", is_different_zone(current_map_id, last_map_id))
-  end
-  internal.dm("Debug", lib:is_zone_subzone())
-  if last_map_zone_index then
-      internal.dm("Debug", is_same_zone_index(current_map_zone_index, last_map_zone_index))
+  if initial then
+    internal.dm("Debug", "[1] Initial first load")
+    lib.last_mapid = 0
+    lib.last_zone = ""
+    lib.current_mapid = GetCurrentMapId()
+    lib.current_zone = LMP:GetZoneAndSubzone(true, false, true)
+    lib.check_map_state()
   end
 
-  if last_map_id and is_different_zone(current_map_id, last_map_id) and lib:is_zone_subzone() and is_same_zone_index(current_map_zone_index, last_map_zone_index) then
-      if LibQuestData_SavedVariables.subZones[last_zone] == nil then LibQuestData_SavedVariables.subZones[last_zone] = {} end
-      if lib.subzone_list[last_zone] == nil then lib.subzone_list[last_zone] = {} end
-      if lib.subzone_list[last_zone][current_zone] == nil and LibQuestData_SavedVariables.subZones[last_zone][current_zone] == nil then
-          internal.dm("Debug", "All of it was true")
-          local local_x, local_y = GetMapPlayerPosition("player")
-          local data_store = {
-                  ["local_x"] = local_x,
-                  ["local_y"] = local_y,
-                  ["current_map_id"]  = current_map_id,
-                  ["current_zone"]  = current_zone,
-                  ["last_map_id"]   = last_map_id,
-                  ["last_zone"]   = last_zone,
-                  ["current_map_zone_index"] = current_map_zone_index,
-                  ["parent_zone_index"]   = last_map_zone_index,
-              }
-          internal.dm("Debug", "Saving subzone data")
-          LibQuestData_SavedVariables.subZones[last_zone][current_zone] = data_store
-      end
-  else
-      internal.dm("Debug", "Something was false")
+  internal.dm("Debug", "[1] Updating current_mapid")
+  lib.current_mapid = GetCurrentMapId()
+  lib.current_zone = LMP:GetZoneAndSubzone(true, false, true)
+
+  if not lib.current_mapid then
+    internal.dm("Debug", "[1] LMP did not set the current_mapid properly")
+  end
+  if not lib.current_zone then
+    internal.dm("Debug", "[1] LMP did not set the current_zone properly")
   end
 
-  if last_map_id then
-      internal.dm("Debug", "Previous Map ID: "..last_map_id)
-  end
-  if last_zone then
-      internal.dm("Debug", "Previous Zone: "..last_zone)
-  end
-  if last_zone_index then
-      internal.dm("Debug", "Previous Zone Index Player: "..last_zone_index)
-  end
-  if last_map_zone_index then
-      internal.dm("Debug", "Previous Map Zone Index: "..last_map_zone_index)
-  end
-  ]]--
+  local temp = string.format("[1] Current Mapid: %s", lib.current_mapid) or "[1] NA"
+  internal.dm("Debug", temp)
+  local temp = string.format("[1] Current Zone: %s", lib.current_zone) or "[1] NA"
+  internal.dm("Debug", temp)
 
-  if SetMapToPlayerLocation() ~= SET_MAP_RESULT_FAILED then
-    last_map_id = GetCurrentMapId()
-  end
-  if not last_map_id then
-    internal.dm("Debug", "Could not get Map ID")
-  end
-  last_zone           = LMP:GetZoneAndSubzone(true, false, true)
-  --last_zone_index = GetZoneId(GetUnitZoneIndex("player"))
-  last_map_zone_index = GetZoneId(GetCurrentMapZoneIndex())
-
+  lib.check_map_state()
 end
 EVENT_MANAGER:RegisterForEvent(lib.libName, EVENT_PLAYER_ACTIVATED, OnPlayerActivated) -- Verified

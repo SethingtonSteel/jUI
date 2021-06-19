@@ -1,7 +1,7 @@
 if Zgoo then return end
 
 Zgoo = {
-	version = 1.29,
+	version = 1.30,
 	author = "@Errc"
 }
 setmetatable(Zgoo, {__call = function(me,tab) Zgoo.CommandHandler(tab) end})

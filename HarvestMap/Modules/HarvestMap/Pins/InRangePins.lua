@@ -1,5 +1,4 @@
 local Harvest = _G["Harvest"]
-local GPS = LibGPS2
 
 local PARENT = COMPASS.container
 local pairs = _G["pairs"]
@@ -12,12 +11,12 @@ local GetPlayerCameraHeading = _G["GetPlayerCameraHeading"]
 local GetMapPlayerPosition = _G["GetMapPlayerPosition"]
 local CallbackManager = Harvest.callbackManager
 local Events = Harvest.events
+local MapCache = Harvest.MapCache
 
 local InRangePins = {}
 Harvest:RegisterModule("InRangePins", InRangePins)
 
 function InRangePins:Initialize()
-	self.pinUpdateCallback = self.UpdatePin
 	self.lastUpdate = {}
 	
 	CallbackManager:RegisterForEvent(Events.SETTING_CHANGED, function(event, setting, ...)
@@ -40,25 +39,9 @@ function InRangePins:Initialize()
 			self:RefreshWorldPins()
 		elseif setting == "compassSpawnFilter" then
 			self:RefreshCompassPins()
-		elseif setting == "worldPinsSimple" then
-			local simple = ...
-			if simple then
-				if self.displayWorldPins then
-					self.displayWorldPins = false
-					self:CheckPause()
-					self:RefreshWorldPins()
-				end
-			else
-				local visible = Harvest.AreWorldPinsVisible()
-				if visible ~= self.displayWorldPins then
-					self.displayWorldPins = visible
-					self:CheckPause()
-				end
-			end
-			self:RefreshRange()
 		elseif setting == "compassDistance" or setting == "worldDistance" then
 			self:RefreshRange()
-		elseif setting == "pinTypeColor" or setting == "mapPinTexture" then
+		elseif setting == "pinTypeColor" or setting == "mapPinTexture" or setting == "isSpawnFilterUsedForPinType" then
 			self:RefreshAllPins()
 		elseif setting == "worldPinsUseDepth" then
 			local useDepth = ...
@@ -71,26 +54,37 @@ function InRangePins:Initialize()
 				icon:Set3DRenderSpaceUsesDepthBuffer(useDepth)
 			end
 			self.useDepth = useDepth
-		elseif setting:match("PinTypeVisible$") then
-			local pinTypeId, visible = ...
-			if self.zoneCache and visible then
+		elseif setting == "compassFilterProfile" then
+			self.compassFilterProfile = Harvest.filterProfiles:GetCompassProfile()
+			self:RefreshValidPinTypes()
+			self:LoadPinData()
+			self:RefreshCompassPins()
+		elseif setting == "worldFilterProfile" then
+			self.worldFilterProfile = Harvest.filterProfiles:GetWorldProfile()
+			self:RefreshValidPinTypes()
+			self:LoadPinData()
+			self:RefreshWorldPins()
+		end
+	end)
+	
+	CallbackManager:RegisterForEvent(Events.FILTER_PROFILE_CHANGED, 
+		function(event, profile, pinTypeId, isVisible)
+			if (profile ~= self.compassFilterProfile) and (profile ~= self.worldFilterProfile) then
+				return
+			end
+			if self.zoneCache and isVisible then
 				for map, mapCache in pairs(self.zoneCache.mapCaches) do
 					Harvest.Data:CheckPinTypeInCache(pinTypeId, mapCache)
 				end
 			end
 			self:RefreshValidPinTypes()
-		elseif setting:match("FilterActive$") then
-			self:RefreshValidPinTypes()
-			local active = ...
-			if self.zoneCache and active then
-				for map, mapCache in pairs(self.zoneCache.mapCaches) do
-					for _, pinTypeId in ipairs(self.validPinTypeIds) do
-						Harvest.Data:CheckPinTypeInCache(pinTypeId, mapCache)
-					end
-				end
+			if profile == self.compassFilterProfile then
+				self:RefreshCompassPins()
 			end
-		end
-	end)
+			if profile == self.worldFilterProfile then
+				self:RefreshWorldPins()
+			end
+		end)
 	
 	local onNodeChanged = function(event, mapCache, nodeId)
 		local map = mapCache.mapMetaData.map
@@ -124,10 +118,8 @@ function InRangePins:Initialize()
 		self:Info("maps:", unpack(tbl))
 		
 		self.zoneCache = zoneCache
-		local zoneMeasurement = zoneCache.zoneMeasurement
-		self.globalToWorldFactor = zoneMeasurement.globalToWorldFactor
-		self:Info("global to world factor, origin are %f, %f, %f", self.globalToWorldFactor, zoneMeasurement.originGlobalX, zoneMeasurement.originGlobalY)
 		self:RefreshAllPins()
+		self:LoadPinData()
 	end)
 	
 	CallbackManager:RegisterForEvent(Events.MAP_ADDED_TO_ZONE, function(event, mapCache, zoneCache)
@@ -139,6 +131,7 @@ function InRangePins:Initialize()
 		self.worldKeys[mapCache.map] = {}
 		self.compassKeys[mapCache.map] = {}
 		self.lastUpdate[mapCache.map] = {}
+		self:LoadPinData()
 	end)
 	
 	self.settings = Harvest.settings.savedVars.settings
@@ -146,11 +139,13 @@ function InRangePins:Initialize()
 	self.compassControlPool = ZO_ControlPool:New("HM_CompassPin", PARENT, "HM_CompassPin")
 	self.compassKeys = {}
 	self.displayCompassPins = Harvest.AreCompassPinsVisible()
+	self.compassFilterProfile = Harvest.filterProfiles:GetCompassProfile()
 	
 	self.worldControlPool = ZO_ControlPool:New("HM_WorldPin", HM_WorldPins, "HM_WorldPin")
 	HM_WorldPins:Create3DRenderSpace()
 	self.worldKeys = {}
 	self.displayWorldPins = Harvest.AreWorldPinsVisible()
+	self.worldFilterProfile = Harvest.filterProfiles:GetWorldProfile()
 	
 	self.FOV = pi * 0.6
 	self.useDepth = Harvest.DoWorldPinsUseDepth()
@@ -163,16 +158,12 @@ function InRangePins:Initialize()
 	self:RefreshRange()
 	self:RefreshValidPinTypes()
 	
-	self.globalToWorldFactor = 1
-	
 	self.fragment = ZO_SimpleSceneFragment:New(HM_WorldPins)
 	HUD_UI_SCENE:AddFragment(self.fragment)
 	HUD_SCENE:AddFragment(self.fragment)
 	LOOT_SCENE:AddFragment(self.fragment)
 	
-	Lib3D:RegisterWorldChangeCallback("HM_3DPins", function(identifier, zoneIndex, isValidZone, isNewZone)
-		self:Info("Lib3D finished preprocessing zone %d, isValid: %s, isNewZone: %s",
-				zoneIndex, tostring(isValidZone), tostring(isNewZone))
+	EVENT_MANAGER:RegisterForEvent("HarvestMap-InRangePins", EVENT_PLAYER_ACTIVATED, function()
 		self:Info("player position: %d, %d, %d, %d", GetUnitWorldPosition("player"))
 		local worldX, worldZ, worldY = WorldPositionToGuiRender3DPosition(0,0,0)
 		HM_WorldPins:Set3DRenderSpaceOrigin(worldX, worldZ, worldY)
@@ -197,8 +188,18 @@ end
 function InRangePins:RefreshValidPinTypes()
 	self.validPinTypeIds = {}
 	for _, pinTypeId in pairs(Harvest.PINTYPES) do
-		if Harvest.IsInRangePinTypeVisible(pinTypeId) then
+		if self.compassFilterProfile[pinTypeId] or self.worldFilterProfile[pinTypeId] then
 			table.insert(self.validPinTypeIds, pinTypeId)
+		end
+	end
+end
+
+function InRangePins:LoadPinData()
+	if self.zoneCache then
+		for map, mapCache in pairs(self.zoneCache.mapCaches) do
+			for _, pinTypeId in ipairs(self.validPinTypeIds) do
+				Harvest.Data:CheckPinTypeInCache(pinTypeId, mapCache)
+			end
 		end
 	end
 end
@@ -261,10 +262,9 @@ function InRangePins:RefreshRange()
 end
 
 function InRangePins:CheckPause()
-	local paused = (not Lib3D:IsValidZone()) or not (self.displayCompassPins or self.displayWorldPins)
+	local paused = not (self.displayCompassPins or self.displayWorldPins)
 	if paused then
-		self:Info("pause inrange-pins. valid zone %s, compass enabled %s, world enabled %s", 
-			tostring(Lib3D:IsValidZone()),
+		self:Info("pause inrange-pins. compass enabled %s, world enabled %s", 
 			tostring(self.displayCompassPins),
 			tostring(self.displayWorldPins))
 		EVENT_MANAGER:UnregisterForUpdate("HarvestMapInRangePinsUpdate")
@@ -279,7 +279,7 @@ end
 function InRangePins.UpdatePins(timeInMs)
 	local self = InRangePins
 	
-	if Lib3D:IsValidZone() and not self.fragment:IsHidden() then
+	if not self.fragment:IsHidden() then
 		if not self.zoneCache then return end
 		self.worldX, self.worldY = Harvest.GetPlayer3DPosition()
 		
@@ -290,9 +290,10 @@ function InRangePins.UpdatePins(timeInMs)
 		self.heading = heading
 		self.timeInMs = timeInMs
 		
-		for map, mapCache in pairs(self.zoneCache.mapCaches) do
-			mapCache:ForNodesInRange(self.worldX, self.worldY, heading, self.visibleRange, self.validPinTypeIds, self.pinUpdateCallback, self, self.lastUpdate[map], self.compassKeys[map], self.worldKeys[map])
-		end
+		--for map, mapCache in pairs(self.zoneCache.mapCaches) do
+		--MapCache:ForNodesInRange(self.worldX, self.worldY, heading, self.visibleRange, self.validPinTypeIds, self.pinUpdateCallback, self, self.lastUpdate[map], self.compassKeys[map], self.worldKeys[map])
+		MapCache:ForNodesInRange(self.worldX, self.worldY, heading, self.visibleRange, self.pinUpdateCallback, self)
+		--end
 		
 		
 		local lastUpdate = self.lastUpdate[self.customMap]
@@ -415,7 +416,27 @@ function InRangePins:UpdateCustomPin(pinTag, layout, lastUpdate, compassKeys, wo
 	control:SetAlpha(control.maxAlpha * (1 - normalizedDistance^4))
 end
 
-function InRangePins.UpdatePin(mapCache, nodeId, self, lastUpdate, compassKeys, worldKeys)
+function InRangePins.pinUpdateCallback(divisionIndex, self)
+	local lastUpdate, compassKeys, worldKeys
+	
+	for map, mapCache in pairs(self.zoneCache.mapCaches) do
+		lastUpdate = self.lastUpdate[map]
+		compassKeys = self.compassKeys[map]
+		worldKeys = self.worldKeys[map]
+		for _, pinTypeId in pairs(self.validPinTypeIds) do
+			division = mapCache.divisions[pinTypeId][divisionIndex]
+			if division then
+				for _, nodeId in pairs(division) do
+					if not mapCache.hiddenTime[nodeId] then
+						self:UpdatePin(mapCache, nodeId, lastUpdate, compassKeys, worldKeys)
+					end
+				end
+			end
+		end
+	end
+end
+
+function InRangePins:UpdatePin(mapCache, nodeId, lastUpdate, compassKeys, worldKeys)
 	lastUpdate[nodeId] = self.timeInMs
 	if not mapCache.worldX[nodeId] then return end -- todo
 	local pinTypeId = mapCache.pinTypeId[nodeId]
@@ -435,14 +456,9 @@ function InRangePins.UpdatePin(mapCache, nodeId, self, lastUpdate, compassKeys, 
 	
 	local key, control
 	-- first update the world pins
-	local validWorldPin = self.displayWorldPins and mapCache.worldZ[nodeId]
+	local validWorldPin = self.displayWorldPins and self.worldFilterProfile[pinTypeId] and mapCache.worldZ[nodeId]
 	if validWorldPin then
-		if self.settings.isWorldFilterActive then --Harvest.IsWorldFilterActive() then
-			validWorldPin = self.settings.isWorldPinTypeVisible[pinTypeId] --.IsWorldPinTypeVisible(pinTypeId)
-		else
-			validWorldPin = self.settings.isPinTypeVisible[pinTypeId] --.IsMapPinTypeVisible(pinTypeId)
-		end
-		if LibNodeDetection and self.settings.worldSpawnFilter then--IsWorldSpawnFilterEnabled() then
+		if LibNodeDetection and self.settings.worldSpawnFilter and self.settings.isSpawnFilterUsedForPinType[pinTypeId] then--IsWorldSpawnFilterEnabled() then
 			if Harvest.HARVEST_NODES[pinTypeId] and not mapCache.hasCompassPin[nodeId] then
 				validWorldPin = false
 			end
@@ -480,12 +496,8 @@ function InRangePins.UpdatePin(mapCache, nodeId, self, lastUpdate, compassKeys, 
 	
 	if not self.displayCompassPins then return end
 	
-	if self.settings.isCompassFilterActive then--.IsCompassFilterActive() then
-		if not self.settings.isCompassPinTypeVisible[pinTypeId] then return end--IsCompassPinTypeVisible(pinTypeId) then return end
-	else
-		if not self.settings.isPinTypeVisible[pinTypeId] then return end--.IsMapPinTypeVisible(pinTypeId) then return end
-	end
-	if LibNodeDetection and self.settings.compassSpawnFilter then--IsCompassSpawnFilterEnabled() then
+	if not self.compassFilterProfile[pinTypeId] then return end
+	if LibNodeDetection and self.settings.compassSpawnFilter and self.settings.isSpawnFilterUsedForPinType[pinTypeId] then--IsCompassSpawnFilterEnabled() then
 		if Harvest.HARVEST_NODES[pinTypeId] and not mapCache.hasCompassPin[nodeId] then
 			return
 		end
@@ -551,6 +563,8 @@ function InRangePins:GetNewCompassControl(pinTypeId)
 end
 
 function InRangePins:GetNewWorldControl(pinTypeId, worldX, worldY, worldZ)
+	if not worldZ then return end
+	
 	local pin, pinKey = self.worldControlPool:AcquireObject()
 	
 	local beam = pin:GetNamedChild("Beam")
@@ -581,7 +595,6 @@ function InRangePins:GetNewWorldControl(pinTypeId, worldX, worldY, worldZ)
 	icon:SetColor(layout.tint:UnpackRGBA())
 	pin.maxAlpha = layout.tint.a
 	
-	--local worldX, worldY = Lib3D:GlobalToWorld(globalX, globalY)
 	pin:Set3DRenderSpaceOrigin(worldX, worldZ, worldY)
 	
 	return pin, pinKey

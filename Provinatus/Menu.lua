@@ -8,6 +8,7 @@ local function GetPanelData()
     author = ProvinatusConfig.Author,
     version = ProvinatusConfig.Version,
     website = ProvinatusConfig.Website,
+    feedback = ProvinatusConfig.Feedback,
     slashCommand = ProvinatusConfig.SlashCommand,
     registerForRefresh = true,
     registerForDefaults = true

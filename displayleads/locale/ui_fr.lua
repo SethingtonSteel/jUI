@@ -34,7 +34,7 @@ RDL.DropdownTooltips = {
 }
 
 RDL.DropdownData = {
-	ChoicesMajor  = { "Vous pouvez trouver", "Vous pouvez localiser", "Entrées Codex manquantes", "Jamais creusé", "Pistes exploitables", "Toutes les pistes", "Donjons de groupe", "Markarth",},
+	ChoicesMajor  = { "Vous pouvez trouver", "Vous pouvez localiser", "Entrées Codex manquantes", "Jamais creusé", "Pistes exploitables", "Toutes les pistes", "Donjons de groupe", "Blackwood",},
   
 	TooltipsMajor  = {
 		"Exclut les pistes trouvées mais non scrutés, ainsi que celles non répétables déjà trouvées une fois",
@@ -44,7 +44,7 @@ RDL.DropdownData = {
 		"Affiche tous les pistes, sauf les non-répétables finis",
 		"Affiche toutes les pistes, y compris les non-répétables finis",
 		"Affiche uniquement les pistes provenant des donjons a 4 ",
-		"Affiche uniquement les nouvelles pistes provenant de l'extension Markarth",
+		"Affiche uniquement les nouvelles pistes provenant de l'extension Blackwood",
 	},
 	
 	ChoicesZone = {RDL.ZONENAME_ALLZONES, "Zone actuelle", "Exclus les DLC mineur", },
@@ -133,7 +133,7 @@ RDL.TOOLTIP_INKLING = {
 	"Merci beaucoup de me laisser l'utiliser",
 }
 
-
+RDL.TOOLTIP_MAPPINS = "Inclui en MapPins Addon de Hoft"
 
 
 

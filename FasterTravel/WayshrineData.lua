@@ -50,6 +50,7 @@ local _zoneNodeLookup = {
         { poiIndex = 17, nodeIndex = 190, name = "Dungeon: Crypt of Hearts I" },
         { poiIndex = 18, nodeIndex = 9,   name = "Oldgate Wayshrine", traders_cnt = 1, },
         { poiIndex = 19, nodeIndex = 10,  name = "Crestshade Wayshrine" },
+        { poiIndex = 20, nodeIndex = 11,  name = "Tamrith Camp Wayshrine", },       
         { poiIndex = 22, nodeIndex = 12,  name = "Boralis Wayshrine" },
         { poiIndex = 23, nodeIndex = 13,  name = "Staging Grounds Wayshrine" },
         { poiIndex = 24, nodeIndex = 82,  name = "Northpoint Wayshrine" },
@@ -163,8 +164,8 @@ local _zoneNodeLookup = {
 
     },
     [ 16] = { -- The Rift
-        { poiIndex = 14, nodeIndex = 109, name = "Riften Wayshrine", traders_cnt = 5, },
-        { poiIndex = 15, nodeIndex = 110, name = "Skald's Retreat Wayshrine" },
+        { poiIndex = 14, nodeIndex = 109, name = "Riften Wayshrine" },
+        { poiIndex = 15, nodeIndex = 110, name = "Skald's Retreat Wayshrine", traders_cnt = 5, },
         { poiIndex = 16, nodeIndex = 111, name = "Trolhetta Wayshrine" },
         { poiIndex = 17, nodeIndex = 112, name = "Trolhetta Summit Wayshrine" },
         { poiIndex = 23, nodeIndex = 113, name = "Honrich Tower Wayshrine" },
@@ -547,7 +548,7 @@ local _zoneNodeLookup = {
         { poiIndex = 30, nodeIndex = 435, name = "Dungeon: Stone Garden" },
 
     },
-    [783] = { -- The Reach 784?
+    [783] = { -- The Reach
         { poiIndex = 25, nodeIndex = 443, name = "North Markarth Wayshrine" },
         { poiIndex = 26, nodeIndex = 445, name = "Karthwasten Wayshrine" },
         { poiIndex = 27, nodeIndex = 441, name = "Briar Rock Wayshrine" },
@@ -558,11 +559,31 @@ local _zoneNodeLookup = {
         { poiIndex = 35, nodeIndex = 456, name = "Stone Eagle Aerie" },
 
     },
-    [784] = { -- Blackreach: Arkthzand Cavern 785?
+    [784] = { -- Blackreach: Arkthzand Cavern
         { poiIndex = 9,  nodeIndex = 446, name = "Arkthzand Wayshrine" },
         { poiIndex = 10, nodeIndex = 448, name = "Nighthollow Wayshrine" },
 
     },
+    [834] = { -- Blackwood
+        { poiIndex = 23, nodeIndex = 462, name = "Bloodrun Wayshrine", },
+        { poiIndex = 38, nodeIndex = 468, name = "Trial: Rockgrove", },
+        { poiIndex = 43, nodeIndex = 458, name = "Leyawiin Wayshrine", },
+        { poiIndex = 44, nodeIndex = 459, name = "Gideon Wayshrine", },
+        { poiIndex = 45, nodeIndex = 460, name = "Borderwatch Wayshrine", },
+        { poiIndex = 46, nodeIndex = 461, name = "Fort Redmane Wayshrine", },
+        { poiIndex = 47, nodeIndex = 463, name = "Blueblood Wayshrine", },
+        { poiIndex = 48, nodeIndex = 464, name = "Stonewastes Wayshrine", },
+        { poiIndex = 49, nodeIndex = 467, name = "Leyawiin Outskirts Wayshrine", },
+        { poiIndex = 53, nodeIndex = 471, name = "Pilgrim's Rest", },
+        { poiIndex = 54, nodeIndex = 472, name = "Water's Edge", },
+        { poiIndex = 55, nodeIndex = 473, name = "Pantherfang Chapel", },
+        { poiIndex = 56, nodeIndex = 481, name = "Doomvault Vulpinaz Wayshrine", },
+        { poiIndex = 57, nodeIndex = 482, name = "Blackwood Crossroads Wayshrine", },
+        { poiIndex = 58, nodeIndex = 483, name = "Hutan-Tzel Wayshrine", },
+        { poiIndex = 59, nodeIndex = 484, name = "Vunalk Wayshrine", }, 
+
+    },
+
     [-2147483648]  = { },
 
 }

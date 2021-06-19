@@ -142,6 +142,8 @@ local strings = {
 	DUSTMAN_TREASURE_MAPS_DESC = "Enable/disable marking of Treasure Maps as junk.",	
 	DUSTMAN_TREASURE_MAPS_DESTROY = "...and destroy them!",
 	DUSTMAN_TREASURE_MAPS_DESTROY_DESC = "Automatically destroy Treasure Maps",
+	DUSTMAN_JEWELRY_MASTER_WRITS = "Destroy Jewelry Master Writs",
+	DUSTMAN_JEWELRY_MASTER_WRITS_DESC = "Automatically destroy Jewelry Master Writs",
     --treasures and trophies submenu
     DUSTMAN_TREASURES = "Treasures and trophies",
     DUSTMAN_TREASURE = "Mark treasures",

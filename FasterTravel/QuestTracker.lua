@@ -287,7 +287,11 @@ local function RefreshCategories(categories, locations, locationsLookup, quests,
         if c ~= nil then
             l = locationsLookup[zoneIndex]
             if l ~= nil then -- really shouldn't ever be nil
-            c.name = table.concat({ l.name, " (", tostring(count), ")" })
+                c.name = string.format("%s (%s)", l.name, count)
+--[[                c.name = FasterTravel.settings.verbosity < 3 and
+                    string.format("%s (%s)", l.name, count) or
+                    string.format("%s (%s) |cffff00%s|r", l.name, count, #c.data)) 
+]]--
             end
         end
     end

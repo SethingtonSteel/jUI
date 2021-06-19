@@ -3,6 +3,7 @@ local LAM = LibAddonMenu2
 function cqm:initLAM(icon_themes)
     local panelData = {
         type = "panel",
+        version = cqm.version,
         name = "ConspicuousQuestMarkers",
         displayName = ZO_HIGHLIGHT_TEXT:Colorize("ConspicuousQuestMarkers"),
         author = "Jhenox",

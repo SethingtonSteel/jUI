@@ -4,13 +4,13 @@ dui.appName = "DarkUI"
 ----------------------------------------
 -- Declarations
 ----------------------------------------
-local ADDON_VERSION = "2.2.4"
+local ADDON_VERSION = "2.67"
 local eso_root = "esoui/art/"
 local ui_root = "darkui/"
 
 local common_textures = {
    {"actionbar/quickslotbg.dds", "quickslotbg.dds"},
-   -- {"chatwindow/chat_minimized_mungebg_highlight.dds", "chat_minimized_mungebg_highlight.dds"},
+   {"chatwindow/chat_minimized_mungebg_highlight.dds", "chat_minimized_mungebg_highlight.dds"},
    {"compass/area2frameanim_assisted_center.dds", "compass_center.dds"},
    {"compass/area2frameanim_centers.dds", "compass_center.dds"},
    {"compass/area2frameanim_standard_center.dds", "compass_center.dds"},
@@ -350,24 +350,24 @@ local theme_icons = {
    {"campaign/overview_indexicon_scoring_up.dds", "overview_indexicon_scoring_up.dds"},
    {"charactercreate/rotate_right_down.dds", "rotate_right_down.dds"},
    {"charactercreate/rotate_right_up.dds", "rotate_right_up.dds"},
-   -- {"chatwindow/chat_addtab_down.dds", "chat_addtab_down.dds"},
-   -- {"chatwindow/chat_addtab_up.dds", "chat_addtab_up.dds"},
-   -- {"chatwindow/chat_cs_down.dds", "chat_cs_down.dds"},
-   -- {"chatwindow/chat_cs_up.dds", "chat_cs_up.dds"},
-   -- {"chatwindow/chat_friendsonline_down.dds", "chat_friendsonline_down.dds"},
-   -- {"chatwindow/chat_friendsonline_up.dds", "chat_friendsonline_up.dds"},
-   -- {"chatwindow/chat_mail_down.dds", "chat_mail_down.dds"},
-   -- {"chatwindow/chat_mail_up.dds", "chat_mail_up.dds"},
-   -- {"chatwindow/chat_notification_down.dds", "chat_notification_down.dds"},
-   -- {"chatwindow/chat_notification_up.dds", "chat_notification_up.dds"},
-   -- {"chatwindow/chat_options_down.dds", "chat_options_down.dds"},
-   -- {"chatwindow/chat_options_up.dds", "chat_options_up.dds"},
-   -- {"chatwindow/chat_overflowarrow_down.dds", "chat_overflowarrow_down.dds"},
-   -- {"chatwindow/chat_overflowarrow_up.dds", "chat_overflowarrow_up.dds"},
-   -- {"chatwindow/maximize_down.dds", "maximize_down.dds"},
-   -- {"chatwindow/maximize_up.dds", "maximize_up.dds"},
-   -- {"chatwindow/minimize_down.dds", "minimize_down.dds"},
-   -- {"chatwindow/minimize_up.dds", "minimize_up.dds"},
+   {"chatwindow/chat_addtab_down.dds", "chat_addtab_down.dds"},
+   {"chatwindow/chat_addtab_up.dds", "chat_addtab_up.dds"},
+   {"chatwindow/chat_cs_down.dds", "chat_cs_down.dds"},
+   {"chatwindow/chat_cs_up.dds", "chat_cs_up.dds"},
+   {"chatwindow/chat_friendsonline_down.dds", "chat_friendsonline_down.dds"},
+   {"chatwindow/chat_friendsonline_up.dds", "chat_friendsonline_up.dds"},
+   {"chatwindow/chat_mail_down.dds", "chat_mail_down.dds"},
+   {"chatwindow/chat_mail_up.dds", "chat_mail_up.dds"},
+   {"chatwindow/chat_notification_down.dds", "chat_notification_down.dds"},
+   {"chatwindow/chat_notification_up.dds", "chat_notification_up.dds"},
+   {"chatwindow/chat_options_down.dds", "chat_options_down.dds"},
+   {"chatwindow/chat_options_up.dds", "chat_options_up.dds"},
+   {"chatwindow/chat_overflowarrow_down.dds", "chat_overflowarrow_down.dds"},
+   {"chatwindow/chat_overflowarrow_up.dds", "chat_overflowarrow_up.dds"},
+   {"chatwindow/maximize_down.dds", "maximize_down.dds"},
+   {"chatwindow/maximize_up.dds", "maximize_up.dds"},
+   {"chatwindow/minimize_down.dds", "minimize_down.dds"},
+   {"chatwindow/minimize_up.dds", "minimize_up.dds"},
    {"collections/collections_tabicon_collectibles_up.dds", "collections_tabicon_collectibles_up.dds"},
    {"collections/collections_tabicon_dlc_up.dds", "collections_tabicon_dlc_up.dds"},
    {"collections/collections_tabicon_housing_up.dds", "collections_tabicon_housing_up.dds"},
@@ -779,9 +779,9 @@ local gamepad_grayscale_buttons = {
 }
 
 local backgrounds = {
-   -- {"chatwindow/chat_bg_center.dds", "chat_bg_center.dds", "chat_bg_center_ltp.dds"},
-   -- {"chatwindow/chat_bg_edge.dds", "chat_bg_edge.dds", "chat_bg_edge_ltp.dds"},
-   -- {"chatwindow/chat_minimized_mungebg.dds", "chat_minimized_mungebg.dds", "chat_minimized_mungebg_ltp.dds"},
+   {"chatwindow/chat_bg_center.dds", "chat_bg_center.dds", "chat_bg_center_ltp.dds"},
+   {"chatwindow/chat_bg_edge.dds", "chat_bg_edge.dds", "chat_bg_edge_ltp.dds"},
+   {"chatwindow/chat_minimized_mungebg.dds", "chat_minimized_mungebg.dds", "chat_minimized_mungebg_ltp.dds"},
    {"deathrecap/deathrecap_bg_left.dds", "deathrecap_bg_left.dds", "deathrecap_bg_left_ltp.dds"},
    {"deathrecap/deathrecap_bg_right.dds", "blank.dds", "blank.dds"},
    {"login/addonmanager_bg_left.dds", "addonmanager_bg_left.dds", "addonmanager_bg_left_ltp.dds"},

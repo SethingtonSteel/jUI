@@ -231,7 +231,7 @@ function ProvinatusDisplay:GetMenu()
           Provinatus.SavedVars.Display.FadeRate = value
         end,
         min = 0.01,
-        max = 5,
+        max = 10,
         step = 0.01,
         decimals = 2,
         autoSelect = true,

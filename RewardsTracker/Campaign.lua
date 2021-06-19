@@ -16,6 +16,10 @@ function addon:Initialize(owner)
     self.currentCharacterId = GetCurrentCharacterId()
     self:initCharacters()
 
+    EVENT_MANAGER:RegisterForEvent(self.name, EVENT_ASSIGNED_CAMPAIGN_CHANGED, function(eventCode, newAssignedCampaignId)
+        self:scanCampaign()
+    end)
+
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_CAMPAIGN_LEADERBOARD_DATA_CHANGED, function(eventCode)
         self:scanCampaign()
         if self.updatePoints == true then

@@ -20,18 +20,15 @@ LibHarvensAddonSettings.ST_SECTION = 8
 -----
 
 LibHarvensAddonSettings.addons = { }
-local AddonSettings = { }
-local AddonSettingsControl = { }
+
+local AddonSettings = ZO_Object:Subclass()
+local AddonSettingsControl = ZO_Object:Subclass()
 
 LibHarvensAddonSettings.AddonSettings = AddonSettings
 LibHarvensAddonSettings.AddonSettingsControl = AddonSettingsControl
 
-local alphaStates = {
-	[false] = 0.5,
-	[true] = 1,
-}
-
-local tooltips = {
+local TOOLTIPS =
+{
 	ItemTooltip,
 	InformationTooltip,
 	GameTooltip,
@@ -48,6 +45,16 @@ local needUpdate = true
 -----
 -- Control specific functions tables
 -----
+local ALPHA_STATES =
+{
+	[true] = 1,
+	[false] = 0.5,
+}
+
+local function GetAlphaFromState(state)
+	return ALPHA_STATES[state]
+end
+
 local changeControlStateFunctions = {
 	[LibHarvensAddonSettings.ST_CHECKBOX] = function(control, state)
 		local boxControl = GetControl(control, "Checkbox")
@@ -56,7 +63,7 @@ local changeControlStateFunctions = {
 		else
 			ZO_CheckButton_Enable(boxControl)
 		end
-		boxControl:SetAlpha(alphaStates[state])
+		boxControl:SetAlpha(GetAlphaFromState(state))
 	end,
 	[LibHarvensAddonSettings.ST_DROPDOWN] = function(control, state)
 		local dropdown = GetControl(control, "Dropdown")
@@ -65,27 +72,29 @@ local changeControlStateFunctions = {
 		else
 			ZO_ComboBox_Enable(dropdown)
 		end
-		GetControl(dropdown, "SelectedItemText"):SetAlpha(alphaStates[state])
-		GetControl(dropdown, "BG"):SetAlpha(alphaStates[state])
-		GetControl(dropdown, "OpenDropdown"):SetAlpha(alphaStates[state])
+		local alpha = GetAlphaFromState(state)
+		GetControl(dropdown, "SelectedItemText"):SetAlpha(alpha)
+		GetControl(dropdown, "BG"):SetAlpha(alpha)
+		GetControl(dropdown, "OpenDropdown"):SetAlpha(alpha)
 	end,
 	[LibHarvensAddonSettings.ST_SLIDER] = function(control, state)
 		GetControl(control, "Slider"):SetEnabled(state)
-		GetControl(control, "SliderBackdrop"):SetAlpha(alphaStates[state])
-		GetControl(control, "ValueLabel"):SetAlpha(alphaStates[state])
+		local alpha = GetAlphaFromState(state)
+		GetControl(control, "SliderBackdrop"):SetAlpha(alpha)
+		GetControl(control, "ValueLabel"):SetAlpha(alpha)
 	end,
 	[LibHarvensAddonSettings.ST_BUTTON] = function(control, state)
 		GetControl(control, "Button"):SetEnabled(state)
 	end,
 	[LibHarvensAddonSettings.ST_EDIT] = function(control, state)
 		local editBackdrop = GetControl(control, "EditBackdrop")
-		editBackdrop:SetAlpha(alphaStates[state])
+		editBackdrop:SetAlpha(GetAlphaFromState(state))
 		GetControl(editBackdrop, "Edit"):SetEditEnabled(state)
 	end,
 	[LibHarvensAddonSettings.ST_COLOR] = function(control, state)
 		local color = GetControl(control, "ColorSection")
 		color:SetMouseEnabled(state)
-		color:SetAlpha(alphaStates[state])
+		color:SetAlpha(GetAlphaFromState(state))
 	end
 }
 
@@ -108,14 +117,15 @@ local updateControlFunctions = {
 		local slider = GetControl(self.control, "Slider")
 		slider:SetMinMax(self.min, self.max)
 		slider:SetValue(self.getFunction())
-		local valLabel = GetControl(self.control, "ValueLabel")
+		local label = GetControl(self.control, "ValueLabel")
+		local value = self.getFunction() or "0"
 		if self.unit and #self.unit > 0 then
-			valLabel:SetText(self.getFunction() .. self:GetValueOrCallback(self.unit))
+			label:SetText(value .. self:GetValueOrCallback(self.unit))
 		else
-			valLabel:SetText(self.getFunction())
+			label:SetText(value)
 		end
 		slider:SetValueStep(self.step)
-		slider.label = valLabel
+		slider.label = label
 	end,
 	[LibHarvensAddonSettings.ST_BUTTON] = function(self, lastControl)
 		self.control:SetHidden(false)
@@ -131,8 +141,8 @@ local updateControlFunctions = {
 		local editControl = self.control:GetNamedChild("EditBackdrop"):GetNamedChild("Edit")
 		editControl:SetTextType(self.textType or TEXT_TYPE_ALL)
 		editControl:SetMaxInputChars(self.maxInputChars or MAX_HELP_DESCRIPTION_BODY)
-		editControl:SetText(zo_strgsub(self.getFunction(), "|", "||"))
-		editControl:SetColor(ZO_NORMAL_TEXT:UnpackRGBA())
+		editControl:SetText(self.getFunction() or "")
+		editControl:SetColor(ZO_NORMAL_TEXT:UnpackRGB())
 	end,
 	[LibHarvensAddonSettings.ST_DROPDOWN] = function(self, lastControl)
 		self:SetAnchor(lastControl)
@@ -173,21 +183,21 @@ local updateControlFunctions = {
 local createControlFunctions = {
 	[LibHarvensAddonSettings.ST_CHECKBOX] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.checkboxPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		updateControlFunctions[LibHarvensAddonSettings.ST_CHECKBOX](self, lastControl)
 
 		ZO_CheckButton_SetToggleFunction(self.control:GetNamedChild("Checkbox"), function(control, state)
 			if state then
-				control:GetParent():GetNamedChild("Name"):SetColor(1, 1, 1, 1)
+				control:GetParent():GetNamedChild("Name"):SetColor(ZO_DEFAULT_ENABLED_COLOR:UnpackRGB())
 			else
-				control:GetParent():GetNamedChild("Name"):SetColor(0.5, 0.5, 0.5, 1)
+				control:GetParent():GetNamedChild("Name"):SetColor(ZO_DEFAULT_DISABLED_COLOR:UnpackRGB())
 			end
 			self:ValueChanged(state)
-		end )
+		end)
 	end,
 	[LibHarvensAddonSettings.ST_SLIDER] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.sliderPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		local slider = GetControl(self.control, "Slider")
 		-- Reset the template (ZO_Options_Slider) before calling InitializeControl
 		slider:SetHandler("OnValueChanged", nil)
@@ -201,11 +211,11 @@ local createControlFunctions = {
 				control.label:SetText(formattedValue)
 			end
 			self:ValueChanged(formattedValue)
-		end )
+		end)
 	end,
 	[LibHarvensAddonSettings.ST_BUTTON] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.buttonPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		updateControlFunctions[LibHarvensAddonSettings.ST_BUTTON](self, lastControl)
 		local button = GetControl(self.control, "Button")
 		button:SetHandler("OnClicked", function(...) self:ValueChanged(...) end)
@@ -213,55 +223,56 @@ local createControlFunctions = {
 	end,
 	[LibHarvensAddonSettings.ST_EDIT] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.editPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		updateControlFunctions[LibHarvensAddonSettings.ST_EDIT](self, lastControl)
 		local editControl = self.control:GetNamedChild("EditBackdrop"):GetNamedChild("Edit")
+		editControl:SetAllowMarkupType(ALLOW_MARKUP_TYPE_NONE)
 		editControl:SetHandler("OnEnter", function(control)
-			self:ValueChanged(zo_strgsub(control:GetText(), "||", "|"))
+			self:ValueChanged(control:GetText())
 			control:LoseFocus()
-		end )
+		end)
 		editControl:SetHandler("OnEscape", function(control)
-			control:SetText(zo_strgsub(self.getFunction(), "|", "||"))
+			control:SetText(self.getFunction() or "")
 			control:LoseFocus()
-		end )
+		end)
 		editControl:SetHandler("OnFocusLost", function(control)
-			self:ValueChanged(zo_strgsub(control:GetText(), "||", "|"))
-			editControl:SetColor(ZO_NORMAL_TEXT:UnpackRGBA())
-			control:SetText(zo_strgsub(self.getFunction(), "|", "||"))
+			self:ValueChanged(control:GetText())
+			editControl:SetColor(ZO_NORMAL_TEXT:UnpackRGB())
+			control:SetText(self.getFunction() or "")
 			control:SetCursorPosition(0)
-		end )
+		end)
 		editControl:SetHandler("OnFocusGained", function(control)
-			control:SetColor(ZO_HIGHLIGHT_TEXT:UnpackRGBA())
+			control:SetColor(ZO_HIGHLIGHT_TEXT:UnpackRGB())
 			control:TakeFocus()
-		end )
+		end)
 	end,
 	[LibHarvensAddonSettings.ST_DROPDOWN] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.dropdownPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		updateControlFunctions[LibHarvensAddonSettings.ST_DROPDOWN](self, lastControl)
 	end,
 	[LibHarvensAddonSettings.ST_LABEL] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.labelPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		updateControlFunctions[LibHarvensAddonSettings.ST_LABEL](self, lastControl)
 	end,
 	[LibHarvensAddonSettings.ST_SECTION] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.sectionPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		updateControlFunctions[LibHarvensAddonSettings.ST_SECTION](self, lastControl)
 	end,
 	[LibHarvensAddonSettings.ST_COLOR] = function(self, lastControl)
 		self.control, self.controlKey = LibHarvensAddonSettings.colorPool:AcquireObject()
-		self.control.data = setmetatable( { }, { _index = self })
+		self.control.data = ZO_Object:New(self)
 		self.control.texture = self.control:GetNamedChild("Color")
 		updateControlFunctions[LibHarvensAddonSettings.ST_COLOR](self, lastControl)
-		local function OnColorSet(re, gr, bl, al)
-			self:ValueChanged(re, gr, bl, al)
+		local function OnColorSet(r, g, b, a)
+			self:ValueChanged(r, g, b, a)
 			self.control.texture:SetColor(self.getFunction())
 		end
 		self.control:GetNamedChild("ColorSection"):SetHandler("OnMouseUp", function()
 			COLOR_PICKER:Show(OnColorSet, self.getFunction())
-		end )
+		end)
 		return self.control
 	end,
 }
@@ -379,15 +390,13 @@ local setupControlFunctions = {
 -- AddonSettingsControl class - represents single option control
 -----
 function AddonSettingsControl:New(callbackManager, type)
-	local ret = setmetatable( { }, self)
-	self.__index = self
-
-	ret.callbackManager = callbackManager
-	if ret.callbackManager then
-		ret.callbackManager:RegisterCallback("ValueChanged", ret.SettingValueChangedCallback, ret)
+	local object = ZO_Object.New(self)
+	object.type = type
+	object.callbackManager = callbackManager
+	if object.callbackManager then
+		object.callbackManager:RegisterCallback("ValueChanged", object.SettingValueChangedCallback, object)
 	end
-	ret.type = type
-	return ret
+	return object
 end
 
 function AddonSettingsControl:SetupControl(params)
@@ -425,9 +434,9 @@ function AddonSettingsControl:SetEnabled(state)
 
 		if nameControl then
 			if state then
-				nameControl:SetColor(ZO_DEFAULT_ENABLED_COLOR:UnpackRGBA())
+				nameControl:SetColor(ZO_DEFAULT_ENABLED_COLOR:UnpackRGB())
 			else
-				nameControl:SetColor(ZO_DEFAULT_DISABLED_COLOR:UnpackRGBA())
+				nameControl:SetColor(ZO_DEFAULT_DISABLED_COLOR:UnpackRGB())
 			end
 		end
 	end
@@ -465,14 +474,14 @@ function AddonSettingsControl:SetupTooltip(control)
 			if type(exitHandler) == "function" then
 				exitHandler(self, sender)
 			else
-				for _, tooltip in ipairs(tooltips) do
+				for _, tooltip in ipairs(TOOLTIPS) do
 					ClearTooltip(tooltip)
 				end
 			end
 
 			if self.OnMouseExitOriginal then self.OnMouseExitOriginal(sender, ...) end
-		end )
-	end )
+		end)
+	end)
 end
 
 function AddonSettingsControl:CreateControl(lastControl)
@@ -495,13 +504,13 @@ function AddonSettingsControl:CreateControl(lastControl)
 			if self.OnMouseEnterOriginal then
 				self.OnMouseEnterOriginal(...)
 			end
-		end )
+		end)
 		self.control:SetHandler("OnMouseExit", function(...)
 			ClearTooltip(InformationTooltip)
 			if self.OnMouseExitOriginal then
 				self.OnMouseExitOriginal(...)
 			end
-		end )
+		end)
 	end
 
 	self:SetEnabled(not self:IsDisabled())
@@ -555,10 +564,10 @@ function AddonSettingsControl:SetValue(...)
 	elseif self.type == LibHarvensAddonSettings.ST_SLIDER then
 		local slider = GetControl(self.control, "Slider")
 		slider:SetValue(...)
-		--slider:GetHandler("OnValueChanged")(slider, ...)
 	elseif self.type == LibHarvensAddonSettings.ST_EDIT then
 		local editControl = self.control:GetNamedChild("EditBackdrop"):GetNamedChild("Edit")
-		editControl:SetText(zo_strgsub(..., "|", "||"))
+		local value = ...
+		editControl:SetText(value)
 	elseif self.type == LibHarvensAddonSettings.ST_DROPDOWN then
 		local combobox = GetControl(self.control, "Dropdown").m_comboBox
 		combobox:SetSelectedItem(...)
@@ -597,22 +606,19 @@ end
 -- AddonSettings class - represents addon settings panel
 -----
 function AddonSettings:New(name, options)
-	local ret = setmetatable( { }, self)
-	self.__index = self
-
+	local object = ZO_Object.New(self)
 	if type(options) == "table" then
-		ret.allowDefaults = options.allowDefaults
-		ret.defaultsFunction = options.defaultsFunction
+		object.allowDefaults = options.allowDefaults
+		object.defaultsFunction = options.defaultsFunction
 		if options.allowRefresh then
-			ret.callbackManager = ZO_CallbackObject:New()
+			object.callbackManager = ZO_CallbackObject:New()
 		end
 	end
-
-	ret.name = name
-	ret.selected = false
-	ret.mouseOver = false
-	ret.settings = { }
-	return ret
+	object.name = name
+	object.selected = false
+	object.mouseOver = false
+	object.settings = { }
+	return object
 end
 
 function AddonSettings:SetAnchor(prev)
@@ -658,7 +664,6 @@ end
 
 function AddonSettings:InitHandlers()
 	local label = GetControl(self.control, "Label")
-
 	label:SetText(self.name)
 
 	self.control:SetResizeToFitDescendents(false)
@@ -673,23 +678,17 @@ function AddonSettings:InitHandlers()
 		PlaySound(SOUNDS.DEFAULT_CLICK)
 
 		self:Select()
-	end )
+	end)
 	self.control:SetHandler("OnMouseEnter", function(control)
 		self.mouseOver = true
 		self:UpdateHighlight()
-	end )
+	end)
 	self.control:SetHandler("OnMouseExit", function(control)
 		self.mouseOver = false
 		self:UpdateHighlight()
-	end )
-	self:UpdateHighlight()
-	--[[
-	self.control:SetHandler("OnEffectivelyShown", function(control, hidden)
-		if self.selected and self.callbackManager then
-			self.callbackManager:FireCallbacks("ValueChanged", self)
-		end
 	end)
---]]
+	self:UpdateHighlight()
+
 	CALLBACK_MANAGER:RegisterCallback("LibHarvensAddonSettings_AddonSelected", function(_, title)
 		if self.selected then
 			self:CleanUp()
@@ -704,16 +703,16 @@ function AddonSettings:InitHandlers()
 			end
 			self:UpdateHighlight()
 		end
-	end )
+	end)
 end
 
 function AddonSettings:UpdateHighlight()
 	if self.selected then
-		GetControl(self.control, "Label"):SetColor(ZO_SELECTED_TEXT:UnpackRGBA())
+		GetControl(self.control, "Label"):SetColor(ZO_SELECTED_TEXT:UnpackRGB())
 	elseif self.mouseOver then
-		GetControl(self.control, "Label"):SetColor(ZO_HIGHLIGHT_TEXT:UnpackRGBA())
+		GetControl(self.control, "Label"):SetColor(ZO_HIGHLIGHT_TEXT:UnpackRGB())
 	else
-		GetControl(self.control, "Label"):SetColor(ZO_NORMAL_TEXT:UnpackRGBA())
+		GetControl(self.control, "Label"):SetColor(ZO_NORMAL_TEXT:UnpackRGB())
 	end
 end
 
@@ -774,9 +773,14 @@ end
 -----
 -- LibHarvensAddonSettings singleton
 -----
-function LibHarvensAddonSettings:AddAddon(name, options)
+local function RemoveColorMarkup(name)
 	name = zo_strgsub(name, "|[Cc][%w][%w][%w][%w][%w][%w]", "")
 	name = zo_strgsub(name, "|[Rr]", "")
+	return name
+end
+
+function LibHarvensAddonSettings:AddAddon(name, options)
+	name = RemoveColorMarkup(name)
 
 	for i = 1, #self.addons do
 		if self.addons[i].name == name then
@@ -819,11 +823,13 @@ end
 
 local function PoolCreateControlBase(name, pool)
 	local id = pool:GetNextControlId()
-	local control = WINDOW_MANAGER:CreateControl(name .. id, LibHarvensAddonSettings.container, CT_CONTROL)
+	local controlNamespace = name .. id
+
+	local control = WINDOW_MANAGER:CreateControl(controlNamespace, LibHarvensAddonSettings.container, CT_CONTROL)
 	control:SetMouseEnabled(true)
 	control:SetDimensions(510, 26)
 
-	local label = WINDOW_MANAGER:CreateControl(name .. id .. "Name", control, CT_LABEL)
+	local label = WINDOW_MANAGER:CreateControl(controlNamespace .. "Name", control, CT_LABEL)
 	label:SetFont("ZoFontWinH4")
 	label:SetDimensions(300, 26)
 	label:SetAnchor(LEFT, control, LEFT, 0, 0)
@@ -841,12 +847,13 @@ end
 
 local function EditPoolCreateEdit(pool)
 	local control, id = PoolCreateControlBase("HarvensAddonSettingsEdit", pool)
+	local controlNamespace = "HarvensAddonSettingsEdit" .. id
 
-	local editBackdrop = WINDOW_MANAGER:CreateControlFromVirtual("HarvensAddonSettingsEdit" .. id .. "EditBackdrop", control, "ZO_EditBackdrop")
+	local editBackdrop = WINDOW_MANAGER:CreateControlFromVirtual(controlNamespace .. "EditBackdrop", control, "ZO_EditBackdrop")
 	editBackdrop:SetDimensions(200, 26)
 	editBackdrop:SetAnchor(RIGHT, control, RIGHT, 0, 0)
 
-	local editBox = WINDOW_MANAGER:CreateControlFromVirtual("HarvensAddonSettingsEdit" .. id .. "EditBackdropEdit", editBackdrop, "ZO_DefaultEditForBackdrop")
+	local editBox = WINDOW_MANAGER:CreateControlFromVirtual(controlNamespace .. "EditBackdropEdit", editBackdrop, "ZO_DefaultEditForBackdrop")
 	editBox:SetFont("ZoFontWinH4")
 	return control
 end
@@ -878,7 +885,9 @@ end
 
 function LibHarvensAddonSettings:SelectFirstAddon()
 	currentSettings = LibHarvensAddonSettings.addons[1]
-	if not currentSettings.selected then currentSettings:Select() end
+	if not currentSettings.selected then
+		currentSettings:Select()
+	end
 end
 
 function LibHarvensAddonSettings:CreateAddonSettingsPanel()
@@ -901,7 +910,7 @@ function LibHarvensAddonSettings:CreateAddonSettingsPanel()
 		addonSettings:CreateControls()
 		self.container.endHeight = addonSettings:GetOverallHeight() + 8
 		self.openTimeline:PlayFromStart()
-	end )
+	end)
 
 	local orgUpdatePanelVisibility = ZO_KeyboardOptions.UpdatePanelVisibility
 	function ZO_KeyboardOptions.UpdatePanelVisibility(...)
@@ -927,16 +936,13 @@ end
 function LibHarvensAddonSettings:CreateAddonList()
 	table.sort(LibHarvensAddonSettings.addons, function(el1, el2)
 		return el1.name < el2.name
-	end )
+	end)
 
+	local control, template
 	local prev = nil
 	for i = 1, #LibHarvensAddonSettings.addons do
-		local control
-		if i > 1 then
-			control = WINDOW_MANAGER:CreateControlFromVirtual("LibHarvensAddonSettingsAddon" .. LibHarvensAddonSettings.addons[i].name .. "Name", ZO_OptionsWindowSettingsScrollChild, "ZO_Options_SectionTitle_WithDivider")
-		else
-			control = WINDOW_MANAGER:CreateControlFromVirtual("LibHarvensAddonSettingsAddon" .. LibHarvensAddonSettings.addons[i].name .. "Name", ZO_OptionsWindowSettingsScrollChild, "ZO_Options_SectionTitle")
-		end
+		template = i > 1 and "ZO_Options_SectionTitle_WithDivider" or "ZO_Options_SectionTitle"
+		control = WINDOW_MANAGER:CreateControlFromVirtual("LibHarvensAddonSettingsAddon" .. LibHarvensAddonSettings.addons[i].name .. "Name", ZO_OptionsWindowSettingsScrollChild, template)
 
 		LibHarvensAddonSettings.addons[i].control = control
 		control.addonSettings = LibHarvensAddonSettings.addons[i]

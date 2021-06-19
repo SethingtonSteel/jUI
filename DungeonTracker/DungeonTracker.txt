@@ -1,8 +1,8 @@
 ## Title: |c66ccffDungeon Tracker|r
 ## Author: |c66ccffPhinix|r
 ## Description: Adds completion information to dungeon (group and public) and trial tooltips, and overhauls the activity finder.
-## Version: 1.28
-## APIVersion: 100033 100034
+## Version: 1.30
+## APIVersion: 100035
 ## SavedVariables: DungeonTracker
 ## DependsOn: LibPhinixFunctions>=9 LibAddonMenu-2.0>=30
 

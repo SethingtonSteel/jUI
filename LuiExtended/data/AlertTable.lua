@@ -91,7 +91,7 @@ LUIE.Data.AlertTable = {
     [10805] = { avoid = true, interrupt = true, priority = 3, eventdetect = true, result = ACTION_RESULT_BEGIN, duration = 1500, postCast = 4000, refire = 2500, bossMatch = { Unitnames.Boss_Calixte_Darkblood, Unitnames.Boss_Angata_the_Clannfear_Handler }, sound = LUIE_ALERT_SOUND_TYPE_GROUND }, -- Ignite (Synergy)
 
     -- Abilities
-    [29378] = { block = true, dodge = true, priority = 3, bs = true, result = ACTION_RESULT_BEGIN, duration = 1600, cc = LUIE_CC_TYPE_STUN, sound = LUIE_ALERT_SOUND_TYPE_ST_CC }, -- Uppercut (Ravager)
+    [29378] = { block = true, dodge = true, priority = 3, bs = true, result = ACTION_RESULT_BEGIN, duration = 1600, cc = LUIE_CC_TYPE_KNOCKBACK, sound = LUIE_ALERT_SOUND_TYPE_ST_CC }, -- Uppercut (Ravager)
 
     [28408] = { block = true, dodge = true, priority = 3, eventdetect = true, result = ACTION_RESULT_BEGIN, duration = 1533, bossMatch = { Unitnames.Boss_Smiles_With_Knife }, sound = LUIE_ALERT_SOUND_TYPE_AOE }, -- Whirlwind (Skirmisher)
 
@@ -234,6 +234,7 @@ LUIE.Data.AlertTable = {
     [139956] = { block = true, dodge = true, priority = 3, bs = true, result = ACTION_RESULT_BEGIN, duration = 2000, cc = LUIE_CC_TYPE_STAGGER, sound = LUIE_ALERT_SOUND_TYPE_ST_CC  }, -- Savage Blow (Bear)
 
     [70366] = { block = true, dodge = true, priority = 3, eventdetect = true, result = ACTION_RESULT_BEGIN, duration = 2167, cc = LUIE_CC_TYPE_STUN, bossMatch = { Unitnames.Boss_Gurgozu, Unitnames.Boss_Graufang }, sound = LUIE_ALERT_SOUND_TYPE_AOE_CC }, -- Slam (Great Bear)
+    [70374] = { power = true, auradetect = true, priority = 2, sound = LUIE_ALERT_SOUND_TYPE_POWER_DEFENSE }, -- Ferocity (Great Bear)
 
     [4591] = { block = true, dodge = true, priority = 3, result = ACTION_RESULT_BEGIN, eventdetect = true, duration = 970, hideIfNoSource = true, sound = LUIE_ALERT_SOUND_TYPE_AOE }, -- Sweep (Crocodile)
     [4594] = { power = true, auradetect = true, priority = 2, ignoreRefresh = true, refire = 500, sound = LUIE_ALERT_SOUND_TYPE_POWER_DEFENSE }, -- Ancient Skin (Crocodile)

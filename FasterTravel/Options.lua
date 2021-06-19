@@ -88,6 +88,7 @@ Options.defaults = {
 	jumpHereBehaviour = Options.JumpHereBehaviour.ASK,
 	verbosity = 1,
 	listlen = 10,
+	sortFav = false,
 }
 
 local function MakeSortOrdersDropdownLabels()
@@ -275,6 +276,16 @@ function Options.Initialize(addon, refresh1)
 				settings.locationOrder = choice
 				refresh1() 
              end,
+        },
+        {
+            type = "checkbox",
+            name = GetString(FASTER_TRAVEL_SETTINGS_SORTFAV),
+            default = defaults.sortFav,
+            getFunc = function() return settings.sortFav end,
+            setFunc = function(newValue)
+				settings.sortFav = newValue
+				refresh1() 
+ 			end,
         },
     }
 

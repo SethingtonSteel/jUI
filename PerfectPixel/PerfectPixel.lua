@@ -3,7 +3,7 @@ PP.SV = {}
 PP.ADDON_NAME		= "PerfectPixel"
 PP.ADDON_AUTHOR		= "@KL1SK"
 PP.ADDON_WEBSITE	= "https://www.esoui.com/downloads/info2103-PerfectPixel.html"
-PP.ADDON_VERSION 	= "0.11.09"
+PP.ADDON_VERSION 	= "0.11.15"
 
 -- media
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52,14 +52,10 @@ local function Settings()
 		CALLBACK_MANAGER:RegisterCallback("LAM-PanelOpened", function(panel)
 			if panel ~= PerfectPixelOptions then return end
 			SCENE_MANAGER:GetScene('gameMenuInGame'):AddFragment(INVENTORY_FRAGMENT)
-			-- SCENE_MANAGER:GetScene('gameMenuInGame'):AddFragment(RIGHT_PANEL_BG_FRAGMENT)
-			-- SCENE_MANAGER:GetScene('gameMenuInGame'):AddFragment(PP_BACKDROP_FRAGMENT)
 		end)
 		CALLBACK_MANAGER:RegisterCallback("LAM-PanelClosed", function(panel)
 			if panel ~= PerfectPixelOptions then return end
 			SCENE_MANAGER:GetScene('gameMenuInGame'):RemoveFragment(INVENTORY_FRAGMENT)
-			-- SCENE_MANAGER:GetScene('gameMenuInGame'):RemoveFragment(RIGHT_PANEL_BG_FRAGMENT)
-			-- SCENE_MANAGER:GetScene('gameMenuInGame'):RemoveFragment(PP_BACKDROP_FRAGMENT)
 		end)
 	end
 --===============================================================================================--
@@ -368,7 +364,8 @@ local function Core()
 			local sp = control:GetNamedChild("SellPrice")
 			PP.Font(sp, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 			sp:SetHidden(false)
-		end
+			PP:SetLockedFn(sp, 'SetFont')
+	end
 		--"ButtonStackCount"-------------
 		if control:GetNamedChild("ButtonStackCount") then
 			local stack = control:GetNamedChild("ButtonStackCount")
@@ -621,12 +618,11 @@ local function OnAddonLoaded(eventType, addonName)
 		--
 		PP.gameMenuInGameScene()
 		--
-		PP.performanceMeterScene()
-		--
-		PP.compatibility()
 		--
 		PP.scrolling()
+		PP.performanceMeter()
 		-- PP.playerProgressBar()
+		PP.compatibility()
 		--
 		EVENT_MANAGER:RegisterForEvent(PP.ADDON_NAME .. "searchBox", EVENT_PLAYER_ACTIVATED, function() PP.searchBox() end) --< PP.chatWindow()
 		--

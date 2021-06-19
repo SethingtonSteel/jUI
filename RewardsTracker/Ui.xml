@@ -1,7 +1,25 @@
 <GuiXml>
     <Controls>
-        <Control name="RewardsTrackerListHeader" inherits="ZO_SortHeaderAppearance" mouseEnabled="true" virtual="true">
-            <Dimensions x="80" y="32"/>
+        <Control name="RewardsTrackerListHeader" mouseEnabled="true" virtual="true">
+            <Controls>
+                <Label name="$(parent)Name" font="ZoFontGameSmall" color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_NORMAL" modifyTextType="UPPERCASE" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+                    <AnchorFill />
+                </Label>
+            </Controls>
+        </Control>
+
+        <Control name="RewardsTrackerListHeaderWithBG" mouseEnabled="true" virtual="true">
+            <Controls>
+                <Backdrop name="$(parent)Background" centerColor="cc000000" edgeColor="e6000000">
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$(parent)" relativePoint="BOTTOMRIGHT"/>
+                    <Edge edgeSize="3"/>
+                </Backdrop>
+                <Label name="$(parent)Name" font="ZoFontGameSmall" color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_NORMAL" modifyTextType="UPPERCASE" horizontalAlignment="CENTER" verticalAlignment="CENTER" wrapMode="ELLIPSIS">
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="8" offsetY="0"/>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$(parent)" relativePoint="BOTTOMRIGHT" offsetX="-8" offsetY="0"/>
+                </Label>
+            </Controls>
         </Control>
 
         <Label name="RewardsTrackerListRowName" font="ZoFontGame" wrapMode="ELLIPSIS" horizontalAlignment="LEFT"
@@ -66,8 +84,8 @@
                             <OnClicked>
                                 RewardsTracker:ToggleUi()
                             </OnClicked>
-                            <Anchor point="TOPRIGHT" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetX="0"
-                                    offsetY="-24"/>
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetX="4"
+                                    offsetY="50"/>
                         </Button>
                     </Controls>
                 </Control>

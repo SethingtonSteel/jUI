@@ -18,7 +18,7 @@ end
 ----- lang setup                            -----
 -------------------------------------------------
 
-ScrySpy.client_lang = GetCVar("language.2")
+ScrySpy.client_lang = GetCVar("Language.2")
 ScrySpy.effective_lang = nil
 ScrySpy.supported_lang = { "de", "en", "es", "fr", "kb", "kr", "pl", "ru", }
 if is_in(ScrySpy.client_lang, ScrySpy.supported_lang) then
@@ -45,7 +45,7 @@ scryspy_defaults = {
 ScrySpy_SavedVars.show_pins
 ]]--
 ScrySpy.addon_name = "ScrySpy"
-ScrySpy.addon_version = "1.31"
+ScrySpy.addon_version = "1.32"
 ScrySpy.addon_website = "https://www.esoui.com/downloads/info2647-ScrySpy.html"
 ScrySpy.custom_compass_pin = "compass_digsite" -- custom compas pin pin type
 ScrySpy.scryspy_map_pin = "scryspy_map_pin"

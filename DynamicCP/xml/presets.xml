@@ -172,7 +172,7 @@
                             <Textures normal="/esoui/art/chatwindow/chat_options_up.dds" mouseOver="/esoui/art/chatwindow/chat_options_over.dds"/>
                             <Anchor point="RIGHT" relativeTo="$(parent)Close" relativePoint="LEFT"/>
                             <Dimensions x="36" y="36" />
-                            <OnClicked>DynamicCP:OpenSettingsMenu()</OnClicked>
+                            <OnClicked>DynamicCP.OpenSettingsMenu()</OnClicked>
                         </Button>
                         <Control name="$(parent)Inner" hidden="false">
                             <Dimensions x="660" y="280"/>

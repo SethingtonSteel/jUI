@@ -40,7 +40,7 @@ local function InsertLoreBooks(Books)
   local LoreBooks = {}
   Books[LORE_CATEGORY] = {}
   if LOREBOOKS_ADDON_LOADED then
-    LoreBooks = LoreBooks_GetLocalData(Provinatus.Zone, Provinatus.Subzone)
+    LoreBooks = LoreBooks_GetLocalData(GetCurrentMapId())
   else
     LoreBooks = ProvinatusLoreBooksData[Provinatus.Subzone]
   end
@@ -83,7 +83,7 @@ local function InsertEideticBooks(Books)
     CurrentZone = ZoneId
     local EideticBooks
     if MapIndex then
-      EideticBooks = LoreBooks_GetNewEideticDataForMap(MapIndex)
+      EideticBooks = LoreBooks_GetNewEideticDataForMapIndex(MapIndex)
     elseif ZoneId then
       EideticBooks = LoreBooks_GetNewEideticDataForZone(ZoneId)
     end

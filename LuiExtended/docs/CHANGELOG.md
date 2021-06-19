@@ -1,3 +1,156 @@
+### Version 6.2.9
+
+Buffs & Debuffs
+- Fixed an issue where the icon for the ground tracker buff for Nova and its morphs was missing.
+- Fixed an issue where no ground tracker buff was displaying for Cleansing Ritual and its morphs.
+- Rune Focus and its morphs now show a buff when you are standing in the healing circle.
+- Vampire Stages now show as long term buffs.
+- Fixed various ability tooltips to account for changes made in the last couple updates.
+
+Chat Announcements
+- Alerts for collectible usage will now also display when you summon/dismiss a companion.
+
+Slash Commands
+- You can now specify '/home inside' or '/home outside' when warping to your primary home.
+- The '/home' slash command now has an option to toggle whether to default to warping inside or outside your primary home.
+- Added a '/companion' slash command to summon a companion and menu option to determine the default companion to summon. You can also specify the companion to summon with '/companion mirri' or '/companion bastian' or by using the '/mirri' or '/bastian' command.
+- Added keybinding options to summon either companion.
+
+Unit Frames
+- Added a Unit Frame for tracking your active companion (enabled by default). This frame takes the previous default position of the Pet Unit Frames. The Pet Unit Frames position will be reset to default when loading the addon and save any changes you make after.
+- Updated support for the "Dead" label to display on frames. Now companions, pets, bosses, and your target will show as "Dead" instead of at 0 Health.
+- The Target Unit Frame now displays an indicator when a player is being resurrected or reviving (to match the behavior of Group Unit Frames), this also works for the Companion Unit Frame.
+
+---
+
+### Version 6.2.8
+
+Slash Commands
+- Fixed an issue where the '/outfit' command was not working properly due to an API change I missed.
+
+Unit Frames
+- Fixed an issue where a UI error would occur when mousing over a Companion with the "Target - Use Reaction Color" option enabled in Unit Frames settings.
+- Added the option to change the Reaction Color for Companions in the Custom Unit Frame Color Options menu.
+
+---
+
+### Version 6.2.7
+
+Known Issues
+- Duration & Stack Tracking for Bar Highlight is currently disabled. Something that changed in the API broke this and I haven't been able to figure out what caused it yet despite rooting around for an exceptionally long time. I may have to rewrite this component in the future. I'd suggest using Action Duration Reminder in the meantime.
+
+Buffs & Debuffs
+- The Gamepad Skills Window & Gamepad Skills Advisor now properly show custom passive icons added by LUIE.
+- The Gamepad Active Effects Window now properly hides buffs & debuffs filtered out by LUIE.
+- Updated the tooltips for Alliance War Tortes / Scrolls to clarify they increase both "Alliance Rank and Alliance War Skill Line progression."
+- Updated the backdrop & tooltip for Cyrodiil Food/Drink buffs since the quality was upgraded from White to Blue.
+- Added Icons & Cast Bar support for various item/collectible fragment combination/use.
+- Added Icons & Cast Bar support for many Collectibles that were missing it.
+- Added Icons & Cast Bar support for the Aetherial Well furnishing item.
+- Updated icons and tooltips for the Champion System update.
+- Improved icons for several item sets.
+- Removed the custom icns used for Major/Minor Aegis, Courage, Slayer, and Toughness since ZOS has implemented new icons.
+- The Active Effects Window will now display more detailed information about the type of Buff/Debuff to match the behavior of mousing over LUIE buffs (I.E. shows whether the effect is unbreakable, a ground effect, an AOE Tracker, etc).
+- Fixed some missing ACTION_RESULT's for the debug logging option to stop it from throwing errors.
+- The toggle option to show Set Internal Cooldowns now has support for the Sentry set and has been moved into the Short-Term effects filters.
+- Added an option to toggle the display of Ability Internal Cooldowns (for Champion Abilities - Expert Evasion & Slippery)
+- Removed some name override data for Weapon Glyphs (the abilities are just called Crusher/Hardening/Weakening/Weapon Damage) instead of "X Enchantment." This makes the only change from the default UI renaming "Berserker" from the Glyph of Weapon Damage to "Weapon Damage."
+- Updated light/medium/heavy attacks for unarmed/weapons/Volendrung/Werewolf to match the current and updated syntax ZOS implemented ex. "Light Attack (Two Handed)."
+- The Internal Cooldown for Werewolf & Vampire Player Bites now show as Long-Term effects.
+
+Chat Announcements
+- Experience: Updated and restored the announcements for Champion Points being earned.
+- Experience: Cleaned up and normalized messages related to Respec Notifications.
+- Currency: Fixed an issue where currency postage values weren't always correct when sending mail.
+- Loot: Fixed an issue where Chat Announcements for learning recipes would display the total item count for that recipe if there were other copies of the recipe in your inventory.
+- Loot: Fixed some collectibles not showing a collectible link when purchasing them from the event vendor.
+- Collectible: Collectible Messages now have the option to display both Category & Subcategory.
+- Group: When forming a group and inviting a player to the group, the inviter will now see a "You have formed a group" message followed by a message indicating the invited player has joined.
+- Group: When you kick the last player in a group instead of seeing a "You have been removed from the group" message, it will now be indicated that you have disbanded the group.
+
+Combat Info
+- Cast Bar: Added a blacklist option for the Cast Bar.
+- Crowd Control Tracker: "Hiding Spot" is now localized and hidden so non-EN clients should not have a stun effect pop up for this.
+- Potion Timer: Now shows Days/Hours/Minutes format for longer duration CD's such as Research Scrolls & Mementos.
+
+Slash Commands
+- Added the '/setprimaryhome' command to set the primary home.
+- Added the '/eye' command and keybind to use the Antiquarian's Eye.
+- Collectible usage keybinds and slash commands will now return an error when trying to use a Merchant/Banker/Fence in a player home.
+- Collectible usage keybinds and slash commands will now display the collectible name that can't be used when an error occurs.
+- Fixed an issue where the error alert (if enabled) for collectible usage failure when the collectible was not unlocked was missing the name of the collectible.
+
+Unit Frames
+- The Experience Bar will now show the proper color/icon for the Champion Point being earned.
+- Removed a setting that toggled whether to show the max Champion Points the player/target had earned vs the amount allocated. The API no longer provides information about how many points have been allocated for targets.
+- Fixed an issue where the button to whitelist Assistant names for the Pet Frames was adding "Tythis" instead of "Tythis Andromo."
+
+---
+
+### Version 6.2.6
+
+General
+- Added options to Buffs & Debuffs, Combat Info - Ability Alerts, Combat Info - Crowd Control Tracker, and Combat Text to use default icons for crowd control effects. This is a WIP for some of the modules as certain things require manual table data to work correctly. I will be aiming to at least add full support for player abilities.
+- Reset the default color options for Buffs & Debuffs, Combat Info - Ability Alerts (Crowd Control Colors), and Combat Info - Crowd Control Tracker. This change will apply once when loading the addon and save any changes you make after.
+- Components that have a blacklist/whitelist function now all have buttons with confirmation prompts to clear the entire list.
+- Updated the keybindings for summoning Merchant/Banker/Fence to display a message in chat always. Previously this used the setting under Chat Announcements for collectible use messages.
+
+Buffs & Debuffs
+- Consolidated several submenus in Buffs & Debuffs.
+- You can now change the container alignment of Long Term Effects & Prominent Buffs/Debuffs without reloading the UI.
+- Prominent Buffs will no longer show clipping bars/labels when set to display with the horizontal method.
+- Added an option to hide the display of Short-term effects on the Player/Target in addition to Long-term effects.
+- Added a new "Priority Buffs & Debuffs" whitelist. These buffs & debuffs will show up with a different color.
+- Added a new menu to customize buff/debuff colors, and the option to toggle coloring debuffs by CC type (Very heavy WIP since it requires manual table data).
+- Fixed an issue where there was no buff icon for Argonian and Khajiit Summon Shade and its morphs.
+- Updated mouseover tooltips for buffs/debuffs to reflect if they are a ground buff/debuff, or a tracker effect for an AOE cast by the player.
+- Added the CC Immunity buff to Target Dummies that were missing it.
+
+Chat Announcements
+- Implemented a safeguard that should prevent a UI error from occuring when refining a large amount of crafting materials.
+
+Combat Info
+- Ability Alerts - Added an option for mitigation alerts to color the incoming ability name by its CC type. Adjusted a few menu options for syntax to accommodate for this change.
+- Bar Highlight - Fixed an issue where Crystallized Shield and its morphs would throw a UI error when taking damage with this component enabled.
+- Bar Highlight - Fixed an issue where the bar highlight for Argonian and Khajiit Summon Shade and its morphs didn't function properly.
+- Bar Highlight - Subterranean Assault now shows a 6 second timer when cast to track the full duration of its effect.
+- Crowd Control Tracker - Added new color options for Knockback & Pull/Levitate effects.
+- Crowd Control Tracker - Fixed an issue where unbreakable buffs would turn from the Unbreakable Color to default CC color when the break free animation played.
+
+Combat Text
+- Reset the default bleed damage color to red. This change will apply once when loading the addon and save any changes you make after.
+
+---
+
+### Version 6.2.5
+
+Buffs & Debuffs
+- Optimized and reorganized the filtering code, now prominent effects will always show even when long or short-term effects are hidden.
+- "Fake" buffs such as Sneak, Disguised, and Mounted can now be displayed as prominent.
+- Updated the tooltips for Major/Minor Endurance, Fortitude, and Intellect to reflect their new % values.
+- Updated the tooltip for Battle Spirit to reflect the changes made in the Flames of Ambition update.
+- Added icons & tooltips for the new Status Effects for Physical, Bleed, and Magic Damage.
+- Sneak now has a dynamic tooltip that displays the movement speed reduction and stamina cost.
+- Merged the "Long-Term Effects Filters" submenu options into the "Long-Term Effects" submenu options.
+- Added an option to disable the display of Short-Term Effects.
+- Added an option to toggle detailed information on/off for active Non-Combat Pet buff (on by default to match previous behavior).
+- Non-Combat Pet and Assistant buffs no longer display inside houses since you can't have active collectibles of this type inside a house.
+- Fixed an issue where the Target Iron Atronach, Trial was displaying duplicate buffs.
+- Updated tracking for Off Balance Immunity. Now you can set this as a Prominent Buff to track the effect on the player or a Prominent Debuff to track the effect on targets.
+- Fixed an issue where adding/removing a buff/debuff from Prominent Effects or from the Blacklist would reset the buff container anchoring.
+
+Combat Text
+- Combat Text automatically hid some resource regeneration/drain effects that could be slightly spammy (Bull Netch for example). This is no longer the case and instead buttons have been added to the blacklist menu for class abilities that are spammy. By default the stamina drain from sneak is added to this blacklist.
+
+Slash Commands
+- Updated the /cake command to use the 2021 Jubilee Cake.
+- Updated the /campaign command to work with campaigns added more recently. Thanks to TarodBOFH for discovering this issue.
+
+Unit Frames
+- Mousing over the XP Bar on the player frame will now show "Max XP" and hide enlightened status details if the player is at max Champion Points (to mimic the behavior of the default XP bar).
+
+---
+
 ### Version 6.2.4
 
 General
@@ -430,10 +583,11 @@ Unit Frames
 - Toggling the LUIE overlay on for default unit frames now disables the default UI unitframe text menu option to stop overlap from occuring.
 
 Art Assets
-- Custom ability icons by and modified from eleazzaar licensed under the CC-3 License (https://creativecommons.org/licenses/by/3.0/)
-- Custom ability icons by and modified from AKiZA, Angelina Avgustova, Blade Dancer, ClayManStudio, Dayed, Digital Worlds JSC, Ever Probe, HOSE, Jon Snow, Josch, Kalle Olli, Moon Tribe, N-hance Studio, PONETI, REXARD, Sky Painter, The 7 Heaven, TiGame, and TonityEden licensed under the Unity Store single entity license. (https://unity3d.com/legal/as_terms)
-- Custom ability icons by and modified from a-ravlik & micart licensed under the GraphicRiver regular license. (https://graphicriver.net/licenses/terms/regular)
-- Custom ability icons by and modified from Forrest Imel, Frostwindz and Mizuko licensed under the GameDevMarket.net pro license. (https://www.gamedevmarket.net/terms-conditions/#pro-licence)
+- Custom Art Assets by and modified from J. W. Bjerk (eleazzaar) licensed under the CC BY 3.0 license (https://creativecommons.org/licenses/by/3.0/)
+- Custom Art Assets by and modified from AKiZA, Angelina Avgustova, Blade Dancer, ClayManStudio, Cool Art, Dayed, Digital Worlds JSC, Ever Probe, HOSE, Jon Snow, Josch, Kalle Olli, Little Sweet Daemon, MiDaEm, Moon Tribe, N-hance Studio, PONETI, REXARD, Sky Painter, The 7 Heaven, TiGame, and TonityEden licensed under the Unity Store single entity license. (https://unity3d.com/legal/as_terms)
+- Custom Art Assets by and modified from a-ravlik, Horski, and micart licensed under the GraphicRiver regular license. (https://graphicriver.net/licenses/terms/regular)
+- Custom Art Assets by and modified from damnwing, Forrest Imel, Frostwindz, and Ruixi licensed under the GameDevMarket.net pro license. (https://www.gamedevmarket.net/terms-conditions/#pro-licence)
+- Custom Art Assets by and modified from Combo 21 licensed under the construct.net asset license. (https://www.construct.net/en/game-assets/asset-licenses)
 
 ---
 

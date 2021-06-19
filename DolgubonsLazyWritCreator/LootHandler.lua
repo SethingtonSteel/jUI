@@ -12,7 +12,7 @@
 
 WritCreater = WritCreater or {}
 
-local lootedItemLinks = {}
+lootedItemLinks = {}
 -- {itemLink, bag, slot}
 local pendingItemActions = {}
 WritCreater.pendingItemActions = pendingItemActions
@@ -90,23 +90,27 @@ local function updateSavedVars(vars, location, quantity)
 	end
 end
 
-local function lootOutput(itemLink, itemType, quantity)
+local function lootOutput(itemLink, itemType, quantity, isAnniversary)
 
 	if WritCreater:GetSettings().lootOutput then
 		local amountBag, amountBank, amountCraft = GetItemLinkStacks( itemLink)
 		local amount = amountCraft + amountBank + amountBag + quantity
+		local text
 		if itemType then 
-			d(zo_strformat( "1 "..WritCreater.strings.lootReceivedM.." ("..tostring(toVoucherCount(itemLink)).." v)", itemLink))
+			text = zo_strformat( "1 "..WritCreater.strings.lootReceivedM.." ("..tostring(toVoucherCount(itemLink)).." v)", itemLink)
 		else
-			d(zo_strformat( WritCreater.strings.lootReceived, itemLink, amount, quantity))
+			text = zo_strformat( WritCreater.strings.lootReceived, itemLink, amount, quantity)
 		end
-		
-		
+		if isAnniversary then
+			text = text.. " (Anniversary Box)"
+		end
+		d(text)
 	end
 end
 
 --begin the save stat process. Also decides if a mail with current stats should be sent.
 local function LootAllHook(boxType) -- technically not a hook.
+
 	local vars = WritCreater.savedVarsAccountWide["rewards"][boxType]
 	if vars==nil then return end
 	local loot = {}
@@ -114,6 +118,7 @@ local function LootAllHook(boxType) -- technically not a hook.
 
 		local lootId, name, _, quantity = GetLootItemInfo(i)
 		local itemLink = GetLootItemLink(lootId, 0)
+		lootedItemLinks[GetItemLinkItemId(itemLink)] = true
 		--d(itemLink)
 		local itemType, specializedType = GetItemLinkItemType(itemLink) 
 		-- if it's gear
@@ -169,7 +174,6 @@ local function LootAllHook(boxType) -- technically not a hook.
 			if vars["other"]==nil then vars["other"] = {} end
 			updateSavedVars(vars, "other", quantity)
 		end
-		lootedItemLinks[itemLink] = true
 	end
 	WritCreater.updateList()
 	--saveStats(loot,boxType,boxRank)
@@ -244,9 +248,8 @@ local function OnLootUpdated(event)
 			EVENT_MANAGER:UnregisterForUpdate(WritCreater.name.."LootSavingFatigue")
 			EVENT_MANAGER:RegisterForUpdate(WritCreater.name.."LootSavingFatigue", 10000, clearLootFatigue)
 
-			if shouldSaveStats(i,boxRank) and not fatiguedLoot[i] then 
+			if shouldSaveStats(i,boxRank) and not fatiguedLoot[i] and i~= 9 then 
 				LootAllHook(i,boxRank)
-				fatiguedLoot[i] = true
 			else
 				local loot = {}
 				for j = 1, GetNumLootItems() do
@@ -258,21 +261,24 @@ local function OnLootUpdated(event)
 					local quality = GetItemLinkQuality(itemLink)
 					local itemType, specializedType = GetItemLinkItemType(itemLink) 
 					if specializedType == SPECIALIZED_ITEMTYPE_RACIAL_STYLE_MOTIF_CHAPTER then
-						lootOutput(itemLink, nil, quantity)
+						lootOutput(itemLink, nil, quantity, true)
 					elseif specializedType == SPECIALIZED_ITEMTYPE_CONTAINER_STYLE_PAGE then
-						lootOutput(itemLink, nil, quantity)
+						lootOutput(itemLink, nil, quantity, true)
 					elseif quality>=ITEM_QUALITY_ARCANE then
-						lootOutput(itemLink, nil, quantity)
+						lootOutput(itemLink, nil, quantity, true)
 					elseif itemId == 56863 or itemId == 56862 then
-						lootOutput(itemLink, nil, quantity)
+						lootOutput(itemLink, nil, quantity, true)
 					end
 				end
-				fatiguedLoot[i] = true
 			end
+			fatiguedLoot[i] = true
 			if autoLoot then
 				if numLootTransmute==0 or numTransmute + numLootTransmute <=GetMaxPossibleCurrency( 5 , CURRENCY_LOCATION_ACCOUNT) then
 					if numLootTransmute > 0 then
 						d(numLootTransmute.." Transmute Stone recieved (You have "..(numTransmute + numLootTransmute)..")")
+						if numLootTransmute <=GetMaxPossibleCurrency( 5 , CURRENCY_LOCATION_ACCOUNT) * 0.8 < numTransmute then
+							d("You are approaching the transmute stone limit. If a box would put you over the transmute stone limit, Writ Crafter will not loot the stones.")
+						end
 					end
 					LootAll()
 				else
@@ -286,6 +292,8 @@ local function OnLootUpdated(event)
 					if lastInteractedSlot then
 						containerHasTransmute[lastInteractedSlot] = true
 					end
+					d("Looting these transmute stones would put you over the maximum, so "..numLootTransmute.." transmute stones were not looted")
+					EndLooting()
 				end
 			else
 				return false
@@ -308,9 +316,9 @@ local plunderSkulls = GetItemLinkFlavorText("|H1:item:153502:123:1:0:0:0:0:0:0:0
 local flavourTexts = {}
 setmetatable(flavourTexts, {__index = function(t, i)
 	if flavours[i] then return true end
-	if i == anniversaryBoxie then
-		return WritCreater:GetSettings().lootJubileeBoxes
-	end
+	-- if i == anniversaryBoxie then
+	-- 	return WritCreater:GetSettings().lootJubileeBoxes
+	-- end
 	if i==plunderSkulls and GetDisplayName()=="@Dolgubon" then
 		return true
 	end
@@ -339,10 +347,7 @@ local function shouldOpenContainer(bag, slot)
 	if itemType ~=ITEMTYPE_CONTAINER or specialItemType == SPECIALIZED_ITEMTYPE_CONTAINER_STYLE_PAGE then return false end
 
 	local flavour = GetItemLinkFlavorText(GetItemLink(bag, slot))
-	if flavourTexts[flavour] then
-		return true
-	end
-	return false
+	return flavourTexts[flavour]
 end
 
 local function openContainer(bag, slot)
@@ -426,7 +431,7 @@ end
 
 
 -- EVENT_MANAGER:RegisterForUpdate(WritCreater.name.."OpenAllContainers", 1000, scanBagForUnopenedContainers)
-local function slotUpdateHandler(event, bag, slot, isNew,_,_,changeAmount,...)
+local function slotUpdateHandler(event, bag, slot, isNew,_,reason,changeAmount,...)
 
 	if WritCreater.checkIfMasterWritWasStarted then WritCreater.checkIfMasterWritWasStarted(event, bag, slot, isNew,...) end
 	local autoLoot
@@ -439,24 +444,32 @@ local function slotUpdateHandler(event, bag, slot, isNew,_,_,changeAmount,...)
 	if isNew then
 		if not bag or not slot then return end
 
-		if not WritCreater:GetSettings().lootContainerOnReceipt then return end
-		if shouldOpenContainer(bag, slot) then
+		if WritCreater:GetSettings().lootContainerOnReceipt and shouldOpenContainer(bag, slot) then
 			attemptOpenContainer(bag, slot)
-			if not autoLoot then return end
+			-- if not autoLoot then return end
 		end
 	end
 	------
 	-- REWARD HANDLING
 	if isNew and WritCreater.langCraftKernels then --or GetDisplayName() == "@Dolgubon" then
-		if lootedItemLinks[link] then
-			lootedItemLinks[link] = nil
+		-- d(link.." "..tostring(isNew).." "..tostring(lootedItemLinks[link]))
+	-- if WritCreater.langCraftKernels then --or GetDisplayName() == "@Dolgubon" then
+		if lootedItemLinks[GetItemLinkItemId(link)] then
+			-- d("Looted ".. link)
+			if lootedItemLinks[GetItemLinkItemId(link)] == nil then
+				-- d("Wasn't logged yet! "..link)
+			else
+				-- d("Was logged "..link)
+			end
+			lootedItemLinks[link] = false
 			local itemType, specializedType = GetItemLinkItemType(link) 
 			local itemName = GetItemLinkName(link)
 			if itemType == ITEMTYPE_MASTER_WRIT or specializedType == SPECIALIZED_ITEMTYPE_TROPHY_SURVEY_REPORT then
-
+				-- d("Passed first check")
 				local craftType
-				craftType = WritCreater.getWritAndSurveyType()
+				craftType = WritCreater.getWritAndSurveyType(link)
 				if craftType == nil then
+					-- d("Craft type nil?")
 					return
 				end
 				local actionSource
@@ -468,6 +481,7 @@ local function slotUpdateHandler(event, bag, slot, isNew,_,_,changeAmount,...)
 				elseif specializedType == SPECIALIZED_ITEMTYPE_TOOL then
 					actionSource = WritCreater:GetSettings().rewardHandling["repair"]
 				end
+
 				if actionSource.sameForAllCrafts then
 					action = actionSource.all
 				else
@@ -475,19 +489,24 @@ local function slotUpdateHandler(event, bag, slot, isNew,_,_,changeAmount,...)
 				end
 				if action == 1 then
 					-- do nothing
+
+					-- d("Do nothing")
 				elseif action == 2 then
+					d("Writ Crafter: Queued up to deposit "..link)
 					table.insert(pendingItemActions, {link, 2, bag, slot, changeAmount})
 				elseif action == 3 then
 					SetItemIsJunk(bag, slot, true)
+					d("Writ Crafter: Marked "..link.." as junk")
 				elseif action == 4 then
 					 DestroyItem(bag , slot)
+					 d("Writ Crafter: Destroyed "..link.." because you told it to in the settings menu")
 				else
 				end
 				-- 1 nothing
 				-- 2 deposit
 				-- 3 Destroy
 				-- 4 junk
-
+				
 			end
 			-- determine type of item to find what we can do with it
 			-- Can we do action right now?

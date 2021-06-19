@@ -108,30 +108,30 @@ function weeklyTrialReward:IsRewardItem(itemId)
     return self.itemIdsSet[itemId] == true
 end
 
-local randomActivityReward = ZO_InitializingObject:Subclass()
-function randomActivityReward:Initialize(abbrName, fullName)
+local timerReward = ZO_InitializingObject:Subclass()
+function timerReward:Initialize(abbrName, fullName)
     self.abbrName = abbrName
     self.fullName = fullName
     self.time = nil
 end
 
-function randomActivityReward:GetId()
+function timerReward:GetId()
     return self.abbrName
 end
 
-function randomActivityReward:GetAbbrName()
+function timerReward:GetAbbrName()
     return self.abbrName
 end
 
-function randomActivityReward:GetFullName()
+function timerReward:GetFullName()
     return self.fullName
 end
 
-function randomActivityReward:GetTime()
+function timerReward:GetTime()
     return self.time
 end
 
-function randomActivityReward:IsRewardItem(itemId)
+function timerReward:IsRewardItem(itemId)
     return false
 end
 
@@ -145,8 +145,6 @@ function addon:Initialize(name)
     self.addonData = self:getAddonData()
 
     self.characterRewards = {
-        randomActivityReward:New("rd", GetString(SI_REWARDS_TRACKER_RD)),
-        randomActivityReward:New("rb", GetString(SI_REWARDS_TRACKER_RB)),
         weeklyTrialReward:New({ 81187, 81188, 87705, 87706, 139666, 139667 }, "so", GetString(SI_REWARDS_TRACKER_SO)),
         weeklyTrialReward:New({ 87702, 87707, 139664, 139668 }, "aa", GetString(SI_REWARDS_TRACKER_AA)),
         weeklyTrialReward:New({ 87703, 87708, 139665, 139669 }, "hrc", GetString(SI_REWARDS_TRACKER_HRC)),
@@ -156,15 +154,35 @@ function addon:Initialize(name)
         weeklyTrialReward:New({ 138711, 138712, 141738, 141739 }, "cr", GetString(SI_REWARDS_TRACKER_CR)),
         weeklyTrialReward:New({ 151970, 151971 }, "ss", GetString(SI_REWARDS_TRACKER_SS)),
         weeklyTrialReward:New({ 165421, 165422 }, "ka", GetString(SI_REWARDS_TRACKER_KA)),
+        weeklyTrialReward:New({ 176054, 176055 }, "rg", GetString(SI_REWARDS_TRACKER_RG)),
+        timerReward:New("rd", GetString(SI_REWARDS_TRACKER_RD)),
+        timerReward:New("rb", GetString(SI_REWARDS_TRACKER_RB)),
+        timerReward:New("shs", GetString(SI_REWARDS_TRACKER_SHS)),
     }
 
+    local shieldOfSenchalMotives = {}
+    for i = 156627, 156641 do
+        table.insert(shieldOfSenchalMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
+    end
     local newMoonMotives = {}
-    for i = 156609, 156622 do
+    for i = 156608, 156622 do
         table.insert(newMoonMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
     end
     local seaGiantMotives = {}
-    for i = 160560, 160573 do
+    for i = 160559, 160573 do
         table.insert(seaGiantMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
+    end
+    local nighthollowMotives = {}
+    for i = 167943, 167957 do
+        table.insert(nighthollowMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
+    end
+    local waywardMotives = {}
+    for i = 167977, 167991 do
+        table.insert(waywardMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
+    end
+    local ivoryBrigadeMotives = {}
+    for i = 171895, 171909 do
+        table.insert(ivoryBrigadeMotives, string.format('|H1:item:%d:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h', i))
     end
 
     self.accountRewards = {
@@ -178,23 +196,28 @@ function addon:Initialize(name)
         -- 40 Runebox: Elinhir Arena Lion 800-1100k
         -- 50 Runebox: Arena Gladiator Costume 1200-1600k
         -- arena gladiators proof
-        --accountRewardSingle:New('|H1:item:138783:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
+        accountRewardSingle:New('|H1:item:138783:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
         -- 20 Runebox: Siegemaster's Close Helm 200-300k
         -- 50 Runebox: Siegemaster's Uniform 1200-1600k
         -- 50 Runebox: Timbercrow Wanderer Costume 3300-4200k
         -- siege of cyrodiil merit
-        --accountRewardSingle:New('|H1:item:151939:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
-        --accountRewardMultiple:New(newMoonMotives, 24 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM81)),
-        --accountRewardMultiple:New(seaGiantMotives, 20 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM86)),
+        accountRewardSingle:New('|H1:item:151939:5:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h', 20 * ZO_ONE_HOUR_IN_SECONDS),
+        --accountRewardMultiple:New(shieldOfSenchalMotives, 24 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM80)),
+        accountRewardMultiple:New(newMoonMotives, 24 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM81)),
+        accountRewardMultiple:New(seaGiantMotives, 20 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM86)),
+        --accountRewardMultiple:New(nighthollowMotives, 20 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM95)),
+        accountRewardMultiple:New(waywardMotives, 20 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM97)),
+        accountRewardMultiple:New(ivoryBrigadeMotives, 20 * ZO_ONE_HOUR_IN_SECONDS, GetString(SI_REWARDS_TRACKER_CM101)),
     }
 
     self.settings = rewardsTrackerSettings:New(self)
     self.campaign = rewardsTrackerCampaign:New(self)
     self.opener = rewardsTrackerOpener:New(self)
+    --self.hireling = rewardsTrackerHireling:New(self)
 
     self.control = RewardsTrackerContainer
 
-    self:updateLFGRewards()
+    self:updateTimers()
 
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_LOOT_RECEIVED, function(eventCode, receivedBy, itemName, quantity, soundCategory, lootType, isMe, isPickpocketLoot, questItemIcon, itemId, isStolen)
         if isMe == false or lootType ~= LOOT_TYPE_ITEM then
@@ -215,7 +238,7 @@ function addon:Initialize(name)
     end)
 
     EVENT_MANAGER:RegisterForEvent(self.name, EVENT_ACTIVITY_FINDER_COOLDOWNS_UPDATE, function(eventCode)
-        self:updateLFGRewards()
+        self:updateTimers()
     end)
 
     self.characterList = self:createCharacterList(self.control:GetNamedChild("Character"))
@@ -242,6 +265,7 @@ function addon:getAddonData()
                 title = title,
                 author = author,
                 version = GetAddOnManager():GetAddOnVersion(index),
+                directoryPath = GetAddOnManager():GetAddOnRootDirectoryPath(index)
             }
         end
     end
@@ -275,12 +299,6 @@ function addon:createScene(name, control)
                 characterRows = 1
             end
             local characterHeight = 16 * 2 + 32 + 30 * characterRows
-            local width = 16 * 2
-            local characterHeaders = self.characterList.control:GetNamedChild("Headers")
-            for i = 1, characterHeaders:GetNumChildren() do
-                local child = characterHeaders:GetChild(i)
-                width = width + child:GetWidth()
-            end
 
             local accountRows = #ZO_ScrollList_GetDataList(self.accountList.list)
             if accountRows == 0 then
@@ -288,10 +306,10 @@ function addon:createScene(name, control)
             end
             local accountHeight = 16 * 2 + 30 * accountRows
 
-            self.characterList.control:SetDimensions(width, characterHeight)
+            self.characterList.control:SetHeight(characterHeight)
             self.accountList.control:SetHeight(accountHeight)
 
-            self.control:SetWidth(width)
+            self.control:SetWidth(self.characterList.control:GetWidth())
         end
     end)
 
@@ -323,9 +341,10 @@ function addon:notifications()
     EVENT_MANAGER:RegisterForUpdate(self.name .. "Notifications", 1 * ZO_ONE_HOUR_IN_SECONDS * 1000, check)
 end
 
-function addon:updateLFGRewards()
+function addon:updateTimers()
     self.data.characterRewards.rd = os.time() + GetLFGCooldownTimeRemainingSeconds(LFG_COOLDOWN_DUNGEON_REWARD_GRANTED)
     self.data.characterRewards.rb = os.time() + GetLFGCooldownTimeRemainingSeconds(LFG_COOLDOWN_BATTLEGROUND_REWARD_GRANTED)
+    self.data.characterRewards.shs = os.time() + GetTimeToShadowyConnectionsResetInSeconds()
 end
 
 local REWARDS_TRACKER_CHARACTER_DATA_TYPE = 18
@@ -333,27 +352,29 @@ local REWARDS_TRACKER_ACCOUNT_DATA_TYPE = 19
 
 function addon:createCharacterList(control)
     local headers = control:GetNamedChild("Headers")
-    local previousHeader = headers:GetNamedChild("Name")
+    local nameHeader = headers:GetNamedChild("Name")
+    local previousHeader = nameHeader
+    local colWidth = 80
+    local rewardsCount = 0
     for _, _characterReward in ipairs(self.characterRewards) do
-        if headers:GetNamedChild(_characterReward:GetId()) == nil then
+        if headers:GetNamedChild(_characterReward:GetId()) == nil and self.settings.data.timers[_characterReward:GetId()] == true then
             local header = GetWindowManager()
-                :CreateControlFromVirtual(string.format("$(parent)%s", _characterReward:GetId()), headers, "RewardsTrackerListHeader")
-            header:SetAnchor(TOPLEFT, previousHeader, TOPRIGHT, 0, 0)
-            header.data = {}
+                :CreateControlFromVirtual(string.format("$(parent)%s", _characterReward:GetId()), headers, "RewardsTrackerListHeaderWithBG")
+            header:SetDimensions(200, 32)
+            header:SetAnchor(TOPLEFT, nameHeader, BOTTOMRIGHT, 30 + colWidth * rewardsCount, -80)
 
-            if _characterReward:GetFullName() ~= nil then
-                header.data.tooltipText = _characterReward:GetFullName()
-            end
-
-            header:SetHandler("OnMouseEnter", ZO_Options_OnMouseEnter)
-            header:SetHandler("OnMouseExit", ZO_Options_OnMouseExit)
-            --header:GetNamedChild("Name"):SetText(_characterReward:GetId())
+            header:GetNamedChild("Name"):SetText(_characterReward:GetFullName())
+            header:GetNamedChild("Name"):SetHorizontalAlignment(TEXT_ALIGN_LEFT)
             --header:GetNamedChild("Name"):SetFont("ZoFontGameLargeBold")
-            --header:GetNamedChild("Name"):SetHorizontalAlignment(TEXT_ALIGN_RIGHT)
-            ZO_SortHeader_Initialize(header, _characterReward:GetId(), _characterReward:GetId(), ZO_SORT_ORDER_UP, TEXT_ALIGN_RIGHT, "ZoFontGameLargeBold")
+
+            header:SetTransformRotationZ(math.rad(30))
+
             previousHeader = header
+            rewardsCount = rewardsCount + 1
         end
     end
+
+    control:SetWidth(16 + 300 + colWidth * rewardsCount + 16)
 
     local list = ZO_SortFilterList:New(control)
 
@@ -381,11 +402,14 @@ function addon:createCharacterList(control)
     ZO_ScrollList_AddDataType(list.list, REWARDS_TRACKER_CHARACTER_DATA_TYPE, "RewardsTrackerListRow", 30, function(row, data)
         list:SetupRow(row, data)
 
+        row:SetWidth(colWidth * rewardsCount + 300)
+
         local previousCell = row:GetNamedChild("Name")
         for _, _characterReward in ipairs(self.characterRewards) do
-            if row:GetNamedChild(_characterReward:GetId()) == nil then
+            if row:GetNamedChild(_characterReward:GetId()) == nil and list.owner.settings.data.timers[_characterReward:GetId()] == true then
                 local cell = GetWindowManager()
                     :CreateControlFromVirtual(string.format("$(parent)%s", _characterReward:GetId()), row, "RewardsTrackerListRowTimer")
+                cell:SetDimensions(colWidth, 30)
                 cell:SetAnchor(TOPLEFT, previousCell, TOPRIGHT, 0, 0)
                 previousCell = cell
             end
@@ -397,7 +421,9 @@ function addon:createCharacterList(control)
         row.name:SetText(data.formattedName)
 
         for _, _characterReward in ipairs(self.characterRewards) do
-            row:GetNamedChild(_characterReward:GetId()):SetText(row.data[_characterReward:GetId()])
+            if list.owner.settings.data.timers[_characterReward:GetId()] == true then
+                row:GetNamedChild(_characterReward:GetId()):SetText(row.data[_characterReward:GetId()])
+            end
         end
 
         for i = 1, row:GetNumChildren() do
@@ -425,7 +451,9 @@ function addon:createCharacterList(control)
                 }
 
                 for _, _characterReward in ipairs(self.owner.characterRewards) do
-                    rowData[_characterReward:GetId()] = self.owner:formatTime(characterData[_characterReward:GetId()])
+                    if self.owner.settings.data.timers[_characterReward:GetId()] == true then
+                        rowData[_characterReward:GetId()] = self.owner:formatTime(characterData[_characterReward:GetId()])
+                    end
                 end
 
                 table.insert(scrollData, ZO_ScrollList_CreateDataEntry(REWARDS_TRACKER_CHARACTER_DATA_TYPE, rowData))
@@ -499,11 +527,13 @@ function addon:createAccountList(control)
         ZO_ClearNumericallyIndexedTable(scrollData)
 
         for _, _accountReward in ipairs(self.owner.accountRewards) do
-            table.insert(scrollData, ZO_ScrollList_CreateDataEntry(REWARDS_TRACKER_ACCOUNT_DATA_TYPE, {
-                name = _accountReward:GetName(),
-                formattedName = _accountReward:GetFormattedName(),
-                timer = self.owner:formatTime(self.owner.data.accountRewards[_accountReward:GetId()])
-            }))
+            if self.owner.settings.data.timers[_accountReward:GetId()] == true then
+                table.insert(scrollData, ZO_ScrollList_CreateDataEntry(REWARDS_TRACKER_ACCOUNT_DATA_TYPE, {
+                    name = _accountReward:GetName(),
+                    formattedName = _accountReward:GetFormattedName(),
+                    timer = self.owner:formatTime(self.owner.data.accountRewards[_accountReward:GetId()])
+                }))
+            end
         end
     end
 
@@ -517,6 +547,8 @@ end
 
 function addon:formatTime(time)
     local now = os.time()
+
+    -- time = os.time() + 2*60*60*24
 
     if time == nil then
         return "-"

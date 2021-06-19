@@ -7,7 +7,17 @@
                     <Dimensions x="240" y="172"/>
                     <OnMoveStop>DynamicCP.SaveQuickstarsPosition()</OnMoveStop>
                     <Controls>
-                        <Backdrop name="$(parent)Backdrop" alpha="0.5" centerColor="1114D91D" edgeColor="FF14D91D"><Edge edgeSize="2"/><AnchorFill/></Backdrop>
+                        <Backdrop name="$(parent)Backdrop" centerColor="1114D91D" edgeColor="FF3bdb5e">
+                            <Edge edgeSize="2"/>
+                            <AnchorFill/>
+                            <Controls>
+                                <Texture name="$(parent)Options" textureFile="esoui/art/chatwindow/chat_options_up.dds" tier="HIGH" color="FF3bdb5e" mouseEnabled="true">
+                                    <Dimensions x="36" y="36" />
+                                    <Anchor point="BOTTOMRIGHT" relativeTo="$(parent)" relativePoint="BOTTOMRIGHT" offsetX="-2" offsetY="-2"/>
+                                    <OnMouseUp>DynamicCP.OpenSettingsMenu()</OnMouseUp>
+                                </Texture>
+                            </Controls>
+                        </Backdrop>
                         <Control name="$(parent)GreenButton">
                             <Dimensions x="32" y="32"/>
                             <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT"/>

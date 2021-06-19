@@ -545,7 +545,6 @@ local function SynergyHandler()
 end
 
 local function Menu_Init()
---	local Menu=LibStub("LibAddonMenu-b",true)
 	local warning=BUI.Loc("ReloadUiWarn1")
 	local MenuOptions={
 		{type="header",	param="AutomationHeader"},

@@ -1115,14 +1115,45 @@
 --			- API updated to 100034.
 --			- Updated runebox data.
 --
+--		-- v2.61 -- 5 April 2021
+--			- Added the WeaponPower skill coefficient type and defined a few skills to use it.
+--			- Added the "/usc savedesc" and "/usc checkdesc [type]" commands. Used for finding skill coefficients
+--			  that change with various skill modifiers (AOE, DOT, HOT, etc...). Note that this data is not saved
+--			  when reloading the UI or logging out.
+--			- Displays a chat message when you fail to equip a CP star due to the 30 second cooldown. Displays
+--			  another chat message when the cooldown expires.
+--			- All ability bars are now captured when saving character and build data (you no longer have to swap
+--			  bars to ensure both are saved). For character data, however, you still need to swap bars at least 
+--			  once after reloading to ensure stats are updated for each bar.
+--			- Reduced the amount the ability bar data is saved for the character data in some cases.
+--			- You won't get double crafting messages when using Dolgubon's Lazy Writ Crafter.
+--			- Fixed cases where opening a container in your inventory is not properly detected.
+--			- If hireling mail autoloot is turned on the mail system tab will be opened by default whenever you
+--			  open mail window.
+--			- All hireling mails should again be autolooted one after the other when hireling mail autoloot is 
+--			  turned on.
+--			- Fixed issue with AwesomeGuildStore (or other trading house addons) that would cause an error
+--			  when purchasing at guild stores.
+--
+--		-- v2.70 -- 1 June 2021 (Blackwood Update 30)
+--			- Fixed CP dump to use renamed texture functions.
+--			- Added the "/uespmineitems table [safe/pts]" command to permit choosing different sets of item data
+--			  to mine. Default is "safe" which is all valid items and "pts" only mines 1:1, 1:2, and 50:366-370 items.
+--			- Added the "/usc checkdesc direct" and "/usc checkdesc melee" commands.
+--			- Added the "/uesptrackloot byvalue" command for sorting loot tracking items by value.
+--			- Ignored NPCs are now shown and logged without location data if their Health is greater than 1.
+--			- Cancelled or returned mail items are no longer counted in tracked loot.
+--			- Added new styles and motifs.
+--
 --
 
 
---	GLOBAL .
+
+--	GLOBALS
 uespLog = uespLog or {}
 
-uespLog.version = "2.60"
-uespLog.releaseDate = "8 March 2021"
+uespLog.version = "2.70"
+uespLog.releaseDate = "1 June 2021"
 uespLog.DATA_VERSION = 3
 
 	-- Saved strings cannot exceed 1999 bytes in length (nil is output corrupting the log file)
@@ -1263,6 +1294,42 @@ uespLog.TES_WEEKS = {
 	"Loredas" 
 }
 
+
+uespLog.PLAYER_PET_NAMES = {
+	["Storm Atronach"] = 1,
+	["Greater Storm Atronach"] = 1,
+	["Charged Atronach"] = 1,
+	["Charged Storm Atronach"] = 1,
+	["Unstable Familiar"] = 1,
+	["Unstable Clannfear"] = 1,
+	["Volatile Familiar"] = 1,
+	["Winged Twilight"] = 1,
+	["Twilight Tormentor"] = 1,
+	["Twilight Matriarch"] = 1,
+	["Clannfear"] = 1,
+	
+	["Blastbones"] = 1,
+	["Stalking Blastbones"] = 1,
+	["Blighted Blastbones"] = 1,
+	["Skeletal Mage"] = 1,
+	["Skeletal Archer"] = 1,
+	["Skeletal Arcanist"] = 1,
+	["Spirit Mender"] = 1,
+	["Spirit Guardian"] = 1,
+	["Intensive Mender"] = 1,
+	
+	["Shade"] = 1,
+	["Dark Shade"] = 1,
+	["Shadow Image"] = 1,
+	
+	["Feral Guardian"] = 1,
+	["Eternal Guardian"] = 1,
+	["Wild Guardian"] = 1,
+	["Betty Netch"] = 1,
+	["Blue Betty"] = 1,
+	["Bull Netch"] = 1,
+}
+
 uespLog.ignoredNPCs = {
 	Familiar = 1,
 	Cat = 1,
@@ -1350,6 +1417,7 @@ uespLog.ignoredNPCs = {
 	["Salamander Variant"] = 1,	-- Summerset
 	["Lesser Sea Adder"] = 1,	-- Summerset
 	["Fledgeling Gryphon"] = 1,	-- Summerset
+	["Fledgling Gryphon"] = 1,	-- Summerset
 	["Swamp Jelly"] = 1, 	-- Murkmire
 	["Tangerine Dragon Frog"] = 1,	-- Elsweyr
 	["Jerboa"] = 1,	-- Elsweyr
@@ -1627,6 +1695,12 @@ uespLog.MINEITEM_LEVELS_SAFE = {
 }
 
 
+uespLog.MINEITEM_LEVELS_SAFE_PTS = {
+	{  1,  1,   1,   2, "dropped" },
+	{ 50, 50, 366, 370, "crafted" },
+}
+
+
 uespLog.MINEITEM_LEVELS_SHORT = {
 	{  1, 50,   1,  11, "dropped" },
 	{  1, 50,  18,  19, "unknown" },
@@ -1749,6 +1823,8 @@ uespLog.MINEITEM_SPARSE = {
 }
 
 
+uespLog.MINEITEM_TABLE = uespLog.MINEITEM_LEVELS_SAFE
+
 uespLog.MINEITEM_ITEMCOUNTESTIMATE = 72000
 --uespLog.MINEITEM_SHIELDARMORFACTOR = 1.0/1.75
 uespLog.MINEITEM_SHIELDARMORFACTOR = 1
@@ -1786,6 +1862,7 @@ uespLog.IdCheckRangeIdStart = -1
 uespLog.IdCheckValidCount = 0
 uespLog.IdCheckTotalCount = 0
 uespLog.mineItemReloadDelay = uespLog.MINEITEM_AUTORELOAD_DELTATIMEMS
+uespLog.mineItemTable = "safe"
 uespLog.mineItemPotionDataEffectIndex = 0
 uespLog.mineItemPotionDataListIndex = 1
 uespLog.MINEITEM_POTION_MAXEFFECTINDEX = 32
@@ -1795,6 +1872,13 @@ uespLog.MINEITEM_POTION_MAGICITEMID = 1	-- 1234567
 uespLog.MINEITEM_POISON_MAGICITEMID = 2
 uespLog.MINEITEM_ENCHANT_ITEMID = 55679
 uespLog.MINEITEM_ENCHANT_ENCHANTID = 26841
+
+uespLog.SkillDump_validAbilityCount = 0
+uespLog.SkillDump_startAbilityId = 0
+uespLog.SkillDump_countAbilityId = 1000
+uespLog.SkillDump_lastAbilityId = 200000
+uespLog.SkillDump_lastValidAbilityId = 0
+uespLog.SkillDump_delay = 1000
 
 uespLog.MASTERWRIT_MAX_CHANCE = 15
 uespLog.MASTERWRIT_MIN_CHANCE = 1
@@ -1880,6 +1964,7 @@ uespLog.DEFAULT_SETTINGS =
 		["mineItemOnlyLevel"] = -1,
 		["mineItemPotionData"] = false,
 		["mineItemReloadDelay"] = uespLog.MINEITEM_AUTORELOAD_DELTATIMEMS,
+		["mineItemTable"] = "safe",
 		["showCursorMapCoords"] = true,
 		["isAutoMiningItems"] = false,
 		["pvpUpdate"] = false,
@@ -3334,7 +3419,6 @@ function uespLog.SetInventoryStatsConfig(value)
 end
 
 
-
 function uespLog.GetFishingFlag()
 
 	if (uespLog.savedVars.settings == nil) then
@@ -3946,7 +4030,7 @@ function uespLog.AppendStringToLog(section, logString)
 	end
 	
 		-- Fix long strings being output as "nil"
-	while (#logString >= uespLog.MAX_LOGSTRING_LENGTH) do
+	while (#logString > uespLog.MAX_LOGSTRING_LENGTH) do
 		local firstPart = string.sub(logString, 1, uespLog.MAX_LOGSTRING_LENGTH)
 		local secondPart = string.sub(logString, uespLog.MAX_LOGSTRING_LENGTH+1, -1)
 		sv[#sv+1] = firstPart .. "#STR#"
@@ -4386,8 +4470,11 @@ function uespLog.Initialize( self, addOnName )
 	uespLog.mineItemOnlyLevel = uespLog.savedVars.settings.data.mineItemOnlyLevel or uespLog.mineItemOnlyLevel
 	uespLog.mineItemPotionData = uespLog.savedVars.settings.data.mineItemPotionData or uespLog.mineItemPotionData
 	uespLog.mineItemReloadDelay = uespLog.savedVars.settings.data.mineItemReloadDelay or uespLog.mineItemReloadDelay
+	uespLog.mineItemTable = uespLog.savedVars.settings.data.mineItemTable or uespLog.mineItemTable
 	uespLog.pvpUpdate = uespLog.savedVars.settings.data.pvpUpdate or uespLog.pvpUpdate
 	uespLog.mineItemLastReloadTimeMS = GetGameTimeMilliseconds()
+	
+	uespLog.UpdateMineItemTable()
 	
 	if (uespLog.savedVars.settings.data.TREASURE_TIMER_DURATIONS["thieves trove"] == nil) then
 		uespLog.savedVars.settings.data.TREASURE_TIMER_DURATIONS["thieves trove"] = uespLog.DEFAULT_SETTINGS.data.TREASURE_TIMER_DURATIONS["thieves trove"]
@@ -4459,6 +4546,7 @@ function uespLog.Initialize( self, addOnName )
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_SHOW_BOOK, uespLog.OnShowBook)
 	
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_SKILL_RANK_UPDATE, uespLog.OnSkillRankUpdate)
+	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_CHAMPION_PURCHASE_RESULT, uespLog.OnChampionPointPurchase)
 
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_CRAFT_COMPLETED, uespLog.OnCraftCompleted)
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_CRAFTING_STATION_INTERACT, uespLog.OnCraftStationInteract)
@@ -4466,8 +4554,8 @@ function uespLog.Initialize( self, addOnName )
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_END_CRAFTING_STATION_INTERACT, uespLog.OnEndCraftStationInteract)		
 	
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_ACTION_SLOTS_FULL_UPDATE, uespLog.OnActionSlotsFullUpdate)	
-	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_ACTION_SLOT_ABILITY_SLOTTED, uespLog.OnActionSlotAbilitySlotted)	
-	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_ACTIVE_QUICKSLOT_CHANGED, uespLog.OnActiveQuickSlotChanged)	
+	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_ACTION_SLOTS_ACTIVE_HOTBAR_UPDATED, uespLog.OnActiveBarUpdated)	
+	--EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_ACTIVE_QUICKSLOT_CHANGED, uespLog.OnActiveQuickSlotChanged)	
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_ACTIVE_WEAPON_PAIR_CHANGED, uespLog.OnActiveWeaponPairChanged)	
 	
 	EVENT_MANAGER:RegisterForEvent( "uespLog" , EVENT_FISHING_LURE_CLEARED, uespLog.OnFishingLureCleared)	
@@ -4725,8 +4813,8 @@ function uespLog.InitCrafting()
 	local LLC = LibLazyCrafting
 
 	if (LLC and LLC.SendCraftEvent) then
-		uespLog.Old_LLCSendCraftEvent = LLC.SendCraftEvent
-		LLC.SendCraftEvent = uespLog.LLCSendCraftEvent
+		--uespLog.Old_LLCSendCraftEvent = LLC.SendCraftEvent
+		--LLC.SendCraftEvent = uespLog.LLCSendCraftEvent
 	end
 end
 
@@ -4861,6 +4949,19 @@ function uespLog.ModifyInventoryStatsWindow()
 		if (GetAPIVersion() > 100021) then
 			ZO_StatEntry_Keyboard.GetDisplayValue = uespLog.Old_ZO_StatEntry_Keyboard_GetDisplayValue
 		end
+	end
+	
+end
+
+
+function uespLog.UpdateMineItemTable()
+
+	if (uespLog.mineItemTable == "safe") then
+		uespLog.MINEITEM_TABLE = uespLog.MINEITEM_LEVELS_SAFE
+	elseif (uespLog.mineItemTable == "pts") then
+		uespLog.MINEITEM_TABLE = uespLog.MINEITEM_LEVELS_SAFE_PTS
+	else
+		uespLog.MINEITEM_TABLE = uespLog.MINEITEM_LEVELS_SAFE
 	end
 	
 end
@@ -5604,7 +5705,7 @@ function uespLog.OnQuestOffered (eventCode)
 	
 	uespLog.AppendDataToLog("all", logData, uespLog.currentConversationData, uespLog.GetTimeData())
 	
-	uespLog.DebugExtraMsg("UESP: Updated Conversation (QuestOffered)...")
+	--uespLog.DebugExtraMsg("UESP: Updated Conversation (QuestOffered)...")
 	--uespLog.DebugExtraMsg("UESP: dialog = "..tostring(dialog))
 	--uespLog.DebugExtraMsg("UESP: response = "..tostring(response))
 	--uespLog.DebugExtraMsg("UESP: farewell = "..tostring(farewell))	
@@ -5615,7 +5716,7 @@ function uespLog.OnConversationUpdated (eventCode, conversationBodyText, convers
 
 	local logData = { }
 	
-	uespLog.DebugExtraMsg("UESP: Updated conversation START...")
+	--uespLog.DebugExtraMsg("UESP: Updated conversation START...")
 
 	logData.event = "ConversationUpdated"
 	logData.bodyText = conversationBodyText
@@ -5632,7 +5733,7 @@ function uespLog.OnConversationUpdated (eventCode, conversationBodyText, convers
 		uespLog.AppendDataToLog("all", logData)
 	end
 	
-	uespLog.DebugExtraMsg("UESP: Updated conversation...")
+	--uespLog.DebugExtraMsg("UESP: Updated conversation...")
 	
 	uespLog.lastConversationOption.Text = ""
 	uespLog.lastConversationOption.Type = ""
@@ -5708,7 +5809,7 @@ function uespLog.OnChatterBegin (eventCode, optionCount)
 		uespLog.AppendDataToLog("all", logData)
 	end
 	
-	uespLog.DebugExtraMsg("UESP: Chatter begin...")
+	--uespLog.DebugExtraMsg("UESP: Chatter begin...")
 	
 		-- Manually call the original function to update the chat window.
 		-- If you don't call these the NPC dialog window doesn't show up.
@@ -5800,6 +5901,53 @@ function uespLog.OnLoreBookLearned (eventCode, categoryIndex, collectionIndex, b
 	
 	uespLog.LastLoreBookTitle = bookTitle
 	uespLog.LastLoreBookTime = GetGameTimeMilliseconds()
+end
+
+
+uespLog.lastCPChangeTime = 0
+uespLog.CP_SLOT_COOLDOWN = 30000
+uespLog.hasCPReminder = false
+uespLog.cpPurchaseErrorCallback = nil
+uespLog.cpPurchaseSuccessCallback = nil
+uespLog.cpPurchaseCooldownCallback = nil
+
+
+function uespLog.OnChampionPointPurchase (eventCode, result)
+
+	if (result == CHAMPION_PURCHASE_SUCCESS) then
+        uespLog.lastCPChangeTime = GetGameTimeMilliseconds()
+		uespLog.hasCPReminder = false
+		
+		if (uespLog.cpPurchaseSuccessCallback) then
+			uespLog.cpPurchaseSuccessCallback()
+		end
+		
+    elseif (result == CHAMPION_PURCHASE_CHAMPION_BAR_ILLEGAL_SLOT) then
+		local timeLeft = (uespLog.CP_SLOT_COOLDOWN - GetGameTimeMilliseconds() + uespLog.lastCPChangeTime) / 1000
+		uespLog.Msg("You may slot CPs again in "..tostring(timeLeft).." secs.")
+		
+		if (not uespLog.hasCPReminder) then
+			uespLog.hasCPReminder = true
+			zo_callLater(function() uespLog.RemindCPSlotPurchase() end, timeLeft*1000 + 100)
+		end
+		
+		if (uespLog.cpPurchaseErrorCallback) then
+			uespLog.cpPurchaseErrorCallback(result)
+		end
+	end
+end
+
+
+function uespLog.RemindCPSlotPurchase()
+
+	if (uespLog.cpPurchaseCooldownCallback) then
+		uespLog.cpPurchaseCooldownCallback()
+	end
+	
+	if (uespLog.hasCPReminder) then
+		uespLog.hasCPReminder = false
+		uespLog.Msg("You may now slot CPs again!")
+	end
 end
 
 
@@ -7190,7 +7338,7 @@ function uespLog.OnCraftCompleted (eventCode, craftSkill, usingLLC)
 	local craftInteractionType = GetCraftingInteractionType()
 	local itemLink = GetLastCraftingResultItemLink(1)
 	
-	--uespLog.DebugExtraMsg("OnCraftCompleted: "..tostring(craftInteractionType)..":"..tostring(itemLink))
+	uespLog.DebugExtraMsg("OnCraftCompleted: "..tostring(craftInteractionType)..":"..tostring(itemLink) .. ":"..tostring(craftSkill)..":"..tostring(usingLLC))
 	
 	if (usingLLC) then
 		uespLog.LastCraftCompletedUsedLLC = true
@@ -7198,7 +7346,7 @@ function uespLog.OnCraftCompleted (eventCode, craftSkill, usingLLC)
 	
 		if (uespLog.LastCraftCompletedUsedLLC) then
 			uespLog.LastCraftCompletedUsedLLC = false
-			--uespLog.DebugMsg("Skip duplicate event")
+			uespLog.DebugExtraMsg("Skip duplicate event")
 			return
 		end
 		
@@ -7350,7 +7498,7 @@ function uespLog.OnInventorySlotUpdate (eventCode, bagId, slotIndex, isNewItem, 
 			uespLog.OnFishingReelInReady(0, itemLink, itemName, bagId, slotIndex)
 		end
 		
-	elseif (itemSoundCategory == ITEM_SOUND_CATEGORY_FOOTLOCKER and not isNewItem and stackAmountChange == 0) then
+	elseif (itemSoundCategory == ITEM_SOUND_CATEGORY_FOOTLOCKER and not isNewItem and stackAmountChange <= 0) then
 		
 		uespLog.OnOpenFootlocker(eventCode, bagId, slotIndex, lastLinkUsed, itemSoundCategory)
 		
@@ -7430,11 +7578,12 @@ function uespLog.OnTargetChange (eventCode)
     local unitTag = "reticleover"
     local unitType = GetUnitType(unitTag)
 	
-		--COMBAT_UNIT_TYPE_GROUP
-		--COMBAT_UNIT_TYPE_NONE
-		--COMBAT_UNIT_TYPE_OTHER
-		--COMBAT_UNIT_TYPE_PLAYER
-		--COMBAT_UNIT_TYPE_PLAYER_PET
+		--COMBAT_UNIT_TYPE_GROUP = 3
+		--COMBAT_UNIT_TYPE_NONE  = 0
+		--COMBAT_UNIT_TYPE_OTHER = 5
+		--COMBAT_UNIT_TYPE_PLAYER = 1
+		--COMBAT_UNIT_TYPE_PLAYER_PET = 2
+		--COMBAT_UNIT_TYPE_TARGET_DUMMY - 4
 
     if (unitType == 2) then -- NPC, COMBAT_UNIT_TYPE_OTHER?
         local name = GetUnitName(unitTag)
@@ -7468,6 +7617,7 @@ function uespLog.OnTargetChange (eventCode)
 		local currentHp, maxHp, effectiveHp = GetUnitPower(unitTag, POWERTYPE_HEALTH)
 		local currentMg, maxMg, effectiveMg = GetUnitPower(unitTag, POWERTYPE_MAGICKA)
 		local currentSt, maxSt, effectiveSt = GetUnitPower(unitTag, POWERTYPE_STAMINA)
+		local includeLocData = true
 		
 		uespLog.lastTargetData.maxHp = maxHp
 		uespLog.lastTargetData.maxMg = maxMg
@@ -7481,7 +7631,12 @@ function uespLog.OnTargetChange (eventCode)
 		uespLog.UpdateTargetHealthData(name, unitTag, maxHp)
 		
 		if (uespLog.IsIgnoredNPC(name)) then
-			return
+		
+			if (maxHp <= 1) then
+				return
+			end
+			
+			includeLocData = false
 		end
 				
 		if (name == uespLog.lastOnTargetChange or diffTime < uespLog.MIN_TARGET_CHANGE_TIMEMS) then
@@ -7503,7 +7658,11 @@ function uespLog.OnTargetChange (eventCode)
 		logData.maxSt = maxSt
 		logData.reaction = GetUnitReaction(unitTag)
 		
-		uespLog.AppendDataToLog("all", logData, uespLog.GetLastTargetData(), uespLog.GetTimeData())
+		if (includeLocData) then
+			uespLog.AppendDataToLog("all", logData, uespLog.GetLastTargetData(), uespLog.GetTimeData())
+		else
+			uespLog.AppendDataToLog("all", logData, uespLog.GetTimeData())
+		end
 		
 		uespLog.MsgType(uespLog.MSG_NPC, "UESP: Found Npc "..name.." ("..maxHp.." HP)")
 	elseif (unitType == COMBAT_UNIT_TYPE_PLAYER) then
@@ -7979,7 +8138,7 @@ end
 function uespLog.OnMailMessageReadable (eventCode, mailId)
 	local senderDisplayName, senderCharacterName, subject, icon, unread, fromSystem, fromCustomerService, returned, numAttachments, attachedMoney, codAmount, expiresInDays, secsSinceReceived = GetMailItemInfo(mailId)
 	
-	uespLog.DebugExtraMsg("Read mail from " ..tostring(senderDisplayName).." with "..tostring(numAttachments).." items.")
+	uespLog.DebugExtraMsg("Read mail from " ..tostring(senderDisplayName).." with "..tostring(numAttachments).." items (" .. Id64ToString(mailId).. ").")
 	
 	uespLog.lastMailItems = { }
 	uespLog.lastMailId = mailId
@@ -8058,6 +8217,7 @@ function uespLog.OnMailMessageTakeAttachedItem (eventCode, mailId)
 	local tradeType = CRAFTING_TYPE_INVALID
 	local logData = { }
 	local timeData = uespLog.GetTimeData()
+	local doTrackLoot = true
 	
 	uespLog.DebugExtraMsg("Received mail item from " ..tostring(senderDisplayName).." money="..tostring(attachedMoney))
 	
@@ -8080,6 +8240,12 @@ function uespLog.OnMailMessageTakeAttachedItem (eventCode, mailId)
 		tradeType = 100
 	else -- Not a tradeskill hireling message
 		tradeType = CRAFTING_TYPE_INVALID
+	end
+	
+	if (senderDisplayName == "Guild Store" and fromSystem and subject ~= "Item Purchased") then
+		doTrackLoot = false
+	elseif (returned) then
+		doTrackLoot = false
 	end
 	
 	for attachIndex = 1, #uespLog.lastMailItems do
@@ -8106,7 +8272,9 @@ function uespLog.OnMailMessageTakeAttachedItem (eventCode, mailId)
 			uespLog.MsgColorType(uespLog.MSG_LOOT, uespLog.itemColor, "You received mail item "..tostring(logData.itemLink).." (x"..tostring(lastItem.stack)..")")
 		end
 		
-		uespLog.TrackLoot(lastItem.itemLink, lastItem.stack)
+		if (doTrackLoot) then
+			uespLog.TrackLoot(lastItem.itemLink, lastItem.stack)
+		end
 	end
 	
 	if (#uespLog.lastMailItems > 0) then
@@ -8134,7 +8302,7 @@ end
     end
 	
 	if (numLinks > 0) then
-		uespLog.DebugExtraMsg("Logged "..tostring(numLinks).." item links from chat message.")
+		--uespLog.DebugExtraMsg("Logged "..tostring(numLinks).." item links from chat message.")
 	end
 	
  end
@@ -9263,14 +9431,6 @@ function uespLog.DumpSkillsProgression(note, classOnly)
 end
 
 
-uespLog.SkillDump_validAbilityCount = 0
-uespLog.SkillDump_startAbilityId = 0
-uespLog.SkillDump_countAbilityId = 5000
-uespLog.SkillDump_lastAbilityId = 200000
-uespLog.SkillDump_lastValidAbilityId = 0
-uespLog.SkillDump_delay = 2000
-
-
 function uespLog.DumpSkillsStart(note)
 	local abilityId
 	local logData = { }
@@ -9421,20 +9581,8 @@ function uespLog.DumpSkill(abilityId, extraData)
 	-- GetAbilityProgressionRankFromAbilityId(number abilityId) Returns: number:nilable rank
 	-- GetAbilityProgressionXPInfoFromAbilityId(number abilityId) Returns: boolean hasProgression, number progressionIndex, number lastRankXp, number nextRankXP, number currentXP, boolean atMorph
 	
-	logData.desc1 = tostring(GetAbilityDescription(abilityId, 1))
-	logData.desc2 = tostring(GetAbilityDescription(abilityId, 2))
-	logData.desc3 = tostring(GetAbilityDescription(abilityId, 3))
-	logData.desc4 = tostring(GetAbilityDescription(abilityId, 4))
-	
-	if (descHeader ~= "") then
-		logData.desc = "|cffffff" .. descHeader .."|r\n".. tostring(description)
-		logData.desc1 = "|cffffff" .. descHeader .."|r\n".. tostring(logData.desc1)
-		logData.desc2 = "|cffffff" .. descHeader .."|r\n".. tostring(logData.desc2)
-		logData.desc3 = "|cffffff" .. descHeader .."|r\n".. tostring(logData.desc3)
-		logData.desc4 = "|cffffff" .. descHeader .."|r\n".. tostring(logData.desc4)
-	else
-		logData.desc = tostring(description)
-	end
+	logData.descHeader = descHeader
+	logData.desc = tostring(description)
 	
 	if (upgradeLines and upgradeLines ~= "") then logData.upgradeLines = upgradeLines end
 	if (effectLines and effectLines ~= "") then logData.effectLines = effectLines end
@@ -9442,6 +9590,11 @@ function uespLog.DumpSkill(abilityId, extraData)
 	local rankData = uespLog.BASESKILL_RANKDATA[abilityId]
 	
 	if ((logData.skillType ~= nil or rankData ~= nil) and not isPassive) then
+		logData.desc1 = tostring(GetAbilityDescription(abilityId, 1))
+		logData.desc2 = tostring(GetAbilityDescription(abilityId, 2))
+		logData.desc3 = tostring(GetAbilityDescription(abilityId, 3))
+		logData.desc4 = tostring(GetAbilityDescription(abilityId, 4))
+	
 		logData.cost1 = GetAbilityCost(abilityId, 1)
 		logData.cost2 = GetAbilityCost(abilityId, 2)
 		logData.cost3 = GetAbilityCost(abilityId, 3)
@@ -9476,11 +9629,6 @@ function uespLog.DumpSkill(abilityId, extraData)
 		logData.costTime2, logData.mechanicTime2, logData.chargeFreqMS2 = GetAbilityCostOverTime(abilityId, 2)
 		logData.costTime3, logData.mechanicTime3, logData.chargeFreqMS3 = GetAbilityCostOverTime(abilityId, 3)
 		logData.costTime4, logData.mechanicTime4, logData.chargeFreqMS4 = GetAbilityCostOverTime(abilityId, 4)
-	else
-		logData.desc1 = nil
-		logData.desc2 = nil
-		logData.desc3 = nil
-		logData.desc4 = nil
 	end
 	
 	uespLog.AppendDataToLog("all", logData, extraData)
@@ -9994,7 +10142,7 @@ function uespLog.CreateBackupTraits(backupTraits, trait, itemId)
 	local i, value
 	local level, quality
 	
-	for i, value in ipairs(uespLog.MINEITEM_LEVELS_SAFE) do
+	for i, value in ipairs(uespLog.MINEITEM_TABLE) do
 		local levelStart = value[1]
 		local levelEnd = value[2]
 		local qualityStart = value[3]
@@ -11380,7 +11528,7 @@ function uespLog.MineItemIterateLevels (itemId)
 	local itemName
 	local extraData = uespLog.GetTimeData()
 
-	for i, value in ipairs(uespLog.MINEITEM_LEVELS_SAFE) do
+	for i, value in ipairs(uespLog.MINEITEM_TABLE) do
 		local levelStart = value[1]
 		local levelEnd = value[2]
 		local qualityStart = value[3]
@@ -11428,7 +11576,7 @@ function uespLog.MineItemIterateLevelsShort (itemId)
 	local newItemLog = { }
 	local diffItemLog = { }
 
-	for i, value in ipairs(uespLog.MINEITEM_LEVELS_SAFE) do
+	for i, value in ipairs(uespLog.MINEITEM_TABLE) do
 		local levelStart = value[1]
 		local levelEnd = value[2]
 		local qualityStart = value[3]
@@ -11506,7 +11654,7 @@ function uespLog.MineItemIterateLevelsShortSafe (itemId, listIndex)
 	--uespLog.Msg("Starting at: "..itemId..":"..listIndex)
 
 	for i = listIndex, 10000 do
-		local value = uespLog.MINEITEM_LEVELS_SAFE[i]
+		local value = uespLog.MINEITEM_TABLE[i]
 		
 		if (value == nil) then
 			return itemId + 1, 1, false
@@ -11666,7 +11814,7 @@ function uespLog.MineEnchantCharges()
 			[7] = "WeaponPower",
 		}
 
-	for i, value in ipairs(uespLog.MINEITEM_LEVELS_SAFE) do
+	for i, value in ipairs(uespLog.MINEITEM_TABLE) do
 		local levelStart = value[1]
 		local levelEnd = value[2]
 		local qualityStart = value[3]
@@ -11734,7 +11882,7 @@ function uespLog.MineItemIteratePotionData (effectIndex, realItemId, potionItemI
 	local newItemLog = { }
 	local diffItemLog = { }
 
-	for i, value in ipairs(uespLog.MINEITEM_LEVELS_SAFE) do
+	for i, value in ipairs(uespLog.MINEITEM_TABLE) do
 		local levelStart = value[1]
 		local levelEnd = value[2]
 		local qualityStart = value[3]
@@ -11826,7 +11974,7 @@ function uespLog.MineItemIteratePotionDataSafe (effectIndex, realItemId, potionI
 	local nextListIndex = listIndex
 
 	for i = listIndex, 10000 do
-		local value = uespLog.MINEITEM_LEVELS_SAFE[i]
+		local value = uespLog.MINEITEM_TABLE[i]
 		
 		if (value == nil) then
 			nextEffectIndex = effectIndex + 1
@@ -12320,7 +12468,7 @@ end
 function uespLog.MineItemsCount ()
 	local totalCount = 0
 
-	for i, value in ipairs(uespLog.MINEITEM_LEVELS_SAFE) do
+	for i, value in ipairs(uespLog.MINEITEM_TABLE) do
 		local levelStart = value[1]
 		local levelEnd = value[2]
 		local qualityStart = value[3]
@@ -12333,7 +12481,7 @@ function uespLog.MineItemsCount ()
 		totalCount = totalCount + numTypes * numLevels
 	end
 	
-	uespLog.MsgColor(uespLog.mineColor, "Total mine item entries = "..tostring(#uespLog.MINEITEM_LEVELS_SAFE))
+	uespLog.MsgColor(uespLog.mineColor, "Total mine item entries = "..tostring(#uespLog.MINEITEM_TABLE))
 	uespLog.MsgColor(uespLog.mineColor, "Total level/subtype combinations = "..tostring(totalCount))
 	uespLog.MsgColor(uespLog.mineColor, "Estimated item combinations = "..tostring(totalCount * uespLog.MINEITEM_ITEMCOUNTESTIMATE))
 	
@@ -12389,6 +12537,12 @@ function uespLog.MineItemsAutoStatus ()
 	
 	if (text ~= "") then
 		uespLog.MsgColor(uespLog.mineColor, ".     Only mining items with item types of "..text)
+	end
+	
+	if (uespLog.mineItemTable == "safe") then
+		uespLog.MsgColor(uespLog.mineColor, "Using SAFE table for mining items.")
+	elseif (uespLog.mineItemTable == "pts") then
+		uespLog.MsgColor(uespLog.mineColor, "Using PTS table for mining items.")
 	end
 end
 
@@ -12671,7 +12825,7 @@ SLASH_COMMANDS["/uespmineitems"] = function (cmd)
 		elseif (option == "off") then
 			uespLog.MsgColor(uespLog.mineColor, "Mining items with all internal levels/types.")
 		else
-			uespLog.MsgColor(uespLog.mineColor, "Valid options for 'quick' are 'on'/'off'.")
+			uespLog.MsgColor(uespLog.mineColor, "Valid options for 'quick' are: on, off")
 		end
 		
 		return
@@ -12690,6 +12844,24 @@ SLASH_COMMANDS["/uespmineitems"] = function (cmd)
 		return
 	elseif (command == "idcheck") then
 		uespLog.MineItemsIdCheck(cmds[2])
+		return
+	elseif (command == "table") then
+		local tableName = string.lower(cmds[2])
+		
+		if (tableName == "safe") then
+			uespLog.savedVars.settings.data.mineItemTable = "safe"
+			uespLog.mineItemTable = "safe"
+			uespLog.MsgColor(uespLog.mineColor, "Now using SAFE table for mining items.")
+			uespLog.UpdateMineItemTable()
+		elseif (tableName == "pts") then
+			uespLog.savedVars.settings.data.mineItemTable = "pts"
+			uespLog.mineItemTable = "pts"
+			uespLog.MsgColor(uespLog.mineColor, "Now using PTS table for mining items.")
+			uespLog.UpdateMineItemTable()
+		else
+			uespLog.MsgColor(uespLog.mineColor, "Valid options for 'table' are: safe, pts")
+		end		
+		
 		return
 	elseif (command == "autostart") then
 		uespLog.mineItemAutoReload = true
@@ -12752,6 +12924,7 @@ SLASH_COMMANDS["/uespmineitems"] = function (cmd)
 		uespLog.MsgColor(uespLog.mineColor, ".              /uespmineitems level [#]")
 		uespLog.MsgColor(uespLog.mineColor, ".              /uespmineitems subtype [#]")
 		uespLog.MsgColor(uespLog.mineColor, ".              /uespmineitems itemtype [#] [#] ...")
+		uespLog.MsgColor(uespLog.mineColor, ".              /uespmineitems table [safe/pts]")
 		
 		return
 	end
@@ -13325,6 +13498,31 @@ uespLog.CRAFTSTYLENAME_TO_ITEMSTYLE = {
 	['waywardguardian'] = 113,
 	['wayward'] = 113,
 	
+	-- Blackwood
+	['deadlands gladiator'] = 115,
+	['deadlands_gladiator'] = 115,
+	['deadlandsgladiator'] = 115,
+	['deadlands'] = 115,
+	['true-sworn'] = 116,
+	['true sworn'] = 116,
+	['true_sworn'] = 116,
+	['truesworn'] = 116,
+	['waking flame'] = 117,
+	['waking_flame'] = 117,
+	['wakingflame'] = 117,
+	['dremora kynreeve'] = 118,
+	['dremora_kynreeve'] = 118,
+	['dremorakynreeve'] = 118,
+	['black fin legion'] = 120,
+	['black_fin_legion'] = 120,
+	['blackfinlegion'] = 120,
+	['ivory brigade'] = 121,
+	['ivory_brigade'] = 121,
+	['ivorybrigade'] = 121,
+	['sul-xan'] = 122,
+	['sul xan'] = 122,
+	['sul_xan'] = 122,
+	['sulxan'] = 122,
 }
 
 
@@ -13523,7 +13721,7 @@ uespLog.CRAFTSTYLENAME_TO_MOTIFID = {
 	['anequina'] = { 147699, 147700, 147701, 147702, 147703, 147704, 147705, 147706, 147707, 147708, 147709, 147710, 147711, 147712 }, -- 147698, 147713
 	['pellitine'] = { 147715, 147716, 147717, 147718, 147719, 147720, 147721, 147722, 147723, 147724, 147725, 147726, 147727, 147728 }, -- 147714, 147729
 		
-	-- Dragonhold
+		-- Dragonhold
 	['sunspire'] = { 147731, 147732, 147733, 147734, 147735, 147736, 147737, 147738, 147739, 147740, 147741, 147742, 147743, 147744 }, -- 147730, 147745
 	['dragonguard'] = { 156556, 156557, 156558, 156559, 156560, 156561, 156562, 156563, 156564, 156565, 156566, 156567, 156568, 156569 }, -- 156555, 156570
 	['moongrave fane'] = { 156591, 156592, 156593, 156594, 156595, 156596, 156597, 156598, 156599, 156600, 156601, 156602, 156603, 156604 }, -- 156590, 156605
@@ -13571,7 +13769,7 @@ uespLog.CRAFTSTYLENAME_TO_MOTIFID = {
 	['sea_giant'] = { 160560, 160561, 160562, 160563, 160564, 160565, 160566, 160567, 160568, 160569, 160570, 160571, 160572, 160573 }, -- 160559, 160574
 	['seagiant'] = { 160560, 160561, 160562, 160563, 160564, 160565, 160566, 160567, 160568, 160569, 160570, 160571, 160572, 160573 }, -- 160559, 160574
 	
-	-- Flames of Ambition
+		-- Flames of Ambition
 	['ancestral reach'] = { 167271, 167272, 167273, 167274, 167275, 167276, 167277, 167278, 167279, 167280, 167281, 167282, 167283, 167284 }, -- 167270, 167285
 	['ancestral_reach'] = { 167271, 167272, 167273, 167274, 167275, 167276, 167277, 167278, 167279, 167280, 167281, 167282, 167283, 167284 }, -- 167270, 167285
 	['ancestralreach'] = { 167271, 167272, 167273, 167274, 167275, 167276, 167277, 167278, 167279, 167280, 167281, 167282, 167283, 167284 }, -- 167270, 167285
@@ -13587,6 +13785,21 @@ uespLog.CRAFTSTYLENAME_TO_MOTIFID = {
 	['waywardguardian'] = { 167978, 167979, 167980, 167981, 167982, 167983, 167984, 167985, 167986, 167987, 167988, 167989, 167990, 167991 }, -- 167977, 167992
 	['wayward'] = { 167978, 167979, 167980, 167981, 167982, 167983, 167984, 167985, 167986, 167987, 167988, 167989, 167990, 167991 }, -- 167977, 167992
 	
+		-- Blackwood
+	['deadlands gladiator'] = { 170193, 170194, 170195, 170196, 170197, 170198, 170199, 170200, 170201, 170202, 170203, 170204, 170205, 170206 }, -- 170192, 170207
+	['deadlands_gladiator'] = { 170193, 170194, 170195, 170196, 170197, 170198, 170199, 170200, 170201, 170202, 170203, 170204, 170205, 170206 }, -- 170192, 170207
+	['deadlandsgladiator'] = { 170193, 170194, 170195, 170196, 170197, 170198, 170199, 170200, 170201, 170202, 170203, 170204, 170205, 170206 }, -- 170192, 170207
+	['deadlands'] = { 170193, 170194, 170195, 170196, 170197, 170198, 170199, 170200, 170201, 170202, 170203, 170204, 170205, 170206 }, -- 170192, 170207
+	['true-sworn'] = { 171552, 171553, 171554, 171555, 171556, 171557, 171558, 171559, 171560, 171561, 171562, 171563, 171564, 171565 }, -- 171551, 171566
+	['true sworn'] = { 171552, 171553, 171554, 171555, 171556, 171557, 171558, 171559, 171560, 171561, 171562, 171563, 171564, 171565 }, -- 171551, 171566
+	['true_sworn'] = { 171552, 171553, 171554, 171555, 171556, 171557, 171558, 171559, 171560, 171561, 171562, 171563, 171564, 171565 }, -- 171551, 171566
+	['truesworn'] = { 171552, 171553, 171554, 171555, 171556, 171557, 171558, 171559, 171560, 171561, 171562, 171563, 171564, 171565 }, -- 171551, 171566
+	['waking flame'] = { 171581, 171582, 171583, 171584, 171585, 171586, 171587, 171588, 171589, 171590, 171591, 171592, 171593, 171594 }, -- 171580, 171595
+	['waking_flame'] = { 171581, 171582, 171583, 171584, 171585, 171586, 171587, 171588, 171589, 171590, 171591, 171592, 171593, 171594 }, -- 171580, 171595
+	['wakingflame'] = { 171581, 171582, 171583, 171584, 171585, 171586, 171587, 171588, 171589, 171590, 171591, 171592, 171593, 171594 }, -- 171580, 171595
+	['ivory brigade'] = { 171896, 171897, 171898, 171899, 171900, 171901, 171902, 171903, 171904, 171905, 171906, 171907, 171908, 171909 }, -- 171895, 171910
+	['ivory_brigade'] = { 171896, 171897, 171898, 171899, 171900, 171901, 171902, 171903, 171904, 171905, 171906, 171907, 171908, 171909 }, -- 171895, 171910
+	['ivorybrigade'] = { 171896, 171897, 171898, 171899, 171900, 171901, 171902, 171903, 171904, 171905, 171906, 171907, 171908, 171909 }, -- 171895, 171910
 }
 
 
@@ -15092,9 +15305,9 @@ function uespLog.ActionButton_HandleRelease(self)
 		uespLog.OnQuickSlotUsed(slotNum)
 	end
 	
-		-- Ultimate activation, might bar swap
+		-- Ultimate activation, might cause a bar swap
 	if (slotType == 1 and slotNum == 8) then
-		uespLog.SaveActionBarForCharData()
+		uespLog.SaveAllActionBarData()
 		uespLog.SaveStatsForCharData()
 	end
 	
@@ -15680,9 +15893,16 @@ function uespLog.DumpChampionPointDiscipine2(disciplineIndex)
 	logData.discId = GetChampionDisciplineId(disciplineIndex)
 	logData.name = GetChampionDisciplineName(logData.discId)
 	logData.type = GetChampionDisciplineType(logData.discId)
-	logData.bgTexture = GetChampionDisciplineBackgroundTexture(logData.discId)
-	logData.glowTexture = GetChampionDisciplineBackgroundGlowTexture(logData.discId)
-	logData.selTexture = GetChampionDisciplineBackgroundSelectedTexture(logData.discId)
+	
+			-- Pre update 30
+	--logData.bgTexture = GetChampionDisciplineBackgroundTexture(logData.discId)
+	--logData.glowTexture = GetChampionDisciplineBackgroundGlowTexture(logData.discId)
+	--logData.selTexture = GetChampionDisciplineBackgroundSelectedTexture(logData.discId)
+	
+	logData.bgTexture = GetChampionDisciplineZoomedOutBackground(logData.discId)
+	logData.glowTexture = GetChampionDisciplineZoomedInBackground(logData.discId)
+	logData.selTexture = GetChampionDisciplineSelectedZoomedOutOverlay(logData.discId)
+	
 	logData.numSkills = GetNumChampionDisciplineSkills(disciplineIndex)	
 	
 	uespLog.AppendDataToLog("all", logData)
@@ -17045,6 +17265,9 @@ function uespLog.TrackLootCommand(cmds)
 	elseif (firstCmd == "" or firstCmd == "show" or firstCmd == "items") then
 		uespLog.UpdateTrackLootTime()
 		uespLog.ShowTrackLoot(cmds[2])
+	elseif (firstCmd == "showvalue" or firstCmd == "showbyvalue" or firstCmd == "byvalue") then
+		uespLog.UpdateTrackLootTime()
+		uespLog.ShowTrackLoot(cmds[2], true)
 	elseif (firstCmd == "sources" or firstCmd == "src") then
 		uespLog.UpdateTrackLootTime()
 		uespLog.ShowTrackLootSources(cmds[2])
@@ -17058,6 +17281,7 @@ function uespLog.TrackLootCommand(cmds)
 		uespLog.Msg(".     /uesptrackloot                       Displays all items looted")
 		uespLog.Msg(".     /uesptrackloot show                   Displays all items looted")
 		uespLog.Msg(".     /uesptrackloot show [name]       Displays any matching loot items")
+		uespLog.Msg(".     /uesptrackloot byvalue                   Displays all items sorted by value")
 		uespLog.Msg(".     /uesptrackloot sources               Displays all loot sources")
 		uespLog.Msg(".     /uesptrackloot sources [name]   Displays any matching loot sources")
 		uespLog.Msg(".     /uesptrackloot reset                    Reset all tracked loot stats")
@@ -17532,7 +17756,50 @@ function uespLog.TrackLootItemNameKeySort(a, b)
 end
 
 
-function uespLog.ShowTrackLoot(itemMatch)
+function uespLog.TrackLootItemValueKeySort(a, b)
+	return a.value < b.value
+end
+
+
+function uespLog.GetTrackLootItemValue(itemMatch, itemName, itemLink, qnt)
+	local itemValue = 0
+	local isSpecial = false
+	
+	if (itemName == "") then
+		itemName = itemLink:lower()
+		isSpecial = true
+	end
+
+	if (itemMatch == nil or itemName:find(itemMatch) ~= nil) then
+				
+		if (isSpecial) then
+			if (itemName == "gold") then
+				itemValue = qnt
+			end
+		else
+			local itemVendorValue = GetItemLinkValue(itemLink) * qnt
+			local itemMMValue = uespLog.GetItemLinkValue(itemLink) * qnt
+			local transformValue = uespLog.GetTrackLootTransformValue(itemLink, qnt)
+			
+			if (transformValue ~= 0) then
+				itemMMValue = transformValue
+			end
+		
+			if (itemMMValue == 0) then
+				itemMMValue = "?"
+				itemValue = itemVendorValue
+			else
+				itemValue = itemMMValue
+				itemMMValue = string.format("%0.1f", itemMMValue)
+			end
+		end
+	end
+		
+	return itemValue, itemVendorValue, itemMMValue
+end
+
+
+function uespLog.ShowTrackLoot(itemMatch, sortByValue)
 	local items = uespLog.savedVars.charInfo.data.trackedLoot.items
 	local sources = uespLog.savedVars.charInfo.data.trackedLoot.sources
 	local seconds = uespLog.savedVars.charInfo.data.trackedLoot.secondsPassed
@@ -17552,15 +17819,25 @@ function uespLog.ShowTrackLoot(itemMatch)
 	end
 
 	for itemLink in pairs(items) do
-		table.insert(itemNameKeys, { name = GetItemLinkName(itemLink):lower(), ["itemLink"] = itemLink })
+		local itemName = GetItemLinkName(itemLink):lower()
+		local qnt = items[itemLink]
+		local itemValue = uespLog.GetTrackLootItemValue(itemMatch, itemName, itemLink, qnt)
+		
+		uespLog.GetTrackLootItemValue(itemMatch, itemName, itemLink, qnt)
+		table.insert(itemNameKeys, { ["name"] = itemName, ["itemLink"] = itemLink, ["value"] = itemValue, ["qnt"] = qnt })
 	end
 	
-	table.sort(itemNameKeys, uespLog.TrackLootItemNameKeySort)
+	if (sortByValue) then
+		table.sort(itemNameKeys, uespLog.TrackLootItemValueKeySort)
+	else
+		table.sort(itemNameKeys, uespLog.TrackLootItemNameKeySort)
+	end
 	
 	for _, itemData in pairs(itemNameKeys) do
 		local itemName = itemData.name
 		local itemLink = itemData.itemLink
-		local qnt = items[itemLink]
+		local itemValue = itemData.value
+		local qnt = itemData.qnt
 		local isSpecial = false
 		
 		if (itemName == "") then
@@ -17569,39 +17846,12 @@ function uespLog.ShowTrackLoot(itemMatch)
 		end
 	
 		if (itemMatch == nil or itemName:find(itemMatch) ~= nil) then
-			local itemValue = 0
 					
 			if (isSpecial) then
 				uespLog.Msg(".   "..tostring(i)..") "..tostring(qnt).." "..itemName)
-				
-				if (itemName == "gold") then
-					totalVendorValue = totalVendorValue + qnt
-					totalMMValue = totalMMValue + qnt
-					totalValue = totalValue + qnt
-					itemValue = qnt
-				end
 			else
-				local itemVendorValue = GetItemLinkValue(itemLink) * qnt
-				local itemMMValue = uespLog.GetItemLinkValue(itemLink) * qnt
-				local transformValue = uespLog.GetTrackLootTransformValue(itemLink, qnt)
-				
-				if (transformValue ~= 0) then
-					itemMMValue = transformValue
-				end
-				
-				totalVendorValue = totalVendorValue + itemVendorValue
-				totalMMValue = totalMMValue + itemMMValue
-				
-				if (itemMMValue == 0) then
-					itemMMValue = "?"
-					totalValue = totalValue + itemVendorValue
-					itemValue = itemVendorValue
-				else
-					itemMMValue = string.format("%0.1f", itemMMValue)
-					totalValue = totalValue + itemMMValue
-					itemValue = itemMMValue
-				end
-				
+				totalValue = totalValue + itemValue
+				itemValue = string.format("%0.1f", itemValue)
 				uespLog.Msg(".   "..tostring(i)..") "..tostring(itemLink).." x"..tostring(qnt).." (" .. tostring(itemValue).." gold)")
 			end
 			
@@ -18964,6 +19214,8 @@ function uespLog.AutolootHirelingMailCheckDelete(mailId)
 	local sender = GetMailItemInfo(mailId)
 	
 	if (sender == nil or sender == "") then
+		local firstMailId = GetNextMailId(nil)
+		RequestReadMail(firstMailId)
 		return true
 	end
 	
@@ -19067,6 +19319,21 @@ function uespLog.OnMailOpenMailbox(event)
 	
 	if (type(firstMailId) == "string") then
 		return
+	end
+	
+		-- Try to open the system tab
+	if (uespLog.GetAutoLootHirelingMails()) then
+		if (MAIL_INBOX and MAIL_INBOX.navigationTree and MAIL_INBOX.navigationTree.rootNode and MAIL_INBOX.navigationTree.rootNode.children) then
+			local systemTab = MAIL_INBOX.navigationTree.rootNode.children[2]
+			
+			if (not systemTab.open and systemTab and systemTab.GetTree) then
+				local tree = systemTab:GetTree()
+				
+				if (tree) then
+					tree:ToggleNode(systemTab)
+				end
+			end
+		end
 	end
 	
 	RequestReadMail(firstMailId)
@@ -19890,6 +20157,115 @@ end
 --SLASH_COMMANDS["/uespmarket"] = uespLog.MarketCommand
 
 
+function uespLog.MineApiConstantValue(stringName, value)
+	local data = uespLog.savedVars.tempData.data
+	local str = GetString(stringName, value)
+	
+	if (str == "") then
+		return false
+	end
+	
+	data[#data+1] = ""..tostring(value).." => '"..tostring(str).."',"
+	
+	
+	return true
+end
+
+
+function uespLog.MineApiConstantValueIndex(prefix, value)
+	local data = uespLog.savedVars.tempData.data
+	local str = GetString(prefix + value)
+	
+	if (str == "") then
+		return false
+	end
+	
+	data[#data+1] = ""..tostring(value).." => '"..tostring(str).."',"
+	
+	return true
+end
+
+
+
+function uespLog.MineApiConstantIndex(prefix, name, varName)
+	local data = uespLog.savedVars.tempData.data
+	local value = 0
+	local numBadValues = 0
+	
+	data[#data+1] = "API Constants for "..tostring(name)..": "..tostring(varName)
+	
+	while (numBadValues < 10) do
+	
+		if (not uespLog.MineApiConstantValueIndex(prefix, value)) then
+			numBadValues = numBadValues + 1
+		end
+		
+		value = value + 1
+	end
+	
+	return true
+end
+
+
+function uespLog.MineApiConstant(stringName, name, varName)
+	local data = uespLog.savedVars.tempData.data
+	local value = 0
+	local numBadValues = 0
+	
+	data[#data+1] = "API Constants for "..tostring(name)..": "..tostring(varName)
+	
+	while (numBadValues < 2) do
+	 
+		if (not uespLog.MineApiConstantValue(stringName, value)) then
+			numBadValues = numBadValues + 1
+		end
+		
+		value = value + 1
+	end
+	
+	return true
+end
+
+
+function uespLog.MineApiConstantsItemStyles()
+	local data = uespLog.savedVars.tempData.data
+	local maxStyleId = GetHighestItemStyleId()
+	local styleId
+	
+	data[#data+1] = "API Constants for "..tostring("Item Styles")..": "..tostring("$ESO_ITEMSTYLE_TEXTS")
+	
+	for styleId = 0, maxStyleId do
+		local styleName = GetItemStyleName(styleId)
+		
+		if (styleName ~= "") then
+			data[#data+1] = ""..tostring(styleId).." => '"..tostring(styleName).."',"
+		end
+	end
+	
+end
+
+
+function uespLog.MineApiConstants()
+
+		-- Only works for a few values?
+	--uespLog.MineApiConstantIndex(SI_STAT_ATTACK_POWER - 1, "Stat Types", "$ESO_STATTYPES")
+	
+	uespLog.MineApiConstantsItemStyles()
+	
+	uespLog.MineApiConstant("SI_ITEMTYPE", "Item Type", "$ESO_ITEMTYPE_TEXTS")
+	uespLog.MineApiConstant("SI_SPECIALIZEDITEMTYPE", "Specialized Item Type", "$ESO_ITEMSPECIALTYPE_TEXTS")
+	uespLog.MineApiConstant("SI_ITEMTYPEDISPLAYCATEGORY", "Display Category", "")
+	
+	uespLog.MineApiConstant("SI_QUESTTYPE", "Quest Type", "$ESO_QUESTTYPE_TEXTS")
+
+	-- $ESO_ABILITYTYPES : No SI text available
+	-- $ESO_BUFFTYPE_TEXTS : No SI text available
+	-- $ESO_MAPPINTYPE_TEXTS : No SI text available
+	-- $ESO_QUESTREWARDTYPE_TEXTS : No SI text available
+	-- $ESO_CURRENCYCHANGEREASON_TEXTS : No SI text available
+end
+
+
 uespLog.MINEANTIQUITY_MINID = 0
 uespLog.MINEANTIQUITY_MAXID = 2000
 uespLog.MineAntiquitySetData = {}
@@ -20028,7 +20404,7 @@ function uespLog.LogLocationData()
 	logData.zoneDesc = GetZoneDescription(logData.zoneIndex)
 	logData.zoneId = GetZoneId(logData.zoneIndex)
 	
-	uespLog.DebugExtraMsg("UESP LogLocationData: "..tostring(logData.zoneName)..":"..tostring(logData.subzoneName).." ("..tostring(logData.zoneIndex)..":"..tostring(logData.zoneId)..")")
+	--uespLog.DebugExtraMsg("UESP LogLocationData: "..tostring(logData.zoneName)..":"..tostring(logData.subzoneName).." ("..tostring(logData.zoneIndex)..":"..tostring(logData.zoneId)..")")
 	
 	logData.mapName = GetMapName()
 	logData.mapType = GetMapType()
@@ -20056,7 +20432,7 @@ function uespLog.LogLocationData()
 	logData.normX, logData.normZ, logData.poiPinType, logData.mapIcon, logData.isShown, _ = GetPOIMapInfo(logData.zoneIndex, logData.poiIndex)
 	logData.poiType = GetPOIType(logData.zoneIndex, logData.poiIndex)
 	
-	uespLog.DebugExtraMsg("UESP LogLocationData: POIs "..tostring(logData.numPOIs)..": "..tostring(logData.zoneIndex)..":"..tostring(logData.poiIndex)..":"..tostring(logData.poiType).."")
+	--uespLog.DebugExtraMsg("UESP LogLocationData: POIs "..tostring(logData.numPOIs)..": "..tostring(logData.zoneIndex)..":"..tostring(logData.poiIndex)..":"..tostring(logData.poiType).."")
 	
 	logData.objectiveName, logData.objectiveLevel, logData.startDesc, logData.endDesc = GetPOIInfo(logData.zoneIndex, logData.poiIndex)
 	

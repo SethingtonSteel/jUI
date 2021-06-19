@@ -1,7 +1,8 @@
 ## Title: PointsofColor
-## Version: 2.43
+## Version: 2.44
+## AddOnVersion: 244
 ## Author: Jhenox
-## APIVersion: 100033
+## APIVersion: 100034 100035
 ## SavedVariables: PointsofColor_SavedVariables
 ## DependsOn: LibAddonMenu-2.0
 

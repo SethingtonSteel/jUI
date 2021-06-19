@@ -24,6 +24,29 @@ function PortToFriendMenu.Initialize(menuName, vars)
 	LAM:RegisterOptionControls(menuName, PortToFriendMenu.lam.optionsData)
 end
 
+function PortToFriendMenu.GetAvailablePortModes()
+	local modes = {}
+	modes[1] = PortToFriend.constants.menu.PORT_MODE_NONE
+	modes[2] = PortToFriend.constants.menu.PORT_MODE_CLICK
+	modes[3] = PortToFriend.constants.menu.PORT_MODE_DEACTIVATE
+	return modes
+end
+
+function PortToFriendMenu.GetSelectedPortMode()
+	local modes = PortToFriendMenu.GetAvailablePortModes()
+	return modes[PortToFriend.savedVars.port_mode]
+end
+
+function PortToFriendMenu.SetSelectedPortMode(value)
+	local modes = PortToFriendMenu.GetAvailablePortModes()
+	for i = 1, #modes do
+		if modes[i] == value then
+			PortToFriend.savedVars.port_mode = i
+			break
+		end
+	end
+end
+
 function PortToFriendMenu.CreateMenuFromVars(vars)
 	return { 
 		[1] = {
@@ -162,6 +185,14 @@ function PortToFriendMenu.CreateMenuFromVars(vars)
 			name = PortToFriend.constants.menu.ALLOW_SELF,
 			getFunc = function() return PortToFriend.savedVars.vc.allowSelf end,
 			setFunc = function(value) PortToFriend.savedVars.vc.allowSelf = value end 		
+		},
+		[24] = {
+			type = "dropdown",
+			name = PortToFriend.constants.menu.PORT_MODE,
+			choices = PortToFriendMenu.GetAvailablePortModes(),
+			getFunc = PortToFriendMenu.GetSelectedPortMode,
+			setFunc = PortToFriendMenu.SetSelectedPortMode,
+			width = "full"
 		},
 	}
 end

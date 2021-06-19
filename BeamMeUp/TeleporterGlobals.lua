@@ -37,7 +37,7 @@ Teleporter.var = {
   },
   partnerGuilds = {
  	["EU Megaserver"] = {635942, 570448, 7871, 631764, 661070, 389326, 634734, 677494, 418220, 649984},
-	["NA Megaserver"]	= {698893, 601183, 738065, 738317, 630823, 677323, 704951},
+	["NA Megaserver"]	= {698893, 601183, 738065, 738317, 630823, 677323, 704951, 785051},
   },
   guildHouse			= {
 	-- displayName and houseId
@@ -138,6 +138,10 @@ Teleporter.textures = {
 	guildHouseBtnOver = "/BeamMeUp/media/guild_hall_temple_mouseover.dds",
 	ptfHouseBtn = "/BeamMeUp/media/ptf_house.dds",
 	ptfHouseBtnOver = "/BeamMeUp/media/ptf_house_mouseover.dds",
+	soloArenaBtn = "/BeamMeUp/media/poi_solotrial.dds",
+	soloArenaBtnOver = "/BeamMeUp/media/poi_solotrial_over.dds",
+	dungeonDifficultyNormal = "|t32:32:esoui/art/lfg/lfg_normaldungeon_up.dds|t",
+	dungeonDifficultyVeteran = "|t32:32:esoui/art/lfg/lfg_veterandungeon_up.dds|t",
 	}
 	
 -- Special textures for event days
@@ -242,11 +246,11 @@ Teleporter.blacklistForSlashPorting = {}
 
 -- categories of blacklists:
 
--- different unaccessable zones (Thieves Den, Dark Brotherhood Sanctuary, Maelstrom Arena, Vateshran Arena)
-Teleporter.blacklistOthers = {821, 826, 677, 1227}
+-- different unaccessable zones (Thieves Den, Dark Brotherhood Sanctuary)
+Teleporter.blacklistOthers = {821, 826}
 
 -- all Outlaws Refuges
-Teleporter.blacklistRefuges = {746, 747, 748, 479, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 760, 761, 780, 837, 971, 982, 1028, 1088, 1178}
+Teleporter.blacklistRefuges = {746, 747, 748, 479, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 760, 761, 780, 837, 971, 982, 1028, 1088, 1178, 1252}
 
 
 -- just Cyrodiil
@@ -263,139 +267,293 @@ Teleporter.blacklistBattlegrounds = {509, 511, 510, 508, 513, 512, 514, 517, 518
 Teleporter.blacklistGroupDungeons = {380, 935, 126, 931, 176, 681, 1055, 131, 1052, 31, 22, 38, 1009, 144, 936, 130, 932, 1010, 146, 933, 63, 930, 449, 64, 148, 848, 843, 283, 934, 11, 973, 974, 688, 678, 1080, 1081, 1122, 1123, 1152, 1153, 1201, 1197, 1228, 1229}
 
 -- 12 men Raids (Trials) -- order -> http://en.uesp.net/wiki/Online:Trials
-Teleporter.blacklistRaids = {1000, 638, 636, 639, 725, 1051, 975, 1121, 1196}
+Teleporter.blacklistRaids = {1000, 638, 636, 639, 725, 1051, 975, 1121, 1196, 1263}
 
--- other zones only for groups (the specific player has to be in the same group) (Dragonstar, BlackRose Prison, Group Dungeons in Craglorn)
-Teleporter.blacklistGroupZones = {635, 1082, 890, 893, 895, 897, 899, 904, 906, 908, 907, 913, 909, 914, 915, 916}
+-- Solo Arenas -- https://en.uesp.net/wiki/Online:Arenas (Maelstrom Arena, Vateshran Hollows)
+Teleporter.blacklistSoloArenas = {677, 1227}
+
+-- Group Arenas -- https://en.uesp.net/wiki/Online:Arenas (Dragonstar, BlackRose Prison)
+Teleporter.blacklistGroupArenas = {635, 1082}
+
+-- other zones only for groups (the specific player has to be in the same group) (Group Delves/Dungeons in Craglorn)
+Teleporter.blacklistGroupZones = {890, 893, 895, 897, 899, 904, 906, 908, 907, 913, 909, 914, 915, 916}
 
 -- Houses
-Teleporter.blacklistHouses = {940, 942, 941, 939, 938, 937, 859, 858, 878, 868, 869, 873, 860, 861, 877, 852, 853, 881, 867, 866, 874, 863, 862, 876, 871, 870, 872, 864, 865, 875, 855, 854, 880, 856, 857, 879, 944, 943, 945, 882, 883, 994, 995, 997, 996, 1005, 1008, 1007, 1006, 1042, 1043, 1044, 1045, 1059, 1060, 1061, 1063, 1108, 1109, 1064, 1125, 1126, 1128, 1129, 1130, 1154, 1155, 1192, 1193, 1199, 1200, 1218, 1219, 1220, 1233, 1234, 1264, 1265, 1270, 1271}
+Teleporter.blacklistHouses = {940, 942, 941, 939, 938, 937, 859, 858, 878, 868, 869, 873, 860, 861, 877, 852, 853, 881, 867, 866, 874, 863, 862, 876, 871, 870, 872, 864, 865, 875, 855, 854, 880, 856, 857, 879, 944, 943, 945, 882, 883, 994, 995, 997, 996, 1005, 1008, 1007, 1006, 1042, 1043, 1044, 1045, 1059, 1060, 1061, 1063, 1108, 1109, 1064, 1125, 1126, 1128, 1129, 1130, 1154, 1155, 1192, 1193, 1199, 1200, 1218, 1219, 1220, 1233, 1234, 1264, 1265, 1270, 1271, 1275, 1276, 1277}
 
--- Delves from all maps (just all IDs from Teleporter.whitelistDelves without Public Dungeons)
-Teleporter.blacklistDelves = {575, 576, 577, 578, 579, 580,					-- Greenshade
-								396, 397, 398, 399, 400, 401,				-- Auridon
-								468, 469, 470, 471, 472, 473,				-- Malabal Tor
-								444, 447, 442, 475, 477, 478,				-- Grahtwood
-								462, 463, 464, 465, 466, 467,				-- Reaper's March
-								327, 328, 329, 330, 331, 332,				-- Alik'r Desert
-								315, 316, 317, 318, 319, 320,				-- Stormhaven
-								321, 322, 323, 324, 325, 326,				-- Rivenspire
-								333, 334, 335, 336, 337, 338,				-- Bangkorai
-								309, 310, 311, 312, 313, 314,				-- Glenumbra
-								270, 271, 272, 273, 274, 275,				-- Shadowfen
-								413, 485, 484, 481, 482, 480,				-- The Rift
-								296, 290, 287, 288, 291, 289,				-- Stonefalls
-								359, 360, 361, 362, 363, 364,				-- Eastmarch
-								405, 406, 407, 408, 409, 410,				-- Deshaan
-								417, 418, 419, 420, 421, 422,				-- Coldharbour
-								889, 891, 892, 894, 896, 898, 900, 901, 902, 903, 905, 910,		-- Craglorn
-								694, 693, 689, 691, 692, 697,				-- Wrothgar
-								817, 676,									-- Hew's Bane
-								825, 824,									-- Gold Coast
-								961, 921, 922, 923, 924, 925,				-- Vvardenfell
-								985, 986,									-- The Clockwork City + The Clockwork City: The Brass Fortress
-								1017, 1015, 1018, 1014, 1019,				-- Summerset
-								1016,										-- Artaeum
-								1073, 1066,									-- Murkmire
-								1091, 1092, 1094, 1095, 1096, 1119,			-- Northern Elsweyr
-								1134, 1135,									-- Southern Elsweyr
-								1166, 1167, 1168, 1170,						-- Western Skyrim
-								1165, 1169,									-- Blackreach: Greymoor Caverns
-								1209, 1210,									-- Reach
-								1209,										-- Blackreach: Arkthzand Caverns
-							}
-
--- Public Dungeons from all maps (just the separated IDs in the end of Teleporter.whitelistDelves)
-Teleporter.blacklistPublicDungeons = {137, 486, 138, 124, 487, 308, 142, 162, 169, 284, 134, 341, 216, 339, 306, 557, 705, 706, 919, 918, 1020, 1021, 1089, 1090, 1186, 1187}
 -----------------------------------------
 
 ----------------------------------------- Whitelists
 
--- special Whitelist just for group members: Dragonstar, BlackRose Prison, Group Dungeons in Craglorn, 4 men Group Dungeons, 12 men Group Dungeons
-Teleporter.whitelistGroupMembers = {635, 1082,
-									890, 893, 895, 897, 899, 904, 906, 908, 907, 913, 909, 914, 915, 916,
-									380, 935, 126, 931, 176, 681, 1055, 131, 1052, 31, 22, 38, 1009, 144, 936, 130, 932, 1010, 146, 933, 63, 930, 449, 64, 148, 848, 843, 283, 934, 11, 973, 974, 688, 678, 1080, 1081, 1122, 1123, 1152, 1153, 1201, 1197, 1228, 1229,
-									1000, 638, 636, 639, 725, 1051, 975, 1121, 1196}
+-- special Whitelist just for group members: Group Arenas, Group Dungeons in Craglorn, 4 men Group Dungeons, 12 men Group Dungeons
+Teleporter.whitelistGroupMembers = {unpack(Teleporter.blacklistGroupArenas),
+									unpack(Teleporter.blacklistGroupZones),
+									unpack(Teleporter.blacklistGroupDungeons),
+									unpack(Teleporter.blacklistRaids)
+									}
 									
 
--- List of all Overland-Zones incl.
--- Whitelist for all normal solo Delves (with skyshards) and public Dungeons separated by parent zone ID : http://en.uesp.net/wiki/Online:Delves   http://en.uesp.net/wiki/Online:Public_Dungeons
-Teleporter.whitelistDelves = {
+-- List of all Overland-Zones incl. their delves and public dungeons
+-- http://en.uesp.net/wiki/Online:Delves   http://en.uesp.net/wiki/Online:Public_Dungeons
+Teleporter.overlandDelvesPublicDungeons = {
 			-- Greenshade
-			[108] = {575, 576, 577, 578, 579, 580,  137},
+			[108] = {
+					delves = {575, 576, 577, 578, 579, 580},
+					publicDungeons = {137},
+					},
 			-- Auridon
-			[381] = {396, 397, 398, 399, 400, 401,  486},
+			[381] = {
+					delves = {396, 397, 398, 399, 400, 401},
+					publicDungeons = {486},
+					},
 			-- Malabal Tor
-			[58] = {468, 469, 470, 471, 472, 473,  138},
+			[58] = {
+					delves = {468, 469, 470, 471, 472, 473},
+					publicDungeons = {138},
+					},
 			-- Grahtwood
-			[383] = {444, 447, 442, 475, 477, 478,  124},
+			[383] = {
+					delves = {444, 447, 442, 475, 477, 478},
+					publicDungeons = {124},
+					},
 			-- Reaper's March
-			[382] = {462, 463, 464, 465, 466, 467,  487},
+			[382] = {
+					delves = {462, 463, 464, 465, 466, 467},
+					publicDungeons = {487},
+					},
 			-- Alik'r Desert
-			[104] = {327, 328, 329, 330, 331, 332,  308},
+			[104] = {
+					delves = {327, 328, 329, 330, 331, 332},
+					publicDungeons = {308},
+					},
 			-- Stormhaven
-			[19] = {315, 316, 317, 318, 319, 320,  142},
+			[19] = {
+					delves = {315, 316, 317, 318, 319, 320},
+					publicDungeons = {142},
+					},
 			-- Rivenspire
-			[20] = {321, 322, 323, 324, 325, 326,  162},
+			[20] = {
+					delves = {321, 322, 323, 324, 325, 326},
+					publicDungeons = {162},
+					},
 			-- Bangkorai
-			[92] = {333, 334, 335, 336, 337, 338,  169},
+			[92] = {
+					delves = {333, 334, 335, 336, 337, 338},
+					publicDungeons = {169},
+					},
 			-- Glenumbra
-			[3] = {309, 310, 311, 312, 313, 314,  284},
+			[3] = {
+					delves = {309, 310, 311, 312, 313, 314},
+					publicDungeons = {284},
+					},
 			-- Shadowfen
-			[117] = {270, 271, 272, 273, 274, 275,  134},
+			[117] = {
+					delves = {270, 271, 272, 273, 274, 275},
+					publicDungeons = {134},
+					},
 			-- The Rift
-			[103] = {413, 485, 484, 481, 482, 480,  341},
+			[103] = {
+					delves = {413, 485, 484, 481, 482, 480},
+					publicDungeons = {341},
+					},
 			-- Stonefalls
-			[41] = {296, 290, 287, 288, 291, 289,  216},
+			[41] = {
+					delves = {296, 290, 287, 288, 291, 289},
+					publicDungeons = {216},
+					},
 			-- Eastmarch
-			[101] = {359, 360, 361, 362, 363, 364,  339},
+			[101] = {
+					delves = {359, 360, 361, 362, 363, 364},
+					publicDungeons = {339},
+					},
 			-- Deshaan
-			[57] = {405, 406, 407, 408, 409, 410,  306},
+			[57] = {
+					delves = {405, 406, 407, 408, 409, 410},
+					publicDungeons = {306},
+					},
 			-- Coldharbour
-			[347] = {417, 418, 419, 420, 421, 422,  557},
+			[347] = {
+					delves = {417, 418, 419, 420, 421, 422},
+					publicDungeons = {557},
+					},
 			-- Craglorn
-			[888] = {889, 891, 892, 894, 896, 898, 900, 901, 902, 903, 905, 910,   635,  890, 893, 895, 897, 899, 904, 906, 908, 907, 913, 909, 914, 915, 916}, -- Delves + Group Dungeons
+			[888] = {
+					delves = {889, 891, 892, 894, 896, 898, 900, 901, 902, 903, 905, 910, 890, 893, 895, 897, 899, 904, 906, 908, 907, 913, 909, 914, 915, 916},
+					publicDungeons = {},
+					},
 			-- Wrothgar
-			[684] = {694, 693, 689, 691, 692, 697,  705, 706},
+			[684] = {
+					delves = {694, 693, 689, 691, 692, 697},
+					publicDungeons = {705, 706},
+					},
 			-- Hew's Bane
-			[816] = {817, 676},
+			[816] = {
+					delves = {817, 676},
+					publicDungeons = {},
+					},
 			-- Gold Coast
-			[823] = {825, 824},
+			[823] = {
+					delves = {825, 824},
+					publicDungeons = {},
+					},
 			-- Vvardenfell
-			[849] = {961, 921, 922, 923, 924, 925,  919, 918},
+			[849] = {
+					delves = {961, 921, 922, 923, 924, 925},
+					publicDungeons = {919, 918},
+					},
 			-- The Clockwork City
-			[980] = {985, 986},
+			[980] = {
+					delves = {985, 986},
+					publicDungeons = {},
+					},
 			-- The Clockwork City: The Brass Fortress
-			[981] = {985, 986},
+			[981] = {
+					delves = {985, 986},
+					publicDungeons = {},
+					},
 			-- Summerset (+ "Traitor's Vault")
-			[1011] = {1016, 1017, 1015, 1018, 1014, 1019,  1020, 1021},
+			[1011] = {
+					delves = {1016, 1017, 1015, 1018, 1014, 1019},
+					publicDungeons = {1020, 1021},
+					},
 			-- Artaeum
-			[1027] = {1016},
+			[1027] = {
+					delves = {1016},
+					publicDungeons = {},
+					},
 			-- Bal Foyen
-			[281] = {},
+			[281] = {
+					delves = {},
+					publicDungeons = {},
+					},
 			-- Stros M'Kai
-			[534] = {},
+			[534] = {
+					delves = {},
+					publicDungeons = {},
+					},
 			-- Betnikh
-			[535] = {},
+			[535] = {
+					delves = {},
+					publicDungeons = {},
+					},
 			-- Khenarthi's Roost
-			[537] = {},
+			[537] = {
+					delves = {},
+					publicDungeons = {},
+					},
 			-- Bleakrock Isle
-			[280] = {},
+			[280] = {
+					delves = {},
+					publicDungeons = {},
+					},
 			-- Murkmire
-			[726] = {1073, 1066},
+			[726] = {
+					delves = {1073, 1066},
+					publicDungeons = {},
+					},
 			-- Northern Elsweyr
-			[1086] = {1091, 1092, 1094, 1095, 1096, 1119,  1089, 1090},
+			[1086] = {
+					delves = {1091, 1092, 1094, 1095, 1096, 1119},
+					publicDungeons = {1089, 1090},
+					},
 			-- Southern Elsweyr
-			[1133] = {1134, 1135},
+			[1133] = {
+					delves = {1134, 1135},
+					publicDungeons = {},
+					},
 			-- Western Skyrim
-			[1160] = {1166, 1167, 1168, 1170,  1186},
+			[1160] = {
+					delves = {1166, 1167, 1168, 1170},
+					publicDungeons = {1186},
+					},
 			-- Blackreach: Greymoor Caverns
-			[1161] = {1165, 1169,  1187},
+			[1161] = {
+					delves = {1165, 1169},
+					publicDungeons = {1187},
+					},
 			-- Reach
-			[1207] = {1209, 1210},
+			[1207] = {
+					delves = {1209, 1210},
+					publicDungeons = {},
+					},
 			-- Blackreach: Arkthzand Caverns
-			[1208] = {1209},
+			[1208] = {
+					delves = {1209},
+					publicDungeons = {},
+					},
+			-- Blackwood
+			[1261] = {
+					delves = {1253, 1254, 1255, 1256, 1257, 1258},
+					publicDungeons = {1259, 1260},
+					},
 			}
+			
+
+-- maps nodeIndicies with specific/selected zoneIds
+Teleporter.nodeIndexMap = {
+			-- SOLO ARENAS
+			[677] = {250, "MSA / MA"},
+			[1227] = {457, "VH / Vateshran"},
+			-- GROUP ARENAS
+			[635] = {270, "DSA"},
+			[1082] = {378, "BRP"},
+			-- TRIALS
+			[1000] = {346, "AS"},
+			[638] = {231, "AA"},
+			[636] = {230, "HRC / Hel Ra"},
+			[639] = {232, "SO"},
+			[725] = {258, "MoL"},
+			[1051] = {364, "CR"},
+			[975] = {331, "HoF"},
+			[1121] = {399, "SS"},
+			[1196] = {434, "KA"},
+			[1263] = {468, "RG"},
+			-- GROUP DUNGEONS
+			[38] = {186, "BHH / Blackheart"},
+			[380] = {194, "BC1 / Banished 1"},
+			[935] = {262, "BC2 / Banished 2"},
+			[126] = {191, "EH1 / Elden1"},
+			[931] = {265, "EH2 / Elden2"},			
+			[176] = {197, "CoA 1"},
+			[681] = {268, "CoA 2"},
+			[1055] = {370, "MoS"},
+			[131] = {188, "TI / Tempest"},
+			[1052] = {371, "MHK"},
+			[31] = {185, "SW / Selene"},
+			[22] = {196, "VF / Volenfell"},
+			[1009] = {341, "FL"},
+			[144] = {193, "SC1 / Spindle 1"},
+			[936] = {267, "SC2 / Spindle 2"},
+			[130] = {190, "CoH1 / Crypts 1"},
+			[932] = {269, "CoH2 / Crypts 2"},
+			[1010] = {363, "SCP"},
+			[146] = {189, "WRS1 / Wayrest 1"},
+			[933] = {263, "WRS2 / Wayrest 2"},
+			[63] = {198, "DSC 1 / Darkshade 1"},
+			[930] = {264, "DSC 2 / Darkshade 2"},
+			[449] = {195, "DFK / DK / Direfrost"},
+			[64] = {187, "Crucible"},
+			[148] = {192, "AC / Arx"},
+			[848] = {261, "CoS"},
+			[843] = {260, "RoM / Mazza"},
+			[283] = {98, "FG1 / Fungal 1"},
+			[934] = {266, "FG2 / Fungal 2"},
+			[11] = {184, "VoM / Vaults"},
+			[973] = {326, "BRF / BF"},
+			[974] = {332, "FH"},
+			[688] = {247, "WGT"},
+			[678] = {236, "ICP / Prison"},
+			[1080] = {389, "FV / Frost"},
+			[1081] = {390, "DoM"},
+			[1122] = {391, "MGF / MF"},
+			[1123] = {398, "LoM"},
+			[1152] = {424, "IR / Ice"},
+			[1153] = {425, "UG"},
+			[1201] = {436, "CT"},
+			[1197] = {435, "SG"},
+			[1228] = {437, "BDV"},
+			[1229] = {454, "CD / Cauldron"},
+}
 
 
 -----------------------------------------
@@ -469,20 +627,55 @@ Teleporter.tresureAndSurveyMaps = {
 			[1133] = {156716, 156715},
 			-- Western Skyrim
 			[1160] = {166035, 166040, 166041, 166042, 166043, 166459, 166460, 166461, 166462, 166464, 166465},
-			-- Blackreach
+			-- Blackreach: Greymoor Caverns
 			[1161] = {166036, 166037, 166038, 166039},
+			-- The Reach
+			[1207] = {171474},
+			-- Blackreach: Arkthzand Cavern
+			[1208] = {171475},
+			-- Blackwood
+			[1261] = {175544, 175545, 175546, 175547, 175548, 175549, 175550, 175551, 175552, 178464, 178465, 178466, 178467, 178468, 178469},
 			}
 
 -----------------------------------------
+function Teleporter.joinBlacklist(list)
+	-- join the lists to global blacklist (merge to HashMap instead to a list)
+   for index, value in ipairs(list) do
+      Teleporter.blacklist[value] = true
+   end 
+end
 
+
+function Teleporter.getAllDelves()
+	local newList = {}
+	-- gather all delves from the global list
+	for parentZoneId, tableObject in pairs(Teleporter.overlandDelvesPublicDungeons) do
+		for index, zoneId in ipairs(tableObject.delves) do
+			table.insert(newList, zoneId)
+		end
+	end
+	return newList
+end
+
+function Teleporter.getAllPublicDungeons()
+	local newList = {}
+	-- gather all public dungeons from the global list
+	for parentZoneId, tableObject in pairs(Teleporter.overlandDelvesPublicDungeons) do
+		for index, zoneId in ipairs(tableObject.publicDungeons) do
+			table.insert(newList, zoneId)
+		end
+	end
+	return newList
+end
 ----------------------------------------- Categories
+--[[
 Teleporter.CategoryMap = {}
 
 -- Delves / Solo Dungeons from all maps
-Teleporter.categoryDelves = Teleporter.blacklistDelves
+Teleporter.categoryDelves = Teleporter.getAllDelves()
 							
--- Public Dungeons from all maps (just the seperated IDs in the end of Teleporter.whitelistDelves)
-Teleporter.categoryPublicDungeons = Teleporter.blacklistPublicDungeons
+-- Public Dungeons from all maps
+Teleporter.categoryPublicDungeons = Teleporter.getAllPublicDungeons()
 
 -- Houses (same as the Blacklist for Houses)
 Teleporter.categoryHouses = Teleporter.blacklistHouses
@@ -493,14 +686,20 @@ Teleporter.categoryGroupDungeons = Teleporter.blacklistGroupDungeons
 -- 12 men Raid (Trials)
 Teleporter.categoryRaids = Teleporter.blacklistRaids
 
--- zones only for groups (Dragonstar, Group Dungeons in Craglorn)
+-- zones only for groups (Group Dungeons in Craglorn)
 Teleporter.categoryGroupZones = Teleporter.blacklistGroupZones
 
+-- Solo Arenas
+Teleporter.categorySoloArenas = Teleporter.blacklistSoloArenas
+
+-- Group Arenas
+Teleporter.categoryGroupArenas = Teleporter.blacklistGroupArenas
+--]]
 -----------------------------------------
 
 ----------------------------------------- Sorting/Grouping
-Teleporter.sortingByCategory = {[9] = 1, [2] = 2, [1] = 3, [0] = 4, [5] = 5, [4] = 6, [6] = 7, [3] = 8}
--- Overland, Public Dungeons, Delves, without Category, 12 men Dungeons, 4 men Dungeons, Group Zones (Craglorn), Houses
+Teleporter.sortingByCategory = {[9] = 1, [2] = 2, [1] = 3, [0] = 4, [5] = 5, [4] = 6, [7] = 7, [6] = 8, [3] = 9, [8] = 10}
+-- Overland, Public Dungeons, Delves, without Category, 12 men Dungeons, 4 men Dungeons, Group Arenas, Group Zones (Craglorn), Houses, Solo Arenas
 
 
 -----------------------------------------

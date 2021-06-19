@@ -20,6 +20,8 @@ local strings = {
     QUESTMAP_HOLIDAY              = "Holiday",
     QUESTMAP_WEEKLY               = "Weekly",
     QUESTMAP_ZONESTORY            = "Zone Story",
+    QUESTMAP_PROLOGUE             = "Prologue",
+    QUESTMAP_PLEDGES              = "Pledges",
 
     QUESTMAP_HIDE                 = "Hide quest",
     QUESTMAP_UNHIDE               = "Unhide quest",
@@ -152,6 +154,20 @@ local strings = {
 
     QUESTMAP_ZONESTORY_TOOLTIP_COLOR  = "Zonestory Quest Tooltip Color",
     QUESTMAP_ZONESTORY_TOOLTIP_COLOR_DESC  = "Change Zonestory Quest Tooltip Color",
+
+    -- Prologue quest pin text
+    QUESTMAP_PROLOGUE_PIN_COLOR  = "Prologue Quest Pin Color",
+    QUESTMAP_PROLOGUE_PIN_COLOR_DESC  = "Change Prologue Quest Pin Color",
+
+    QUESTMAP_PROLOGUE_TOOLTIP_COLOR  = "Prologue Quest Tooltip Color",
+    QUESTMAP_PROLOGUE_TOOLTIP_COLOR_DESC  = "Change Prologue Quest Tooltip Color",
+
+    -- Pledges quest pin text
+    QUESTMAP_PLEDGES_PIN_COLOR  = "Pledges Quest Pin Color",
+    QUESTMAP_PLEDGES_PIN_COLOR_DESC  = "Change Pledges Quest Pin Color",
+
+    QUESTMAP_PLEDGES_TOOLTIP_COLOR  = "Pledges Quest Tooltip Color",
+    QUESTMAP_PLEDGES_TOOLTIP_COLOR_DESC  = "Change Pledges Quest Tooltip Color",
 
 }
 

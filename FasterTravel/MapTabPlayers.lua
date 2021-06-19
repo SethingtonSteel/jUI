@@ -4,6 +4,7 @@ FasterTravel.MapTabPlayers = MapTabPlayers
 
 local Teleport = FasterTravel.Teleport
 local Utils = FasterTravel.Utils
+local Location = FasterTravel.Location
 local STW = FasterTravel.SurveyTheWorld
 
 function MapTabPlayers:init(control)
@@ -55,17 +56,19 @@ function MapTabPlayers:init(control)
         for i = 1, gCount do
             id = GetGuildId(i)
             name = GetGuildName(id)
-            data = Teleport.GetGuildPlayers(id)
-            data = Utils.map(data, function(d)
-                local zoneName = d.zoneName
-                local zone = _lookup[zoneName]
-                if zone == nil then
-                    zone = {}
-                    _lookup[zoneName] = zone
-                end
-                table.insert(zone, { name = d.name })
-                return addHandlers(d)
-            end)
+            
+            data = Utils.map(Teleport.GetGuildPlayers(id),
+                function(d)
+                    local zoneName = d.zoneName
+                    local zone = _lookup[zoneName]
+                    if zone == nil then
+                        zone = {}
+                        _lookup[zoneName] = zone
+                    end
+                    table.insert(zone, { name = d.name })
+                    return addHandlers(d)
+                end)
+            
             table.insert(categories,
                 {
                     name = string.format("%s (%d)", name, #data),
@@ -75,18 +78,21 @@ function MapTabPlayers:init(control)
         end
 
         for k, v in pairs(_lookup) do
-		    surveys, counters, sign = STW.getCountersFor(k)
-            table.insert(zones, {
-                name =  string.format("%s %s (%d) %s%s", sign, k, #v, surveys, counters),
-                zoneName = k,
-                refresh = function(self, control) control.label:SetText(self.name) end,
-                clicked = function(self, control)
-                    local result, zoneName = Teleport.TeleportToZone(self.zoneName)
-                    if result == true then
-                        ZO_WorldMap_HideWorldMap()
+            local zId = Location.Data.GetZoneIdByName(k) 
+            if zId < 508 or zId > 518 then -- not Battlegrounds zone
+                surveys, counters, sign = STW.getCountersFor(k)
+                table.insert(zones, {
+                    name =  string.format("%s %s (%d) %s%s", sign, k, #v, surveys, counters),
+                    zoneName = k,
+                    refresh = function(self, control) control.label:SetText(self.name) end,
+                    clicked = function(self, control)
+                        local result, zoneName = Teleport.TeleportToZone(self.zoneName)
+                        if result == true then
+                            ZO_WorldMap_HideWorldMap()
+                        end
                     end
-                end
-            })
+                })
+            end
         end
 
         table.sort(zones, function(x, y) return Utils.BareName(x.zoneName) < Utils.BareName(y.zoneName) end)

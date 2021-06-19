@@ -34,7 +34,7 @@ RDL.DropdownTooltips = {
 }
 
 RDL.DropdownData = {
-	ChoicesMajor  = { "Kann gefunden werden", "Kann erspäht werden", "Fehlende Kodex-Einträge", "Nicht ausgegraben", "Erspähbare Antiquitäten", "Alle", "Gruppenverlies", "Markarth",},
+	ChoicesMajor  = { "Kann gefunden werden", "Kann erspäht werden", "Fehlende Kodex-Einträge", "Nicht ausgegraben", "Erspähbare Antiquitäten", "Alle", "Gruppenverlies", "Blackwood",},
 
 	TooltipsMajor  = {
 		"Schließt gefundene, aber nicht erspähte Antiquitäten aus, sowie nicht wiederholbare Antiquitäten, die bereits einmal gefunden wurden",
@@ -44,7 +44,7 @@ RDL.DropdownData = {
 		"Zeigt alle Antiquitäten, mit Ausnahme der fertigen Nicht-Wiederholbaren",
 		"Zeigt alle Antiquitäten, einschließlich der fertigen Nicht-Wiederholbaren",
 		"Zeigt nur Antiquitäten aus 4er-Verliesen",
-		"Zeigt nur neue Antiquitäten der Markarth DLC",
+		"Zeigt nur neue Antiquitäten der Blackwood DLC",
 	},
 
 	ChoicesZone = {RDL.ZONENAME_ALLZONES, "aktuelle Zone", "Ohne DLCs", },
@@ -130,3 +130,5 @@ RDL.TOOLTIP_INKLING = {
 	"Originale Standortdaten bereitgestellt von @inklings (Discord, Twitch)",
 	"Vielen Dank, dass ich diese benutzen durfte.",
 }
+
+RDL.TOOLTIP_MAPPINS = "Teil von Hoft's MapPins Addon"

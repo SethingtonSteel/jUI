@@ -1,7 +1,7 @@
 ## Title: Caros Skill Point Saver
 ## Description: Save your spent Skill points and CP and load them again after the coming update.
-## APIVersion: 100034
-## Version: 1.7.2
+## APIVersion: 100035
+## Version: 2.1.1
 ## Author: |c1d6dadIrniben|r
 ## SavedVariables: CSPSSavedVariables
 ## OptionalDependsOn: DressingRoom AlphaGear

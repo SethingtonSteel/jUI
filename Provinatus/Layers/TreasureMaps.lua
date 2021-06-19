@@ -5,8 +5,8 @@ local PinTypes = {LOST_TREASURE_PIN_TYPE_TREASURE, LOST_TREASURE_PIN_TYPE_SURVEY
 
 function ProvinatusTreasureMaps:Update()
   local Elements = {}
-  if LostTreasure_GetZoneData then
-    local ZoneData = LostTreasure_GetZoneData(GetCurrentMapId()) -- TODO cache this
+  if LostTreasure_GetAllData then
+    local ZoneData = LostTreasure_GetAllData()[GetCurrentMapId()]
     if ZoneData then
       for _, PinType in pairs(PinTypes) do
         local TypeData = ZoneData[PinType]

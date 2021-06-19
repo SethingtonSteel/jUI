@@ -142,6 +142,8 @@ SafeAddString(DUSTMAN_TREASURE_MAPS,  			 		"Помечать карты сок�
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESC,  			 	"Включить/отключить механизм, помечающий карты сокровищ как хлам.", 1)	
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESTROY,  			"...и уничтожать их!", 1)
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESTROY_DESC,  		"Автоматически уничтожать карты сокровищ.", 1)
+SafeAddString(DUSTMAN_JEWELRY_MASTER_WRITS,				"Destroy Jewelry Master Writs", 1) --TO TRANSLATE
+SafeAddString(DUSTMAN_JEWELRY_MASTER_WRITS_DESC,		"Automatically destroy Jewelry Master Writs", 1)  --TO TRANSLATE
 --treasures and trophies submenu
 SafeAddString(DUSTMAN_TREASURES,  			 			"Сокровища и трофеи", 1)
 SafeAddString(DUSTMAN_TREASURE,  			 			"Помечать сокровища", 1)

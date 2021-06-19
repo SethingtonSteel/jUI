@@ -113,17 +113,17 @@ function CSPS.generateLink()
 	end
 end
 
-function CSPS.importLink(ctrl, shift)
+function CSPS.importLink(ctrl, shift, alt)
 	if CSPS.formatImpExp == "sf" then 
 		CSPS.importLinkSF()
 	elseif CSPS.formatImpExp == "csvCP" then
 		CSPS.importListCP()
 	elseif CSPS.formatImpExp == "txtCP2_1" then
-		CSPS.importTextCP(1, ctrl and shift)
+		CSPS.importTextCP(1, ctrl and shift, alt)
 	elseif CSPS.formatImpExp == "txtCP2_2" then
-		CSPS.importTextCP(2, ctrl and shift)
+		CSPS.importTextCP(2, ctrl and shift, alt)
 	elseif CSPS.formatImpExp == "txtCP2_3" then
-		CSPS.importTextCP(3, ctrl and shift)
+		CSPS.importTextCP(3, ctrl and shift, alt)
 		
 	end
 end
@@ -239,7 +239,7 @@ function CSPS.generateLinkSF()
 					if myId ~= nil then
 						table.insert(lnkSkTab, string.format("%s:%s", myId,myRank))
 					else
-						d(zo_strformat(GetString(CSPS_ImpEx_ErrSk), skId[1]))
+						d(string.format("[CSPS] %s", zo_strformat(GetString(CSPS_ImpEx_ErrSk), skId[1])))
 					end
 				end
 			end
@@ -375,9 +375,9 @@ function CSPS.importLinkSF()
 	local cpMapBw = table_invert(cpMap)
 	local raMapBw = table_invert(raMap)
 	local clMapBw = table_invert(clMap)
-	if lnkParameter[1] == nil or lnkParameter[1] == "-" then d('No Parameter 1') return end
+	if lnkParameter[1] == nil or lnkParameter[1] == "-" then d('[CSPS] No Parameter 1') return end
 	local lnkSkTab = {SplitString(",", lnkParameter[1])}
-	if #lnkSkTab < 3 then d('Missing parameters') return end
+	if #lnkSkTab < 3 then d('[CSPS] Missing parameters') return end
 	local lnkRahmen = {}
 	for i=1, 3 do
 		local rahmenVar = SplitString("flrc", lnkSkTab[i])
@@ -430,7 +430,7 @@ function CSPS.importLinkSF()
 					end
 				end
 			else
-				d(zo_strformat(GetString(CSPS_ImpEx_ErrHb), ind1))
+				d(string.format("[CSPS] %s", zo_strformat(GetString(CSPS_ImpEx_ErrHb), ind1)))
 			end
 		end
 		CSPS.hbPopulate()
@@ -469,7 +469,7 @@ function CSPS.transferProfile(cpPSub)
 		
 		if myTable == nil then return end
 		
-		if myTable.werte == nil then d(GS(CSPS_NoSavedData)) return end
+		if myTable.werte == nil then d(string.format("[CSPS] %s", GS(CSPS_NoSavedData))) return end
 	elseif cpPSub == 1 then
 		myTable = CSPSSavedVariables[transferLevels[1]][transferLevels[2]]["$AccountWide"]["charData"][transferLevels[3]]["cpProfiles"][transferLevels[4]]
 	elseif cpPSub == 2 then

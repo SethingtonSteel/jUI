@@ -4,11 +4,13 @@
 PortToFriend = {}
 PortToFriend.addonName = "PortToFriendsHouse"
 PortToFriend.version = 1 -- saved vars
-PortToFriend.versionString = "2.1.2"
+PortToFriend.versionString = "2.2.9"
 PortToFriend.updateInterval = 20 -- in ms, not used in this addon [default construct]
 PortToFriend.author = "@s0rdrak (PC / EU)"
 PortToFriend.credits = "@Neltje, @Graham82, @Nita65"
 PortToFriend.slashCmd = "/ptf"
+PortToFriend.callbackName = "PtfOnPlayerDeactivated"
+
 
 PortToFriend.libData = PortToFriend.libData or {}
 local PortToFriendData = PortToFriend.libData
@@ -125,6 +127,9 @@ PortToFriend.constants.FILTER_ID_ROLEPLAY = 7
 PortToFriend.constants.FILTER_ID_RAID = 8
 PortToFriend.constants.FILTER_ID_HIDE_SEEK = 9
 PortToFriend.constants.FILTER_ID_ERP = 10
+PortToFriend.constants.PORT_MODE_NONE = 1
+PortToFriend.constants.PORT_MODE_ON_CLICK = 2
+PortToFriend.constants.PORT_MODE_ON_DEACTIVATE = 3
 
 PortToFriend.controls = {}
 PortToFriend.controls.favorites = {}
@@ -175,6 +180,8 @@ PortToFriend.defaults.vc_chatAllowed.dezone = false
 PortToFriend.defaults.vc_chatAllowed.jpzone = false
 PortToFriend.defaults.vc = {}
 PortToFriend.defaults.vc.allowSelf = false
+PortToFriend.defaults.port_mode = PortToFriend.constants.PORT_MODE_ON_DEACTIVATE
+
 
 PortToFriend.menu = {}
 PortToFriend.menu.name = "PortToFriendMenu"
@@ -236,7 +243,7 @@ function PortToFriend.PortToFriendOnInitialize(event, addonName)
 		PortToFriend.controls.TLW:SetMouseEnabled(PortToFriend.config.isMouseEnabled)
 		
 		PortToFriend.controls.TLW:SetClampedToScreen(PortToFriend.config.isClampedToScreen)
-		PortToFriend.controls.TLW:SetDrawLayer(0)
+		PortToFriend.controls.TLW:SetDrawLayer(3)
 		PortToFriend.controls.TLW:SetDrawLevel(0)
 		PortToFriend.controls.TLW:SetHandler("OnMoveStop", PortToFriend.SaveWindowLocation)
 		PortToFriend.controls.TLW:SetHidden(true)
@@ -651,7 +658,7 @@ function PortToFriend.PortToFriendOnInitialize(event, addonName)
 		
 		--Shissus ContextMenu Hack as he failed to implement this properly
 		EVENT_MANAGER:RegisterForUpdate(PortToFriend.hacks.callbackName, PortToFriend.hacks.callbackInterval, PortToFriend.ContextMenuHackOnUpdate)
-		
+		EVENT_MANAGER:RegisterForEvent(PortToFriend.callbackName, EVENT_PLAYER_DEACTIVATED, PortToFriend.OnPlayerDeactivated)
 	end
 end
 
@@ -843,7 +850,7 @@ function PortToFriend.CreateHouseList()
 			if data[i]:IsLocked() == false then
 				PortToFriend.purchasedHouses[data[i]:GetReferenceId()] = {}
 				PortToFriend.purchasedHouses[data[i]:GetReferenceId()].name = data[i]:GetFormattedName()
-				PortToFriend.purchasedHouses[data[i]:GetReferenceId()].location = data[i].houseLocation
+				PortToFriend.purchasedHouses[data[i]:GetReferenceId()].location = zo_strformat("<<C:1>>", data[i].houseLocation)
 			end
 		end
 	end
@@ -1081,7 +1088,7 @@ function PortToFriend.CollectibleNotification(eventCode, collectibleId, notifica
 		if data[i]:IsHouse() == true and data[i].collectibleId == collectibleId then 
 			PortToFriend.purchasedHouses[data[i]:GetReferenceId()] = {}
 			PortToFriend.purchasedHouses[data[i]:GetReferenceId()].name = data[i]:GetFormattedName()
-			PortToFriend.purchasedHouses[data[i]:GetReferenceId()].location = data[i].houseLocation
+			PortToFriend.purchasedHouses[data[i]:GetReferenceId()].location = zo_strformat("<<C:1>>", data[i].houseLocation)
 			PortToFriend.UpdateMyHouses()
 			break
 		end
@@ -1309,7 +1316,11 @@ function PortToFriend.VCPort()
 		if name ~= nil and houseId ~= nil then
 			--d(name)
 			--d(houseId)
+			
 			PortToFriend.JumpToHouse(zo_strtrim(name), tonumber(houseId))
+			if PortToFriend.savedVars.port_mode == PortToFriend.constants.PORT_MODE_ON_CLICK then
+				PortToFriend.CloseWindow()
+			end
 		end
 	end
 end
@@ -1359,6 +1370,12 @@ function PortToFriend.VCAdjustSlider()
 		PortToFriend.controls.vc.scrollPanel:SetSimpleAnchor(PortToFriend.controls.vc.scrollControl, 0, -slide)
 	else
 	
+	end
+end
+
+function PortToFriend.OnPlayerDeactivated()
+	if PortToFriend.savedVars.port_mode == PortToFriend.constants.PORT_MODE_ON_DEACTIVATE and PortToFriend.controls.TLW:IsHidden() == false then
+		PortToFriend.CloseWindow()
 	end
 end
 
@@ -2168,17 +2185,26 @@ function PortToFriend.PortToLibraryEntry(id)
 	local entries = PortToFriend.GetFilteredLibraryData()
 	if id ~= nil and id > 0 then
 		PortToFriend.JumpToHouse(entries[id].name, entries[id].houseId)
+		if PortToFriend.savedVars.port_mode == PortToFriend.constants.PORT_MODE_ON_CLICK then
+			PortToFriend.CloseWindow()
+		end
 	end
 end
 
 function PortToFriend.PortToFavorite(id)
 	if id ~= nil and id > 0 then
 		PortToFriend.JumpToHouse(PortToFriend.savedVars.favorites[id].name, PortToFriend.savedVars.favorites[id].houseId)
+		if PortToFriend.savedVars.port_mode == PortToFriend.constants.PORT_MODE_ON_CLICK then
+			PortToFriend.CloseWindow()
+		end
 	end
 end
 
 function PortToFriend.PortToMyHousesById(id, outside)
 	RequestJumpToHouse(id, outside)
+	if PortToFriend.savedVars.port_mode == PortToFriend.constants.PORT_MODE_ON_CLICK then
+		PortToFriend.CloseWindow()
+	end
 end
 
 function PortToFriend.RemoveFavorite(id)

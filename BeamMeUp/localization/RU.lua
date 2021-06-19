@@ -20,7 +20,7 @@ mkstr(SI.TELE_UI_BTN_REFRESH_ALL, "Обновить все локации")
 mkstr(SI.TELE_UI_BTN_UNLOCK_WS, "Разблокировка дорожных святилищ в текущей локации")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE, "Текущая локация")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES, "Вылазки в текущей локации")
-mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Карты и зацепки")
+mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Карты и зацепки\n|c777777(right-click for more options)")
 mkstr(SI.TELE_UI_BTN_SETTINGS, "Настройки")
 mkstr(SI.TELE_UI_BTN_FEEDBACK, "Обратная связь")
 mkstr(SI.TELE_UI_BTN_FIX_WINDOW, "За/разморозить окно")
@@ -32,6 +32,7 @@ mkstr(SI.TELE_UI_BTN_ANCHOR_ON_MAP, "Открепить / Прикрепить")
 mkstr(SI.TELE_UI_BTN_GUILD_BMU, "Официальная гильдия и партнёры BeamMeUp")
 mkstr(SI.TELE_UI_BTN_GUILD_HOUSE_BMU, "Гильдхолл BeamMeUp")
 mkstr(SI.TELE_UI_BTN_PTF_INTEGRATION, "Поддержка \"Port to Friend's House\"")
+mkstr(SI.TELE_UI_BTN_DUNGEON_FINDER, "Arenas / Trials / Dungeons\n|c777777(right-click for more options)")
 ---------
 --------- List
 mkstr(SI.TELE_UI_SOURCE_GROUP, "Группа")
@@ -78,6 +79,11 @@ mkstr(SI.TELE_UI_TOGGLE_LEADS_MAP, "Зацепки")
 mkstr(SI.TELE_UI_VIEW_ANTIQUITY, "Кодекс просмотра")
 mkstr(SI.TELE_UI_JUMP_IN_FRONT_HOUSE, "Переместиться к дому")
 mkstr(SI.TELE_UI_JUMP_IN_HOUSE, "Переместиться в дом")
+mkstr(SI.TELE_UI_TOGGLE_ARENAS, "Solo Arenas")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_ARENAS, "Group Arenas")
+mkstr(SI.TELE_UI_TOGGLE_TRIALS, "Trials")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS, "Group Dungeons")
+mkstr(SI.TELE_UI_TOGGLE_SORT_ACRONYM, "Sort by Acronym")
 
 mkstr(SI.TELE_UI_SUBMENU_FAVORITES, "Избранное")
 mkstr(SI.TELE_UI_SUBMENU_MISC, "Разное")
@@ -111,6 +117,7 @@ mkstr(SI.TELE_CHAT_UNLOCK_WS_DISCOVERED_TOTAL, "Всего святилищ от
 mkstr(SI.TELE_CHAT_UNLOCK_WS_ALL_KNOWN, "Все дорожные святилища в этой зоне известны и могут использоваться для перемещения.")
 mkstr(SI.TELE_CHAT_UNLOCK_WS_NEED_DISCOVERED, "Эти дорожные святилища все еще надо посетить лично:")
 mkstr(SI.TELE_CHAT_SHARING_FOLLOW_LINK, "Следуем по ссылке ...")
+mkstr(SI.TELE_CHAT_TO_DUNGEON, "Fast Travel into Instance:")
 
 
 
@@ -223,6 +230,7 @@ mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Посетить гильдхолл BeamMeUp")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Перемещение в текущее локацие")
 mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
+mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_DUNGEON_FINDER, "Arenas / Trials / Dungeons")
 
 
 

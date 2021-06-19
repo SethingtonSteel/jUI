@@ -218,6 +218,10 @@ SafeAddString(NOTYOU_CAMERA_INTERRUPT,					"Ne pas interrompre les interactions"
 SafeAddString(NOTYOU_CAMERA_INTERRUPT_TOOLTIP,		"Ne pas interrompre les interactions (collecte, pêche, etc) lorsque vous entrez dans un menu", 1)
 SafeAddString(NOTYOU_CAMERA_ROTATE,						"Ne pas tourner la caméra", 1)
 SafeAddString(NOTYOU_CAMERA_ROTATE_TOOLTIP,			"Ne pas tourner la caméra lorsque vous entrez dans un menu", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_STATS,			"Don't rotate game camera while showing status", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_STATS_TOOLTIP,	"Don't rotate game camera while showing status. If you turn this ON, you can't change outfit on status window by ESO feature.", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_INV,				"Don't rotate game camera while showing inventory", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_INV_TOOLTIP,		"Don't rotate game camera while showing inventory. If you turn this ON, you can't preview any item by ESO feature.", 1)
 
 SafeAddString(NOTYOU_AUTOLOOTITEMS_HEADER,			"Looter les conteneurs", 1)
 SafeAddString(NOTYOU_AUTOLOOTITEMS,						"Looter automatiquement les conteneurs", 1)

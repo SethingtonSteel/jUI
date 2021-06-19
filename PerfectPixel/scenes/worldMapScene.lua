@@ -33,24 +33,19 @@ PP.worldMapScene = function()
 
 	WORLD_MAP_SCENE:RemoveFragment(WORLD_MAP_INFO_BG_FRAGMENT)
 	WORLD_MAP_SCENE:RemoveFragment(MEDIUM_LEFT_PANEL_BG_FRAGMENT)
-	WORLD_MAP_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
+	PP:ForceRemoveFragment(WORLD_MAP_SCENE, MEDIUM_LEFT_PANEL_BG_FRAGMENT)
 
-	PP.SetBackdrop(1, ZO_WorldMap, WORLD_MAP_SCENE, -2, -2, 2, 2)
-	PP.SetBackdrop(2, ZO_WorldMapInfo, WORLD_MAP_SCENE, -16, 51, 0, 9)
-	PP.SetBackdrop(3, ZO_WorldMapZoneStoryTopLevel_Keyboard, WORLD_MAP_ZONE_STORY_KEYBOARD_FRAGMENT, 0, -4, 0, 48)
-	
-	ZO_PreHook(MEDIUM_LEFT_PANEL_BG_FRAGMENT, "Show", function()
-		if WORLD_MAP_SCENE:IsShowing() then
-			return true
-		else
-			return false
-		end
-	end)
+	PP:CreateBackground(ZO_WorldMap,							--[[#1]] nil, nil, nil, -2, -2,		--[[#2]] nil, nil, nil, 2, 2)
+	ZO_WorldMap.PP_BG:SetHidden(true)
+	PP:CreateBackground(ZO_WorldMapInfo,						--[[#1]] nil, nil, nil, -16, 51,	--[[#2]] nil, nil, nil, 0, 9)
+	PP:CreateBackground(ZO_WorldMapZoneStoryTopLevel_Keyboard,	--[[#1]] nil, nil, nil, 0, -4,		--[[#2]] nil, nil, nil, 0, 48)
 
 	WORLD_MAP_SCENE:RegisterCallback("StateChange", function(oldState, newState)
 		if newState == SCENE_SHOWING then
+			ZO_WorldMap.PP_BG:SetHidden(false)
 			ZO_WorldMapMapFrame:SetHidden(true)
-		-- elseif newState == SCENE_HIDDEN then
+		elseif newState == SCENE_FRAGMENT_HIDING then
+			ZO_WorldMap.PP_BG:SetHidden(true)
 			-- ZO_WorldMapMapFrame:SetHidden(false)
 			-- ZO_WorldMapContainerRaggedEdge:SetHidden(false)
 		end

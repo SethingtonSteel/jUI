@@ -1,24 +1,17 @@
+-----------------------------------------
+-- LOCALIZED GLOBAL VARIABLES
+-----------------------------------------
+
 local ZGV = _G.ZGV
-
------------------------------------------
--- LOCAL REFERENCES
------------------------------------------
-
 local tinsert,tremove,sort,min,max,floor,type,pairs,ipairs = table.insert,table.remove,table.sort,math.min,math.max,math.floor,type,pairs,ipairs
 local tonumber = tonumber
 local print = ZGV.print
 local L = ZGV.L
-
 local GOALTYPES		-- initialized at startup
 local mod="%05d%05d"
 local msg = _G.msg
 local guide = _G.guide
 local reference = _G.reference
-
------------------------------------------
--- LOCAL VARIABLES
------------------------------------------
-
 local Parser = {}
 local Commands = {}
 local GuideCommands = {}
@@ -86,27 +79,27 @@ local ConditionEnv = {
 		if not y then
 			map,x,y = ((goal and goal.map) or (step and step.map)),map,x
 		end
-		if not x and not y and goal and goal.x then 
+		if not x and not y and goal and goal.x then
 			x,y = goal.x,goal.y
 		end
 		if not x and not y and step and step.goals then
-			for gi,go in ipairs(step.goals) do 
-				if go.x then 
-					map,x,y = go.map,go.x,go.y 
+			for gi,go in ipairs(step.goals) do
+				if go.x then
+					map,x,y = go.map,go.x,go.y
 					break
 				end
 			end
 		end
-		if x > 1 then 
-			x = x / 100 
+		if x > 1 then
+			x = x / 100
 		end
-		if y > 1 then 
+		if y > 1 then
 			y = y / 100
 		end
 		return ZGV.Pointer:GetDistToCoords(map,x,y)
 	end,
 }
-Parser.ConditionEnv=ConditionEnv  --DEBUG
+Parser.ConditionEnv = ConditionEnv  --DEBUG
 
 -----------------------------------------
 -- GUIDE COMMANDS
@@ -587,12 +580,7 @@ function Parser:ParseEntry(guide,fully_parse,lastparsed)
 	local breakout
 	local prevmap
 	local funclocdata = {}
-
 	local do_debug	= 1
-
-	-------------------
-	-- LOCAL REFERENCES
-	-------------------
 	local strfind = string.find
 
 	-------------------

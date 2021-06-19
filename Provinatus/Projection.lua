@@ -77,6 +77,8 @@ function ProvinatusProjection:IncreaseFisheye()
       100
     )
     LogFisheye()
+  else
+    d(GetString(PROVINATUS_ORTHO_WARN))
   end
 end
 
@@ -88,5 +90,7 @@ function ProvinatusProjection:DecreaseFisheye()
       0.1
     )
     LogFisheye()
+  else
+    d(GetString(PROVINATUS_ORTHO_WARN))
   end
 end

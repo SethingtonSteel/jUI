@@ -36,8 +36,6 @@ local c = LoreBooks.Constants
 --Local variables -------------------------------------------------------------
 local lang = GetCVar("Language.2")
 local updatePins = {}
-local totalCurrentlyCollected = 0
-local eideticCurrentlyCollected = 0
 local updating = false
 local mapIsShowing
 local missingBooks
@@ -123,13 +121,15 @@ end
 local function getQuestName(q)
 	if type(q) == "string" then
 		return q
-	elseif LibQuestData and LibQuestData.get_quest_name then
-		return LibQuestData:get_quest_name(q)
-	elseif LibUespQuestData and LibUespQuestData.GetUespQuestName then
-		return LibUespQuestData:GetUespQuestName(q)
 	else
-		return LoreBooks_GetQuestName(q, lang) --TODO: remove this completely
+		local questName = GetQuestName(q)
+		return questName
 	end
+end
+
+local function getQuestLocation(q)
+	local zoneId = GetQuestZoneId(q)
+	return zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetZoneNameById(zoneId))
 end
 
 --tooltip creator
@@ -171,7 +171,7 @@ pinTooltipCreatorEidetic.creator = function(pin)
 		if pinTag.d then
 			
 			local zoneId = pinTag.z
-			if GetZoneNameByIndex(GetZoneIndex(zoneId)) == GetMapNameByIndex(pinTag.m) then
+			if GetZoneNameByIndex(GetZoneIndex(zoneId)) == GetMapNameByIndex(pinTag.mn) then
 				INFORMATION_TOOLTIP:LayoutIconStringLine(INFORMATION_TOOLTIP.tooltip, nil, zo_strformat("[<<1>>]", GetString(SI_QUESTTYPE5)), {fontSize = 27, fontColorField = GAMEPAD_TOOLTIP_COLOR_GENERAL_COLOR_2})
 			else
 				INFORMATION_TOOLTIP:LayoutIconStringLine(INFORMATION_TOOLTIP.tooltip, nil, string.format("[%s]", zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetZoneNameByIndex(GetZoneIndex(zoneId)))), {fontSize = 27, fontColorField = GAMEPAD_TOOLTIP_COLOR_GENERAL_COLOR_2})
@@ -218,7 +218,7 @@ pinTooltipCreatorEidetic.creator = function(pin)
 		if pinTag.d then
 		
 			local zoneId = pinTag.z
-			if GetZoneNameByIndex(GetZoneIndex(zoneId)) == GetMapNameByIndex(pinTag.m) then
+			if GetZoneNameByIndex(GetZoneIndex(zoneId)) == GetMapNameByIndex(pinTag.mn) then
 				INFORMATION_TOOLTIP:AddLine(zo_strformat("[<<1>>]", GetString(SI_QUESTTYPE5)), "", ZO_SELECTED_TEXT:UnpackRGB())
 			else
 				INFORMATION_TOOLTIP:AddLine(string.format("[%s]",  zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetZoneNameByIndex(GetZoneIndex(zoneId)))), "", ZO_SELECTED_TEXT:UnpackRGB())
@@ -364,6 +364,7 @@ local function CreatePins()
 	if (updatePins[c.PINS_EIDETIC_COLLECTED] and LMP:IsEnabled(c.PINS_EIDETIC_COLLECTED))
     or (shouldDisplay and updatePins[c.PINS_EIDETIC] and LMP:IsEnabled(c.PINS_EIDETIC))
     or (shouldDisplay and updatePins[c.PINS_COMPASS_EIDETIC] and db.filters[c.PINS_COMPASS_EIDETIC]) then
+		local mapId = GetCurrentMapId()
 		local mapIndex = GetCurrentMapIndex()
 		local mapContentType = GetMapContentType()
 		local usePrecalculatedCoords = true
@@ -371,18 +372,17 @@ local function CreatePins()
 		local eideticBooks
 		
 		if not mapIndex then
-		
 			usePrecalculatedCoords = false
 			if zoneId == 643 then --IC Sewers
 				mapIndex = GetImperialCityMapIndex()
 			elseif mapContentType ~= MAP_CONTENT_DUNGEON then
-				local measurements = GPS:GetCurrentMapMeasurement()
-				--mapIndex = measurements:GetMapIndex()
+				local measurement = GPS:GetCurrentMapMeasurement()
+				mapIndex = measurement and measurement:GetMapIndex()
 			end
 		end
 		
 		if mapIndex then
-			eideticBooks = LoreBooks_GetNewEideticDataForMap(mapIndex)
+			eideticBooks = LoreBooks_GetNewEideticDataForMapIndex(mapIndex)
 		elseif zoneId then
 			eideticBooks = LoreBooks_GetNewEideticDataForZone(GetZoneId(GetUnitZoneIndex("player")))
 		end
@@ -394,7 +394,7 @@ local function CreatePins()
 					
 					if zoneId == 584 and (pinData.z == 643 or pinData.z == 678 or pinData.z == 688) then --IC Sewers/ICP/WGT
 						-- Don't render
-					elseif not pinData.qm or pinData.qm == pinData.m then
+					elseif not pinData.qm or pinData.qm == pinData.mn then
 					
 						if usePrecalculatedCoords and pinData.zx and pinData.zy then
 							pinData.xLoc = pinData.zx
@@ -626,74 +626,74 @@ end
 
 local function SendData(data)
 
-	local function SendMailData(data)
-		if Postmail.recipient ~= GetDisplayName() then -- Cannot send to myself
-			RequestOpenMailbox()
-			SendMail(Postmail.recipient, Postmail.subject, data)
-			CloseMailbox()
-		else -- Directly add to COLLAB
-			d(data)
-			COLLAB[GetDisplayName() .. GetTimeStamp()] = {body = data, sender = Postmail.recipient, received = GetDate()}
-		end
-	end
-	
-	local pendingData = db.postmailData
-	if Postmail.recipient == GetDisplayName() then
-		SendMailData(data)
-	elseif Postmail.isActive then
-		local dataLen = string.len(data)
-		local now = GetTimeStamp()
-		if pendingData ~= "" then
-			if not string.find(pendingData, data) then
-				local dataMergedLen = string.len(pendingData) + dataLen + 1 -- 1 is \n
-				if now - db.postmailFirstInsert > Postmail.maxDelay then -- A send must be done
-					if dataMergedLen > Postmail.mailMaxSize then
-						SendMailData(pendingData) -- too big, send pendingData and save the modulo
-						db.postmailData = data
-						db.postmailFirstInsert = now
-					else
-						SendMailData(pendingData .. "\n" .. data) -- Send all data
-						db.postmailData = ""
-						db.postmailFirstInsert = now
-					end
-				else
-					-- Send only if data is too big
-					if dataMergedLen > Postmail.mailMaxSize then
-						SendMailData(pendingData) -- too big, send pendingData and save the modulo
-						db.postmailData = data
-						db.postmailFirstInsert = now
-					else
-						db.postmailData = db.postmailData .. "\n" .. data
-					end
-				end
-			end
-		elseif dataLen < Postmail.mailMaxSize then
-			db.postmailData = data
-			db.postmailFirstInsert = now
-		end
-	end
+	--local function SendMailData(data)
+	--	if Postmail.recipient ~= GetDisplayName() then -- Cannot send to myself
+	--		RequestOpenMailbox()
+	--		SendMail(Postmail.recipient, Postmail.subject, data)
+	--		CloseMailbox()
+	--	else -- Directly add to COLLAB
+	--		d(data)
+	--		COLLAB[GetDisplayName() .. GetTimeStamp()] = {body = data, sender = Postmail.recipient, received = GetDate()}
+	--	end
+	--end
+	--
+	--local pendingData = db.postmailData
+	--if Postmail.recipient == GetDisplayName() then
+	--	SendMailData(data)
+	--elseif Postmail.isActive then
+	--	local dataLen = string.len(data)
+	--	local now = GetTimeStamp()
+	--	if pendingData ~= "" then
+	--		if not string.find(pendingData, data) then
+	--			local dataMergedLen = string.len(pendingData) + dataLen + 1 -- 1 is \n
+	--			if now - db.postmailFirstInsert > Postmail.maxDelay then -- A send must be done
+	--				if dataMergedLen > Postmail.mailMaxSize then
+	--					SendMailData(pendingData) -- too big, send pendingData and save the modulo
+	--					db.postmailData = data
+	--					db.postmailFirstInsert = now
+	--				else
+	--					SendMailData(pendingData .. "\n" .. data) -- Send all data
+	--					db.postmailData = ""
+	--					db.postmailFirstInsert = now
+	--				end
+	--			else
+	--				-- Send only if data is too big
+	--				if dataMergedLen > Postmail.mailMaxSize then
+	--					SendMailData(pendingData) -- too big, send pendingData and save the modulo
+	--					db.postmailData = data
+	--					db.postmailFirstInsert = now
+	--				else
+	--					db.postmailData = db.postmailData .. "\n" .. data
+	--				end
+	--			end
+	--		end
+	--	elseif dataLen < Postmail.mailMaxSize then
+	--		db.postmailData = data
+	--		db.postmailFirstInsert = now
+	--	end
+	--end
 
 end
 
 local function BuildLorebooksLoreLibrary()
 
-	for categoryIndex = 1, GetNumLoreCategories() do
-		local _, numCollections = GetLoreCategoryInfo(categoryIndex)
-		for collectionIndex = 1, numCollections do
-			local _, _, _, totalBooks, hidden = LoreBooks_GetNewLoreCollectionInfo(categoryIndex, collectionIndex)
-			if not hidden and totalBooks ~= nil then
-				for bookIndex = 1, totalBooks do
-					local _, _, known = GetLoreBookInfo(categoryIndex, collectionIndex, bookIndex)
-					if known then
-						if categoryIndex == 3 then
-							eideticCurrentlyCollected = eideticCurrentlyCollected + 1
-						end
-						totalCurrentlyCollected = totalCurrentlyCollected + 1
-					end
-				end
-			end
-		end
-	end
+	--for categoryIndex = 1, GetNumLoreCategories() do
+	--	local _, numCollections = GetLoreCategoryInfo(categoryIndex)
+	--	for collectionIndex = 1, numCollections do
+	--		local _, _, _, totalBooks, hidden = LoreBooks_GetNewLoreCollectionInfo(categoryIndex, collectionIndex)
+	--		if not hidden and totalBooks ~= nil then
+	--			for bookIndex = 1, totalBooks do
+	--				local _, _, known = GetLoreBookInfo(categoryIndex, collectionIndex, bookIndex)
+	--				if known then
+	--					if categoryIndex == 3 then
+	--						eideticCurrentlyCollected = eideticCurrentlyCollected + 1
+	--					end
+	--					totalCurrentlyCollected = totalCurrentlyCollected + 1
+	--				end
+	--			end
+	--		end
+	--	end
+	--end
 	
 end
 
@@ -701,47 +701,47 @@ local minerEnabled = false
 local minerCallback = function() end --overwritten if miner is enabled
 function LoreBooks_ReportBook(bookId)
 	local dataToShare = minerCallback(bookId)
-	if dataToShare then
-		SendData(dataToShare)
-	end
+	--if dataToShare then
+	--	SendData(dataToShare)
+	--end
 end
 
 local lastReadBook = "" -- used by quest tool code
 local function OnShowBook(_, bookTitle, body, medium, showTitle, bookId) 
     lastReadBook = bookTitle
-    if minerEnabled and db.shareData then 
-        local dataToShare = minerCallback(bookId)
-        if dataToShare then
-            SendData(dataToShare)
-        end
-    end
+    --if minerEnabled and db.shareData then 
+    --    local dataToShare = minerCallback(bookId)
+    --    if dataToShare then
+    --        SendData(dataToShare)
+    --    end
+    --end
 end
 
 function LoreBooks.ToggleShareData()
 	
-	if not LoreBooks.CanShareData() then return end
-	
-	local PostmailData = {
-		subject = "CM_DATA", -- Subject of the mail
-		recipient = "@Kyoma", -- Recipient of the mail. The recipient *IS GREATLY ENCOURAGED* to run CollabMiner
-		maxDelay = 3600*12, -- 12h
-		mailMaxSize = MAIL_MAX_BODY_CHARACTERS - 50, -- Mail limitation is 700 Avoid > 675. (some books with additional data can have 14 additional chars, so we'll still have 16 in case of).
-	}
-
-	minerEnabled, minerCallback = LoreBooks.IsMinerEnabled()
-
-	if db.shareData and minerEnabled and minerCallback then
-		local postmailIsConfigured = ConfigureMail(PostmailData)
-		if postmailIsConfigured then
-			EnableMail()
-		else
-			-- shouldn't really happen
-			minerEnabled = false
-			DisableMail()
-		end
-	else
-		minerEnabled = false
-	end
+	--if not LoreBooks.CanShareData() then return end
+	--
+	--local PostmailData = {
+	--	subject = "CM_DATA", -- Subject of the mail
+	--	recipient = "@Kyoma", -- Recipient of the mail. The recipient *IS GREATLY ENCOURAGED* to run CollabMiner
+	--	maxDelay = 3600*12, -- 12h
+	--	mailMaxSize = MAIL_MAX_BODY_CHARACTERS - 50, -- Mail limitation is 700 Avoid > 675. (some books with additional data can have 14 additional chars, so we'll still have 16 in case of).
+	--}
+	--
+	--minerEnabled, minerCallback = LoreBooks.IsMinerEnabled()
+	--
+	--if db.shareData and minerEnabled and minerCallback then
+	--	local postmailIsConfigured = ConfigureMail(PostmailData)
+	--	if postmailIsConfigured then
+	--		EnableMail()
+	--	else
+	--		-- shouldn't really happen
+	--		minerEnabled = false
+	--		DisableMail()
+	--	end
+	--else
+	--	minerEnabled = false
+	--end
 
 end
 
@@ -915,6 +915,10 @@ local function BuildShalidorReport()
 
 end
 
+local function AllowEideticReport()
+	return LORE_LIBRARY.eideticPossibleCollected - (LORE_LIBRARY.eideticCurrentlyCollected or 0) <= 225
+end
+
 local function BuildEideticReportPerMap(lastObject)
 
 	local eideticHeaderText = GetControl(LoreBooksReport, "EideticHeaderText")
@@ -922,7 +926,7 @@ local function BuildEideticReportPerMap(lastObject)
 	
 	eideticHeaderText:SetAnchor(TOPLEFT, LoreBooksReportContainerScrollChild, TOPLEFT, 4, lastObject)
 	
-	if c.EIDETIC_BOOKS - eideticCurrentlyCollected <= c.EIDETIC_THRESHOLD then
+	if AllowEideticReport() then
 		
 		eideticHeaderText:SetText(GetString(LBOOKS_RE_FEW_BOOKS_MISSING))
 		copyReport = copyReport .. "\n\n" .. GetString(LBOOKS_RE_FEW_BOOKS_MISSING)
@@ -934,7 +938,7 @@ local function BuildEideticReportPerMap(lastObject)
 		for mapIndex = 1, GetNumMaps() do
 			
 			eideticData[mapIndex] = {}
-			eideticBooks = LoreBooks_GetNewEideticDataForMap(mapIndex)
+			eideticBooks = LoreBooks_GetNewEideticDataForMapIndex(mapIndex)
 			
 			if eideticBooks then
 			
@@ -1010,7 +1014,7 @@ local function BuildEideticReportPerCollection(lastObject)
 	
 	eideticHeaderText:SetAnchor(TOPLEFT, LoreBooksReportContainerScrollChild, TOPLEFT, 4, lastObject)
 	
-	if c.EIDETIC_BOOKS - eideticCurrentlyCollected <= c.THRESHOLD_EIDETIC then
+	if AllowEideticReport() then
 		
 		eideticHeaderText:SetText(GetString(LBOOKS_RE_FEW_BOOKS_MISSING))
 		copyReport = copyReport .. "\n\n" .. GetString(LBOOKS_RE_FEW_BOOKS_MISSING)
@@ -1166,6 +1170,8 @@ local function BuildCategoryList(self)
 	self.motifsPossibleCollected = 0
 	self.shalidorCurrentlyCollected = 0
 	self.shalidorPossibleCollected = 0
+	self.eideticCurrentlyCollected = 0
+	self.eideticPossibleCollected = 0
 	
 	self.navigationTree:Reset()
 	
@@ -1175,7 +1181,7 @@ local function BuildCategoryList(self)
 		local categoryName, numCollections = GetLoreCategoryInfo(categoryIndex)
 		for collectionIndex = 1, numCollections do
 			local collectionName, _, _, _, hidden = GetLoreCollectionInfo(categoryIndex, collectionIndex)
-			if collectionName and ((db.unlockEidetic and collectionName ~= "") or not hidden) then
+			if collectionName and (not hidden) then
 				lbcategories[#lbcategories + 1] = { categoryIndex = categoryIndex, name = categoryName, numCollections = numCollections }
 				break --Don't really understand why ZOS added this.
 			end
@@ -1185,7 +1191,7 @@ local function BuildCategoryList(self)
 	table.sort(lbcategories, NameSorter)
 
 	for i, categoryData in ipairs(lbcategories) do
-		local parent = self.navigationTree:AddNode("ZO_LabelHeader", categoryData, nil, SOUNDS.LORE_BLADE_SELECTED)
+		local parent = self.navigationTree:AddNode("ZO_LabelHeader", categoryData)
 		
 		lbcategories[i].lbcollections = {}
 		
@@ -1199,6 +1205,9 @@ local function BuildCategoryList(self)
 				if categoryData.categoryIndex == 2 then -- CRAFTING
 					self.motifsCurrentlyCollected = self.motifsCurrentlyCollected + numKnownBooks
 					self.motifsPossibleCollected = self.motifsPossibleCollected + totalBooks
+				elseif categoryData.categoryIndex == 3 then -- 
+					self.eideticCurrentlyCollected = self.eideticCurrentlyCollected + numKnownBooks
+					self.eideticPossibleCollected = self.eideticPossibleCollected + totalBooks
 				end
 			end
 		end
@@ -1209,10 +1218,10 @@ local function BuildCategoryList(self)
 		for _, collectionData in ipairs(lbcategories[i].lbcollections) do
 			if search ~= "" and string.len(search) >= 2 then
 				if IsFoundInLoreLibrary(search, collectionData) then
-					self.navigationTree:AddNode("ZO_LoreLibraryNavigationEntry", collectionData, parent, SOUNDS.LORE_ITEM_SELECTED)
+					self.navigationTree:AddNode("ZO_LoreLibraryNavigationEntry", collectionData, parent)
 				end
 			else
-				self.navigationTree:AddNode("ZO_LoreLibraryNavigationEntry", collectionData, parent, SOUNDS.LORE_ITEM_SELECTED)
+				self.navigationTree:AddNode("ZO_LoreLibraryNavigationEntry", collectionData, parent)
 			end
 		end
 		
@@ -1305,15 +1314,13 @@ local function OnRowMouseUp(control, button)
 						PingMap(MAP_PIN_TYPE_PLAYER_WAYPOINT, MAP_TYPE_LOCATION_CENTERED, resultData.locX, resultData.locY)
 						
 						ZO_WorldMap_SetMapByIndex(1) -- dummy call needed since we cannot access g_playerChoseCurrentMap 
-						SetMapToMapId(resultData.mapId)
+						SetCurrentMapId(resultData.mapId)
 						if(not ZO_WorldMap_IsWorldMapShowing()) then
 							if IsInGamepadPreferredMode() then
 								SCENE_MANAGER:Push("gamepad_worldMap")
 							else
 								MAIN_MENU_KEYBOARD:ShowCategory(MENU_CATEGORY_MAP)
-								mapAvailable = false
 							end
-							mapAvailable = false
 							zo_callLater(function() ZO_WorldMap_GetPanAndZoom():PanToNormalizedPosition(resultData.locX, resultData.locY) end, 1000)
 						end
 					end)
@@ -1332,11 +1339,9 @@ local function OnRowMouseUp(control, button)
 					
 						local xTooltip = ("%0.02f"):format(zo_round(data.zx*10000)/100)
 						local yTooltip = ("%0.02f"):format(zo_round(data.zy*10000)/100)
-						AddCustomMenuItem(zo_strformat("<<1>> (<<2>>x<<3>>)", zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetMapNameByIndex(data.m)), xTooltip, yTooltip),
+						AddCustomMenuItem(zo_strformat("<<1>> (<<2>>x<<3>>)", zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetMapNameByIndex(data.mn)), xTooltip, yTooltip),
 						function()
-							
-							ZO_WorldMap_SetMapByIndex(data.m)
-							
+							ZO_WorldMap_SetMapByIndex(data.mn)
 							PingMap(MAP_PIN_TYPE_RALLY_POINT, MAP_TYPE_LOCATION_CENTERED, data.zx, data.zy)
 							PingMap(MAP_PIN_TYPE_PLAYER_WAYPOINT, MAP_TYPE_LOCATION_CENTERED, data.zx, data.zy)
 							
@@ -1347,7 +1352,6 @@ local function OnRowMouseUp(control, button)
 									MAIN_MENU_KEYBOARD:ShowCategory(MENU_CATEGORY_MAP)
 								end
 								mapIsShowing = true
-								zo_callLater(function() mapIsShowing = false end, 500) -- Bit dirty but ZO_WorldMap_IsWorldMapShowing() isn't fast enought
 								zo_callLater(function() ZO_WorldMap_GetPanAndZoom():PanToNormalizedPosition(data.zx, data.zy) end, 1000)
 							end
 							
@@ -1370,7 +1374,7 @@ local function OnMouseEnter(self, categoryIndex, collectionIndex, bookIndex)
 	local STD_ZONE = 0
 
 	-- No 1 for now.
-	if categoryIndex == 3 and not mapIsShowing then
+	if categoryIndex == 3 then
 
 		local bookData = LoreBooks_GetNewEideticData(categoryIndex, collectionIndex, bookIndex)
 
@@ -1391,7 +1395,7 @@ local function OnMouseEnter(self, categoryIndex, collectionIndex, bookIndex)
 				if bookData.qt then
 					questDetails = zo_strformat(GetString("LBOOKS_SPECIAL_QUEST"), bookData.qt)
 				elseif bookData.qm then
-					questDetails = zo_strformat(GetString(LBOOKS_QUEST_IN_ZONE), zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetMapNameByIndex(bookData.qm)))
+					questDetails = zo_strformat(GetString(LBOOKS_QUEST_IN_ZONE), getQuestLocation(bookData.q))
 				end
                 
 				InformationTooltip:AddLine(questDetails)
@@ -1411,7 +1415,7 @@ local function OnMouseEnter(self, categoryIndex, collectionIndex, bookIndex)
 					local insert = true
 					local x = data.x
 					local y = data.y
-					local mapIndex = data.m
+					local mapIndex = data.mn
 					local zoneId = data.z
 					local isRandom = data.r
 					local inDungeon = data.d
@@ -1484,7 +1488,7 @@ local function OnMouseEnter(self, categoryIndex, collectionIndex, bookIndex)
 				if bookData.qt then
 					questDetails = zo_strformat(GetString("LBOOKS_SPECIAL_QUEST"), bookData.qt)
 				else
-					questDetails = zo_strformat(GetString(LBOOKS_QUEST_IN_ZONE), zo_strformat(SI_WINDOW_TITLE_WORLD_MAP, GetMapNameByIndex(bookData.qm)))
+					questDetails = zo_strformat(GetString(LBOOKS_QUEST_IN_ZONE), getQuestLocation(bookData.q))
 				end
 				
 				InformationTooltip:AddLine(questDetails)
@@ -1523,49 +1527,16 @@ end
 
 local canShare
 function LoreBooks.CanShareData()
-	if canShare == nil then
-		canShare = false
-		if GetAPIVersion() == c.SUPPORTED_API and c.SUPPORTED_LANG[lang] and GetWorldName() == "EU Megaserver" then
-			canShare = true
-		end
-	end
+	--if canShare == nil then
+	--	canShare = false
+	--	if GetAPIVersion() == c.SUPPORTED_API and c.SUPPORTED_LANG[lang] and GetWorldName() == "EU Megaserver" then
+	--		canShare = true
+	--	end
+	--end
 	return canShare
 end
 
 
-do 
-	
-	local isEmulated = false
-	local original_GetLoreCollectionInfo = GetLoreCollectionInfo
-
-	function LoreBooks.CanEmulateLibrary()
-		if GetAPIVersion() == c.SUPPORTED_API and c.SUPPORTED_LANG[lang] then
-			return true
-		end
-		return false
-	end
-	
-	function LoreBooks.IsEideticUnlocked()
-		-- just try to grab any eidetic memory collection and check totalBooks > 0
-		return select(4, original_GetLoreCollectionInfo(3, 1)) > 0
-	end
-
-	function LoreBooks.EmulateLibrary()
-		if LoreBooks.CanEmulateLibrary() and not isEmulated then
-			isEmulated = true
-			GetLoreCollectionInfo = function(categoryIndex, collectionIndex)
-				if db.unlockEidetic then
-					return LoreBooks_GetNewLoreCollectionInfo(categoryIndex, collectionIndex)
-				else
-					return original_GetLoreCollectionInfo(categoryIndex, collectionIndex)
-				end
-			end
-		
-		end
-		
-	end
-
-end
 
 local function RebuildLoreLibrary()
 	
@@ -1611,9 +1582,9 @@ local function RebuildLoreLibrary()
 	ZO_PreHook(LORE_LIBRARY, "BuildCategoryList", BuildCategoryList)
 	ZO_PreHook(LORE_LIBRARY.list, "FilterScrollList", FilterScrollList)
 	
-	LoreBooks.EmulateLibrary()
+	--LoreBooks.EmulateLibrary()
 	BuildLorebooksLoreLibrary()
-	BuildLoreBookSummary()
+	--BuildLoreBookSummary()
 	
 	local origLoreLibraryBuildBookList = LORE_LIBRARY.BuildBookList
 	LORE_LIBRARY.BuildBookList = function(self, ...)
@@ -1655,15 +1626,9 @@ local function IsPlayerOnCurrentMap()
 end
 
 local function OnBookLearned(_, categoryIndex)
-	
-	totalCurrentlyCollected = totalCurrentlyCollected + 1
-	
+
 	if categoryIndex ~= 2 then
-		
-		if categoryIndex == 3 then
-			eideticCurrentlyCollected = eideticCurrentlyCollected + 1
-		end
-		
+
 		--Refresh map if needed and get player position
 		if SetMapToPlayerLocation() == SET_MAP_RESULT_MAP_CHANGED then
 			CALLBACK_MANAGER:FireCallbacks("OnWorldMapChanged")
@@ -1686,7 +1651,7 @@ local function OnBookLearned(_, categoryIndex)
 		end
 	end
 	
-	BuildLoreBookSummary()
+	--BuildLoreBookSummary()
 
 end
 
@@ -1748,11 +1713,11 @@ local function OnLoad(eventCode, name)
 		InitializePins()
 
 		-- Data sniffer
-		LoreBooks.ToggleShareData()
+		--LoreBooks.ToggleShareData()
         
-		LoreBooks.ToggleUseQuestBooks()
+		--LoreBooks.ToggleUseQuestBooks()
 
-		LoreBooks_InitializeCollab()
+		--LoreBooks_InitializeCollab()
 		
 		--events
         EVENT_MANAGER:RegisterForEvent(c.ADDON_NAME, EVENT_SHOW_BOOK, OnShowBook)

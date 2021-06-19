@@ -5,6 +5,19 @@
 
 -- Global Variables
 
+-- LUIE_CC_ICON
+LUIE_CC_ICON_STUN = "esoui/art/icons/ability_debuff_stun.dds"
+-- LUIE_CC_ICON_KNOCKDOWN = "esoui/art/icons/ability_debuff_stun.dds" -- Knockdown's are considered stuns
+LUIE_CC_ICON_KNOCKBACK = "esoui/art/icons/ability_debuff_knockback.dds"
+LUIE_CC_ICON_PULL = "esoui/art/icons/ability_debuff_levitate.dds"
+LUIE_CC_ICON_DISORIENT = "esoui/art/icons/ability_debuff_disorient.dds"
+LUIE_CC_ICON_FEAR = "esoui/art/icons/ability_debuff_fear.dds"
+-- LUIE_CC_ICON_STAGGER = "esoui/art/icons/ability_debuff_stagger.dds"
+LUIE_CC_ICON_SILENCE = "esoui/art/icons/ability_debuff_silence.dds"
+LUIE_CC_ICON_SNARE = "esoui/art/icons/ability_debuff_snare.dds"
+LUIE_CC_ICON_ROOT = "esoui/art/icons/ability_debuff_root.dds"
+LUIE_CC_ICON_IMMUNE = "LuiExtended/media/icons/abilities/ability_innate_cc_immunity.dds"
+
 -- LUIE_CC_TYPE
 LUIE_CC_TYPE_STUN = 1 -- Stun
 LUIE_CC_TYPE_KNOCKDOWN = 2 -- Knockdown
@@ -25,11 +38,13 @@ LUIE_BUFF_TYPE_BUFF = 1 -- Buff
 LUIE_BUFF_TYPE_DEBUFF = 2 -- Debuff
 LUIE_BUFF_TYPE_UB_BUFF = 3 -- Unbreakable buff
 LUIE_BUFF_TYPE_UB_DEBUFF = 4 -- Unbreakable debuff
-LUIE_BUFF_TYPE_GROUND_BUFF = 5 -- Ground aoe buffs
-LUIE_BUFF_TYPE_GROUND_DEBUFF = 6 -- Ground aoe debuffs
-LUIE_BUFF_TYPE_ENVIRONMENT_BUFF = 7 -- Area buff (entire zone, etc)
-LUIE_BUFF_TYPE_ENVIRONMENT_DEBUFF = 8 -- Hazard (lava, shock water, entire zone/room, etc)
-LUIE_BUFF_TYPE_NONE = 9
+LUIE_BUFF_TYPE_GROUND_BUFF_TRACKER = 5 -- Player cast ground AOE buff
+LUIE_BUFF_TYPE_GROUND_DEBUFF_TRACKER = 6 -- Player cast ground AOE debuff
+LUIE_BUFF_TYPE_GROUND_AOE_BUFF = 7 -- Standing in a ground buff
+LUIE_BUFF_TYPE_GROUND_AOE_DEBUFF = 8 -- Standing in a ground debuff
+LUIE_BUFF_TYPE_ENVIRONMENT_BUFF = 9 -- Area buff (entire zone, etc) -- TODO: Implement if needed
+LUIE_BUFF_TYPE_ENVIRONMENT_DEBUFF = 10 -- Hazard (lava, shock water, entire zone/room, etc) -- TODO: Implement if needed
+LUIE_BUFF_TYPE_NONE = 11
 
 -- Add localized strings for this and use SI_blabla, # to get the right string for determing TYPE on buff mouseover
 --[[

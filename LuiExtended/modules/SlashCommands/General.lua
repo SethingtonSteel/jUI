@@ -3,13 +3,29 @@
     License: The MIT License (MIT)
 --]]
 
+LUIE.CampaignNames = { }
+
 local SlashCommands = LUIE.SlashCommands
 
 local printToChat = LUIE.PrintToChat
 local zo_strformat = zo_strformat
 
 -- Slash Command to port to primary home
-function SlashCommands.SlashHome()
+function SlashCommands.SlashHome(option)
+
+    -- Check option is valid if it exists
+    -- Return an error message if no input is entered.
+    if option and option ~= "" then
+        if option ~= "inside" and option ~= "outside" then
+            printToChat(GetString(SI_LUIE_SLASHCMDS_HOME_TRAVEL_FAILED_OPTION), true)
+            if LUIE.SV.TempAlertHome then
+                ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_HOME_TRAVEL_FAILED_OPTION)))
+            end
+            PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
+            return
+        end
+    end
+
     local primaryHouse = GetHousingPrimaryHouse()
     -- Check if we are in combat
     if IsUnitInCombat("player") then
@@ -56,17 +72,67 @@ function SlashCommands.SlashHome()
         end
         PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
     else
-        RequestJumpToHouse(primaryHouse)
-        printToChat(GetString(SI_LUIE_SLASHCMDS_HOME_TRAVEL_SUCCESS_MSG), true)
+        -- Check whether we should be porting inside or outside
+        local outside
+        if option and (option == "inside" or option == "outside") then
+            if option == "inside" then
+                outside = false
+            elseif option == "outside" then
+                outside = true
+            end
+        else
+            outside = SlashCommands.SV.SlashHomeChoice == 2 and true or false
+        end
+        RequestJumpToHouse(primaryHouse, outside)
+        local string = outside and GetString(SI_LUIE_SLASHCMDS_HOME_TRAVEL_SUCCESS_MSG_OUT) or GetString(SI_LUIE_SLASHCMDS_HOME_TRAVEL_SUCCESS_MSG_IN)
+        printToChat(string, true)
         if LUIE.SV.TempAlertHome then
-            ZO_Alert(UI_ALERT_CATEGORY_ALERT, nil, (GetString(SI_LUIE_SLASHCMDS_HOME_TRAVEL_SUCCESS_MSG)))
+            ZO_Alert(UI_ALERT_CATEGORY_ALERT, nil, (string))
         end
     end
 end
 
+function SlashCommands.SlashSetPrimaryHome()
+    local currentHouse = GetCurrentZoneHouseId()
+    if currentHouse ~= nil and currentHouse > 0 then
+        local houseName = GetPlayerActiveZoneName()
+        if IsOwnerOfCurrentHouse() then
+            if IsPrimaryHouse(currentHouse) then
+                printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_SET_HOME_FAILED_ALREADY), houseName), true)
+                if LUIE.SV.TempAlertHome then
+                    ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (zo_strformat(GetString(SI_LUIE_SLASHCMDS_SET_HOME_FAILED_ALREADY), houseName)))
+                end
+                PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
+                return
+            else
+                SetHousingPrimaryHouse(currentHouse)
+                printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_SET_HOME_SUCCESS_MSG), houseName), true)
+                if LUIE.SV.TempAlertHome then
+                    ZO_Alert(UI_ALERT_CATEGORY_ALERT, nil, (zo_strformat(GetString(SI_LUIE_SLASHCMDS_SET_HOME_SUCCESS_MSG), houseName)))
+                end
+            end
+        else
+            printToChat(GetString(SI_LUIE_SLASHCMDS_SET_HOME_FAILED_NOT_OWNER), true)
+            if LUIE.SV.TempAlertHome then
+                ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_SET_HOME_FAILED_NOT_OWNER)))
+            end
+            PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
+            return
+        end
+    else
+        printToChat(GetString(SI_LUIE_SLASHCMDS_SET_HOME_FAILED_NOHOME), true)
+        if LUIE.SV.TempAlertHome then
+            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_SET_HOME_FAILED_NOHOME)))
+        end
+        PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
+        return
+    end
+
+end
+
 -- Slash Command to initiate a trade dialogue
 function SlashCommands.SlashTrade(option)
-    if option == "" then
+    if option == "" or option == nil then
         printToChat(GetString(SI_LUIE_SLASHCMDS_TRADE_FAILED_NONAME), true)
         if LUIE.ChatAnnouncements.SV.Notify.NotificationTradeAlert then
             ZO_Alert(UI_ALERT_CATEGORY_ERROR, SOUNDS.GENERAL_ALERT_ERROR, (GetString(SI_LUIE_SLASHCMDS_TRADE_FAILED_NONAME)))
@@ -77,9 +143,12 @@ function SlashCommands.SlashTrade(option)
     TradeInviteByName(option)
 end
 
+local firstRun = true -- Changed by SlashCommands.SlashCampaignQ() when called, used to index available campaigns.
+
 -- Slash Command to queue for a campaign
 function SlashCommands.SlashCampaignQ(option)
-    if option == "" then
+    -- Return an error message if no input is entered.
+    if option == "" or option == nil then
         printToChat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_NONAME), true)
         if LUIE.SV.TempAlertCampaign then
             ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_NONAME))
@@ -88,6 +157,7 @@ function SlashCommands.SlashCampaignQ(option)
         return
     end
 
+    -- Return an error message if the player is in a battleground (can't queue for campaigns in a battleground).
     if IsActiveWorldBattleground() then
         printToChat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_BG), true)
         if LUIE.SV.TempAlertCampaign then
@@ -97,32 +167,41 @@ function SlashCommands.SlashCampaignQ(option)
         return
     end
 
-    -- Compare names to campaigns available, join the campaign and bail out of the function if it is available.
-    for i = 1, 100 do
-        local compareName = string.lower(GetCampaignName(i))
-        local option = string.lower(option)
-        if compareName == option then
-            local campaignName
-            campaignName = GetCampaignName(i)
-
-            if GetAssignedCampaignId() == i or GetGuestCampaignId() == i then
-                QueueForCampaign (i)
-                printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_QUEUE), campaignName), true)
-                if LUIE.SV.TempAlertCampaign then
-                    ZO_Alert(UI_ALERT_CATEGORY_ALERT, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_QUEUE), campaignName))
-                end
-                return
-            else
-                printToChat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_NOT_ENTERED), true)
-                if LUIE.SV.TempAlertCampaign then
-                    ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_NOT_ENTERED))
-                end
-                PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
-                return
+    -- The first time we call this function and it passes a check to make sure input is valid, fill a table with campaign names and their corresponding id.
+    if firstRun then
+        firstRun = false
+        for i = 1, 200 do -- TODO: Find a way to determine # of campaigns dynamically instead of iterating.
+            local campaignName = string.lower(GetCampaignName(i))
+            if campaignName ~= "" and campaignName ~= nil then
+                LUIE.CampaignNames[campaignName] = i
             end
         end
     end
 
+    -- If input is valid and the name is in the campaign table, try to queue for the campaign.
+    local option = string.lower(option)
+    if LUIE.CampaignNames[option] then
+        local campaignId = LUIE.CampaignNames[option]
+        local campaignName = GetCampaignName(campaignId)
+
+        if GetAssignedCampaignId() == campaignId or GetGuestCampaignId() == campaignId then
+            QueueForCampaign(campaignId)
+            printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_QUEUE), campaignName), true)
+            if LUIE.SV.TempAlertCampaign then
+                ZO_Alert(UI_ALERT_CATEGORY_ALERT, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_QUEUE), campaignName))
+            end
+            return
+        else
+            printToChat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_NOT_ENTERED), true)
+            if LUIE.SV.TempAlertCampaign then
+                ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_NOT_ENTERED))
+            end
+            PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
+            return
+        end
+    end
+
+    -- Otherwise, return an error message that the campaign doesn't exist.
     printToChat(GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_WRONGCAMPAIGN), true)
     if LUIE.SV.TempAlertCampaign then
         ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, GetString(SI_LUIE_SLASHCMDS_CAMPAIGN_FAILED_WRONGCAMPAIGN))
@@ -131,103 +210,110 @@ function SlashCommands.SlashCampaignQ(option)
 end
 
 -- Slash Command to use collectibles based on their collectible id
-function SlashCommands.SlashCollectible(id, fromKeybind)
+function SlashCommands.SlashCollectible(id)
+
+    -- Determine ID
+    if id == "banker" then
+        if SlashCommands.SV.SlashBankerChoice == 1 then
+            id = 267 -- Tythis
+        else
+            id = 6376 -- Ezabi
+        end
+    elseif id == "merchant" then
+        if SlashCommands.SV.SlashMerchantChoice == 1 then
+            id = 301 -- Nuzhimeh
+        else
+            id = 6378 -- Ferez
+        end
+    end
+
     -- Check to make sure we're not in Imperial City
     if IsInImperialCity() then
-        printToChat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_IC), true)
+        printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_IC), GetCollectibleName(id)), true)
         if LUIE.SV.TempAlertHome then
-            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_IC)))
+            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_IC), GetCollectibleName(id)))
         end
         PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
         return
     end
     -- Check to make sure we're not in Cyrodiil
     if IsPlayerInAvAWorld() then
-        printToChat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_AVA), true)
+        printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_AVA), GetCollectibleName(id)), true)
         if LUIE.SV.TempAlertHome then
-            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_AVA)))
+            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_AVA), GetCollectibleName(id)))
         end
         PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
         return
     end
     -- Check to make sure we're not in a battleground
     if IsActiveWorldBattleground() then
-        printToChat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_BG), true)
+        printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_BG), GetCollectibleName(id)), true)
         if LUIE.SV.TempAlertHome then
-            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_BG)))
+            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_BG), GetCollectibleName(id)))
         end
         PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
         return
     end
 
-    if type(id) == "number" then
-        if IsCollectibleUnlocked(id) then
-            UseCollectible(id)
-            LUIE.SlashCollectibleOverride = not fromKeybind
-            if id~= 300 and id ~= 267 and id ~= 6376 and id ~= 301 and id ~= 6378 then
-                LUIE.LastMementoUsed = id
-            end
-        else
-            printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED), GetCollectibleName(id)), true)
+    -- If this is a Banker/Merchant/Fence/Companion and we are in a player home then display a message that the collectible can't be used here.
+    if id == 300 or id == 267 or id == 6376 or id == 301 or id == 6378 or id == 8006 or id == 9245 or id == 9353 then
+        local currentHouse = GetCurrentZoneHouseId()
+        if currentHouse ~= nil and currentHouse > 0 then
+            printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_HOME), GetCollectibleName(id)), true)
             if LUIE.SV.TempAlertHome then
-                ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED)))
+                ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_HOME), GetCollectibleName(id)))
             end
             PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
             return
         end
-    elseif id == "banker" then
-        if SlashCommands.SV.SlashBankerChoice == 1 then
-            if IsCollectibleUnlocked(267) then
-                UseCollectible(267) -- Tythis
-                LUIE.SlashCollectibleOverride = not fromKeybind
-            else
-                printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED), GetCollectibleName(267)), true)
-                if LUIE.SV.TempAlertHome then
-                    ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED)))
-                end
-                PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
-                return
-            end
-        else
-            if IsCollectibleUnlocked(6376) then
-                UseCollectible(6376) -- Ezabi
-                LUIE.SlashCollectibleOverride = not fromKeybind
-            else
-                printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED), GetCollectibleName(6376)), true)
-                if LUIE.SV.TempAlertHome then
-                    ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED)))
-                end
-                PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
-                return
-            end
+    end
+
+    if IsCollectibleUnlocked(id) then
+        UseCollectible(id)
+        LUIE.SlashCollectibleOverride = true
+        if id ~= 300 and id ~= 267 and id ~= 6376 and id ~= 301 and id ~= 6378 and id ~= 8006 and id ~= 9245 and id ~= 9353 then
+            LUIE.LastMementoUsed = id
         end
-    elseif id == "merchant" then
-        if SlashCommands.SV.SlashMerchantChoice == 1 then
-            if IsCollectibleUnlocked(301) then
-                UseCollectible(301) -- Nuzhimeh
-                LUIE.SlashCollectibleOverride = not fromKeybind
-            else
-                printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED), GetCollectibleName(301)), true)
-                if LUIE.SV.TempAlertHome then
-                    ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED)))
-                end
-                PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
-                return
-            end
+    else
+        printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED), GetCollectibleName(id)), true)
+        if LUIE.SV.TempAlertHome then
+            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED), GetCollectibleName(id)))
+        end
+        PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
+        return
+    end
+
+end
+
+function SlashCommands.SlashCompanion(option)
+
+    -- Return an error if input is not blank and is not valid
+    if option and (option ~= "" and option ~= "bastian" and option ~= "mirri") then
+        printToChat(GetString(SI_LUIE_SLASHCMDS_COMPANION_FAILED_OPTION), true)
+        if LUIE.SV.TempAlertHome then
+            ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_IC), GetCollectibleName(id)))
+        end
+        PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
+        return
+    end
+
+    -- If we have valid input then summon the relevant companion
+    if option == "bastian" then
+        SlashCommands.SlashCollectible(9245)
+    elseif option == "mirri" then
+        SlashCommands.SlashCollectible(9353)
+    end
+
+    -- If we have no additional input that use dropdown option
+    if option == nil or option == "" then
+        -- Determine ID
+        if SlashCommands.SV.SlashCompanionChoice == 1 then
+            SlashCommands.SlashCollectible(9245)
         else
-            if IsCollectibleUnlocked(6378) then
-                UseCollectible(6378) -- Ferez
-                LUIE.SlashCollectibleOverride = not fromKeybind
-            else
-                printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED), GetCollectibleName(6378)), true)
-                if LUIE.SV.TempAlertHome then
-                    ZO_Alert(UI_ALERT_CATEGORY_ERROR, nil, (GetString(SI_LUIE_SLASHCMDS_COLLECTIBLE_FAILED_NOTUNLOCKED)))
-                end
-                PlaySound(SOUNDS.GENERAL_ALERT_ERROR)
-                return
-            end
+            SlashCommands.SlashCollectible(9353)
         end
     end
+
 end
 
 -- Slash Command to equip a chosen outfit by number
@@ -251,7 +337,7 @@ function SlashCommands.SlashOutfit(option)
         return
     end
 
-    local numOutfits = GetNumUnlockedOutfits()
+    local numOutfits = GetNumUnlockedOutfits(GAMEPLAY_ACTOR_CATEGORY_PLAYER)
 
     if valid > numOutfits then
         printToChat(zo_strformat(GetString(SI_LUIE_SLASHCMDS_OUTFIT_NOT_UNLOCKED), valid))
@@ -262,9 +348,9 @@ function SlashCommands.SlashOutfit(option)
         return
     end
 
-    EquipOutfit(valid)
+    EquipOutfit(GAMEPLAY_ACTOR_CATEGORY_PLAYER, valid)
     -- Display a confirmation message.
-    local name = GetOutfitName(valid)
+    local name = GetOutfitName(GAMEPLAY_ACTOR_CATEGORY_PLAYER, valid)
     if name == "" then
         name = zo_strformat("<<1>> <<2>>", GetString(SI_CROWN_STORE_SEARCH_ADDITIONAL_OUTFITS), valid)
     end

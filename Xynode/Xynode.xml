@@ -34,6 +34,23 @@
 			</Button>
 
 
+
+			<Button name="$(parent)YouTubeFull" inherits="ZO_DefaultButton">
+				<Dimensions x="24" y="24" />
+				<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="185" />
+				<Textures normal="Xynode/icons/youtube_AAM.dds"
+					pressed="Xynode/icons/youtube_AAM.dds"
+					mouseOver="Xynode/icons/youtube_AAM.dds"
+					disabled="Xynode/icons/youtube_AAM.dds"/>
+				<OnClicked>
+					ShowYouTube()
+				</OnClicked>
+			</Button>
+
+
+
+
+
 				<Button name="$(parent)ButtonBossGuide" inherits="ZO_DefaultButton">
 				<Dimensions x="24" y="24" />
 				<Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="85" />

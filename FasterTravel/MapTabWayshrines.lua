@@ -9,7 +9,9 @@ local Campaign = FasterTravel.Campaign
 local Utils = FasterTravel.Utils
 local Options = FasterTravel.Options
 
+local chat = FasterTravel.Utils.chat
 local empty_prefix = '   '
+local wayshrinesCache
 
 local function ShowWayshrineConfirm(data,isRecall)
 	local nodeIndex,name,refresh,clicked = data.nodeIndex,data.name,data.refresh,data.clicked
@@ -384,9 +386,11 @@ function MapTabWayshrines:init(control,locations,locationsLookup,recentList,favo
 		end
 		
 		PopulateLookup(recentlookup, recent)
-
+		if FasterTravel.settings.sortFav then
+			table.sort(faves, self.ws_order_func)
+		end
 		PopulateLookup(favouriteslookup, faves)
-
+		table.sort(current, self.ws_order_func)
 		PopulateLookup(currentlookup, current)
 
 		local zoneLookup = _rowLookup.zone
@@ -397,13 +401,12 @@ function MapTabWayshrines:init(control,locations,locationsLookup,recentList,favo
 
 		if locations ~= nil then
 			local allshrines = {}
-
 			local lcount = #locations
 
 			for i,item in ipairs(locations) do
 				local id = i + nonZoneCategoriesCount
 				local lookup = {}
-				zoneLookup[item.zoneIndex]=lookup
+				zoneLookup[item.zoneIndex] = lookup
 
 				local data = GetZoneWayshrinesData({
 					nodeIndex = nodeIndex,
@@ -415,20 +418,21 @@ function MapTabWayshrines:init(control,locations,locationsLookup,recentList,favo
 				})
 
 				table.sort(data, self.ws_order_func)
-				PopulateLookup(lookup,data)
+				PopulateLookup(lookup, data)
 				Utils.copy(data, allshrines)
 
 				local category = {
 					name = item.name,
 					hidden = _first or self:IsCategoryHidden(id),
-					data=data,
-					clicked= function(data,control,c)
-						HandleCategoryClicked(self,id,item,lookup,data,control,c)
+					data = data,
+					clicked = function(data,control,c)
+						local ii
+						HandleCategoryClicked(self, id, item, lookup, data, control, c)
 						if item.click then
 							item.click()
 						end
 						if not self:IsCategoryHidden(id) then
-							for ii=nonZoneCategoriesCount+1,lcount do
+							for ii = nonZoneCategoriesCount + 1, lcount do
 								if ii ~= id and self:IsCategoryHidden(ii) == false then
 									self:SetCategoryHidden(ii,true)
 								end
@@ -466,7 +470,7 @@ function MapTabWayshrines:init(control,locations,locationsLookup,recentList,favo
 
 	self.HideAllZoneCategories = function(self)
 		for i, loc in ipairs(locations) do
-			self:SetCategoryHidden(i+nonZoneCategoriesCount,true)
+			self:SetCategoryHidden(i + nonZoneCategoriesCount, true)
 		end
 	end
 
@@ -501,28 +505,36 @@ function MapTabWayshrines:RowMouseClicked(...)
 end
 
 function MapTabWayshrines:ChangeFilter(listcontrol, editbox)
-	local listdata = ZO_ScrollList_GetDataList(listcontrol)
 	local substring = string.lower(editbox:GetText())
+	local i, itemIndex, item
 	if substring == "" then
 		-- reinstate default text
 		ZO_EditDefaultText_Initialize(editbox, GetString(FASTER_TRAVEL_WAYSHRINES_SEARCH))
-		return
+	else
+		-- remove default text
+		ZO_EditDefaultText_Disable(editbox)
 	end
-	-- remove default text
-	ZO_EditDefaultText_Disable(editbox)
-	-- unhide Recent, Favourites, Zone and All
-	for i = 1, nonZoneCategoriesCount do
-		ZO_ScrollList_ShowCategory(listcontrol, i)
+	local show_all = string.len(substring) < 3
+	-- unhide All unconditionally 
+	ZO_ScrollList_ShowCategory(listcontrol, nonZoneCategoriesCount)
+	-- and Recent, Favourites, Zone only if no search conducted yet
+	for i = 1, nonZoneCategoriesCount - 1 do
+		if show_all then 
+			ZO_ScrollList_ShowCategory(listcontrol, i)
+		else
+			ZO_ScrollList_HideCategory(listcontrol, i)
+		end
 	end
-	local chat = FasterTravel.Utils.chat
-	local itemIndex, item
-	for itemIndex, item in ipairs(listdata) do
+	wayshrinesCache = wayshrinesCache or
+		ZO_ScrollList_GetDataList(listcontrol)
+	for itemIndex, item in ipairs(wayshrinesCache) do
 		if item.categoryId == nonZoneCategoriesCount then
 			if (item.data.barename and string.find(string.lower(item.data.barename), substring) or
 				item.data.name and string.find(string.lower(item.data.name), substring)) then
 				chat(3, "%s in %s (%s)", substring, item.data.name, itemIndex)
-				ZO_ScrollList_ScrollDataToCenter(listcontrol, itemIndex, nil, True)
-				return
+				ZO_ScrollList_ShowData(listcontrol, itemIndex)
+			else
+				ZO_ScrollList_HideData(listcontrol, itemIndex)
 			end
 		end
 	end

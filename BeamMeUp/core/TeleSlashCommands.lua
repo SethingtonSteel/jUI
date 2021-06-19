@@ -73,11 +73,11 @@ end
 
 
 function Teleporter.sc_switchLanguage(option)
-	if option == "de" or option == "en" or option == "fr" or option == "ru" or option == "pl" then
+	if option == "de" or option == "en" or option == "fr" or option == "ru" or option == "pl" or option == "it" or option == "jp" or option == "br" then
 		SetCVar("language.2",option)
 	else
-		d("invalid language")
-		d("only en, de, fr, ru or pl allowed")
+		d("invalid language code")
+		d("only en, de, fr, ru, jp, pl, it or br allowed")
 	end
 end
 
@@ -148,6 +148,7 @@ function Teleporter.sc_initializeSlashPorting()
 	-- create static blacklist (add everything where the player can not port to)
 	Teleporter.blacklistForSlashPorting = {}
 	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistOthers)
+	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistSoloArenas)
 	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistRefuges)
 	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistCyro)
 	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistImpCity)
@@ -155,6 +156,7 @@ function Teleporter.sc_initializeSlashPorting()
 	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistGroupDungeons)
 	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistRaids)
 	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistGroupZones)
+	Teleporter.sc_joinBlacklistForSlashPorting(Teleporter.blacklistGroupArenas)
 
 	-- initialize chat commands
 	-- check if zone name data is available in client language
@@ -220,6 +222,32 @@ end
 --------------------------------------------------
 -- STUFF / UTILITIES / DEVELOP
 --------------------------------------------------
+
+function Teleporter.sc_findDungeonsNodes()
+	d("GESAMT: " .. #Teleporter.blacklistRaids)
+	local counter = 1
+	for _, zoneId in ipairs(Teleporter.blacklistRaids) do
+		for i = 1, GetNumFastTravelNodes() do
+			local known, name, normalizedX, normalizedY, icon, glowIcon, poiType, isShownInCurrentMap, linkedCollectibleIsLocked = GetFastTravelNodeInfo(i)
+			if string.match(string.lower(name), string.lower(Teleporter.formatName(GetZoneNameById(zoneId), true))) then
+				d("MATCH" .. counter .. ": " .. name .. "(" .. i.. ") | " .. GetZoneNameById(zoneId) .. "(" .. zoneId .. ")")
+				counter = counter + 1
+			end
+		end
+	end
+	--d(counter)
+end
+
+function Teleporter.sc_printAllDungeonNodes()
+	for i = 1, GetNumFastTravelNodes() do
+		local known, name, normalizedX, normalizedY, icon, glowIcon, poiType, isShownInCurrentMap, linkedCollectibleIsLocked = GetFastTravelNodeInfo(i)
+		if poiType == 6 then
+			d(name)
+		end
+	end
+end
+
+
 
 function Teleporter.sc_printPortCounterPerZone(option)
 	for zoneId, num in pairs(mTeleSavedVars.portCounterPerZone) do

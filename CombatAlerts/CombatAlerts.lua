@@ -2,7 +2,7 @@ CombatAlerts = {
 	name = "CombatAlerts",
 
 	title = "Combat Alerts",
-	version = "1.10.8",
+	version = "1.11.3",
 
 	slashCommand = "/cca",
 
@@ -111,6 +111,10 @@ CombatAlerts = {
 		lastMechanic = 0,
 	},
 
+	brp = {
+		spirits = 0,
+	},
+
 	frostvault = {
 		effluviumEnd = 0,
 		skeevCharged = 0,
@@ -134,6 +138,9 @@ CombatAlerts = {
 		translation = 0, -- 1: initial 2s, 2: interrupt, 3: between casts
 		translationNext = 0,
 		translationDeadline = 0,
+		lastFocusFire = 0,
+		lastSoulTear = 0,
+		battleFury = { },
 	},
 
 	fane = {
@@ -177,6 +184,10 @@ CombatAlerts = {
 			ids = { 0, 0, 0, 0 },
 			disembowel = 0,
 		},
+	},
+
+	rg = {
+		astralShields = 0,
 	},
 }
 
@@ -576,8 +587,20 @@ function CombatAlerts.CombatEvent( eventCode, result, isError, abilityName, abil
 
 
 	-- Blackrose Prison --------------------------------------------------------
+
 	elseif ((result == ACTION_RESULT_EFFECT_GAINED or result == ACTION_RESULT_EFFECT_GAINED_DURATION) and targetType == COMBAT_UNIT_TYPE_PLAYER and CombatAlertsData.brp.roots[abilityId] and hitValue == CombatAlertsData.brp.roots.duration) then
 		CombatAlerts.AlertCast(abilityId, nil, hitValue, { -2, 1 })
+	elseif (result == ACTION_RESULT_EFFECT_GAINED and CombatAlertsData.brp.spirit.increments[abilityId] and hitValue == 1) then
+		CombatAlerts.brp.spirits = CombatAlerts.brp.spirits + 1
+		CombatAlerts.BlackroseSpiritUpdatePanel()
+	elseif (result == ACTION_RESULT_EFFECT_FADED and abilityId == CombatAlertsData.brp.spirit.golden) then
+		CombatAlerts.brp.spirits = CombatAlerts.brp.spirits - 1
+		CombatAlerts.BlackroseSpiritUpdatePanel()
+	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.brp.spirit.ignition) then
+		CombatAlerts.brp.spirits = 0
+		CombatAlerts.TogglePanel(true, GetFormattedAbilityName(abilityId), false, true)
+	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.brp.spirit.scream) then
+		zo_callLater(function() CombatAlerts.TogglePanel(false) end, hitValue)
 
 
 	-- Frostvault --------------------------------------------------------------
@@ -619,6 +642,11 @@ function CombatAlerts.CombatEvent( eventCode, result, isError, abilityName, abil
 
 	-- Sunspire -------------------------------------------------------
 
+	elseif (CombatAlertsData.damageEvents[result] and targetType == COMBAT_UNIT_TYPE_PLAYER and CombatAlertsData.sunspire.standingInAoe[abilityId]) then
+		local params = CombatAlertsData.sunspire.standingInAoe[abilityId]
+		if (not (params[2] and CombatAlerts.isTank)) then
+			CombatAlerts.AlertBorder(true, params[1])
+		end
 	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.sunspire.tomb) then
 		local currentTime = GetGameTimeMilliseconds()
 		local elapsed = currentTime - CombatAlerts.sunspire.tombPrev
@@ -645,16 +673,19 @@ function CombatAlerts.CombatEvent( eventCode, result, isError, abilityName, abil
 	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.sunspire.ignite) then
 		CombatAlerts.Alert("Flame Atronach", GetFormattedAbilityName(abilityId), 0x0066FFFF, SOUNDS.CHAMPION_POINTS_COMMITTED, 2000)
 	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.sunspire.geyser and not CombatAlerts.isTank) then
-		if (targetType == COMBAT_UNIT_TYPE_PLAYER) then
-			CombatAlerts.Alert(CombatAlerts.incomingText, GetFormattedAbilityName(abilityId), 0x0099CCFF, SOUNDS.DUEL_START, hitValue)
-		elseif (CombatAlerts.DistanceCheck(targetUnitId, 2.7)) then
-			CombatAlerts.Alert(CombatAlerts.units[targetUnitId].name, GetFormattedAbilityName(abilityId), 0x0099CCFF, SOUNDS.DUEL_START, hitValue)
+		if (GetGameTimeMilliseconds() < CombatAlerts.sunspire.lastFocusFire + 90000) then
+			if (targetType == COMBAT_UNIT_TYPE_PLAYER) then
+				CombatAlerts.Alert(CombatAlerts.incomingText, GetFormattedAbilityName(abilityId), 0x0099CCFF, SOUNDS.DUEL_START, hitValue)
+			elseif (CombatAlerts.DistanceCheck(targetUnitId, 2.7)) then
+				CombatAlerts.Alert(CombatAlerts.units[targetUnitId].name, GetFormattedAbilityName(abilityId), 0x0099CCFF, SOUNDS.DUEL_START, hitValue)
+			end
 		end
 	elseif (result == ACTION_RESULT_BEGIN and targetType ~= COMBAT_UNIT_TYPE_PLAYER and abilityId == CombatAlertsData.sunspire.glacialFist) then
 		if (CombatAlerts.DistanceCheck(targetUnitId, 4)) then
 			CombatAlerts.AlertCast(abilityId, nil, hitValue, { -2, 0, false, { 0.3, 0.9, 1, 0.6 }, { 0, 0.5, 1, 1 } })
 		end
 	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.sunspire.focusFire) then
+		CombatAlerts.sunspire.lastFocusFire = GetGameTimeMilliseconds()
 		if (CombatAlerts.units[targetUnitId]) then
 			targetName = CombatAlerts.units[targetUnitId].name
 		end
@@ -676,6 +707,7 @@ function CombatAlerts.CombatEvent( eventCode, result, isError, abilityName, abil
 			CombatAlerts.AlertCast(abilityId, nil, hitValue, { -2, 0, false, { 1, 0, 0.6, 0.6 }, { 1, 0, 0.6, 1 } })
 		end
 	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.sunspire.soulTear) then
+		CombatAlerts.sunspire.lastSoulTear = GetGameTimeMilliseconds()
 		CombatAlerts.Alert(CombatAlerts.incomingText, GetFormattedAbilityName(abilityId) .. " — Heal!", 0x9933FFFF, SOUNDS.CHAMPION_POINTS_COMMITTED, hitValue)
 	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.sunspire.thrash) then
 		CombatAlerts.Alert(GetFormattedAbilityName(abilityId), "Block or Dodge", 0xFF0000FF, SOUNDS.CHAMPION_POINTS_COMMITTED, hitValue)
@@ -685,6 +717,14 @@ function CombatAlerts.CombatEvent( eventCode, result, isError, abilityName, abil
 	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION and targetType == COMBAT_UNIT_TYPE_PLAYER and abilityId == CombatAlertsData.sunspire.meteor) then
 		CombatAlerts.Alert(nil, CombatAlertsData.sunspire.meteorName, 0xFF6600FF, SOUNDS.CHAMPION_POINTS_COMMITTED, hitValue)
 		CombatAlerts.CastAlertsStart(CombatAlertsData.sunspire.meteorIcon, CombatAlertsData.sunspire.meteorName, hitValue, nil, nil, { hitValue, "Move!", 1, 0.4, 0, 0.5, nil })
+	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION and abilityId == CombatAlertsData.sunspire.battleFury) then
+		CombatAlerts.sunspire.battleFury[targetUnitId] = GetGameTimeMilliseconds() + hitValue
+	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION and targetType == COMBAT_UNIT_TYPE_PLAYER and abilityId == CombatAlertsData.sunspire.chillingComet) then
+		local currentTime = GetGameTimeMilliseconds()
+		local enrageTime = CombatAlerts.sunspire.battleFury[sourceUnitId] or 0
+		if (currentTime < enrageTime or currentTime < CombatAlerts.sunspire.lastSoulTear + 8000) then
+			CombatAlerts.Alert(nil, GetFormattedAbilityName(abilityId), 0x33CCFFFF, SOUNDS.CHAMPION_POINTS_COMMITTED, 2500)
+		end
 	elseif (result == ACTION_RESULT_EFFECT_GAINED and abilityId == CombatAlertsData.sunspire.summonFrost) then
 		CombatAlerts.sunspire.atroNext = GetGameTimeMilliseconds() + 90000
 	elseif (abilityId == CombatAlertsData.sunspire.icyPresence) then
@@ -1048,6 +1088,42 @@ function CombatAlerts.CombatEvent( eventCode, result, isError, abilityName, abil
 			targetName = CombatAlerts.units[targetUnitId].name
 		end
 		CombatAlerts.Alert(GetFormattedAbilityName(abilityId), targetName, 0x009900FF, SOUNDS.CHAMPION_POINTS_COMMITTED, hitValue)
+
+
+	-- Rockgrove ---------------------------------------------------------------
+
+	elseif (CombatAlertsData.damageEvents[result] and targetType == COMBAT_UNIT_TYPE_PLAYER and CombatAlertsData.rg.standingInAoe[abilityId]) then
+		local params = CombatAlertsData.rg.standingInAoe[abilityId]
+		if (not (params[2] and CombatAlerts.isTank)) then
+			CombatAlerts.AlertBorder(true, params[1])
+		end
+	elseif (result == ACTION_RESULT_BEGIN and CombatAlertsData.rg.blitz[abilityId]) then
+		if (CombatAlerts.units[targetUnitId]) then
+			targetName = CombatAlerts.units[targetUnitId].name
+		end
+		CombatAlerts.Alert(GetFormattedAbilityName(abilityId), targetName, 0xCC0000FF, SOUNDS.CHAMPION_POINTS_COMMITTED, hitValue)
+	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.rg.cinder) then
+		if (CombatAlerts.units[targetUnitId]) then
+			targetName = CombatAlerts.units[targetUnitId].name
+		end
+		CombatAlerts.Alert(GetFormattedAbilityName(abilityId), targetName, 0xFFCC00FF, SOUNDS.OBJECTIVE_DISCOVERED, 2000)
+	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.rg.convoke) then
+		CombatAlerts.Alert(nil, GetFormattedAbilityName(abilityId), 0x00FFFFFF, SOUNDS.OBJECTIVE_DISCOVERED, hitValue)
+	elseif (result == ACTION_RESULT_EFFECT_GAINED_DURATION and abilityId == CombatAlertsData.rg.meteorSwarm) then
+		CombatAlerts.Alert(nil, GetFormattedAbilityName(abilityId), 0xFF9900FF, SOUNDS.CHAMPION_POINTS_COMMITTED, 3000)
+	elseif (result == ACTION_RESULT_BEGIN and abilityId == CombatAlertsData.rg.meteorCall) then
+		CombatAlerts.Alert(nil, GetFormattedAbilityName(abilityId), 0xFF9900FF, SOUNDS.CHAMPION_POINTS_COMMITTED, hitValue)
+	elseif (result == ACTION_RESULT_EFFECT_GAINED and abilityId == CombatAlertsData.rg.astralShield) then
+		CombatAlerts.rg.astralShields = CombatAlerts.rg.astralShields + 1
+		CombatAlerts.ConsolidatedCall("Astral", 50, function( )
+			CombatAlerts.Alert(nil, GetFormattedAbilityName(abilityId) .. string.format(" (%d)", CombatAlerts.rg.astralShields), 0x00FFFFFF, SOUNDS.CHAMPION_POINTS_COMMITTED, 2000)
+			CombatAlerts.rg.astralShields = 0
+		end)
+	elseif (result == ACTION_RESULT_EFFECT_GAINED and targetType == COMBAT_UNIT_TYPE_PLAYER and abilityId == CombatAlertsData.rg.takingAim) then
+		local id = CombatAlerts.AlertCast(abilityId, sourceName, 3000, { -3, 2, true })
+		if (sourceUnitId and sourceUnitId ~= 0) then
+			CombatAlerts.castAlerts.sources[sourceUnitId] = id
+		end
 	end
 end
 
@@ -1462,10 +1538,12 @@ function CombatAlerts.TogglePanel( enable, label, usePolling, autoHide )
 		if (type(label) == "table") then
 			for i = 1, #label do
 				CombatAlerts.panel.rows[i].label:SetText(label[i])
+				CombatAlerts.panel.rows[i].data:SetText("")
 				CombatAlerts.panel.rows[i]:SetHidden(false)
 			end
 		else
 			CombatAlerts.panel.label:SetText(label)
+			CombatAlerts.panel.data:SetText("")
 			CombatAlerts.panel.row:SetHidden(false)
 		end
 
@@ -1593,6 +1671,22 @@ function CombatAlerts.CloudrestPreyedUpdatePanel( )
 	end
 
 	CombatAlerts.panel.data:SetText(status)
+end
+
+function CombatAlerts.BlackroseSpiritUpdatePanel( )
+	CombatAlerts.ConsolidatedCall("Spirits", 25, function( )
+		local spirits = CombatAlerts.brp.spirits
+		if (spirits == 0) then
+			CombatAlerts.panel.SetRowColor(1, 0, 1, 0, 1)
+		elseif (spirits == 1) then
+			CombatAlerts.panel.SetRowColor(1, 1, 1, 0, 1)
+		elseif (spirits == 2) then
+			CombatAlerts.panel.SetRowColor(1, 1, 0.5, 0, 1)
+		else
+			CombatAlerts.panel.SetRowColor(1, 1, 0, 0, 1)
+		end
+		CombatAlerts.panel.data:SetText(spirits)
+	end)
 end
 
 function CombatAlerts.FangLairToggleTimer( enable )
@@ -2246,6 +2340,19 @@ end
 
 function CombatAlerts.AlertChat( message )
 	CHAT_ROUTER:AddSystemMessage(os.date("[%H:%M:%S] ", GetTimeStamp()) .. message)
+end
+
+function CombatAlerts.ConsolidatedCall( key, delay, func )
+	local name = string.format("%s_%s", CombatAlerts.name, key)
+	EVENT_MANAGER:UnregisterForUpdate(name)
+	EVENT_MANAGER:RegisterForUpdate(
+		name,
+		delay,
+		function( )
+			EVENT_MANAGER:UnregisterForUpdate(name)
+			func()
+		end
+	)
 end
 
 function CombatAlerts.Debug( message )

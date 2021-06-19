@@ -621,7 +621,7 @@ function MMScrollList:FilterScrollList()
   elseif MasterMerchant.systemSavedVariables.viewSize == GUILDS then
     searchText = MasterMerchantGuildWindowSearchBox:GetText()
   else
-    searchText = MasterMerchantListingWindowSearchBox:GetText()
+    searchText = MasterMerchantListingsWindowSearchBox:GetText()
   end
   if searchText then searchText = string.gsub(string.lower(searchText), '^%s*(.-)%s*$', '%1') end
 
@@ -629,7 +629,7 @@ function MMScrollList:FilterScrollList()
     -- return item sales
     if MasterMerchant.viewMode ~= 'self' and (searchText == nil or searchText == '') then
       -- everything unfiltered (filter to the default time range)
-      local timeCheck = MasterMerchant:TimeCheck()
+      local timeCheck = MasterMerchant:CheckTime()
       for k, v in pairs(MasterMerchant.salesData) do
         for j, dataList in pairs(v) do
           -- IPAIRS
@@ -915,7 +915,7 @@ function MMScrollList:FilterScrollList()
             end
           end
         end
-        MasterMerchant:v(6, 'Filter Time' .. ': ' .. GetTimeStamp() - startTimer)
+        MasterMerchant:dm("Debug", string.format(GetString(MM_FILTER_TIME), GetTimeStamp() - startTimer))
 
       end
     end
@@ -1048,7 +1048,7 @@ function MMScrollList:FilterScrollList()
             end
           end
         end
-        MasterMerchant:v(6, 'Filter Time' .. ': ' .. GetTimeStamp() - startTimer)
+        MasterMerchant:dm("Debug", string.format(GetString(MM_FILTER_TIME), GetTimeStamp() - startTimer))
 
       end
     end
@@ -1448,7 +1448,7 @@ function MasterMerchant:addStatsAndGraph(tooltip, itemLink, clickable)
     end
   end
 
-  if MasterMerchant.systemSavedVariables.verbose == 6 then
+  if MasterMerchant.systemSavedVariables.useLibDebugLogger then
     if not tooltip.mmTextDebug then
       tooltip.mmTextDebug = tooltip.textPool:AcquireObject()
       tooltip:AddControl(tooltip.mmTextDebug)
@@ -1544,14 +1544,14 @@ end
 
 local function GetTopControl(control)
   local controlName = control:GetName()
-  MasterMerchant:v(7, controlName)
+  MasterMerchant:dm("Verbose", controlName)
   local count = 0
   while control and control.GetParent ~= nil do
     control = control:GetParent()
     count   = count + 1
     if control and control.GetName then
       controlName = control:GetName()
-      MasterMerchant:v(7, controlName)
+      MasterMerchant:dm("Verbose", controlName)
       if controlName == "GuiRoot" then break end
       if count >= 3 then break end
     end
@@ -1639,7 +1639,7 @@ function MasterMerchant:addStatsItemTooltip()
         itemLink = itemLabel:GetText()
       end
     else
-      if MasterMerchant.systemSavedVariables.verbose == 7 then
+      if MasterMerchant.systemSavedVariables.useLibDebugLogger then
         GetTopControl(skMoc)
       end
       --ZO_ListDialog1ListContents

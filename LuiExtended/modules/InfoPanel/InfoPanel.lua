@@ -325,7 +325,7 @@ function InfoPanel.Initialize(enabled)
     InfoPanel.RearrangePanel()
 
     -- add control to global list so it can be hidden
-    LUIE.Components[ moduleName ] = uiPanel
+    LUIE.Components[moduleName] = uiPanel
 
     -- Panel position
     if InfoPanel.SV.position ~= nil and #InfoPanel.SV.position == 2 then
@@ -404,8 +404,8 @@ function InfoPanel.DoBagUpdate()
     eventManager:UnregisterForUpdate(moduleName .. "PendingBagsUpdate")
 
     -- Update bags
-    local bagSize = GetBagSize( BAG_BACKPACK )
-    local bagUsed = GetNumBagUsedSlots( BAG_BACKPACK )
+    local bagSize = GetBagSize(BAG_BACKPACK)
+    local bagUsed = GetNumBagUsedSlots(BAG_BACKPACK)
 
     local filledSlotPercentage = ( bagUsed / bagSize ) * 100
     local color = uiBags.color[#uiBags.color].color
@@ -497,10 +497,10 @@ function InfoPanel.OnUpdate60()
     if not InfoPanel.SV.HideArmour then
         local slotCount    = 0
         local duraSum      = 0
-        local totalSlots = GetBagSize( BAG_WORN )
+        local totalSlots = GetBagSize(BAG_WORN)
         for slotNum = 0, totalSlots - 1 do
-            if ( DoesItemHaveDurability( BAG_WORN, slotNum ) == true ) then
-                duraSum = duraSum + GetItemCondition( BAG_WORN, slotNum )
+            if ( DoesItemHaveDurability(BAG_WORN, slotNum) == true ) then
+                duraSum = duraSum + GetItemCondition(BAG_WORN, slotNum)
                 slotCount = slotCount + 1
             end
         end

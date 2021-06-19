@@ -6,7 +6,7 @@ function CBG_Object:New(...)
 end
 function CBG_Object:Initialize()
 	self.ADDON_NAME = "ChatBG"
-	self.ADDON_VERSION = "1.3.1"
+	self.ADDON_VERSION = "1.4"
 	self.settings = {}
 	self.player_activated = false
 end

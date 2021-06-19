@@ -2075,23 +2075,21 @@ local function updateFightStatsPanelRight(panel)
 
 			end
 
-			if i == 4 and powerType == POWERTYPE_MAGICKA or powerType == POWERTYPE_STAMINA then	-- Add a hint for backstabber
+			if i == 4 then	-- Add a hint for backstabber
 
-				local row4 = rowcontrol
-
-				row4.tooltip = nil
+				rowcontrol.tooltip = nil
 
 				local CP = data.CP
 
-				if CP and CP.version ~= nil and CP.version >= 2 then
+				if powerType ~= POWERTYPE_HEALTH and CP and CP.version ~= nil and CP.version >= 2 then
 
-					local backstabber = CP[1] and CP[1].stars and CP[1].stars[31] --
+					local backstabber = CP[1] and CP[1].stars and CP[1].stars[31] -- Backstabber CP
 
-					if backstabber and backstabber[1] >= 10 and backstabber[2] == LIBCOMBAT_CPTYPE_SLOTTED then 
+					if backstabber and backstabber[1] >= 10 and backstabber[2] == LIBCOMBAT_CPTYPE_SLOTTED then
 
 						text = ZO_CachedStrFormat("<<1>>*:", GetString(stringKey, i))
 
-						row4.tooltip = {GetString(SI_COMBAT_METRICS_BACKSTABBER_TT)}
+						rowcontrol.tooltip = {GetString(SI_COMBAT_METRICS_BACKSTABBER_TT)}
 
 					end
 				end
@@ -2173,13 +2171,13 @@ local function updateFightStatsPanelRight(panel)
 		row5:SetHidden(false)
 		row6:SetHidden(false)
 
-		local text5 = GetString(stringKey, 5)
+		local text5 = ZO_CachedStrFormat("<<1>>:", GetString(stringKey, 5))
 
 		row5:GetNamedChild("Label"):SetText(text5)
 		row5:GetNamedChild("Value"):SetText(averagePenetration)
 		row5:GetNamedChild("Value2"):SetText(maxvalue)
 
-		local text6 = GetString(stringKey, 6)
+		local text6 = ZO_CachedStrFormat("<<1>>:", GetString(stringKey, 6))
 
 		row6:GetNamedChild("Label"):SetText(text6)
 		row6:GetNamedChild("Value"):SetText(overPenetrationRatio)

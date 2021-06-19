@@ -45,6 +45,7 @@ ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_JUMPHERE_CHOICE2", "Всегда")
 
 ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_WS_ORDER", "Order of wayshrines")
 ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_LOCATION_ORDER", "Order of locations")
+ZO_CreateStringId("FASTER_TRAVEL_SETTINGS_SORTFAV", "Sort Favourites")
 
 ZO_CreateStringId("FASTER_TRAVEL_DIALOG_JUMPRANDOM_TITLE", "Jump elsewhere?")
 ZO_CreateStringId("FASTER_TRAVEL_DIALOG_JUMPRANDOM_TEXT", 

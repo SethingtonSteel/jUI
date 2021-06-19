@@ -12,6 +12,7 @@ CombatAlertsData = {
 		[1197] = true, -- Stone Garden
 		[1201] = true, -- Castle Thorn
 		[1229] = true, -- The Cauldron
+		[1263] = true, -- Rockgrove
 	},
 
 
@@ -183,6 +184,19 @@ CombatAlertsData = {
 			[136976] = { -3, 2 }, -- Kyne's Aegis -- Blood Cleave
 			[140230] = { -2, 2 }, -- Kyne's Aegis -- Heavy Strike
 			[140231] = { -3, 2, true }, -- Kyne's Aegis -- Javelin
+
+			[149531] = { -2, 2 }, -- Rockgrove -- Blistering Smash
+			[149648] = { -2, 2 }, -- Rockgrove -- Ravenous Chomp
+			[150065] = { -2, 2 }, -- Rockgrove -- Rend Flesh
+			[150308] = { -2, 2 }, -- Rockgrove -- Power Bash
+			[153181] = { -2, 2 }, -- Rockgrove -- Sunburst (Boss #1)
+			[156982] = { -2, 2 }, -- Rockgrove -- Sunburst (Boss #2 and Trash)
+			[156995] = { -2, 2 }, -- Rockgrove -- Monstrous Cleave
+			[157265] = { -2, 2 }, -- Rockgrove -- Kiss of Poison
+			[157471] = { -2, 2 }, -- Rockgrove -- Uppercut
+			[149180] = { -2, 2 }, -- Rockgrove -- Scathing Evisceration (Hit #1)
+			[153448] = { -2, 2 }, -- Rockgrove -- Scathing Evisceration (Hit #4)
+			[153450] = { -2, 2 }, -- Rockgrove -- Scathing Evisceration (Hit #5)
 
 			-- Taking Aim
 			[70695] = { -3, 2, true }, -- Maelstrom Arena
@@ -365,6 +379,15 @@ CombatAlertsData = {
 			[110978] = true,
 			duration = 2250,
 		},
+		spirit = {
+			increments = {
+				[110639] = true, -- Spirit Ignition, initial projectile
+				[111749] = true, -- Spirit Ignition, boss absorption
+			},
+			golden = 111779,
+			ignition = 110613,
+			scream = 110661,
+		},
 	},
 
 
@@ -426,6 +449,15 @@ CombatAlertsData = {
 		translation = 121436,
 		timeBreach = 121216,
 		defensiveStance = 38316,
+		chillingComet = 116636,
+		battleFury = 120697,
+		standingInAoe = {
+			-- { alert_duration, exclude_tanks }
+			[115341] = { 700, true }, -- Lava Pool
+			[118741] = { 600, false }, -- Boiling Oil
+			[115624] = { 1050, true }, -- Flame Spit (Nahviintaas grounded)
+			[119472] = { 1050, true }, -- Flame Spit (Nahviintaas in-flight)
+		},
  	},
 
 
@@ -595,9 +627,30 @@ CombatAlertsData = {
 		},
 	},
 
+
 	-- Flames of Ambition ------------------------------------------------------
 
 	foa = {
 		prison = 146371,
+	},
+
+
+	-- Rockgrove ---------------------------------------------------------------
+
+	rg = {
+		blitz = {
+			[149414] = true,
+			[157932] = true,
+		},
+		cinder = 152688,
+		convoke = 150026,
+		meteorSwarm = 155357,
+		meteorCall = 152414,
+		astralShield = 157236,
+		takingAim = 157243,
+		standingInAoe = {
+			-- { alert_duration, exclude_tanks }
+			[150137] = { 600, false }, -- Hot Spring
+		},
 	},
 }

@@ -7,8 +7,8 @@
 ## Title: Code's Combat Alerts
 ## Description: Combat alerts for select PvE mechanics
 ## Author: @code65536
-## Version: 1.10.8
-## APIVersion: 100034
+## Version: 1.11.3
+## APIVersion: 100035
 ## SavedVariables: CombatAlertsSavedVariables
 
 GetFormattedAbilityName.lua
@@ -17,6 +17,36 @@ CombatAlertsData.lua
 CombatAlerts.xml
 
 ; Changelog:
+;
+; Version 1.11.3 (2021/06/01)
+; * Removed the alerts for Emblazoned Stomp and Hemorrhaging Smack in Rockgrove
+; * Extended Rockgrove support can be found in Qcell's Rockgrove Helper addon
+;
+; Version 1.11.2 (2021/05/05)
+; * Added alert the second Savage Blitz for Oaxiltso Hard Mode in Rockgrove
+; * Added alerts for Hemorrhaging Smack and Power Bash in Rockgrove
+; * Reduced the amount of non-critical alert clutter in Sunspire
+;   - The Chilling Comet alert will now be displayed only if it is sourced from
+;     an enemy enraged by Battle Fury or if it is cast within 8s of a Soul Tear
+;   - The Lava Geyser alert will now be displayed only during the Yolnahkriin
+;     encounter, since it does significantly reduced damage during the
+;     Nahviintaas encounter
+;
+; Version 1.11.1 (2021/04/29)
+; * Fixed an issue where the alert for Chilling Comet displayed the ability ID
+;   for Chilling Comet rather than the ability name
+;
+; Version 1.11.0 (2021/04/29)
+; * Added preliminary support for Rockgrove
+; * Added alert for Chilling Comet in Sunspire, if it is targeted on the player
+; * Added aura alerts for Lava Pool, Boiling Oil, and Flame Spit in Sunspire;
+;   the player will see a green glow around their screen if they are taking
+;   damage from any of these sources, since it is not always visually clear
+;   whether or not a player is standing within the boundries of these area
+;   effects (this is suppressed for Lava Pool and Flame Spit if the player is
+;   marked as a tank)
+; * Added tracking for the number of golden spirits remaining for the Spirit
+;   Ignition mechanic in Blackrose Prison
 ;
 ; Version 1.10.8 (2021/03/16)
 ; * Added alert for Glacial Gash in Black Drake Villa

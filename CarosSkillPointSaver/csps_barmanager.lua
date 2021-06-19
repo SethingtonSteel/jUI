@@ -393,7 +393,7 @@ end
 function CSPS.bindingsDR()
 	CSPSDR = DressingRoom or nil
 	if not (CSPSDR and CSPSDR.ram and CSPSDR.ram.page) then 
-		d(zo_strformat(GS(CSPS_CPBar_NoDR), "Dressing Room"))
+		d(string.format("[CSPS] %s", zo_strformat(GS(CSPS_CPBar_NoDR), "Dressing Room")))
 		return 
 	end
 	drRoles = CSPSDR ~= nil and CSPSDR.roleSpecificPresets 
@@ -422,7 +422,7 @@ end
 function CSPS.bindingsAG()
 	CSPSAG = AG and AG.name == "AlphaGear" and AG or nil
 	if CSPSAG == nil then 
-		d(zo_strformat(GS(CSPS_CPBar_NoDR), "Alpha Gear"))
+		d(string.format("[CSPS] %s", zo_strformat(GS(CSPS_CPBar_NoDR), "Alpha Gear")))
 		return 
 	end
 	CSPSWindowManageBarsRoleIcon:SetHidden(true)
@@ -502,6 +502,29 @@ function CSPSbindingsList:BuildMasterList( )
 	
 	local myBindingList = CSPS.bindings[currentGroup] or {}
 	for i,v in pairs(myBindingList) do
+		if v[2] == 1 then
+			local pageName = CSPSDR and CSPSDR.ram and CSPSDR.ram.page and CSPSDR.ram.page.name and CSPSDR.ram.page.name[v[3]]
+			
+			local currentPage = CSPSDR and CSPSDR.ram and CSPSDR.ram.page  and CSPSDR.ram.page.pages and CSPSDR.ram.page.pages[v[3]]
+			local setName = currentPage.customSetName[v[4]]
+			local setName = setName or currentPage and currentPage.gearSet and currentPage.gearSet[v[4]] and currentPage.gearSet[v[4]].name
+			local setName = setName or string.format("Set %s", v[4])
+			
+			if pageName and setName then v[1] = string.format("Dressing Room - %s) %s - %s) %s", v[3], pageName, v[4], setName) end			
+		elseif v[2] == 2 then
+			local currentPage = CSPSAG and CSPSAG.setdata and CSPSAG.setdata.profiles and CSPSAG.setdata.profiles[v[3]]
+			local profileName = currentPage and currentPage.name
+			local currentSet = currentPage and currentPage.setdata and currentPage.setdata[v[4]]  and currentPage.setdata[v[4]].Set
+			local buildName = currentSet and currentSet.text and currentSet.text[1]
+			if buildName and profileName then
+				if buildName == 0 then 
+					buildName = string.format("%s) Build %s", v[4], v[4]) 
+				else
+					buildName =  string.format("%s) %s", v[4], buildName)
+				end
+				v[1] = string.format("Alpha Gear - %s) %s - %s", v[3], profileName, buildName) 
+			end
+		end
 		table.insert(self.masterList, {name = v[1], myIndex = i, bindingMode = v[2], bindingGroup = v[3], bindingSet = v[4], role = v[5] or nil })
 	end
 end
@@ -597,6 +620,8 @@ function CSPS.kbRemove(myIndex)
 		end
 	elseif oldEntry[2] == 2 then
 		bindingsAG[oldEntry[3]][oldEntry[4]] = nil
+	elseif oldEntry[2] == 3 then
+		bindingsLOC[oldEntry[4]] = nil
 	end
 	CSPS.bindings[currentGroup][myIndex] = nil
 	CSPS.currentCharData.bindings = CSPS.bindings

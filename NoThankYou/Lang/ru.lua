@@ -198,6 +198,10 @@ SafeAddString(NOTYOU_CAMERA_INTERRUPT, "Не прерывать взаимоде
 SafeAddString(NOTYOU_CAMERA_INTERRUPT_TOOLTIP, "Не прерывать взаимодействие (сбор ресурсов, ловля рыбы и т.д.), когда вы открываете карту, инвентарь или другие окна.", 1)
 SafeAddString(NOTYOU_CAMERA_ROTATE, "Не вращать камеру", 1)
 SafeAddString(NOTYOU_CAMERA_ROTATE_TOOLTIP, "Не вращать камеру, когда вы открываете карту, инвентарь или другие окна.", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_STATS,			"Don't rotate game camera while showing status", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_STATS_TOOLTIP,	"Don't rotate game camera while showing status. If you turn this ON, you can't change outfit on status window by ESO feature.", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_INV,				"Don't rotate game camera while showing inventory", 1)
+SafeAddString(NOTYOU_CAMERA_ROTATE_INV_TOOLTIP,		"Don't rotate game camera while showing inventory. If you turn this ON, you can't preview any item by ESO feature.", 1)
 
 SafeAddString(NOTYOU_AUTOLOOTITEMS_HEADER, "Автомат. подбор", 1)
 SafeAddString(NOTYOU_AUTOLOOTITEMS, "Автомат. подбор из контейнеров", 1)

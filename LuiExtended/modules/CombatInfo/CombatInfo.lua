@@ -25,6 +25,7 @@ local ACTION_RESULT_AREA_EFFECT = 669966
 
 CombatInfo.Enabled  = false
 CombatInfo.Defaults = {
+    blacklist = {},
     GlobalShowGCD                    = false,
     GlobalPotion                     = false,
     GlobalFlash                      = true,
@@ -44,7 +45,7 @@ CombatInfo.Defaults = {
     ProcSoundName                    = "Death Recap Killing Blow",
     ShowToggled                      = true,
     ShowToggledUltimate              = true,
-    BarShowLabel                     = true,
+    BarShowLabel                     = false, -- Temp Disabled
     BarLabelPosition                 = -20,
     BarFontFace                      = "Univers 67",
     BarFontStyle                     = "outline",
@@ -83,12 +84,14 @@ CombatInfo.Defaults = {
             alertFontSize               = 32,
             alertTimer                  = true,
             showMitigation              = true,
-            mitigationPrefix            = "%t",
-            mitigationPrefixN           = "%n - %t",
+            mitigationAbilityName       = "%t",
+            mitigationEnemyName         = "%n -",
             modifierEnable              = true,
             mitigationModifierOnYou     = GetString(SI_LUIE_CI_MITIGATION_MODIFIER_ON_YOU),
             mitigationModifierSpreadOut = GetString(SI_LUIE_CI_MITIGATION_MODIFIER_SPREAD_OUT),
             showCrowdControlBorder      = true,
+            ccLabelColor                = false,
+            useDefaultIcon              = false,
             mitigationPowerPrefix2      = "%t",
             mitigationPowerPrefixN2     = GetString(SI_LUIE_CI_MITIGATION_FORMAT_POWER_N),
             mitigationDestroyPrefix2    = "%t",
@@ -131,20 +134,23 @@ CombatInfo.Defaults = {
             alertShared                 = { 1, 1, 1, 1 },
             alertTimer                  = { 1, 1, 1, 1 },
             alertBlockA                 = { 1, 0, 0, 1 },
-            alertInterruptB             = { 0, 0.50, 1, 1 },
+            alertInterruptC             = { 0, 127/255, 1, 1 },
             alertUnmit                  = { 1, 0, 0, 1 },
             alertDodgeA                 = { 1, 1, 50/255, 1 },
             alertAvoidB                 = { 1, 127/255, 0, 1 },
             alertPower                  = { 1, 1, 1, 1 },
             alertDestroy                = { 1, 1, 1, 1 },
             alertSummon                 = { 1, 1, 1, 1 },
-            stunColor                   = {0.894118, 0.133333, 0.090196, 1},
-            disorientColor              = {0.0313725509,0.6274510026,1, 1},
-            fearColor                   = {0.5607843137, 0.0352941176, 0.9254901961, 1},
-            silenceColor                = {0, 1, 1, 1},
-            staggerColor                = {1,0.9490196109,0.1294117719,1},
-            unbreakableColor            = {0.88,0.88,1,1},
-            snareColor                  = {1,.6470, 0, 1},
+            stunColor                   = { 1, 0, 0, 1 },
+            knockbackColor              = { 1, 0, 0, 1 },
+            levitateColor               = { 1, 0, 0, 1 },
+            disorientColor              = { 0, 127/255, 1, 1 },
+            fearColor                   = { 143/255, 9/255, 236/255, 1 },
+            silenceColor                = { 0, 1, 1, 1 },
+            staggerColor                = { 1, 127/255, 0, 1 },
+            unbreakableColor            = { 224/255, 224/255, 1, 1 },
+            snareColor                  = { 1, 242/255, 32/255, 1 },
+            rootColor                   = { 1, 165/255, 0, 1 },
         },
         formats = {
             alertBlock                  = GetString(SI_LUIE_CI_BLOCK_DEFAULT),
@@ -198,6 +204,8 @@ CombatInfo.Defaults = {
         enabledOnlyInCyro            = false,
         unlock                       = false,
         controlScale                 = 1.0,
+        useDefaultIcon               = false,
+        defaultIconOptions           = 1,
         playAnimation                = true,
         playSound                    = true,
         playSoundOption              = "Death Recap Killing Blow",
@@ -236,17 +244,19 @@ CombatInfo.Defaults = {
         offsetX                      = 0,
         offsetY                      = 0,
         colors                       = {
-            [ACTION_RESULT_STUNNED]        = {0.894118, 0.133333, 0.090196, 1},
-            [ACTION_RESULT_DISORIENTED]    = {0.0313725509,0.6274510026,1, 1},
-            [ACTION_RESULT_FEARED]         = {0.5607843137, 0.0352941176, 0.9254901961, 1},
-            [ACTION_RESULT_SILENCED]       = {0, 1, 1, 1},
-            [ACTION_RESULT_STAGGERED]      = {1,0.9490196109,0.1294117719,1},
-            [ACTION_RESULT_IMMUNE]         = {1,1,1,1},
-            [ACTION_RESULT_DODGED]         = {1,1,1,1},
-            [ACTION_RESULT_BLOCKED]        = {1,1,1,1},
-            [ACTION_RESULT_BLOCKED_DAMAGE] = {1,1,1,1},
-            [ACTION_RESULT_AREA_EFFECT]    = {1,0.69,0,1},
-            unbreakable                    = {0.88,0.88,1,1},
+            [ACTION_RESULT_STUNNED]        = { 1, 0, 0, 1 },
+            [ACTION_RESULT_KNOCKBACK]      = { 1, 0, 0, 1 },
+            [ACTION_RESULT_LEVITATED]      = { 1, 0, 0, 1 },
+            [ACTION_RESULT_DISORIENTED]    = { 0, 127/255, 1, 1 },
+            [ACTION_RESULT_FEARED]         = { 143/255, 9/255, 236/255, 1 },
+            [ACTION_RESULT_SILENCED]       = { 0, 1, 1, 1 },
+            [ACTION_RESULT_STAGGERED]      = { 1, 127/255, 0, 1 },
+            [ACTION_RESULT_IMMUNE]         = { 1, 1, 1, 1},
+            [ACTION_RESULT_DODGED]         = { 1, 1, 1, 1},
+            [ACTION_RESULT_BLOCKED]        = { 1, 1, 1, 1},
+            [ACTION_RESULT_BLOCKED_DAMAGE] = { 1, 1, 1, 1},
+            [ACTION_RESULT_AREA_EFFECT]    = { 1, 242/255, 32/255, 1 },
+            unbreakable                    = { 224/255, 224/255, 1, 1 },
         },
     },
 }
@@ -353,7 +363,8 @@ local isStackBaseAbility = {
 
 local slotsUpdated = {}
 
-local function OnSwapAnimationHalfDone(animation, button)
+local function OnSwapAnimationHalfDone(animation, button, isBackBarSlot)
+
     for i = BAR_INDEX_START, BAR_INDEX_END do
         if not slotsUpdated[i] then
             local targetButton = g_backbarButtons[i + BACKBAR_INDEX_OFFSET]
@@ -379,8 +390,8 @@ local function OnSwapAnimationDone(animation, button)
     slotsUpdated = {}
 end
 
-local function SetupFlipAnimation(button)
-    button:SetupFlipAnimation(OnSwapAnimationHalfDone, OnSwapAnimationDone)
+local function SetupSwapAnimation(button)
+    button:SetupSwapAnimation(OnSwapAnimationHalfDone, OnSwapAnimationDone)
 end
 
 local function FormatDurationSeconds(remain)
@@ -402,6 +413,11 @@ function CombatInfo.Initialize(enabled)
         return
     end
     CombatInfo.Enabled = true
+
+    -- TODO: TEMP: Disabled due to issues
+    if CombatInfo.SV.BarShowLabel == true then
+        CombatInfo.SV.BarShowLabel = false
+    end
 
     CombatInfo.ApplyFont()
     CombatInfo.ApplyProcSound()
@@ -434,7 +450,7 @@ function CombatInfo.Initialize(enabled)
 
     for i = BAR_INDEX_START + BACKBAR_INDEX_OFFSET, BACKBAR_INDEX_END + BACKBAR_INDEX_OFFSET do
         local button = ActionButton:New(i, ACTION_BUTTON_TYPE_VISIBLE, tlw, 'ZO_ActionButton')
-        SetupFlipAnimation(button)
+        SetupSwapAnimation(button)
         button:SetupBounceAnimation()
         g_backbarButtons[i] = button
     end
@@ -463,6 +479,40 @@ function CombatInfo.Initialize(enabled)
     -- Setup CCT
     CombatInfo.CrowdControlTracker.UpdateAOEList()
     CombatInfo.CrowdControlTracker.Initialize()
+
+    -- Variable adjustment if needed
+    if not LUIESV.Default[GetDisplayName()]['$AccountWide'].AdjustVarsCI then
+        LUIESV.Default[GetDisplayName()]['$AccountWide'].AdjustVarsCI = 0
+    end
+    if (LUIESV.Default[GetDisplayName()]['$AccountWide'].AdjustVarsCI < 2) then
+        -- Set ability alert default colors
+        CombatInfo.SV.alerts.colors.stunColor                   = CombatInfo.Defaults.alerts.colors.stunColor
+        CombatInfo.SV.alerts.colors.knockbackColor              = CombatInfo.Defaults.alerts.colors.knockbackColor
+        CombatInfo.SV.alerts.colors.levitateColor               = CombatInfo.Defaults.alerts.colors.levitateColor
+        CombatInfo.SV.alerts.colors.disorientColor              = CombatInfo.Defaults.alerts.colors.disorientColor
+        CombatInfo.SV.alerts.colors.fearColor                   = CombatInfo.Defaults.alerts.colors.fearColor
+        CombatInfo.SV.alerts.colors.silenceColor                = CombatInfo.Defaults.alerts.colors.silenceColor
+        CombatInfo.SV.alerts.colors.staggerColor                = CombatInfo.Defaults.alerts.colors.staggerColor
+        CombatInfo.SV.alerts.colors.unbreakableColor            = CombatInfo.Defaults.alerts.colors.unbreakableColor
+        CombatInfo.SV.alerts.colors.snareColor                  = CombatInfo.Defaults.alerts.colors.snareColor
+        CombatInfo.SV.alerts.colors.rootColor                   = CombatInfo.Defaults.alerts.colors.rootColor
+        -- Set CCT default colors
+        CombatInfo.SV.cct.colors[ACTION_RESULT_STUNNED]        = CombatInfo.Defaults.cct.colors[ACTION_RESULT_STUNNED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_KNOCKBACK]      = CombatInfo.Defaults.cct.colors[ACTION_RESULT_KNOCKBACK]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_LEVITATED]      = CombatInfo.Defaults.cct.colors[ACTION_RESULT_LEVITATED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_DISORIENTED]    = CombatInfo.Defaults.cct.colors[ACTION_RESULT_DISORIENTED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_FEARED]         = CombatInfo.Defaults.cct.colors[ACTION_RESULT_FEARED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_SILENCED]       = CombatInfo.Defaults.cct.colors[ACTION_RESULT_SILENCED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_STAGGERED]      = CombatInfo.Defaults.cct.colors[ACTION_RESULT_STAGGERED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_IMMUNE]         = CombatInfo.Defaults.cct.colors[ACTION_RESULT_IMMUNE]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_DODGED]         = CombatInfo.Defaults.cct.colors[ACTION_RESULT_DODGED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_BLOCKED]        = CombatInfo.Defaults.cct.colors[ACTION_RESULT_BLOCKED]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_BLOCKED_DAMAGE] = CombatInfo.Defaults.cct.colors[ACTION_RESULT_BLOCKED_DAMAGE]
+        CombatInfo.SV.cct.colors[ACTION_RESULT_AREA_EFFECT]    = CombatInfo.Defaults.cct.colors[ACTION_RESULT_AREA_EFFECT]
+        CombatInfo.SV.cct.colors.unbreakable                   = CombatInfo.Defaults.cct.colors.unbreakable
+    end
+    -- Increment so this doesn't occur again.
+    LUIESV.Default[GetDisplayName()]['$AccountWide'].AdjustVarsCI = 2
 
 end
 
@@ -773,6 +823,58 @@ function CombatInfo.RegisterCombatInfo()
     end
 end
 
+function CombatInfo.ClearCustomList(list)
+    local listRef = list == CombatInfo.SV.blacklist and GetString(SI_LUIE_CUSTOM_LIST_CASTBAR_BLACKLIST) or ""
+    for k, v in pairs(list) do
+        list[k] = nil
+    end
+    CHAT_SYSTEM:Maximize() CHAT_SYSTEM.primaryContainer:FadeIn()
+    printToChat(zo_strformat(GetString(SI_LUIE_CUSTOM_LIST_CLEARED), listRef), true)
+end
+
+-- List Handling (Add) for Prominent Auras & Blacklist
+function CombatInfo.AddToCustomList(list, input)
+    local id = tonumber(input)
+    local listRef = list == CombatInfo.SV.blacklist and GetString(SI_LUIE_CUSTOM_LIST_CASTBAR_BLACKLIST) or ""
+    if id and id > 0 then
+        local name = zo_strformat("<<C:1>>", GetAbilityName(id))
+        if name ~= nil and name ~= "" then
+            local icon = zo_iconFormat(GetAbilityIcon(id), 16, 16)
+            list[id] = true
+            CHAT_SYSTEM:Maximize() CHAT_SYSTEM.primaryContainer:FadeIn()
+            printToChat(zo_strformat(GetString(SI_LUIE_CUSTOM_LIST_ADDED_ID), icon, id, name, listRef), true)
+        else
+            CHAT_SYSTEM:Maximize() CHAT_SYSTEM.primaryContainer:FadeIn()
+            printToChat(zo_strformat(GetString(SI_LUIE_CUSTOM_LIST_ADDED_FAILED), input, listRef), true)
+        end
+    else
+        if input ~= "" then
+            list[input] = true
+            CHAT_SYSTEM:Maximize() CHAT_SYSTEM.primaryContainer:FadeIn()
+            printToChat(zo_strformat(GetString(SI_LUIE_CUSTOM_LIST_ADDED_NAME), input, listRef), true)
+        end
+    end
+end
+
+-- List Handling (Remove) for Prominent Auras & Blacklist
+function CombatInfo.RemoveFromCustomList(list, input)
+    local id = tonumber(input)
+    local listRef = list == CombatInfo.SV.blacklist and GetString(SI_LUIE_CUSTOM_LIST_CASTBAR_BLACKLIST) or ""
+    if id and id > 0 then
+        local name = zo_strformat("<<C:1>>", GetAbilityName(id))
+        local icon = zo_iconFormat(GetAbilityIcon(id), 16, 16)
+        list[id] = nil
+        CHAT_SYSTEM:Maximize() CHAT_SYSTEM.primaryContainer:FadeIn()
+        printToChat(zo_strformat(GetString(SI_LUIE_CUSTOM_LIST_REMOVED_ID), icon, id, name, listRef), true)
+    else
+        if input ~= "" then
+            list[input] = nil
+            CHAT_SYSTEM:Maximize() CHAT_SYSTEM.primaryContainer:FadeIn()
+            printToChat(zo_strformat(GetString(SI_LUIE_CUSTOM_LIST_REMOVED_NAME), input, listRef), true)
+        end
+    end
+end
+
 -- Used to populate abilities icons after the user has logged on
 function CombatInfo.OnPlayerActivated(eventCode)
     -- do not call this function for the second time
@@ -870,7 +972,21 @@ function CombatInfo.OnUpdate(currentTime)
         -- Don't show unless potion is used - We have to counter for the GCD lockout from casting a spell here
         if (duration > 5000) then
             uiQuickSlot.label:SetHidden(false)
-            uiQuickSlot.label:SetText(string.format(CombatInfo.SV.PotionTimerMiilis and "%.1f" or "%.1d", 0.001 * remain))
+
+            if remain > 86400000 then -- more then 1 day
+                uiQuickSlot.label:SetText( string.format("%d d", math.floor( remain/86400000 )) )
+            elseif remain > 6000000 then -- over 100 minutes - display XXh
+                uiQuickSlot.label:SetText( string.format("%dh", math.floor( remain/3600000 )) )
+            elseif remain > 600000 then -- over 10 minutes - display XXm
+                uiQuickSlot.label:SetText( string.format("%dm", math.floor( remain/60000 )) )
+            elseif remain > 60000 then
+                local m = math.floor( remain/60000 )
+                local s = remain/1000 - 60*m
+                uiQuickSlot.label:SetText( string.format("%d:%.2d", m, s) )
+            else
+                uiQuickSlot.label:SetText(string.format(CombatInfo.SV.PotionTimerMiilis and "%.1f" or "%.1d", 0.001 * remain))
+            end
+
             for i = #(uiQuickSlot.timeColours), 1, -1 do
                 if remain < uiQuickSlot.timeColours[i].remain then
                     if CombatInfo.SV.PotionTimerColor then
@@ -1654,7 +1770,7 @@ function CombatInfo.BackbarSetupTemplate()
     local lastButton
     local buttonTemplate = ZO_GetPlatformTemplate('ZO_ActionButton')
     local ultimateTemplate = ZO_GetPlatformTemplate('ZO_UltimateActionButton')
-    for i = BAR_INDEX_START, BACKBAR_INDEX_END do
+    for i = BAR_INDEX_START, BAR_INDEX_END do
 
         -- Get our backbar button
         local targetButton = g_backbarButtons[i + BACKBAR_INDEX_OFFSET]
@@ -2036,6 +2152,11 @@ function CombatInfo.OnCombatEvent(eventCode, result, isError, abilityName, abili
     local icon = GetAbilityIcon(abilityId)
     local name = zo_strformat("<<C:1>>", GetAbilityName(abilityId))
 
+    -- Return if ability is blacklisted
+    if CombatInfo.SV.blacklist[abilityId] or CombatInfo.SV.blacklist[name] then
+        return
+    end
+
     local duration
     local channeled, castTime, channelTime = GetAbilityCastInfo(abilityId)
     local forceChanneled = false
@@ -2158,7 +2279,6 @@ function CombatInfo.OnCombatEventBar(eventCode, result, isError, abilityName, ab
                     end
                 end
                 if g_toggledSlotsBack[abilityId] then
-
                     local slotNum = g_toggledSlotsBack[abilityId]
                     if g_uiCustomToggle[slotNum] then
                         if g_toggledSlotsStack[abilityId] and g_toggledSlotsStack[abilityId] > 0 then
@@ -2241,7 +2361,7 @@ end
 function CombatInfo.BarSlotUpdate(slotNum, wasfullUpdate, onlyProc)
 
     -- Handle slot update for action bars
-    --d(string.format("%d: %s(%d)", slotNum, GetSlotName(slotNum), GetSlotBoundId(slotNum)))
+    -- d(string.format("%d: %s(%d)", slotNum, GetSlotName(slotNum), GetSlotBoundId(slotNum)))
     -- Look only for action bar slots
 
     if slotNum < BACKBAR_INDEX_OFFSET then
@@ -2416,7 +2536,6 @@ function CombatInfo.OnActiveHotbarUpdate(eventCode, didActiveHotbarChange, shoul
     else
         g_activeWeaponSwapInProgress = false
     end
-
 end
 
 function CombatInfo.OnSlotsFullUpdate(eventCode)

@@ -1,5 +1,17 @@
 PP.collectionsSceneGroup = function()
-	
+	--orig
+	function ZO_RestyleCommon_Keyboard.UpdateAnchors(control, hasSubTabs)
+		
+		local offset = control == ZO_DyeingTopLevel_Keyboard and 160 or 180
+		
+		control:ClearAnchors()
+		if hasSubTabs then
+			PP.Anchor(control, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, -2, offset, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, -8, -70)
+		else
+			PP.Anchor(control, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, -2, 122, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	-8, -70)
+		end
+	end
+
 	local fragments	= {RIGHT_BG_FRAGMENT, TREE_UNDERLAY_FRAGMENT, TITLE_FRAGMENT, COLLECTIONS_TITLE_FRAGMENT, MEDIUM_LEFT_PANEL_BG_FRAGMENT}
 	local scenes	= {
 		{COLLECTIONS_BOOK_SCENE,		COLLECTIONS_BOOK,					},
@@ -28,9 +40,9 @@ PP.collectionsSceneGroup = function()
 			end
 
 			PP:CreateBackground(tlw, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
-
 			PP.Anchor(tlw, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
 		end
+
 		if categories then
 			PP.Anchor(categories, --[[#1]] TOPLEFT, tlw, TOPLEFT, 0, 50, --[[#2]] true, BOTTOMLEFT, tlw, BOTTOMLEFT, 0, 0)
 			PP.ScrollBar(categories, --[[sb_c]] 180, 180, 180, .8, --[[bd_c]] 20, 20, 20, .6, false)
@@ -51,6 +63,12 @@ PP.collectionsSceneGroup = function()
 
 --COLLECTIONS_BOOK_SCENE, COLLECTIONS_BOOK
 
+	local function EmptyCellHidden(control, data)
+		if data.isEmptyCell then
+			control:SetHidden(true)
+		end
+	end
+
 	PP.Anchor(ZO_CollectionsBook_TopLevelList, --[[#1]] TOPLEFT, ZO_CollectionsBook_TopLevelCategories, TOPRIGHT, 0, -10, --[[#2]] true, BOTTOMRIGHT, ZO_CollectionsBook_TopLevel, BOTTOMRIGHT,	0, 0)
 
 	local dataType = ZO_ScrollList_GetDataTypeTable(ZO_CollectionsBook_TopLevelListContainerList, 1)
@@ -61,6 +79,8 @@ PP.collectionsSceneGroup = function()
 	dataType["spacingY"] = 6
 	dataType.setupCallback = function(control, data)
 		existingSetupCallback(control, data)
+		EmptyCellHidden(control, data)
+		
 		control:SetDimensions(dataType["controlWidth"], dataType["controlHeight"])
 		if control:GetNamedChild("OverlayBorder") then
 			local backdrop = control:GetNamedChild("OverlayBorder")
@@ -113,6 +133,8 @@ PP.collectionsSceneGroup = function()
 	dataType["spacingY"] = 6
 	dataType.setupCallback = function(control, data)
 		existingSetupCallback(control, data)
+		EmptyCellHidden(control, data)
+
 		control:SetDimensions(dataType["controlWidth"], dataType["controlHeight"])
 
 		local backdrop = control:GetNamedChild("Backdrop")
@@ -151,6 +173,8 @@ PP.collectionsSceneGroup = function()
 	dataType_1["spacingY"] = 6
 	dataType_1.setupCallback = function(control, data)
 		existingSetupCallback(control, data)
+		EmptyCellHidden(control, data)
+
 		control:SetDimensions(dataType_1["controlWidth"], dataType_1["controlHeight"])
 
 		local backdrop = control:GetNamedChild("OverlayBorder")
@@ -167,7 +191,6 @@ PP.collectionsSceneGroup = function()
 	local existingSetupCallback = dataType_2.setupCallback
 	dataType_2.setupCallback = function(control, data)
 		existingSetupCallback(control, data)
-
 		local progressBar = control:GetNamedChild("Progress")
 		PP.Bar(progressBar, --[[height]] 14, --[[fontSize]] 15)
 	end

@@ -36,21 +36,21 @@ PP.tabs = function()
 --Tabs---------------------------------------
 	for _, tabs in pairs(PP.Tabs) do
 		local duration, nSize, dSize = 50, 40, 46
-		tabs["m_object"]["m_animationDuration"]		= duration
-		tabs["m_object"]["m_normalSize"]			= nSize
-		tabs["m_object"]["m_downSize"]				= dSize
+		tabs.m_object.m_animationDuration	= duration
+		tabs.m_object.m_normalSize			= nSize
+		tabs.m_object.m_downSize			= dSize
 
-		for _, v in pairs(tabs["m_object"]["m_pool"]:GetActiveObjects()) do
-			v["m_object"]["m_anim"] = nil
+		for _, v in pairs(tabs.m_object.m_pool:GetActiveObjects()) do
+			v.m_object.m_anim = nil
 			-- local flash = v:GetNamedChild("Flash")
 			-- if flash then
 				-- v:GetNamedChild("Flash")["m_fadeAnimation"] = nil
 			-- end
-			if v["m_object"]["m_image"]:GetHeight() == 51 then
-				v["m_object"]["m_image"]:SetDimensions(dSize, dSize)
+			if v.m_object.m_image:GetHeight() == 51 then
+				v.m_object.m_image:SetDimensions(dSize, dSize)
 			end
 		end
-		-- tabs["m_object"]:UpdateButtons()
+		-- tabs.m_object:UpdateButtons()
 
 		local label = tabs:GetNamedChild("Active") or tabs:GetNamedChild("Label")
 		if label and label:GetType() == CT_LABEL then
@@ -60,22 +60,22 @@ PP.tabs = function()
 --MenuBar------------------------------------
 	for _, menuBar in pairs(PP.MenuBar) do
 		local duration, nSize, dSize = 50, 50, 60
-		menuBar["m_object"]["m_animationDuration"]	= duration
-		menuBar["m_object"]["m_normalSize"]			= nSize
-		menuBar["m_object"]["m_downSize"]			= dSize
+		menuBar.m_object.m_animationDuration	= duration
+		menuBar.m_object.m_normalSize			= nSize
+		menuBar.m_object.m_downSize				= dSize
 
-		for _, v in pairs(menuBar["m_object"]["m_pool"]:GetActiveObjects()) do
-			v["m_object"]["m_anim"] = nil
+		for _, v in pairs(menuBar.m_object.m_pool:GetActiveObjects()) do
+			v.m_object.m_anim = nil
 			-- local flash = v:GetNamedChild("Flash")
 			-- if flash then
 				-- v:GetNamedChild("Flash")["m_fadeAnimation"] = nil
 			-- end
-			if v["m_object"]["m_image"]:GetHeight() == 64 then
-				v["m_object"]["m_image"]:SetDimensions(dSize, dSize)
+			if v.m_object.m_image:GetHeight() == 64 then
+				v.m_object.m_image:SetDimensions(dSize, dSize)
 			end
 		end
 
-		-- menuBar["m_object"]:UpdateButtons()
+		-- menuBar.m_object:UpdateButtons()
 
 		local divider	= menuBar:GetParent():GetNamedChild("Divider")
 		local label		= menuBar:GetNamedChild("Label")
@@ -88,6 +88,18 @@ PP.tabs = function()
 		end
 	end
 --InfoBar------------------------------------
+	local height = 32
+
+	local function fn(label)
+		label:SetHeight(height)
+		label:SetVerticalAlignment(TEXT_ALIGN_CENTER)
+		PP.Font(label, --[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
+		PP:SetLockedFn(label, 'SetFont')
+	end
+
+	PP.Anchor(ZO_PlayerInventoryInfoBar, --[[#1]] TOPLEFT, ZO_PlayerInventoryList, BOTTOMLEFT, 0, 2, --[[#2]] true, TOPRIGHT, ZO_PlayerInventoryList, BOTTOMRIGHT, 0, 2)
+	PP.Anchor(ZO_ProvisionerTopLevelInfoBar, --[[#1]] TOPLEFT, ZO_SmithingTopLevelRefinementPanelInventoryBackpack, BOTTOMLEFT, 0, 2, --[[#2]] true, TOPRIGHT, ZO_SmithingTopLevelRefinementPanelInventoryBackpack, BOTTOMRIGHT, 0, 2)
+
 	for _, infoBar in pairs(PP.InfoBar) do
 		local divider	= infoBar:GetNamedChild("Divider")
 		local slots		= infoBar:GetNamedChild("FreeSlots")
@@ -95,36 +107,48 @@ PP.tabs = function()
 		local money		= infoBar:GetNamedChild("Money")
 		local altMoney	= infoBar:GetNamedChild("AltMoney")
 		local retrait	= infoBar:GetNamedChild("RetraitCurrency")
+		local currency1	= infoBar:GetNamedChild("Currency1")
+		local currency2	= infoBar:GetNamedChild("Currency2")
 
 		if divider and divider:GetType() == CT_CONTROL then
 			divider:SetHidden(true)
 		end
 		if slots and slots:GetType() == CT_LABEL then
-			PP.Anchor(slots,	--[[#1]] TOPLEFT,	nil, TOPLEFT, 2, 0)
-			PP.Font(slots,		--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
+			PP.Anchor(slots,	--[[#1]] TOPLEFT,	nil, TOPLEFT, 0, 0)
+			fn(slots)
 		end
 		if altSlots and altSlots:GetType() == CT_LABEL then
-			PP.Font(altSlots,	--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
+			PP.Anchor(altSlots, --[[#1]] LEFT,	nil, RIGHT, 16, 0)
+			fn(altSlots)
 		end
 		if money and money:GetType() == CT_LABEL then
-			PP.Anchor(money,	--[[#1]] TOPRIGHT,	nil, TOPRIGHT, -4, 4)
-			PP.Font(money,		--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
-			-- ZO_PreHookHandler(money, 'OnTextChanged', function()
-				-- money:SetFont(PP.f.u67 .. "|18|outline")
-			-- end)
+			PP.Anchor(money,	--[[#1]] TOPRIGHT,	nil, TOPRIGHT, -4, 0)
+			fn(money)
 		end
 		if altMoney and altMoney:GetType() == CT_LABEL then
-			PP.Font(altMoney,	--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
-			-- ZO_PreHookHandler(altMoney, 'OnTextChanged', function()
-				-- altMoney:SetFont(PP.f.u67 .. "|18|outline")
-			-- end)
+			PP.Anchor(altMoney,	--[[#1]] RIGHT,	nil, LEFT, -16, 0)
+			fn(altMoney)
 		end
 		if retrait and retrait:GetType() == CT_LABEL then
-			PP.Font(retrait,	--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
-			-- ZO_PreHookHandler(retrait, 'OnTextChanged', function()
-				-- retrait:SetFont(PP.f.u67 .. "|18|outline")
-			-- end)
+			fn(retrait)
 		end
+		if currency1 and currency1:GetType() == CT_LABEL then
+			fn(currency1)
+		end
+		if currency2 and currency2:GetType() == CT_LABEL then
+			fn(currency2)
+		end
+		PP.Anchor(infoBar, --[[#1]] TOPLEFT, nil, BOTTOMLEFT, 0, 2, --[[#2]] true, TOPRIGHT, nil, BOTTOMRIGHT, 0, 2)
 	end
-	PP.Anchor(ZO_PlayerInventoryInfoBar, --[[#1]] TOPLEFT, ZO_PlayerInventoryList, BOTTOMLEFT, 0, 0, --[[#2]] true, TOPRIGHT, ZO_PlayerInventoryList, BOTTOMRIGHT, 0, 0)
+
+--------------------------------NEW***
+	local t = {SI_INVENTORY_BACKPACK_REMAINING_SPACES, SI_INVENTORY_BACKPACK_COMPLETELY_FULL, }
+	for _, v in pairs(t) do
+		SafeAddString(v, select(1 , GetString(v):gsub(".*:", "|t24:24:/esoui/art/tooltips/icon_bag.dds|t")), 100)
+	end
+
+	local t = {SI_INVENTORY_HOUSE_BANK_REMAINING_SPACES, SI_INVENTORY_HOUSE_BANK_COMPLETELY_FULL, SI_INVENTORY_BANK_REMAINING_SPACES, SI_INVENTORY_BANK_COMPLETELY_FULL, }
+	for _, v in pairs(t) do
+		SafeAddString(v, select(1 , GetString(v):gsub(".*:", "|t24:24:/esoui/art/tooltips/icon_bank.dds|t")), 100)
+	end
 end

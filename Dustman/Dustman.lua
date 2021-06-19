@@ -154,6 +154,9 @@ local defaults = {
 	glyphs = false,
 	glyphsQuality = ITEM_QUALITY_NORMAL,
 	keepLevelGlyphs = 1,
+	--jewelry master writs 
+	jewelryMasterWrits = false,
+	jewelryMasterWritsQuality = ITEM_QUALITY_ARCANE,
 	--food/drink
 	foodAll = false,
 	foodQuality = ITEM_QUALITY_NORMAL,
@@ -393,6 +396,17 @@ local defaults = {
 -- Local functions ------------------------------------------------------------
 local function MyPrint(message)
 	CHAT_SYSTEM:AddMessage(message)
+end
+
+local function SplitString (inputstr, sep)
+        if sep == nil then
+                sep = "%s"
+        end
+        local t={}
+        for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+                table.insert(t, str)
+        end
+        return t
 end
 
 local function CanGemifyItem(bagId, slotIndex)
@@ -944,6 +958,14 @@ local function OnInventorySingleSlotUpdate(_, bagId, slotId, isNewItem)
         end
 	end
 	
+	--jewelry master writs
+	if itemType == ITEMTYPE_MASTER_WRIT and Dustman.GetSettings().jewelryMasterWrits and quality <= Dustman.GetSettings().jewelryMasterWritsQuality then
+		if SplitString(itemLink,':')[9]=='24' or SplitString(itemLink,':')[9]=='18' then --filtering jewelry writs -> 18: necklace 24: ring
+			HandleJunk(bagId, slotId, itemLink, sellPrice, true, "JEWELRY MASTER WRIT")
+			return
+        end
+	end
+	
     if quality == ITEM_QUALITY_LEGENDARY then return end
    
 	-- stolen clothes
@@ -1065,7 +1087,10 @@ local function OnInventorySingleSlotUpdate(_, bagId, slotId, isNewItem)
 		
 		--exclude crafted items
 		if IsItemLinkCrafted(itemLink) then return end
-
+		
+		--exclude companion items
+		if GetItemActorCategory(bagId, slotId) == GAMEPLAY_ACTOR_CATEGORY_COMPANION then return end
+		
 		local trait = GetItemTrait(bagId, slotId)
 		local isResearchable = IsItemNeededForResearch(itemLink)
 		local craftingType = LR:GetItemCraftingSkill(itemLink)

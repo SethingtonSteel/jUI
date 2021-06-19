@@ -10,7 +10,7 @@ local ctrlVars = FCOIS.ZOControlVars
 --==========================================================================================================================================
 
 --Determine which filterPanelId is currently active and set the whereAreWe variable
-function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, calledFromExternalAddon)
+function FCOIS.getWhereAreWe(panelId, panelIdAtCall, panelIdParent, bag, slot, isDragAndDrop, calledFromExternalAddon)
     --The number for the orientation (which filter panel ID and which sub-checks were done -> for the chat output and the alert message determination)
     local whereAreWe = FCOIS_CON_DESTROY
     --The current game's SCENE and name (used for determining bank/guild bank deposit)
@@ -20,7 +20,7 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
     local otherAddons = FCOIS.otherAddons
 
     --======= FUNCTIONs ============================================================
-    --Function to check a single item's type and get the whereAreWe panel ID
+    --Function to check a single item's type and get the whereAreWe ID
     local function checkSingleItemProtection(p_bag, p_slotIndex, whereAreWeBefore)
         if settings.debug then FCOIS.debugMessage( "[checkSingleItemProtection]","panelId: " .. tostring(panelId) .. ", whereAreWeBefore: " .. tostring(whereAreWeBefore .. ", calledFromExternalAddon: " ..tostring(calledFromExternalAddon)), true, FCOIS_DEBUG_DEPTH_ALL) end
         if p_bag == nil or p_slotIndex == nil then return false end
@@ -69,6 +69,19 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
         return locWhereAreWe
     end
 
+    --Check if an item should be used or should be equipped (only LF_INVENTORY or LF_INVENTORY_COMPANION) via double click e.g.
+    --returns FCOIS_CON_FALLBACK as whereAreWe in that case and disables the further checks in ItemSelectionHandler this way
+    local function checkIfItemShouldBeUsedOrEquipped(p_whereAreWe, p_bag, p_slot)
+        if p_whereAreWe ~= FCOIS_CON_FALLBACK then
+            --Get the whereAreWe panel ID by checking the item's type etc. now and allow equipping items via double click e.g.
+            --by returning the FCOIS_CON_FALLBACK value
+            return checkSingleItemProtection(p_bag, p_slot)
+        else
+            return p_whereAreWe
+        end
+    end
+
+
     --======= WhereAreWe determination ============================================================
 --*********************************************************************************************************************************************************************************
     --------------------------------------------------------------------------------------------------------------------
@@ -78,30 +91,31 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
     --------------------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------------------------------------
-    if otherAddons.craftBagExtendedActive and INVENTORY_CRAFT_BAG and (panelId == LF_CRAFTBAG or not ctrlVars.CRAFTBAG:IsHidden()) then
+    if otherAddons.craftBagExtendedActive and INVENTORY_CRAFT_BAG and ((calledFromExternalAddon and panelId == LF_CRAFTBAG) or (not calledFromExternalAddon and (panelId == LF_CRAFTBAG or not ctrlVars.CRAFTBAG:IsHidden()))) then
+        panelIdParent = panelIdParent or FCOIS.gFilterWhereParent
         --Inside mail panel?
-        if (not ctrlVars.MAIL_SEND.control:IsHidden() or FCOIS.gFilterWhereParent == LF_MAIL_SEND) then
+        if (calledFromExternalAddon and panelIdParent == LF_MAIL_SEND) or (not calledFromExternalAddon and (not ctrlVars.MAIL_SEND.control:IsHidden() or FCOIS.gFilterWhereParent == LF_MAIL_SEND)) then
             whereAreWe = FCOIS_CON_MAIL
             --Inside trading player 2 player panel?
-        elseif (not ctrlVars.PLAYER_TRADE.control:IsHidden() or FCOIS.gFilterWhereParent == LF_TRADE) then
+        elseif (calledFromExternalAddon and panelIdParent == LF_TRADE) or (not calledFromExternalAddon and (not ctrlVars.PLAYER_TRADE.control:IsHidden() or FCOIS.gFilterWhereParent == LF_TRADE)) then
             whereAreWe = FCOIS_CON_TRADE
             --Are we at the store scene
-        elseif currentSceneName == ctrlVars.vendorSceneName then
+        elseif currentSceneName == ctrlVars.vendorSceneName or (panelIdParent == LF_VENDOR_BUY or panelIdParent == LF_VENDOR_SELL or panelIdParent == LF_VENDOR_BUYBACK or panelIdParent == LF_VENDOR_SELL) then
             --Vendor buy
-            if (FCOIS.gFilterWhereParent == LF_VENDOR_BUY or (not ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden())) then
+            if (calledFromExternalAddon and panelIdParent == LF_VENDOR_BUY) or (not calledFromExternalAddon and (FCOIS.gFilterWhereParent == LF_VENDOR_BUY or (not ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_BUY
                 --Vendor sell
-            elseif (FCOIS.gFilterWhereParent == LF_VENDOR_SELL or (ctrlVars.STORE:IsHidden() and not ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden())) then
+            elseif (calledFromExternalAddon and panelIdParent == LF_VENDOR_SELL) or (not calledFromExternalAddon and (FCOIS.gFilterWhereParent == LF_VENDOR_SELL or (ctrlVars.STORE:IsHidden() and not ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_SELL
                 --Vendor buyback
-            elseif (FCOIS.gFilterWhereParent == LF_VENDOR_BUYBACK or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and not ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden())) then
+            elseif (calledFromExternalAddon and panelIdParent == LF_VENDOR_BUYBACK) or (not calledFromExternalAddon and (FCOIS.gFilterWhereParent == LF_VENDOR_BUYBACK or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and not ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_BUYBACK
                 --Vendor repair
-            elseif (FCOIS.gFilterWhereParent == LF_VENDOR_SELL or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and not ctrlVars.REPAIR_LIST:IsHidden())) then
+            elseif (calledFromExternalAddon and panelIdParent == LF_VENDOR_SELL) or (not calledFromExternalAddon and (FCOIS.gFilterWhereParent == LF_VENDOR_SELL or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and not ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_REPAIR
             end
             --Inside guild store selling?
-        elseif (not ctrlVars.GUILD_STORE:IsHidden() or FCOIS.gFilterWhereParent == LF_GUILDSTORE_SELL) then
+        elseif (calledFromExternalAddon and panelIdParent == LF_GUILDSTORE_SELL) or (not calledFromExternalAddon and (not ctrlVars.GUILD_STORE:IsHidden() or FCOIS.gFilterWhereParent == LF_GUILDSTORE_SELL)) then
             whereAreWe = FCOIS_CON_GUILD_STORE_SELL
             --[[
             --There is no CraftBag or CraftBagExtended at a guild bank withdraw panel!
@@ -110,10 +124,10 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 --TODO: Why FCOIS_CON_SELL here for Guildstore withdraw??? To test!
                 whereAreWe = FCOIS_CON_SELL
             ]]
-            --Are we at the inventory/bank/guild bank/house bank and trying to use/equip/deposit an item?
-        elseif (FCOIS.gFilterWhereParent == LF_BANK_DEPOSIT or FCOIS.gFilterWhereParent == LF_GUILDBANK_DEPOSIT or FCOIS.gFilterWhereParent == LF_HOUSE_BANK_DEPOSIT) then
-            --Check if player or guild bank is active by checking current scene in scene manager
-            if currentSceneName ~= nil and (currentSceneName == ctrlVars.bankSceneName or currentSceneName == ctrlVars.guildBankSceneName or currentSceneName == ctrlVars.houseBankSceneName) then
+        --Are we at the inventory/bank/guild bank/house bank and trying to use/equip/deposit an item?
+        elseif (calledFromExternalAddon and (panelIdParent == LF_BANK_DEPOSIT or panelIdParent == LF_GUILDBANK_DEPOSIT or panelIdParent == LF_HOUSE_BANK_DEPOSIT)) or (not calledFromExternalAddon and (FCOIS.gFilterWhereParent == LF_BANK_DEPOSIT or FCOIS.gFilterWhereParent == LF_GUILDBANK_DEPOSIT or FCOIS.gFilterWhereParent == LF_HOUSE_BANK_DEPOSIT)) then
+            --Check if player or guild or house bank is active by checking current scene in scene manager, or using ZOs API functions
+            if (IsGuildBankOpen() or IsBankOpen() or (currentSceneName ~= nil and (currentSceneName == ctrlVars.bankSceneName or currentSceneName == ctrlVars.guildBankSceneName or currentSceneName == ctrlVars.houseBankSceneName))) then
                 --If bank/guild bank/house bank deposit tab is active
                 if ctrlVars.BANK:IsHidden() and ctrlVars.GUILD_BANK:IsHidden() and ctrlVars.HOUSE_BANK:IsHidden() then
                     --If the item is double clicked + marked deposit it, instead of blocking the deposition
@@ -144,37 +158,37 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
     else -- if FCOIS.otherAddons.craftBagExtendedActive and INVENTORY_CRAFT_BAG and (panelId == LF_CRAFTBAG or not ctrlVars.CRAFTBAG:IsHidden()) then
 
         --Inside mail panel?
-        if (not ctrlVars.MAIL_SEND.control:IsHidden() or panelId == LF_MAIL_SEND) then
+        if (calledFromExternalAddon and panelId == LF_MAIL_SEND) or (not calledFromExternalAddon and (not ctrlVars.MAIL_SEND.control:IsHidden() or panelId == LF_MAIL_SEND)) then
             whereAreWe = FCOIS_CON_MAIL
             --Inside trading player 2 player panel?
-        elseif (not ctrlVars.PLAYER_TRADE.control:IsHidden() or panelId == LF_TRADE) then
+        elseif (calledFromExternalAddon and panelId == LF_TRADE) or (not calledFromExternalAddon and (not ctrlVars.PLAYER_TRADE.control:IsHidden() or panelId == LF_TRADE)) then
             whereAreWe = FCOIS_CON_TRADE
             --Are we at the store scene?
-        elseif currentSceneName == ctrlVars.vendorSceneName or panelId == LF_VENDOR_BUY or panelId == LF_VENDOR_SELL or panelId == LF_VENDOR_BUYBACK or panelId == LF_VENDOR_REPAIR then
+        elseif (calledFromExternalAddon and (panelId == LF_VENDOR_BUY or panelId == LF_VENDOR_SELL or panelId == LF_VENDOR_BUYBACK or panelId == LF_VENDOR_REPAIR)) or (not calledFromExternalAddon and (currentSceneName == ctrlVars.vendorSceneName or panelId == LF_VENDOR_BUY or panelId == LF_VENDOR_SELL or panelId == LF_VENDOR_BUYBACK or panelId == LF_VENDOR_REPAIR)) then
             --Vendor buy
-            if (panelId == LF_VENDOR_BUY or (not ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden())) then
+            if (calledFromExternalAddon and panelId == LF_VENDOR_BUY) or (not calledFromExternalAddon and (panelId == LF_VENDOR_BUY or (not ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_BUY
                 --Vendor sell
-            elseif (panelId == LF_VENDOR_SELL or (ctrlVars.STORE:IsHidden() and not ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden())) then
+            elseif (calledFromExternalAddon and panelId == LF_VENDOR_SELL) or (not calledFromExternalAddon and (panelId == LF_VENDOR_SELL or (ctrlVars.STORE:IsHidden() and not ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_SELL
                 --Vendor buyback
-            elseif (panelId == LF_VENDOR_BUYBACK or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and not ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden())) then
+            elseif (calledFromExternalAddon and panelId == LF_VENDOR_BUYBACK) or (not calledFromExternalAddon and (panelId == LF_VENDOR_BUYBACK or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and not ctrlVars.STORE_BUY_BACK:IsHidden() and ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_BUYBACK
                 --Vendor repair
-            elseif (panelId == LF_VENDOR_REPAIR or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and not ctrlVars.REPAIR_LIST:IsHidden())) then
+            elseif (calledFromExternalAddon and panelId == LF_VENDOR_REPAIR) or (not calledFromExternalAddon and (panelId == LF_VENDOR_REPAIR or (ctrlVars.STORE:IsHidden() and ctrlVars.BACKPACK_BAG:IsHidden() and ctrlVars.STORE_BUY_BACK:IsHidden() and not ctrlVars.REPAIR_LIST:IsHidden()))) then
                 whereAreWe = FCOIS_CON_REPAIR
             end
             --Fence/Launder scene
-        elseif currentSceneName == ctrlVars.FENCE_SCENE_NAME or panelId == LF_FENCE_SELL or panelId == LF_FENCE_LAUNDER then
+        elseif (calledFromExternalAddon and (panelId == LF_FENCE_SELL or panelId == LF_FENCE_LAUNDER)) or (not calledFromExternalAddon and (currentSceneName == ctrlVars.FENCE_SCENE_NAME or panelId == LF_FENCE_SELL or panelId == LF_FENCE_LAUNDER)) then
             --Inside fence sell?
-            if ((FENCE_KEYBOARD ~= nil and FENCE_KEYBOARD.mode ~= nil and FENCE_KEYBOARD.mode == ZO_MODE_STORE_SELL_STOLEN) or panelId == LF_FENCE_SELL) then
+            if (calledFromExternalAddon and panelId == LF_FENCE_SELL) or (not calledFromExternalAddon and ((FENCE_KEYBOARD ~= nil and FENCE_KEYBOARD.mode ~= nil and FENCE_KEYBOARD.mode == ZO_MODE_STORE_SELL_STOLEN) or panelId == LF_FENCE_SELL)) then
                 whereAreWe = FCOIS_CON_FENCE_SELL
                 --Inside launder sell?
-            elseif ((FENCE_KEYBOARD ~= nil and FENCE_KEYBOARD.mode ~= nil and FENCE_KEYBOARD.mode == ZO_MODE_STORE_LAUNDER) or panelId == LF_FENCE_LAUNDER) then
+            elseif (calledFromExternalAddon and panelId == LF_FENCE_LAUNDER) or (not calledFromExternalAddon and ((FENCE_KEYBOARD ~= nil and FENCE_KEYBOARD.mode ~= nil and FENCE_KEYBOARD.mode == ZO_MODE_STORE_LAUNDER) or panelId == LF_FENCE_LAUNDER)) then
                 whereAreWe = FCOIS_CON_LAUNDER_SELL
             end
             --Inside crafting station refinement
-        elseif (not ctrlVars.REFINEMENT:IsHidden() or (panelId == LF_SMITHING_REFINE or panelId == LF_JEWELRY_REFINE)) then
+        elseif (calledFromExternalAddon and (panelId == LF_SMITHING_REFINE or panelId == LF_JEWELRY_REFINE)) or (not calledFromExternalAddon and (not ctrlVars.REFINEMENT:IsHidden() or (panelId == LF_SMITHING_REFINE or panelId == LF_JEWELRY_REFINE))) then
             local craftType = GetCraftingInteractionType()
             if craftType == CRAFTING_TYPE_JEWELRYCRAFTING then
                 whereAreWe = FCOIS_CON_JEWELRY_REFINE
@@ -182,7 +196,7 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 whereAreWe = FCOIS_CON_REFINE
             end
             --Inside crafting station deconstruction
-        elseif (not ctrlVars.DECONSTRUCTION:IsHidden() or (panelId == LF_SMITHING_DECONSTRUCT or panelId == LF_JEWELRY_DECONSTRUCT)) then
+        elseif (calledFromExternalAddon and (panelId == LF_SMITHING_DECONSTRUCT or panelId == LF_JEWELRY_DECONSTRUCT)) or (not calledFromExternalAddon and (not ctrlVars.DECONSTRUCTION:IsHidden() or (panelId == LF_SMITHING_DECONSTRUCT or panelId == LF_JEWELRY_DECONSTRUCT))) then
             local craftType = GetCraftingInteractionType()
             if craftType == CRAFTING_TYPE_JEWELRYCRAFTING then
                 whereAreWe = FCOIS_CON_JEWELRY_DECONSTRUCT
@@ -190,7 +204,7 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 whereAreWe = FCOIS_CON_DECONSTRUCT
             end
             --Inside crafting station improvement
-        elseif (not ctrlVars.IMPROVEMENT:IsHidden() or (panelId == LF_SMITHING_IMPROVEMENT or panelId == LF_JEWELRY_IMPROVEMENT)) then
+        elseif (calledFromExternalAddon and (panelId == LF_SMITHING_IMPROVEMENT or panelId == LF_JEWELRY_IMPROVEMENT)) or (not calledFromExternalAddon and (not ctrlVars.IMPROVEMENT:IsHidden() or (panelId == LF_SMITHING_IMPROVEMENT or panelId == LF_JEWELRY_IMPROVEMENT))) then
             local craftType = GetCraftingInteractionType()
             if craftType == CRAFTING_TYPE_JEWELRYCRAFTING then
                 whereAreWe = FCOIS_CON_JEWELRY_IMPROVE
@@ -198,7 +212,7 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 whereAreWe = FCOIS_CON_IMPROVE
             end
             --Are we at the crafting stations research panel's popup list dialog?
-        elseif (FCOIS.isResearchListDialogShown() or (panelId == LF_SMITHING_RESEARCH_DIALOG or panelId == LF_JEWELRY_RESEARCH_DIALOG)) then
+        elseif (calledFromExternalAddon and (panelId == LF_SMITHING_RESEARCH_DIALOG or panelId == LF_JEWELRY_RESEARCH_DIALOG)) or (not calledFromExternalAddon and (FCOIS.isResearchListDialogShown() or (panelId == LF_SMITHING_RESEARCH_DIALOG or panelId == LF_JEWELRY_RESEARCH_DIALOG))) then
             local craftType = GetCraftingInteractionType()
             if craftType == CRAFTING_TYPE_JEWELRYCRAFTING then
                 whereAreWe = FCOIS_CON_JEWELRY_RESEARCH_DIALOG
@@ -206,7 +220,7 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 whereAreWe = FCOIS_CON_RESEARCH_DIALOG
             end
             --Are we at the crafting stations research panel?
-        elseif (not ctrlVars.RESEARCH:IsHidden() or (panelId == LF_SMITHING_RESEARCH or panelId == LF_JEWELRY_RESEARCH)) then
+        elseif (calledFromExternalAddon and (panelId == LF_SMITHING_RESEARCH or panelId == LF_JEWELRY_RESEARCH)) or (not calledFromExternalAddon and (not ctrlVars.RESEARCH:IsHidden() or (panelId == LF_SMITHING_RESEARCH or panelId == LF_JEWELRY_RESEARCH))) then
             local craftType = GetCraftingInteractionType()
             if craftType == CRAFTING_TYPE_JEWELRYCRAFTING then
                 whereAreWe = FCOIS_CON_JEWELRY_RESEARCH
@@ -214,7 +228,7 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 whereAreWe = FCOIS_CON_RESEARCH
             end
             --Inside enchanting station
-        elseif (not ctrlVars.ENCHANTING_STATION:IsHidden() or (panelId == LF_ENCHANTING_EXTRACTION or panelId == LF_ENCHANTING_CREATION)) then
+        elseif (calledFromExternalAddon and (panelId == LF_ENCHANTING_EXTRACTION or panelId == LF_ENCHANTING_CREATION)) or (not calledFromExternalAddon and (not ctrlVars.ENCHANTING_STATION:IsHidden() or (panelId == LF_ENCHANTING_EXTRACTION or panelId == LF_ENCHANTING_CREATION))) then
             --Enchanting Extraction panel?
             if panelId == LF_ENCHANTING_EXTRACTION or ENCHANTING.enchantingMode == 2 then
                 whereAreWe = FCOIS_CON_ENCHANT_EXTRACT
@@ -223,32 +237,37 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 whereAreWe = FCOIS_CON_ENCHANT_CREATE
             end
             --Inside guild store selling?
-        elseif (not ctrlVars.GUILD_STORE:IsHidden() or panelId == LF_GUILDSTORE_SELL) then
+        elseif (calledFromExternalAddon and panelId == LF_GUILDSTORE_SELL) or (not calledFromExternalAddon and (not ctrlVars.GUILD_STORE:IsHidden() or panelId == LF_GUILDSTORE_SELL)) then
             whereAreWe = FCOIS_CON_GUILD_STORE_SELL
             --Are we at the alchemy station?
-        elseif (not ctrlVars.ALCHEMY_STATION:IsHidden() or panelId == LF_ALCHEMY_CREATION) then
+        elseif (calledFromExternalAddon and panelId == LF_ALCHEMY_CREATION) or (not calledFromExternalAddon and (not ctrlVars.ALCHEMY_STATION:IsHidden() or panelId == LF_ALCHEMY_CREATION)) then
             whereAreWe = FCOIS_CON_ALCHEMY_DESTROY
             --Are we at a bank and trying to withdraw some items by double clicking it?
-        elseif (not ctrlVars.BANK:IsHidden() or panelId == LF_BANK_WITHDRAW) then
+        elseif (calledFromExternalAddon and panelId == LF_BANK_WITHDRAW) or (not calledFromExternalAddon and (not ctrlVars.BANK:IsHidden() or panelId == LF_BANK_WITHDRAW)) then
             --Set whereAreWe to FCOIS_CON_FALLBACK so the anti-settings mapping function returns "false"
             whereAreWe = FCOIS_CON_FALLBACK
-        elseif (not ctrlVars.HOUSE_BANK:IsHidden() or panelId == LF_HOUSE_BANK_WITHDRAW) then
+        elseif (calledFromExternalAddon and panelId == LF_HOUSE_BANK_WITHDRAW) or (not calledFromExternalAddon and (not ctrlVars.HOUSE_BANK:IsHidden() or panelId == LF_HOUSE_BANK_WITHDRAW)) then
             --Set whereAreWe to FCOIS_CON_FALLBACK so the anti-settings mapping function returns "false"
             whereAreWe = FCOIS_CON_FALLBACK
             --Are we at a guild bank and trying to withdraw some items by double clicking it?
-        elseif (not ctrlVars.GUILD_BANK:IsHidden() or panelId == LF_GUILDBANK_WITHDRAW) then
+        elseif (calledFromExternalAddon and panelId == LF_GUILDBANK_WITHDRAW) or (not calledFromExternalAddon and (not ctrlVars.GUILD_BANK:IsHidden() or panelId == LF_GUILDBANK_WITHDRAW)) then
             --Set whereAreWe to FCOIS_CON_FALLBACK so the anti-settings mapping function returns "false"
             whereAreWe = FCOIS_CON_FALLBACK
             --Are we at a transmutation/retrait station?
-        elseif (FCOIS.isRetraitStationShown() or panelId == LF_RETRAIT) then
+        elseif (calledFromExternalAddon and panelId == LF_RETRAIT) or (not calledFromExternalAddon and (FCOIS.isRetraitStationShown() or panelId == LF_RETRAIT)) then
             --Set whereAreWe to FCOIS_CON_FALLBACK so the anti-settings mapping function returns "false"
             whereAreWe = FCOIS_CON_RETRAIT
-            --Are we at the inventory/bank/guild bank and trying to use/equip/deposit an item?
-        elseif (not ctrlVars.BACKPACK:IsHidden() or panelId == LF_INVENTORY or panelId == LF_BANK_DEPOSIT or panelId == LF_GUILDBANK_DEPOSIT or panelId == LF_HOUSE_BANK_DEPOSIT) then
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        --Are we at a companion inventory?
+        elseif (calledFromExternalAddon and panelId == LF_INVENTORY_COMPANION) or (not calledFromExternalAddon and (FCOIS.isCompanionInventoryShown() or panelId == LF_INVENTORY_COMPANION)) then
+            whereAreWe = FCOIS_CON_COMPANION_DESTROY
+            whereAreWe = checkIfItemShouldBeUsedOrEquipped(whereAreWe, bag, slot)
+        --Are we at the inventory/bank/guild bank and trying to use/equip/deposit an item?
+        elseif (calledFromExternalAddon and (panelId == LF_INVENTORY or panelId == LF_BANK_DEPOSIT or panelId == LF_GUILDBANK_DEPOSIT or panelId == LF_HOUSE_BANK_DEPOSIT)) or (not calledFromExternalAddon and (not ctrlVars.BACKPACK:IsHidden() or panelId == LF_INVENTORY or panelId == LF_BANK_DEPOSIT or panelId == LF_GUILDBANK_DEPOSIT or panelId == LF_HOUSE_BANK_DEPOSIT)) then
             --Check if player or guild bank is active by checking current scene in scene manager
-            if currentSceneName ~= nil and (currentSceneName == ctrlVars.bankSceneName or currentSceneName == ctrlVars.guildBankSceneName or currentSceneName == ctrlVars.houseBankSceneName) then
+            if (calledFromExternalAddon and (panelId == LF_INVENTORY or panelId == LF_BANK_DEPOSIT or panelId == LF_GUILDBANK_DEPOSIT or panelId == LF_HOUSE_BANK_DEPOSIT)) or (not calledFromExternalAddon and (IsGuildBankOpen() or IsBankOpen() or (currentSceneName ~= nil and (currentSceneName == ctrlVars.bankSceneName or currentSceneName == ctrlVars.guildBankSceneName or currentSceneName == ctrlVars.houseBankSceneName)))) then
                 --If bank/guild bank/house deposit tab is active
-                if (ctrlVars.BANK:IsHidden() and ctrlVars.GUILD_BANK:IsHidden() and ctrlVars.HOUSE_BANK:IsHidden()) or (panelId == LF_BANK_DEPOSIT or panelId == LF_GUILDBANK_DEPOSIT or panelId == LF_HOUSE_BANK_DEPOSIT) then
+                if (calledFromExternalAddon and (panelId == LF_BANK_DEPOSIT or panelId == LF_GUILDBANK_DEPOSIT or panelId == LF_HOUSE_BANK_DEPOSIT)) or (not calledFromExternalAddon and ((ctrlVars.BANK:IsHidden() and ctrlVars.GUILD_BANK:IsHidden() and ctrlVars.HOUSE_BANK:IsHidden()) or (panelId == LF_BANK_DEPOSIT or panelId == LF_GUILDBANK_DEPOSIT or panelId == LF_HOUSE_BANK_DEPOSIT))) then
                     --If the item is double clicked + marked deposit it, instead of blocking the deposit
                     --Set whereAreWe to FCOIS_CON_FALLBACK so the anti-settings mapping function returns "false"
                     whereAreWe = FCOIS_CON_FALLBACK
@@ -258,11 +277,8 @@ function FCOIS.getWhereAreWe(panelId, panelIdAtCall, bag, slot, isDragAndDrop, c
                 end
             end
             --Only do the item checks if the item should not be deposited at a bank/guild bank/house bank
-            if whereAreWe ~= FCOIS_CON_FALLBACK then
-                --Get the whereAreWe panel ID by checking the item's type etc. now
-                whereAreWe = checkSingleItemProtection(bag, slot)
-            end
-            --All others: We are trying to destroy an item
+            whereAreWe = checkIfItemShouldBeUsedOrEquipped(whereAreWe, bag, slot)
+        --All others: We are trying to destroy an item
         else
             whereAreWe = FCOIS_CON_DESTROY
         end
@@ -325,32 +341,32 @@ function FCOIS.checkActivePanel(comingFrom, overwriteFilterWhere)
 --d("[FCOIS.checkActivePanel] comingFrom/Before: " .. tostring(comingFrom) .. ", overwriteFilterWhere: " ..tostring(overwriteFilterWhere).. ", currentSceneName: " ..tostring(currentSceneName))
 
     --Player bank
-    if (currentSceneName ~= nil and currentSceneName == ctrlVars2.bankSceneName and not ctrlVars2.BANK:IsHidden()) or comingFrom == LF_BANK_WITHDRAW then
+    if ((currentSceneName ~= nil and currentSceneName == ctrlVars2.bankSceneName) and not ctrlVars2.BANK:IsHidden()) or comingFrom == LF_BANK_WITHDRAW then
         --Update the filterPanelId
         FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_BANK_WITHDRAW)
         inventoryName = ctrlVars2.BANK_INV
     --House bank
-    elseif (currentSceneName ~= nil and currentSceneName == ctrlVars2.houseBankSceneName and not ctrlVars2.HOUSE_BANK:IsHidden()) or comingFrom == LF_HOUSE_BANK_WITHDRAW then
+    elseif ((currentSceneName ~= nil and currentSceneName == ctrlVars2.houseBankSceneName) and not ctrlVars2.HOUSE_BANK:IsHidden()) or comingFrom == LF_HOUSE_BANK_WITHDRAW then
         --Update the filterPanelId
         FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_HOUSE_BANK_WITHDRAW)
         inventoryName = ctrlVars2.HOUSE_BANK_INV
     --Player inventory at bank (deposit)
-    elseif (currentSceneName ~= nil and currentSceneName == ctrlVars2.bankSceneName and ctrlVars2.BANK:IsHidden()) or comingFrom == LF_BANK_DEPOSIT then
+    elseif ((currentSceneName ~= nil and currentSceneName == ctrlVars2.bankSceneName) and ctrlVars2.BANK:IsHidden()) or comingFrom == LF_BANK_DEPOSIT then
         --Update the filterPanelId
         FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_BANK_DEPOSIT)
         inventoryName = ctrlVars2.INV
     --Player inventory at house bank (deposit)
-    elseif (currentSceneName ~= nil and currentSceneName == ctrlVars2.houseBankSceneName and ctrlVars2.HOUSE_BANK:IsHidden()) or comingFrom == LF_HOUSE_BANK_DEPOSIT then
+    elseif ((currentSceneName ~= nil and currentSceneName == ctrlVars2.houseBankSceneName) and ctrlVars2.HOUSE_BANK:IsHidden()) or comingFrom == LF_HOUSE_BANK_DEPOSIT then
         --Update the filterPanelId
         FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_HOUSE_BANK_DEPOSIT)
         inventoryName = ctrlVars2.INV
     --Guild bank
-    elseif (currentSceneName ~= nil and currentSceneName == ctrlVars2.guildBankSceneName and not ctrlVars2.GUILD_BANK:IsHidden()) or comingFrom == LF_GUILDBANK_WITHDRAW then
+    elseif ((currentSceneName ~= nil and currentSceneName == ctrlVars2.guildBankSceneName) and not ctrlVars2.GUILD_BANK:IsHidden()) or comingFrom == LF_GUILDBANK_WITHDRAW then
         --Update the filterPanelId
         FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_GUILDBANK_WITHDRAW)
         inventoryName = ctrlVars2.GUILD_BANK_INV
     --Player inventory at guild bank (deposit)
-    elseif (currentSceneName ~= nil and currentSceneName == ctrlVars2.guildBankSceneName and ctrlVars2.GUILD_BANK:IsHidden()) or comingFrom == LF_GUILDBANK_DEPOSIT then
+    elseif ((currentSceneName ~= nil and currentSceneName == ctrlVars2.guildBankSceneName) and ctrlVars2.GUILD_BANK:IsHidden()) or comingFrom == LF_GUILDBANK_DEPOSIT then
         --Update the filterPanelId
         FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_GUILDBANK_DEPOSIT)
         inventoryName = ctrlVars2.INV
@@ -494,6 +510,11 @@ function FCOIS.checkActivePanel(comingFrom, overwriteFilterWhere)
         --Update the filterPanelId
         FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_RETRAIT)
         inventoryName = ctrlVars2.RETRAIT_INV
+    --COmpanion inventory
+    elseif (FCOIS.isCompanionInventoryShown() or comingFrom == LF_INVENTORY_COMPANION) then
+        --Update the filterPanelId
+        FCOIS.gFilterWhere = FCOIS.getFilterWhereBySettings(LF_INVENTORY_COMPANION)
+        inventoryName = ctrlVars2.COMPANION_INV_CONTROL
     --Player inventory
     elseif not ctrlVars2.INV:IsHidden() then
         --Update the filterPanelId

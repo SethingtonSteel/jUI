@@ -12,14 +12,6 @@ PP.skillsScene = function()
 	{	type				= "submenu",
 		name				= GetString(PP_LAM_SCENE_SKILLS),
 		controls = {
-			--Skills list---------------------------------
-			{	type				= "checkbox",
-				name				= GetString(PP_LAM_LIST_BG),
-				getFunc				= function() return SV.skillsListBG end,
-				setFunc				= function(value) SV.skillsListBG = value end,
-				default				= DEF.skillsListBG,
-				requiresReload		= true,
-			},
 			--Skills tree---------------------------------
 			{	type				= "checkbox",
 				name				= GetString(PP_LAM_SCENE_SKILLS_SKILLS_TREE_UNWRAPPED),
@@ -67,9 +59,6 @@ PP.skillsScene = function()
 
 	local skillList = ZO_SkillsSkillList
 
-	if SV.skillsListBG then
-		PP.ListBackdrop(skillList, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-	end
 	PP.ScrollBar(skillList,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
 	PP.Anchor(skillList, --[[#1]] TOPLEFT, ZO_SkillsSkillInfo, BOTTOMLEFT, -60, 2, --[[#2]] true, BOTTOMRIGHT, ZO_Skills, BOTTOMRIGHT, 0, -40)
 
@@ -90,10 +79,6 @@ PP.skillsScene = function()
 --ZO_SkillsSkillLinesContainer
 
 	local skillLinesContainer = ZO_SkillsSkillLinesContainer
-
-	if SV.skillsTreeBG then
-		PP.ListBackdrop(skillLinesContainer, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
-	end
 
 	ZO_Scroll_SetMaxFadeDistance(skillLinesContainer, 10)
 	PP.Anchor(skillLinesContainer, --[[#1]] TOPLEFT, ZO_SkillsSkyShards, BOTTOMLEFT, 0, 5,	--[[#2]] true, BOTTOMLEFT, ZO_Skills, BOTTOMLEFT, 0, 34)

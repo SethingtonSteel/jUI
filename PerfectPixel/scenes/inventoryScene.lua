@@ -21,15 +21,12 @@ PP.inventoryScene = function()
 				 },
 			})
 	--===============================================================================================--
-	local TopOffsetY			= 100
-	local BottomOffsetY			= -80
-	local bankTopOffsetY		= 100
+	local TopOffsetY			= 110
+	local BottomOffsetY			= -90
+	local bankTopOffsetY		= 110
 	local bankBottomOffsetY		= -90
 	local mailTopOffsetY		= 110
 	local mailBottomOffsetY		= -90
-	-- inventoryTopOffsetY =
-	-- inventoryBottomOffsetY =
-	-- inventoryFilterDividerTopOffsetY =
 
 	-- Backpack Layout Fragment ---------------------
 	BACKPACK_DEFAULT_LAYOUT_FRAGMENT["layoutData"]["inventoryTopOffsetY"]				= TopOffsetY
@@ -63,8 +60,14 @@ PP.inventoryScene = function()
 	BACKPACK_PLAYER_TRADE_LAYOUT_FRAGMENT["layoutData"]["inventoryTopOffsetY"]			= TopOffsetY
 	BACKPACK_PLAYER_TRADE_LAYOUT_FRAGMENT["layoutData"]["inventoryBottomOffsetY"]		= BottomOffsetY
 
-	-- BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["inventoryTopOffsetY"]			= bankTopOffsetY
-	-- BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["inventoryBottomOffsetY"]		= bankBottomOffsetY
+	BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["inventoryTopOffsetY"]			= bankTopOffsetY
+	BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["inventoryBottomOffsetY"]		= bankBottomOffsetY
+	-- BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["width"]						= 635
+	-- BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["sortByNameWidth"]				= 311
+	BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["sortByOffsetY"]				= 103
+	BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["backpackOffsetY"]				= 136
+	BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT["layoutData"]["emptyLabelOffsetY"]			= 200
+
 	-------------------------------------------------
 	local orgApplySharedBagLayout = ZO_InventoryManager.ApplySharedBagLayout
 	function ZO_InventoryManager:ApplySharedBagLayout(inventoryControl, layoutData)
@@ -104,6 +107,7 @@ PP.inventoryScene = function()
 	for _, v in ipairs(invList) do
 		ZO_InventoryManager:ApplySharedBagLayout(v, BACKPACK_DEFAULT_LAYOUT_FRAGMENT.layoutData)
 	end
+	function ZO_InventoryManager:ApplySharedBagLayout(...) end
 
 -- CHARACTER_WINDOW_STATS_FRAGMENT
 	PP:CreateBackground(ZO_Character,		--[[#1]] nil, nil, nil, 0, 16, --[[#2]] nil, ZO_CharacterWindowStats, nil, -2, 32, true)
@@ -134,11 +138,12 @@ PP.inventoryScene = function()
 	end
 
 	PP:CreateBackground(ZO_PlayerInventory,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
+	PP:CreateBackground(ZO_QuestItems,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 	PP:CreateBackground(ZO_CraftBag,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 	PP:CreateBackground(ZO_InventoryWallet,	--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 	PP:CreateBackground(ZO_QuickSlot,		--[[#1]] nil, nil, nil, -6, 0, --[[#2]] nil, nil, nil, 0, 6)
 
-	local inventoryLists = {ZO_PlayerInventoryList, ZO_PlayerInventoryQuest, ZO_CraftBagList, ZO_InventoryWalletList, ZO_QuickSlotList}
+	local inventoryLists = {ZO_PlayerInventoryList, ZO_QuestItemsList, ZO_CraftBagList, ZO_InventoryWalletList, ZO_QuickSlotList}
 	for _, v in ipairs(inventoryLists) do
 		PP.ScrollBar(v,	--[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
 	end
@@ -150,6 +155,12 @@ PP.inventoryScene = function()
 
 	PP.Anchor(ZO_InventoryWallet,				--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Anchor(ZO_InventoryWalletFilterDivider,	--[[#1]] TOP, ZO_InventoryWallet, TOP, 0, 60)
+
+	PP.Anchor(ZO_QuestItems,					--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
+	PP.Anchor(ZO_QuestItemsList,				--[[#1]] nil, nil, nil, 0, 1, --[[#2]] true, nil, nil, nil, nil, nil)
+	PP.Anchor(ZO_QuestItemsSortBy,				--[[#1]] TOPRIGHT, ZO_QuestItems, TOPRIGHT, 0, 33)
+	PP.Anchor(ZO_QuestItemsFilterDivider,		--[[#1]] TOP, ZO_QuestItems, TOP, 0, 30)
+	-- ZO_QuestItemsFilterDivider:SetHidden(true)
 
 	PP.Anchor(ZO_QuickSlot,						--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Anchor(ZO_QuickSlotFilterDivider,		--[[#1]] TOP, ZO_QuickSlot, TOP, 0, 60)
@@ -197,7 +208,6 @@ PP.inventoryScene = function()
 
 		for _, v in ipairs(storeTable) do
 			local list = v:GetNamedChild("List")
-			-- PP.ListBackdrop(list, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
 			PP.ScrollBar(list,	--[[sb_c]] 180, 180, 180, .7, --[[bg_c]] 20, 20, 20, .7, true)
 			local filterDivider = v:GetNamedChild("FilterDivider")
 			PP.Anchor(v,							--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
@@ -219,7 +229,11 @@ PP.inventoryScene = function()
 		end
 	end
 
-	PP.Anchor(ZO_StoreWindowMenu,				--[[#1]] BOTTOM, ZO_StoreWindow, TOP, -40, 0)
+	PP.Anchor(ZO_StoreWindowMenu,	--[[#1]] BOTTOM, ZO_StoreWindow, TOP, -40, 0)
+
+	PP.Anchor(ZO_StoreWindowSortBy,	--[[#1]] nil, nil, nil, nil, 60)
+	PP.Anchor(ZO_StoreWindowList,	--[[#1]] nil, nil, nil, nil, 93, --[[#2]] true, nil, nil, nil, nil, nil)
+	
 
 --SCENE_MANAGER:GetScene("stables")
 	local stablesScene = SCENE_MANAGER:GetScene("stables")
@@ -303,13 +317,13 @@ PP.inventoryScene = function()
 
 	--NEW--********************************************************************************************
 	--RowSellPrice
-	ITEM_SLOT_CURRENCY_OPTIONS.font							= PP.f.Expressway .. "|15|shadow"
-	ITEM_BACKPACK_SLOT_CURRENCY_OPTIONS.font				= PP.f.Expressway .. "|15|shadow"
+	-- ITEM_SLOT_CURRENCY_OPTIONS.font							= PP.f.u67 .. "|15|shadow"
+	-- ITEM_BACKPACK_SLOT_CURRENCY_OPTIONS.font				= PP.f.u67 .. "|15|shadow"
 
 	--InfoBarMoney, AltMoney
-	ZO_KEYBOARD_CURRENCY_OPTIONS.font						= PP.f.Expressway .. "|18|outline"
-	ZO_KEYBOARD_CURRENCY_BANK_TOOLTIP_OPTIONS.font			= PP.f.Expressway .. "|18|outline"
-	ZO_KEYBOARD_CURRENCY_GUILD_BANK_TOOLTIP_OPTIONS.font	= PP.f.Expressway .. "|18|outline"
+	-- ZO_KEYBOARD_CURRENCY_OPTIONS.font						= PP.f.u67 .. "|18|outline"
+	-- ZO_KEYBOARD_CURRENCY_BANK_TOOLTIP_OPTIONS.font			= PP.f.u67 .. "|18|outline"
+	-- ZO_KEYBOARD_CURRENCY_GUILD_BANK_TOOLTIP_OPTIONS.font	= PP.f.u67 .. "|18|outline"
 
 	--*************************************************************************************************
 end

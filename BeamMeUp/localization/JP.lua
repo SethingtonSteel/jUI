@@ -20,7 +20,7 @@ mkstr(SI.TELE_UI_BTN_REFRESH_ALL, "プレイヤー一覧を更新する")
 mkstr(SI.TELE_UI_BTN_UNLOCK_WS, "現在のゾーンの旅の祠を解除")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE, "表示中のゾーンで絞り込む")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES, "表示中のゾーンの洞窟で絞り込む")
-mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "宝の地図・調査報告・手掛かり")
+mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "宝の地図・調査報告・手掛かり\n|c777777(右クリックで追加オプション)")
 mkstr(SI.TELE_UI_BTN_SETTINGS, "設定")
 mkstr(SI.TELE_UI_BTN_FEEDBACK, "作者にメールを送信する")
 mkstr(SI.TELE_UI_BTN_FIX_WINDOW, "ウィンドウを固定／固定を解除する")
@@ -32,6 +32,7 @@ mkstr(SI.TELE_UI_BTN_ANCHOR_ON_MAP, "マップに固定／固定解除する")
 mkstr(SI.TELE_UI_BTN_GUILD_BMU, "BeamMeUp公式ギルド＆パートナーギルド")
 mkstr(SI.TELE_UI_BTN_GUILD_HOUSE_BMU, "BeamMeUp公式ギルドのギルドハウスを訪ねる")
 mkstr(SI.TELE_UI_BTN_PTF_INTEGRATION, "\"Port to Friend's House\" との連携\n（お気に入りリスト）")
+mkstr(SI.TELE_UI_BTN_DUNGEON_FINDER, "アリーナ / 試練 / ダンジョン\n|c777777(右クリックで追加オプション)")
 ---------
 --------- List
 mkstr(SI.TELE_UI_SOURCE_GROUP, "グループ")
@@ -76,8 +77,13 @@ mkstr(SI.TELE_UI_TOGGLE_SURVEY_MAP, "調査報告")
 mkstr(SI.TELE_UI_TOGGLE_TREASURE_MAP, "宝の地図")
 mkstr(SI.TELE_UI_TOGGLE_LEADS_MAP, "手掛かり")
 mkstr(SI.TELE_UI_VIEW_ANTIQUITY, "写本を見る")
-mkstr(SI.TELE_UI_JUMP_IN_FRONT_HOUSE, "家の外での旅行")
-mkstr(SI.TELE_UI_JUMP_IN_HOUSE, "家の中を旅する")
+mkstr(SI.TELE_UI_JUMP_IN_FRONT_HOUSE, "家の外へ移動")
+mkstr(SI.TELE_UI_JUMP_IN_HOUSE, "家の内へ移動")
+mkstr(SI.TELE_UI_TOGGLE_ARENAS, "ソロアリーナ")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_ARENAS, "グループアリーナ")
+mkstr(SI.TELE_UI_TOGGLE_TRIALS, "試練")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS, "グループダンジョン")
+mkstr(SI.TELE_UI_TOGGLE_SORT_ACRONYM, "頭文字で並び替え")
 
 mkstr(SI.TELE_UI_SUBMENU_FAVORITES, "お気に入り")
 mkstr(SI.TELE_UI_SUBMENU_MISC, "色々")
@@ -111,6 +117,7 @@ mkstr(SI.TELE_CHAT_UNLOCK_WS_DISCOVERED_TOTAL, "ゾーンで発見した旅の�
 mkstr(SI.TELE_CHAT_UNLOCK_WS_ALL_KNOWN, "このゾーンのすべての旅の祠を知っており、ファストトラベルに使用可能です。")
 mkstr(SI.TELE_CHAT_UNLOCK_WS_NEED_DISCOVERED, "以下の旅の祠はまず直接訪れる必要があります:")
 mkstr(SI.TELE_CHAT_SHARING_FOLLOW_LINK, "Following the link ...")
+mkstr(SI.TELE_CHAT_TO_DUNGEON, "インスタンスへのファストトラベル:")
 
 
 
@@ -204,8 +211,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "旅の祠へのファス�
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "旅の祠へファストトラベルする時の確認メッセージを表示しません。")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "現在のゾーンを常に一番上に表示")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "現在のゾーンを常にリストの一番上に表示します。")
-mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
-mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "自宅を隠す")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "メインリストから自宅(外へ移動)を隠します。")
 
 
 -----------------------------------------------------------------------------
@@ -219,11 +226,11 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "更新")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "旅の祠を解除する")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "グループリーダーへのテレポート")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "クエスト関連ゾーン")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "本邸の内へ移動")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "BeamMeUpギルドハウスを訪ねる")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "現在のゾーンにテレポート")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
-
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "本邸の外へ移動")
+mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_DUNGEON_FINDER, "アリーナ / 試練 / ダンジョン")
 
 
 -----------------------------------------------------------------------------
@@ -248,3 +255,4 @@ mkstr(SI.TELE_DIALOG_PTF_INTEGRATION_MISSING_BODY, "この連携機能を使用�
 -----------------------------------------------------------------------------
 mkstr(SI.CONSTANT_TREASURE_MAP, "宝箱の地図") -- need a part of the item name that is in every treasure map item the same no matter which zone
 mkstr(SI.CONSTANT_SURVEY_MAP, "調査:") -- need a part of the item name that is in every survey map item the same no matter which zone and kind of craft
+

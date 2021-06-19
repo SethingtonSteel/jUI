@@ -19,49 +19,31 @@
 ---------------------------------------------------------------------
 --[ToDo list] --
 --____________________________
--- Current max bugs/features/ToDos: 108
+-- Current max bugs/features/ToDos: 141
 --____________________________
 
---In progress: Since 2020-06-17
--- 80) 2020-06-14, Beartram, UniqueIds do not work properly anymore as they are really unique and items with the same itemInstanceId, and everything else also the same,
--- are still unique...
--- For weapons, armor and jewelry: Change all uniqueId checks to check the item's itemLink maybe or at least infos generated from it like level, quality, itemId, trait, style and enchantmentId.
+--In progress: Since 2021-06-08
 
 ------------------------------------------------------------------------------------------------------------------------
-
--- 1) 2019-01-14 - Bugfix - Baertram
---Right clicking an item to show the context menu, and then left clicking somewhere else does not close the context menu on first click, but on 2nd click
--->Todo: Bug within LibCustomMenu -> To be fixed by Votan?
-
--- 40)  2019-11-04 Bug - Baertram
---lua error message if you use the context menu to destroy an item from inventory:
---[[
-EsoUI/Ingame/Inventory/InventorySlot.lua:1060: Attempt to access a private function 'PickupInventoryItem' from insecure code. The callstack became untrusted 1 stack frame(s) from the top.
-stack traceback:
-EsoUI/Ingame/Inventory/InventorySlot.lua:1060: in function 'ZO_InventorySlot_InitiateDestroyItem'
-EsoUI/Ingame/Inventory/InventorySlot.lua:1700: in function 'OnSelect'
-EsoUI/Libraries/ZO_ContextMenus/ZO_ContextMenus.lua:453: in function 'ZO_Menu_ClickItem'
-ZO_MenuItem1_MouseUp:4: in function '(main chunk)'
-]]
---> src/FCOIS_Hooks.lua ->     ZO_PreHookHandler(ctrlVars.BACKPACK_BAG, "OnEffectivelyShown", FCOItemSaver_OnEffectivelyShown) -> FCOItemSaver_OnEffectivelyShown ->  ZO_PreHookHandler(childrenCtrl, "OnMouseUp", function(...)
---> causes the error message!
 
 -- 76) 2020-04-12, Baertram
 -- Open bank after login and try to remove/add a marker icon via keybind-> Insecure error call
 --See addon comments by TagCdog at 2020-04-11
 --[[
 If in this specific order I mark an item as deconstructable and then try to deposit that same item into the bank, I get this error:
+Again, it has to be in the bank's deposit tab with these back-to-back actions: Mark as deconstructable via keybind key -> Deposit via 'E' key.
+If I hover to any other item and then come back to the deconstructable item there is no error.
 
-EsoUI/Ingame/Inventory/InventorySlot.lua:736: Attempt to access a private function 'PickupInventoryItem' from insecure code. The callstack became untrusted 1 stack frame(s) from the top.
-stack traceback:
-EsoUI/Ingame/Inventory/InventorySlot.lua:736: in function 'TryBankItem'
-|caaaaaa<Locals> inventorySlot = ud, bag = 1, index = 87, bankingBag = 2, canAlsoBePlacedInSubscriberBank = T </Locals>|r
-EsoUI/Ingame/Inventory/InventorySlot.lua:1608: in function 'INDEX_ACTION_CALLBACK'
+EsoUI/Ingame/Inventory/InventorySlot.lua:741: Attempt to access a private function 'PickupInventoryItem' from insecure code. The callstack became untrusted 1 stack frame(s) from the top.
+|rstack traceback:
+EsoUI/Ingame/Inventory/InventorySlot.lua:741: in function 'TryBankItem'
+|caaaaaa<Locals> inventorySlot = ud, bag = 1, index = 45, bankingBag = 2, canAlsoBePlacedInSubscriberBank = T </Locals>|r
+EsoUI/Ingame/Inventory/InventorySlot.lua:1641: in function 'INDEX_ACTION_CALLBACK'
 EsoUI/Ingame/Inventory/InventorySlotActions.lua:96: in function 'ZO_InventorySlotActions:DoPrimaryAction'
-|caaaaaa<Locals> self = [table:1]{m_contextMenuMode = F, m_hasActions = T, m_numContextMenuActions = 0}, primaryAction = [table:2]{1 = "Deposit"}, success = T </Locals>|r
+|caaaaaa<Locals> self = [table:1]{m_numContextMenuActions = 0, m_contextMenuMode = F, m_hasActions = T}, primaryAction = [table:2]{1 = "Einlagern"}, success = T </Locals>|r
 EsoUI/Ingame/Inventory/ItemSlotActionController.lua:30: in function 'callback'
-EsoUI/Libraries/ZO_KeybindStrip/ZO_KeybindStrip.lua:645: in function 'ZO_KeybindStrip:TryHandlingKeybindDown'
-|caaaaaa<Locals> self = [table:3]{allowDefaultExit = T, batchUpdating = F, insertionId = 678}, keybind = "UI_SHORTCUT_PRIMARY", buttonOrEtherealDescriptor = ud, keybindButtonDescriptor = [table:4]{order = 500, alignment = 3, keybind = "UI_SHORTCUT_PRIMARY", addedForSceneName = "bank", handledDown = T} </Locals>|r
+EsoUI/Libraries/ZO_KeybindStrip/ZO_KeybindStrip.lua:679: in function 'ZO_KeybindStrip:TryHandlingKeybindDown'
+|caaaaaa<Locals> self = [table:3]{batchUpdating = F, allowDefaultExit = T, insertionId = 29}, keybind = "UI_SHORTCUT_PRIMARY", buttonOrEtherealDescriptor = ud, keybindButtonDescriptor = [table:4]{addedForSceneName = "bank", keybind = "UI_SHORTCUT_PRIMARY", order = 500, alignment = 3} </Locals>|r
 (tail call): ?
 (tail call): ?
 ]]
@@ -128,59 +110,46 @@ Blaue/Lila Set Rüstung mit infused: gear mark 3 ("good)
 --     If you delete the account settings for @Baertram now, the chosen settings to use AllAccountsTheSame gets deleted as well!
 --     These SettingsForAll need to migrate and be saved somewhere else, like in a special settings table "FCOItemSaver_Settings_General"!
 
+--#115: 2021-05-13, Baertram  Reposition the additional inventory "flag" icons at crafting tables: Refine, deconstruction, improvement.
+--                            and test if they also fit with AdvancedFilters enabled
 
---#97: 2020-08-28, Piperman124  Set items get marked with impenetrable icon even though they were marked already before
---Seems if I clear all marks and then run the auto marking for set parts it applies to everything not marked with
---another set part item this way but running it again will add impen to everything even if it's already marked with divines etc.
+--#116: ResearchAssistant: Items won't get marked (red rectangle of RA) at the bank after changing settings/reloadUI
+--#129: 2021-06-01: Removing all marker icons via the add. inv. "flag" context menu does not remove companion item's marker icons
+--#131: Error message at login:
+--[[
+user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2445: attempt to index a nil value
+stack traceback:
+user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2445: in function 'buildAddInvContextMenuFlagButtonsPositionsSubMenu'
+|caaaaaa<Locals> addInvFlagButtonsPositionsSubMenu = [table:1]{}, btnname = "Set all equal", btntooltip = "This will set all the addition...", btndata = [table:2]{name = "Set all equal", width = "full", tooltip = "This will set all the addition...", warning = "This will set all the addition...", isDangerous = "true", scrollable = F, type = "button"}, btndisabledFunc = user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2408, btnFunc = user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2411, btncreatedControl = [table:2], sortedAddInvBtnInvokers = [table:3]{}, _ = 27, addInvBtnInvokerData = [table:4]{textureMouseOver = "/esoui/art/ava/tabicon_bg_scor...", name = "ZO_CompanionEquipment_Panel_Ke...", filterPanelId = 39, alignMain = 3, height = 32, textureNormal = "/esoui/art/ava/tabicon_bg_scor...", width = 32, alignBackup = 3, hideButton = T, tooltipAlign = 8, onMouseUpCallbackFunctionMouseButton = 2, textureClicked = "/esoui/art/ava/tabicon_bg_scor...", top = 110, left = -55, sortIndex = 27, addInvButton = T}, filterPanelId = 39, isActiveFilterPanelId = T, addInvFlagButtonsPositionsSubMenuControls = [table:5]{}, ref = "FCOItemSaver_Settings_AddInvFl...", name = "Left:", tooltip = "Left:", data = [table:6]{width = "half", type = "editbox"}, disabledFunc = user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2439, getFunc = user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2440, setFunc = user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2441 </Locals>|r
+user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2485: in function 'FCOIS.BuildAddonMenu'
+|caaaaaa<Locals> lsb = [table:7]{EVENT_ENTRY_MOVED = 3, DEFAULT_CATEGORY = "LSBDefCat", EVENT_LEFT_LIST_CLEARED = 4, EVENT_ENTRY_HIGHLIGHTED = 1, EVENT_RIGHT_LIST_CLEARED = 5, EVENT_ENTRY_UNHIGHLIGHTED = 2}, libShifterBoxes = [table:8]{}, srcServer = 1, targServer = 1, srcAcc = 1, targAcc = 1, srcChar = 1, targChar = 1, addonVars = [table:9]{FAQentry = "https://www.esoui.com/portal.p...", gAddonLoaded = F, addonVersionOptions = "2.1.1", authorPortal = "https://www.esoui.com/portal.p...", addonNameMenu = "FCO ItemSaver", addonAuthor = "|cFFFF00Baertram|r", addonNameContextMenuEntry = "     - |c22DD22FCO|r ItemSaver...", website = "https://www.esoui.com/download...", addonNameMenuDisplay = "|t32:32:FCOItemSaver/FCOIS.dds...", addonAuthorDisplayNamePTS = "@Baertram", gAddonNameShort = "FCOIS", addonAuthorDisplayNameNA = "@Baertram", addonVersionOptionsNumber = 2.11, savedVarVersion = 0.1, FAQwebsite = "https://www.esoui.com/portal.p...", gAddonName = "FCOItemSaver", savedVarName = "FCOItemSaver_Settings", gSettingsLoaded = T, feedback = "https://www.esoui.com/portal.p...", gPlayerActivated = F, addonAuthorDisplayNameEU = "@Baertram", donation = "https://www.esoui.com/portal.p..."}, addonFAQentry = "https://www.esoui.com/portal.p...", GridListActivated = F, InventoryGridViewActivated = T, getGridAddonIconSize = user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:372, isIconEnabled = [table:10]{1 = T}, numDynIcons = 15, panelData = [table:11]{name = "FCO ItemSaver", registerForRefresh = T, author = "|cFFFF00Baertram|r", displayName = "|t32:32:FCOItemSaver/FCOIS.dds...", donation = "https://www.esoui.com/portal.p...", website = "https://www.esoui.com/download...", version = "2.1.1", slashCommand = "/fcoiss", registerForDefaults = T, type = "panel"}, FCOSettingsPanel = ud, animation = ud, timeline = ud, apiVersion = 100035 </Locals>|r
+user:/AddOns/FCOItemSaver/src/FCOIS_Events.lua:1128: in function 'FCOItemSaver_Loaded'
+|caaaaaa<Locals> eventCode = 65536, addOnName = "FCOItemSaver", bagIdsToFilterForInvSingleSlotUpdate = [table:12]{1 = 1} </Locals>|r
+]]
 
---#100: 2020-12-13, Deadsoon  CraftStore automatic recipe marking will mark known recipes with the unknown marker icon
-
+--#140: Error message at login -> related to fixed error 131
+-->Could not create editbox "Gauche:" FCOItemSaver_LAM
+-->Could not create editbox "Haute:" FCOItemSaver_LAM
+----> Seems the fixed error message user:/AddOns/FCOItemSaver/src/FCOIS_SettingsMenu.lua:2445: attempt to index a nil value is causing this now
 
 ---------------------------------------------------------------------
 -- Currently worked on [Added/Fixed/Changed]
 ---------------------------------------------------------------------
---Since last update 2.0.0 - New version: 2.0.1 -> Updated 2021-03-07
+--Since last update 2.1.4 - New version: 2.1.5 -> Updated 2021-06-08
 ---------------------------------------------------------------------
 
 --[Fixed]
--- #47 SHIFT +right click directly in guild bank's withdraw row does not work if the inventory was not at least opened once before
--- the guild bank was opened
--- #101 Performance improvement: Duplicate marker texture controls checks (create/reanchore/etc.) happened at some inventories
--- if you have scrolled
---
---#107: Auto-reenable guild bank deposit check should only be re-enabled if the setting to block the guild bank deposit is
---      enabled!
 
 
 --[Changed]
---#108 The red "settings are currently loaded" sand-clock icon at the top right edge of the FCOIS settings panel  will show a
---ping-pong size animation for 5 times now so the last ones not paying attention to it's existance might notice it now AND
--- will keep their fingers away from the FCOIS settings menu until it disappears... Move the mouse above the icon to read the
--- tooltip why it is there and why you should simply "wait" until it is gone.
-
+--
 
 --[Added]
---#102 Added: New settings at dynamic icons: Offset X / Offset Y for each dynamic icon, to position them differently to other
---       marker icons
---#103 Support for Inventory GridView/Grid List addons: FCOIS bound items marker icon position and size within grid mode
---     It will show at the top left edge of the grid item.
--- #104 Performance tweak: Marker icon textures will not be created anymore "all" at "all rows" at the first inventory open,
---      but only those will be created which marker icons are applied to the currently shown item.
---      As you scroll the next texture controls will be checked and created, if needed. As rows of the inventory will be
---      reused if you scroll (e.g. item1 will be out of view and new item 23 will be at the row where item 1 was before)
---      the marker texture controls will stay at the row (once created) and will be reused for the items, as before.
---      But if you only got a few marker icons active per item this should increase the performance of the first iventory
---      open a lot! Could add some more littel lag to the scrolling though. Tell me please if you notice this, providing
---      info at which inventory panel, which filters are activated and how I'm able to rebuild this.
---      Grid addons like Inventory Grid View or Grid List should be much faster at the first inventory open now!
--- #105 More dynamic LAM settings (marker icons, marker icons enable submenus) instead of redundant code lines
--- #106 Added automatic marking of item set collection book -> Missing/Known. Supports ESO API for the currently logged in
---      account, or optionally LibMultiAccountSets for multi-account support
 
 --[Added on request]
---#80 New selection of FCOIS custom created UniqueIds: Choose your criteria in the general settings, which define the uniqueId for you.
---    It will use the itemId + the selected criteria (level, quality, enchantment, etc.) to create an own uniqueId.
---    Only applies to weapons and armor so far. All other items still use the non-unique IDs.
+--Added "glyph apply exclusion" setting in the "Anti methods" menu in order to allow the apply of glyphs via the enchant dialog,
+--even if they are marked with any marker icon. Attention: This will only work as exclusion if the maker icon is not a dynamic icon
+--(same like the repair exclusion)! Each dynamic icon defines it's protection itsself!
 
 
 --************************************************************************************************************************
@@ -191,6 +160,8 @@ Blaue/Lila Set Rüstung mit infused: gear mark 3 ("good)
 if FCOIS == nil then FCOIS = {} end
 local FCOIS = FCOIS
 
+local em = EVENT_MANAGER
+
 -- =====================================================================================================================
 --  Gamepad functions
 -- =====================================================================================================================
@@ -198,9 +169,9 @@ function FCOIS.resetPreventerVariableAfterTime(eventRegisterName, preventerVaria
     local eventNameStart = FCOIS.preventerVars._prevVarReset --"FCOIS_PreventerVariableReset_"
     if eventRegisterName == nil or eventRegisterName == "" or preventerVariableName == nil or preventerVariableName == "" or resetAfterTimeMS == nil then return end
     local eventName = eventNameStart .. tostring(eventRegisterName)
-    EVENT_MANAGER:UnregisterForUpdate(eventName)
-    EVENT_MANAGER:RegisterForUpdate(eventName, resetAfterTimeMS, function()
-        EVENT_MANAGER:UnregisterForUpdate(eventName)
+    em:UnregisterForUpdate(eventName)
+    em:RegisterForUpdate(eventName, resetAfterTimeMS, function()
+        em:UnregisterForUpdate(eventName)
         if FCOIS.preventerVars == nil or FCOIS.preventerVars[preventerVariableName] == nil then return end
         FCOIS.preventerVars[preventerVariableName] = newValue
     end)

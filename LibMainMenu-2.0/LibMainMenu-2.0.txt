@@ -1,8 +1,8 @@
 ## Title: LibMainMenu-2.0
-## Author: votan
+## Author: Ayantir & Baertram & votan
 ## APIVersion: 100033 100034
-## Version: 4.3.6
-## AddOnVersion: 436
+## Version: 4.4.0
+## AddOnVersion: 40400
 ## IsLibrary: true
 ## OptionalDependsOn: LibStub LibAddonMenu-2.0 LibHarvensAddonSettings
 ## Description: Library to add main menu entries.

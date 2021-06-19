@@ -61,8 +61,8 @@ local L = {}
 	L.CSPS_Tooltiptext_CpHbHk = "Klicke hier, um die zugewiesene Schnelltaste anzupassen."
 	L.CSPS_Tooltiptext_LoadAndApply = "Laden und direkt anwenden"
 	L.CSPS_Tooltip_CPBar = "Weise hier eine Championfertigkeit zu, indem du das entsprechende Icon aus der Liste hinüberziehst. Mit Rechtsklick hebst du die Zuweisung auf."
-	L.CSPS_Tooltip_CPPreset = "Zuletzt aktualisiert: <<2>>.<<1>>.<<3>>\nFür aktuelle Informationen besuche:\n<<4>>"
-	
+	L.CSPS_Tooltip_CPPUpdate = "Zuletzt aktualisiert: <<2>>.<<1>>.<<3>>"
+	L.CSPS_Tooltip_CPPWebsite = "Für aktuelle Informationen besuche:\n<<1>>"
 	L.CSPS_Tooltip_CPCustomBar = "Wähle, ob eine separate Championleiste als Teil der Spieloberfläche angezeigt werden soll."
 	L.CSPS_Tooltip_CPCustomIcons = "Wähle, ob das Addon eigene Symbole für ausrüstbare Championfertigkeiten nutzen soll."
 	
@@ -109,6 +109,17 @@ local L = {}
 	L.CSPS_CPBar_GroupHeading = "Aktuelle Gruppe: %s/%s"
 	L.CSPS_CPBar_GroupKeybind = "Tastenbelegung: %s"
 	L.CSPS_CPBar_Manage = "CP-Leisten verwalten"
+	
+	L.CSPS_CPPDescr_JoaTFarming = "Diese Voreinstellungen sind optimiert für die Nutzung mit dem Addon \"Jack of all Trades\" und legen einen Schwerpunkt auf das Ressourcensammeln (Kampf, Angeln und Verbrechen werden mit höherem CP-Level ergänzt)."
+	L.CSPS_CPPDescr_JoaTFishing = "Diese Voreinstellungen sind optimiert für die Nutzung mit dem Addon \"Jack of all Trades\" und legen einen Schwerpunkt auf das Angeln (Ressourcensammeln, Kampf und Verbrechen werden mit höherem CP-Level ergänzt)."
+	L.CSPS_CPPDescr_JoaTThieving = "Diese Voreinstellungen sind optimiert für die Nutzung mit dem Addon \"Jack of all Trades\" und legen einen Schwerpunkt auf Verbrechen (Ressourcensammeln, Kampf und Angeln werden mit höherem CP-Level ergänzt)."
+	L.CSPS_CPPDescr_CombatFocus = "Diese Voreinstellungen legen einen Fokus auf die rein Kampf-bezogenen Championfertigkeiten."
+	
+	L.CSPS_StrictOrder = "Strenge Reihenfolge"
+	L.CSPS_Tooltiptext_StrictOrder = "Markiere diese Checkbox, wenn das Addon beim Laden eines Presets aufhören soll, sobald du für die nächste Fertigkeit nicht genügend Punkte hast. Andernfalls wird das Addon prüfen, ob stattdessen die übernächste Fertigkeit geladen werden kann (usw.). Durch diese Option hast du eventuell mehr unverteile Championpunkte, sparst dadurch aber ggf. später die 3000 Gold Umverteilungsgebühr."
+	L.CSPS_CPPCurrentlyApplied = "Aktuell angewendet:  <<1[Keine Punkte/1 Punkt/$d Punkte]>>"
+	
+	L.CSPS_MSG_ApplyClosing = "Du hast evtl. unangewendete Änderungen an deinen Championpunkten vorgenommen. Vergiss nicht, deine Änderungen anzuwenden."
 	
 	L.CSPS_CPBar_LocTrial = "Prüfung/Arena"
 	L.CSPS_CPBar_LocCurr = "Aktueller Ort"
@@ -199,8 +210,6 @@ local L = {}
 	L.CSPS_MSG_CPPathOpt = "|c<<1>>Möglichkeit <<2>> (<<3>>)|r:" -- 1 color 2 number 3 points
 	L.CSPS_MSG_ExpTextLang = "Deine Spielsprache ist nicht Englisch. Du wirst den exportiereten Text daher später nicht wieder importieren können. Möchtest Du stattdessen normalisierte Bezeichnungen verwenden, die später wieder importiert werden können?"
 
-	--	Errorcodes
-	
 	--	Errorcodes
 	L.CSPS_ErrorNumber1 = "Diese Fertigkeit wurde bereits gelernt."
 	L.CSPS_ErrorNumber2 = "Diese Fertigkeit oder ihr gewünschter Morph/Rang wurden noch nicht freigeschaltet."

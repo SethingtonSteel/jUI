@@ -144,6 +144,9 @@ function Xynode.setUp()
 	XynodePanelButtonBossGuide:SetMouseEnabled(false)
 	XynodePanelButtonBossGuide:SetEnabled(false)
 
+	XynodePanelYouTubeFull:SetMouseEnabled(false)
+	XynodePanelYouTubeFull:SetEnabled(false)
+
 	Xynode.OnZoneChanged()
 	Xynode.CheckBoss()
 
@@ -182,7 +185,10 @@ function Xynode.OnZoneChanged()
 			XynodePanel:SetHidden(false)
 			XynodePanelButtonFullGuide:SetMouseEnabled(true)
 			XynodePanelButtonFullGuide:SetEnabled(true)
+			XynodePanelYouTubeFull:SetMouseEnabled(true)
+			XynodePanelYouTubeFull:SetEnabled(true)
 			XynodePanelButtonFullGuide:SetAlpha(1)
+			XynodePanelYouTubeFull:SetAlpha(1)
 			XynodePanelCounter:SetText(Xynode.zoneName)
 			if(Xynode.GuideSoundPlayed == false) then
 				PlaySound(SOUNDS[Xynode.savedVars.guidesound])
@@ -192,7 +198,10 @@ function Xynode.OnZoneChanged()
 		else
 			XynodePanelButtonFullGuide:SetMouseEnabled(false)
 			XynodePanelButtonFullGuide:SetEnabled(false)
+			XynodePanelYouTubeFull:SetMouseEnabled(false)
+			XynodePanelYouTubeFull:SetEnabled(false)
 			XynodePanelButtonFullGuide:SetAlpha(0.25)
+			XynodePanelYouTubeFull:SetAlpha(0.25)
 			XynodePanelCounter:SetText(Xynode.zoneName)
 
 
@@ -322,6 +331,14 @@ function ShowGuide(bossOnly)
 	end
 end
 
+function ShowYouTube()
+	if(bossvideo ~= nil) then
+		RequestOpenUnsafeURL(bossvideo)
+	else
+		RequestOpenUnsafeURL(Xynode.Dungeon.video)
+	end
+end
+
 
 
 function CloseGuide()
@@ -336,6 +353,7 @@ function Xynode.CheckBoss()
 	BossNameNear = ""
 	BossNameNearD = ""
 	Xynode.Boss = nil
+	bossvideo = nil
 
 
 
@@ -354,6 +372,7 @@ function Xynode.CheckBoss()
 					if(Xynode.Boss ~= nil) then
 						XynodePanelButtonBossGuide:SetMouseEnabled(true)
 						XynodePanelButtonBossGuide:SetEnabled(true)
+						bossvideo = Xynode.Boss.video
 					end
 				end
 			end
@@ -368,12 +387,15 @@ function Xynode.CheckBoss()
 				end
 
 
+
 			else
 				XynodePanelCounter:SetText(Xynode.zoneName)
 				XynodePanelButtonBossGuide:SetMouseEnabled(false)
 				XynodePanelButtonBossGuide:SetEnabled(false)
 				XynodePanelButtonBossGuide:SetAlpha(0.25)
 				Xynode.BossSoundPlayed = false
+
+				bossvideo = nil
 			end
 		end
 	end

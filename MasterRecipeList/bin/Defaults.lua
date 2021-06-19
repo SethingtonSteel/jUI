@@ -71,7 +71,6 @@ local AccountDefaults = {
 		ttcoloruT={0.5,0.5,0.5,1},      	-- unknown recipe color
 		ttcoloru="808080",              	-- unknown recipe color (text hex)
 		ingrecs=true,						-- show detailed ingredients info on recipe items
-	--	hdefing=false,						-- Hide default recipe ingredient list when showing the detailed list.
 		ingrecsgs=false,					-- no detailed ingredients on recipe items at guild store
 		ingfood=false,						-- show detailed ingredients info on result items
 		ingfoodgs=false,					-- no detailed ingredients on result items at guild store
@@ -87,7 +86,11 @@ local AccountDefaults = {
 		maxjunkstack=10,                	-- max amount to destroy
 
 	-- Cooking Station Options
+		opControls=true,					-- option to only show MRL controls at provisioning station
 		noFilters=false,					-- clear filters on startup
+		ingFilter=3,						-- override crafting station filter checkbox for "Have Ingredients"
+		skillFilter=3,						-- override crafting station filter checkbox for "Have Skill"
+		questFilter=3,						-- override crafting station filter checkbox for "Quest Only"
 		stationstats=true,					-- cooking station stat icons
 		stationicons=1,						-- stat icon style
 		autoWrits=false,					-- automatically craft provisioning writs without needing to click categories

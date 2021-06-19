@@ -2,7 +2,7 @@ local Addon = {}
 Addon.Name = "displayleads"
 Addon.DisplayName = "Display Leads"
 Addon.Author = "remosito"
-Addon.Version = "2.8.0"
+Addon.Version = "2.9.6"
 
 
 
@@ -80,8 +80,8 @@ function RDLUnitList:FilterScrollList()
 			return ( data.Dug == 0 ) 
 		elseif RDL.savedVars.DropdownChoice["Major"] == RDL.DropdownData["ChoicesMajor"][RDL_DROPDOWN_MAJOR_GROUPDUNGEONS] then
 			return ( RDL.isGroupDungeon[data.Aid] ~= nil )
-		elseif RDL.savedVars.DropdownChoice["Major"] == RDL.DropdownData["ChoicesMajor"][RDL_DROPDOWN_MAJOR_MARKARTH] then
-			return ( data.Aid > 315 )
+		elseif RDL.savedVars.DropdownChoice["Major"] == RDL.DropdownData["ChoicesMajor"][RDL_DROPDOWN_MAJOR_LATESTDLC] then
+			return ( data.Aid >= RDL.LATESTDLC_FIRSTANTIQUITY )
 		end
 	end
 
@@ -107,7 +107,7 @@ function RDLUnitList:FilterScrollList()
 			if data.ZoneId < RDL.ZONEID_ALLZONES then 
 				return ( data.ZoneId == currentZoneId )
 			else
-				if data.ZoneId == RDL.ZONEID_ALLZONES then 
+				if data.ZoneId == RDL.ZONEID_ALLZONES or data.ZoneId == RDL.ZONEID_UNKNOWN then 
 					return true
 				elseif data.ZoneId == RDL.ZONEID_BGS then 
 					return false -- its from reward coffers
@@ -130,7 +130,7 @@ function RDLUnitList:FilterScrollList()
 			if data.ZoneId < RDL.ZONEID_ALLZONES then 
 				return ( data.Zone == RDL.savedVars.DropdownChoice["Zone"] )
 			else
-				if data.ZoneId == RDL.ZONEID_ALLZONES then 
+				if data.ZoneId == RDL.ZONEID_ALLZONES or data.ZoneId == RDL.ZONEID_UNKNOWN then 
 					return true
 				elseif data.ZoneId == RDL.ZONEID_BGS then 
 					return false -- its from reward coffers
@@ -308,6 +308,10 @@ function RDL.RowMouseEnter(control)
 		InformationTooltip:AddVerticalPadding(10)
 		SetTooltipText(InformationTooltip,"|c42D6D1"..RDL.Locations[control.data.Aid][1].."|r")
 		InformationTooltip:AddVerticalPadding(10)
+		if RDL.Locations[control.data.Aid][2] == RDL.LOCDATA_TYPE_FIXLOCATION then
+			InformationTooltip:AddLine(RDL.TOOLTIP_MAPPINS)
+			InformationTooltip:AddVerticalPadding(10)
+		end
 		ZO_Tooltip_AddDivider(InformationTooltip)
 		if RDL.SETID_2_ITEMID[control.data.SetId] ~= nil then
 			local til = string.format("|H1:item:%d:%d:50:0:0:0:0:0:0:0:0:0:0:0:0:%d:%d:0:0:%d:0|h|h", RDL.SETID_2_ITEMID[control.data.SetId], ITEM_DISPLAY_QUALITY_ARTIFACT, ITEMSTYLE_NONE, 0, 10000)
@@ -323,6 +327,7 @@ function RDL.RowMouseEnter(control)
 			InformationTooltip:AddVerticalPadding(6)
 			ZO_Tooltip_AddDivider(InformationTooltip)
 		end
+		
 		for i = 1, #RDL.TOOLTIP_LEAD_HOWUPDATE do
 			InformationTooltip:AddLine(RDL.TOOLTIP_LEAD_HOWUPDATE[i],"ZoFontGameSmall")
 		end
@@ -576,7 +581,6 @@ function RDL.toggleRDL(extra)
 		local zonestable = {}
 		local settypetable = {}
 		local d7, d1, h1 = 0, 0, 0
-		
 		while i do
 			local havelead = DoesAntiquityHaveLead(i)
 			local azoneid = GetAntiquityZoneId(i)
@@ -624,6 +628,9 @@ function RDL.toggleRDL(extra)
 				setname = REWARDS_MANAGER:GetRewardContextualTypeString(rewardid)
 				if setname == "Motif Chapter" then setquality = 3 end
 			end
+--			if i >= RDL.LATESTDLC_FIRSTANTIQUITY then -- debug out for new antiquities on pts--
+--				d(string.format("%i, %s, %s, %i, %s", i, aname, azone, setid, setname))
+--			end
 			if azone ~= "" then 
 				local location = RDL.Locations[i][3]
 				RDL.units[i] = {Lead=aname, Zone=azone, ZoneId=azoneid, Location=location, Diff=diff, Lore=loreleft, Dug=numrecovered, Set=setname, SetId=setid, Expiration=leadtimeleft, SetQuality=setquality, HaveLead=havelead, Repeatable=repeatable}

@@ -2,7 +2,7 @@
 -- Dungeon Tracker
 -------------------------------------------------------------------------------
 --[[
--- Copyright (c) 2015-2020 James A. Keene (Phinix) All rights reserved.
+-- Copyright (c) 2015-2021 James A. Keene (Phinix) All rights reserved.
 --
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation (the "Software"),
@@ -36,7 +36,7 @@
 
 local DTAddon = _G['DTAddon']
 local L = DTAddon.Strings
-local version = '1.28'
+local version = '1.30'
 
 -- global functions:
 local pLF	= LibPhinixFunctions.LangFormat

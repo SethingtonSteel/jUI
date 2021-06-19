@@ -22,6 +22,10 @@
 				<Down>Teleporter.PortalHandlerKeyPress(5)</Down>
 			</Action>
 			
+			<Action name="BMU_TOGGLE_MAIN_DUNGEON_FINDER">
+				<Down>Teleporter.PortalHandlerKeyPress(6)</Down>
+			</Action>
+			
 			<Action name="BMU_WAYSHRINE_UNLOCK">
 				<Down>Teleporter.PortalHandlerKeyPress(10)</Down>
 			</Action>

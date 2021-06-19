@@ -4,9 +4,10 @@ poc.appName = "PointsofColor"
 ----------------------------------------
 -- Declarations
 ----------------------------------------
-local ADDON_VERSION = "1.0"
+local ADDON_VERSION = "2.44"
 local eso_root = "esoui/art/"
 local ui_root = "PointsofColor/"
+poc.version = ADDON_VERSION
 
 local poi_textures_complete = {
     {"poi_areaofinterest_complete.dds", 64},

@@ -131,8 +131,8 @@ PP.mailSceneGroup = function()
 	MAIL_SEND_SCENE:RemoveFragment(TITLE_FRAGMENT)
 	MAIL_SEND_SCENE:RemoveFragment(MAIL_TITLE_FRAGMENT)
 
-	PP:CreateBackground(ZO_MailSend, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
+	PP:CreateBackground(ZO_MailSend, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 6, true)
 	PP:HideBackgroundForScene(MAIL_SEND_SCENE, ZO_PlayerInventory.PP_BG)
 
-	PP.Anchor(ZO_MailSend, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
+	PP.Anchor(ZO_MailSend, --[[#1]] TOPRIGHT,	GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -90)
 end

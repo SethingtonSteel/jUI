@@ -1,27 +1,12 @@
+-----------------------------------------
+-- LOCALIZED GLOBAL VARIABLES
+-----------------------------------------
+
 local ZGV = _G.ZGV
-
------------------------------------------
--- LOCAL REFERENCES
------------------------------------------
-
-local tinsert,tremove,sort,min,max,floor,type,pairs,ipairs = table.insert,table.remove,table.sort,math.min,math.max,math.floor,type,pairs,ipairs
-local print = ZGV.print
-local CHAIN = ZGV.Utils.ChainCall
-local ui = ZGV.UI
-local Testing = ZGV.Testing
-
------------------------------------------
--- LOCAL VARIABLES
------------------------------------------
-
 local QuestsTest = {}
 local Parser = _G.Parser
-
------------------------------------------
--- SAVED REFERENCES
------------------------------------------
-
-local Q = ZGV.Quests
+local tinsert = table.insert
+local Testing = ZGV.Testing
 
 -----------------------------------------
 -- TESTS
@@ -176,8 +161,7 @@ ZGV._QuestStepDataCommon[9990001] = {
 function QuestsTest.TestQuestIds()
 	do return true end
 	local quest,questid,stage,stagenum,step,stepnum,cond,condnum
-	local qid,qstep,cond,cid
-	local ParseQuest = _G.Parser.ParseQuest
+	local qid,qstep,cid
 
 	local function cleanUpTestAndReturn(pass,comment,num,val1,val2)
 		return pass,"Test failed: "..tostring(comment).." #"..tostring(num)..": got "..tostring(val1)..", expected "..tostring(val2)
@@ -213,8 +197,8 @@ function QuestsTest.TestQuestIds()
 		return cleanUpTestAndReturn(false,test,8,condnum,8)
 	end
 
-	local questStr = "1234/1/1"
-	local test = "Stripped Quest Parsing"
+	questStr = "1234/1/1"
+	test = "Stripped Quest Parsing"
 	quest,questid,stage,stagenum,step,stepnum,cond,condnum = Parser.ParseQuest(questStr)
 	if quest ~= nil then
 		return cleanUpTestAndReturn(false,test,1,quest,nil)
@@ -243,7 +227,7 @@ function QuestsTest.TestQuestIds()
 
 	questStr = "Quest Name##1234/Cond Text"
 	quest,qid,qstep,cond,cid = Parser.ParseQuest(questStr)
-	local test = "Cond Quest Parsing"
+	test = "Cond Quest Parsing"
 	quest,questid,stage,stagenum,step,stepnum,cond,condnum = Parser.ParseQuest(questStr)
 	if quest ~= "Quest Name" then
 		return cleanUpTestAndReturn(false,test,1,quest,"Quest Name")
@@ -272,7 +256,7 @@ function QuestsTest.TestQuestIds()
 
 	questStr = "1234/Cond Text"
 	quest,qid,qstep,cond,cid = Parser.ParseQuest(questStr)
-	local test = "Cond Quest Stripped Parsing"
+	test = "Cond Quest Stripped Parsing"
 	quest,questid,stage,stagenum,step,stepnum,cond,condnum = Parser.ParseQuest(questStr)
 	if quest ~= nil then
 		return cleanUpTestAndReturn(false,test,1,quest,nil)
@@ -301,7 +285,7 @@ function QuestsTest.TestQuestIds()
 
 	questStr = "Quest Name##1234"
 	quest,qid,qstep,cond,cid = Parser.ParseQuest(questStr)
-	local test = "Just Quest"
+	test = "Just Quest"
 	quest,questid,stage,stagenum,step,stepnum,cond,condnum = Parser.ParseQuest(questStr)
 	if quest ~= "Quest Name" then
 		return cleanUpTestAndReturn(false,test,1,quest,"Quest Name")
@@ -330,7 +314,7 @@ function QuestsTest.TestQuestIds()
 
 	questStr = "1234"
 	quest,qid,qstep,cond,cid = Parser.ParseQuest(questStr)
-	local test = "Just Quest ID"
+	test = "Just Quest ID"
 	quest,questid,stage,stagenum,step,stepnum,cond,condnum = Parser.ParseQuest(questStr)
 	if quest ~= nil then
 		return cleanUpTestAndReturn(false,test,1,quest,nil)

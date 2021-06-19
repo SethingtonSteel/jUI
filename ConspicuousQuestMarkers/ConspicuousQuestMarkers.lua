@@ -4,9 +4,10 @@ cqm.appName = "ConspicuousQuestMarkers"
 ----------------------------------------
 -- Declarations
 ----------------------------------------
-local ADDON_VERSION = "1.0"
+local ADDON_VERSION = "1.17"
 local eso_root = "esoui/art/"
 local ui_root = "ConspicuousQuestMarkers/"
+cqm.version = ADDON_VERSION
 
 local cqm_textures = {
     {"darkbrotherhood_target.dds"},

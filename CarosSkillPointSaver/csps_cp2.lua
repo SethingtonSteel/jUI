@@ -28,6 +28,8 @@ local zoneAbbr = {
 	[1227] = "VH",
 }
 
+local roleFilter = ""
+
 local roleAbbr = {
 	[1] = "DD",
 	[2] = "T",
@@ -43,6 +45,10 @@ local classAbbr = {
 	[5] = "Necro",
 	[6] = "Temp",
 }
+
+local changedCP = false
+
+local roles = {"DD", GS(CSPS_CPP_Tank), "", GS(SI_LFGROLE4), "DD(Mag)", "DD(Stam)", GS(SI_GEMIFIABLEFILTERTYPE0)}
 
 local resizingNow = false
 
@@ -67,8 +73,14 @@ CSPS.customCpIcons = {
 	[65] = "esoui/art/icons/ability_armor_007.dds", 						-- Sustaining Shadows 
 	[1] = "esoui/art/repair/inventory_tabicon_repair_up.dds", 				-- Professional Upkeep 
 
+	[259] = "esoui/art/icons/ability_templar_005.dds",						-- Weapons Expoert
+	[264] = "esoui/art/icons/ability_sorcerer_024.dds",						-- Master at arms
+	[260] = "esoui/art/icons/ability_templar_017.dds",						-- Salve of Renewal
+	[261] = "esoui/art/icons/ability_templar_021.dds",						-- Hope Infusion
+	[262] = "esoui/art/icons/ability_templar_032.dds",						-- From the brink
+	[263] = "esoui/art/icons/ability_templar_028.dds",						-- Enlivening Overflow
 	[12] = "esoui/art/icons/ability_sorcerer_045.dds", 						-- Fighting Finesse 
-	[24] = "esoui/art/icons/ability_templar_016.dds", 						-- Fighting Finesse 
+	[24] = "esoui/art/icons/ability_templar_016.dds", 						-- Soothing tide
 	[9] = "esoui/art/icons/ability_templar_011.dds", 						-- Rejuvenator
 	[163] = "esoui/art/icons/ability_alchemy_004.dds",	 					-- Foresight
 	[29] = "esoui/art/icons/ability_templar_006.dds", 						-- Cleansing Revival 
@@ -495,17 +507,21 @@ function CSPS.showCpBar()
 			if (CSPS.cpCustomBar ~= 3 or i == 1) then
 				if mySk ~= nil and mySk ~= 0 then
 					if CSPS.useCustomIcons and CSPS.customCpIcons[mySk] ~= nil then 
-						CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetTexture(CSPS.customCpIcons[mySk])
+						if CSPS.cpCustomBar then CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetTexture(CSPS.customCpIcons[mySk]) end
 						local myZoIcon = WINDOW_MANAGER:GetControlByName(string.format("ZO_ChampionPerksActionBarSlot%sIcon", mySlot))
 						if myZoIcon ~= nil then myZoIcon:SetTexture(CSPS.customCpIcons[mySk]) end
 					else
-						CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetTexture("esoui/art/champion/champion_icon_32.dds")
+						if CSPS.cpCustomBar then CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetTexture("esoui/art/champion/champion_icon_32.dds") end
 					end
-					CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetHidden(false)
-					CSPS.myCPBar[i][j]:GetNamedChild("Circle"):SetHandler("OnMouseEnter", function() CSPS.showCpTT(CSPS.myCPBar[i][j], mySk, nil, true, false) end)
+					if CSPS.cpCustomBar then 
+						CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetHidden(false)
+						CSPS.myCPBar[i][j]:GetNamedChild("Circle"):SetHandler("OnMouseEnter", function() CSPS.showCpTT(CSPS.myCPBar[i][j], mySk, GetNumPointsSpentOnChampionSkill(mySk), true, false) end)
+					end
 				else
-					CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetHidden(true)
-					CSPS.myCPBar[i][j]:GetNamedChild("Circle"):SetHandler("OnMouseEnter", function() end)
+					if CSPS.cpCustomBar then 
+						CSPS.myCPBar[i][j]:GetNamedChild("Icon"):SetHidden(true)
+						CSPS.myCPBar[i][j]:GetNamedChild("Circle"):SetHandler("OnMouseEnter", function() end)
+					end
 				end
 			else
 				local myZoIcon = WINDOW_MANAGER:GetControlByName(string.format("ZO_ChampionPerksActionBarSlot%sIcon", mySlot))
@@ -517,18 +533,30 @@ end
 
 function CSPS.showCpTT(control, myId, myValue, withTitle, hotbarExplain)
 	InitializeTooltip(InformationTooltip, control, LEFT)
-	local myToolTip = myId and GetChampionSkillDescription(myId)
+	local myTooltip = myId and GetChampionSkillDescription(myId)
 	local myCurrentBonus = myValue and GetChampionSkillCurrentBonusText(myId, myValue) or ""
 	if withTitle or true then
 		InformationTooltip:AddLine(zo_strformat("<<C:1>>", GetChampionSkillName(myId)), "ZoFontWinH2")
 		if  CSPS.useCustomIcons and CSPS.customCpIcons[myId] ~= nil then InformationTooltip:AddLine(string.format("\n|t48:48:%s|t\n", CSPS.customCpIcons[myId]), "ZoFontGame") end
 		ZO_Tooltip_AddDivider(InformationTooltip)
 	end
-	if myId then InformationTooltip:AddLine(myToolTip, "ZoFontGame") end
+	if myId then InformationTooltip:AddLine(myTooltip, "ZoFontGame") end
 	if myCurrentBonus ~= "" then InformationTooltip:AddLine(myCurrentBonus, "ZoFontGameBold", ZO_SUCCEEDED_TEXT:UnpackRGBA() ) end
-	if hotbarExplain then InformationTooltip:AddLine(GS(CSPS_Tooltip_CPBar), "ZoFontGame") end
+	if hotbarExplain then 
+		InformationTooltip:AddLine(GS(CSPS_Tooltip_CPBar), "ZoFontGame")
+	else
+		local myActualValue = GetNumPointsSpentOnChampionSkill(myId)
+		if myValue and myValue ~= myActualValue then
+			ZO_Tooltip_AddDivider(InformationTooltip)
+			InformationTooltip:AddLine(zo_strformat(GS(CSPS_CPPCurrentlyApplied), myActualValue), "ZoFontGame")
+			if myActualValue ~= 0 then 
+				local myActualBonus = GetChampionSkillCurrentBonusText(myId, myActualValue) or ""
+				if myActualBonus ~= "" then InformationTooltip:AddLine(myActualBonus, "ZoFontGame", unpack(CSPS.colTbl.orange)) end
+			end
+		end
+	end
 end
-
+ 
 function CSPS.cp2HbIcons(disciplineIndex)
 	local myBar = CSPS.cp2HbTable[disciplineIndex]
 	local changeOrderRev = {3, 1, 2}
@@ -581,6 +609,7 @@ function CSPS.onCpHbIconReceive(disciplineIndex, icon)
 	CSPS.cp2UpdateHbMarks()
 	CSPS.myTree:RefreshVisible()
 	CSPS.unsavedChanges = true
+	changedCP = true
 	CSPS.showElement("apply", true)
 	CSPS.showElement("save", true)
 end
@@ -591,8 +620,9 @@ function CSPS.CpHbSkillRemove(disciplineIndex, icon)
 		CSPS.cp2HbIcons(disciplineIndex)		
 		CSPS.cp2UpdateHbMarks()
 		CSPS.unsavedChanges = true
-	CSPS.showElement("apply", true)
-	CSPS.showElement("save", true)
+		CSPS.showElement("apply", true)
+		CSPS.showElement("save", true)
+		changedCP = true
 		CSPS.myTree:RefreshVisible()
 	end
 end
@@ -663,6 +693,7 @@ function CSPS.cp2BtnPlusMinus(skId, x, shift)
 	CSPS.cp2ReCheckHotbar(CSPS.cp2Disci[skId])
 	CSPS.cp2UpdateHbMarks()
 	CSPS.unsavedChanges = true
+	changedCP = true
 	CSPS.showElement("apply", true)
 	CSPS.showElement("save", true)
 	CSPS.myTree:RefreshVisible()
@@ -722,6 +753,7 @@ function CSPS.cp2ReadCurrent()
 		end
 	--end
 	CSPS.cp2UpdateHbMarks()
+	changedCP = false
 end
 
 local function cp2SingleBarCompress(myBar)
@@ -781,7 +813,10 @@ function CSPS.cp2Extract(cp2Comp, disciFilter)
 		local myTable = {SplitString(";", cp2Comp)}
 		for i, v in pairs(myTable) do
 			local skId, myValue = SplitString("-", v)
-			CSPS.cp2Table[tonumber(skId)][2] = tonumber(myValue)
+			skId = tonumber(skId)
+			myValue = tonumber(myValue)
+			if myValue > GetChampionSkillMaxPoints(skId) then myValue = GetChampionSkillMaxPoints(skId) end
+			CSPS.cp2Table[skId][2] = myValue
 		end
 		CSPS.cp2UpdateUnlock(1)
 		CSPS.cp2UpdateUnlock(2)
@@ -841,7 +876,7 @@ end
 
 function CSPS.onCPChange(_, result)
 	if result > 0 then return end
-	if waitingForCpPurchase then d(GS(CSPS_CPApplied)) waitingForCpPurchase = false end
+	if waitingForCpPurchase then d(string.format("[CSPS] %s", GS(CSPS_CPApplied))) waitingForCpPurchase = false end
 	if CSPS.cpCustomBar then CSPS.showCpBar() end
 end
 
@@ -857,8 +892,14 @@ function CSPS.cp2ApplyConfirm(respecNeeded, hotbarsOnly)
 	end
 	hotbarsOnly = hotbarsOnly or {}	
 	local unslottedSkills = {}
+	
 	for i, v in pairs(CSPS.cp2HbTable) do
 		if (CSPS.applyCPc[i] and #hotbarsOnly == 0) or hotbarsOnly[i] == true then
+			local skToSlot = {}
+			for j=1, 4 do
+				local hbSkill = v[j]
+				if hbSkill then skToSlot[hbSkill] = true end
+			end
 			for j=1, 4 do
 				local hbSkill = v[j]
 				if hbSkill then
@@ -866,8 +907,11 @@ function CSPS.cp2ApplyConfirm(respecNeeded, hotbarsOnly)
 						table.insert(unslottedSkills, hbSkill)
 						hbSkill = nil
 					end
+				else
+					local altSkill = GetSlotBoundId((i-1) * 4 + j, HOTBAR_CATEGORY_CHAMPION)
+					if not skToSlot[altSkill] then hbSkill = altSkill end
 				end	
-					AddHotbarSlotToChampionPurchaseRequest((i-1) * 4 + j, hbSkill)
+				AddHotbarSlotToChampionPurchaseRequest((i-1) * 4 + j, hbSkill)
 			end
 		end
 	end
@@ -876,7 +920,7 @@ function CSPS.cp2ApplyConfirm(respecNeeded, hotbarsOnly)
         if #hotbarsOnly == 0 then 
 				ZO_Dialogs_ShowDialog(CSPS.name.."_CpPurchConf", nil, {mainTextParams = {GS("SI_CHAMPIONPURCHASERESULT", result)}})
 			else
-				d(GS("SI_CHAMPIONPURCHASERESULT", result))
+				d(string.format("[CSPS] %s", GS("SI_CHAMPIONPURCHASERESULT", result)))
 		end
         return
     end
@@ -904,9 +948,10 @@ function CSPS.cp2ApplyConfirm(respecNeeded, hotbarsOnly)
         confirmationSound = SOUNDS.CHAMPION_POINTS_COMMITTED
     end
     PlaySound(confirmationSound)
-	
+	changedCP = false
+	zo_callLater(function() CSPS.myTree:RefreshVisible() end, 1000)
 	if #unslottedSkills > 0 then
-		d(GS(CSPS_MSG_Unslotted))
+		d(string.format("[CSPS] %s", GS(CSPS_MSG_Unslotted)))
 		for  i,v in pairs(unslottedSkills) do
 			d(zo_strformat(" - |c<<1>><<C:2>>|r", cpColHex[CSPS.cp2Disci[v]], GetChampionSkillName(v)))
 		end
@@ -1060,6 +1105,38 @@ function CSPS.initHkNumberList()
 		end	
 	end
 end
+
+function CSPS.cpFilterCombo()
+	CSPSWindowCPProfilesRoleFilter.comboBox = CSPSWindowCPProfilesRoleFilter.comboBox or ZO_ComboBox_ObjectFromContainer(CSPSWindowCPProfilesRoleFilter)
+	local myComboBox = CSPSWindowCPProfilesRoleFilter.comboBox	
+	myComboBox:ClearItems()
+	myComboBox:SetSortsItems(true)
+	
+	local choices = {
+	}
+	
+	for i, v in pairs(roles) do
+		if v ~= "" and v~= roles[1] then choices[v] = i end
+	end
+	
+	local function OnItemSelect(_, choiceText, _)
+		roleFilter = choiceText
+		
+		CSPS.cppList:RefreshData()
+		PlaySound(SOUNDS.POSITIVE_CLICK)
+	end
+	
+	for i,j in pairs(choices) do
+		myComboBox:AddItem(myComboBox:CreateItemEntry(i, OnItemSelect))
+
+	end
+	if roleFilter ~= "" then 
+		myComboBox:SetSelectedItem(roleFilter)
+	else
+		myComboBox:SetSelectedItem(GS(SI_CHAT_OPTIONS_FILTERS))
+	end
+end
+
 function CSPS.cp2HbHkClick(myId, myDiscipline, control, mouseButton)
 	if not CSPSWindowcpHbHkNumberList:IsHidden() then 
 		CSPSWindowcpHbHkNumberList:SetHidden(true) 
@@ -1070,17 +1147,17 @@ function CSPS.cp2HbHkClick(myId, myDiscipline, control, mouseButton)
 end
 
 function CSPS.cp2HbPshowTTApply(myId, myDiscipline, control)
-	local myToolTip = {GS(CSPS_Tooltiptext_LoadAndApply)}
+	local myTooltip = {GS(CSPS_Tooltiptext_LoadAndApply)}
 	local myProfile = CSPS.currentCharData.cpHbProfiles[myId]
 	local myHb = {SplitString(",", myProfile["hbComp"])}
 	for i, v in pairs(myHb) do
 		local myString = zo_strformat("<<C:1>>", GetChampionSkillName(tonumber(v))) or "-"
 		local myColor = cpColHex[myDiscipline]
 		myString = string.format(" |t24:24:esoui/art/champion/champion_icon_32.dds|t %s) |c%s%s|r", i, myColor, myString)
-		table.insert(myToolTip, myString)
+		table.insert(myTooltip, myString)
 	end
-	myToolTip = table.concat(myToolTip, "\n")
-	ZO_Tooltips_ShowTextTooltip(control, RIGHT, myToolTip)
+	myTooltip = table.concat(myTooltip, "\n")
+	ZO_Tooltips_ShowTextTooltip(control, RIGHT, myTooltip)
 end
 
 function CSPS.cp2HbPshowTT(myId, myDiscipline, control)
@@ -1126,8 +1203,8 @@ function CSPS.cp2HbPshowTT(myId, myDiscipline, control)
 	else
 		otherDiscText = "-"
 	end
-	local myToolTip = zo_strformat(GS(CSPS_Tooltiptext_CpHbHk), myKeyText, myHotkey, 5, otherDiscText)
-	ZO_Tooltips_ShowTextTooltip(control, RIGHT, myToolTip)
+	local myTooltip = zo_strformat(GS(CSPS_Tooltiptext_CpHbHk), myKeyText, myHotkey, 5, otherDiscText)
+	ZO_Tooltips_ShowTextTooltip(control, RIGHT, myTooltip)
 end
 
 function CSPScppList:SetupItemRow( control, data )
@@ -1263,10 +1340,9 @@ function CSPScppList:BuildMasterList( )
 		table.insert(self.masterList, {type = 1, name = v.name, discipline = v.discipline, myId = i, points = v.points, isNew = v.isNew})
 	end
 	for i,v in pairs(presetList) do
-		local roles = {"DD", GS(CSPS_CPP_Tank), "", GS(SI_LFGROLE4), "DD(Mag)", "DD(Stam)", "-"}
 		v.role = v.role or 7
 		local myRole = roles[v.role]
-		table.insert(self.masterList, {type = 4, name = v.name, discipline = v.discipline,  myId = i, points = v.points, role=myRole, source=v.source, website=v.website, updated=v.updated})
+		table.insert(self.masterList, {type = 4, name = v.name, discipline = v.discipline,  myId = i, points = v.points, role=myRole, source=v.source, addInfo = v.addInfo, website=v.website, updated=v.updated})
 	end
 	for i,v in pairs(custBarList) do
 		table.insert(self.masterList, {type = 5, name = v.name, discipline = v.discipline, myId = i, points = v.points, isNew = v.isNew})
@@ -1274,7 +1350,6 @@ function CSPScppList:BuildMasterList( )
 end
 
 function CSPScppList:FilterScrollList( )
-	
 	local scrollData = ZO_ScrollList_GetDataList(self.list)
 	ZO_ClearNumericallyIndexedTable(scrollData)
 
@@ -1282,7 +1357,9 @@ function CSPScppList:FilterScrollList( )
 		local myType = 2 -- My type here refers to the UI element not the data type: 1 being a list entry for presets, 2 also contains the profile buttons
 		if data.type > 2 and data.type ~= 5 then myType = 1 end 
 		if (cpProfDis == nil or cpProfDis == data.discipline) and (cpProfType == nil or cpProfType == data.type) then
-			table.insert(scrollData, ZO_ScrollList_CreateDataEntry(myType, data))
+			if data.type ~= 4 or roleFilter == "" or roleFilter == roles[7] or roleFilter == data.role or data.role == roles[7] or (data.role == 1 and (roleFilter == roles[5] or roleFilter == roles[6])) then
+				table.insert(scrollData, ZO_ScrollList_CreateDataEntry(myType, data))
+			end
 		end
 	end
 end
@@ -1494,19 +1571,30 @@ function CSPS.cpProfileType(myType)
 		CSPSWindowCPProfilesHeaderPoints:SetText(GS(CSPS_CPP_Hotkey))
 		CSPSWindowCPProfilesHeaderPoints:SetHorizontalAlignment(0)
 		CSPSWindowCPProfilesHeaderHotkey:SetHidden(false)
+		CSPSWindowCPProfilesHeaderPoints:SetWidth(59)
+		CSPSWindowCPProfilesHeaderHotkey:SetWidth(25)
 	else
 		CSPSWindowCPProfilesHeaderPoints:SetText(GS(CSPS_CPP_Points))
 		CSPSWindowCPProfilesHeaderPoints:SetHorizontalAlignment(1)
 		CSPSWindowCPProfilesHeaderHotkey:SetHidden(true)
+		CSPSWindowCPProfilesHeaderPoints:SetWidth(84)
+		CSPSWindowCPProfilesHeaderHotkey:SetWidth(0)
 	end
 	if cpProfType == 4 then
 		CSPSWindowCPProfilesHeaderName:SetWidth(200)
 		CSPSWindowCPProfilesHeaderRole:SetHidden(false)
 		CSPSWindowCPProfilesHeaderSource:SetHidden(false)
+		CSPSWindowCPProfilesRoleFilter:SetHidden(false)
+		CSPSWindowCPProfilesLblStrictOrder:SetHidden(false)
+		CSPSWindowCPProfilesChkStrictOrder:SetHidden(false)
+		if not CSPSWindowCPProfilesRoleFilter.comboBox then CSPS.cpFilterCombo() end
 	else
 		CSPSWindowCPProfilesHeaderName:SetWidth(342)
 		CSPSWindowCPProfilesHeaderRole:SetHidden(true)
 		CSPSWindowCPProfilesHeaderSource:SetHidden(true)
+		CSPSWindowCPProfilesRoleFilter:SetHidden(true)
+		CSPSWindowCPProfilesLblStrictOrder:SetHidden(true)
+		CSPSWindowCPProfilesChkStrictOrder:SetHidden(true)
 	end
 	local cppTypes = {"CustomAcc", "CustomChar", "ImportFromText", "Presets", "BarsOnly"}
 	for i, v in pairs(cppTypes) do
@@ -1534,8 +1622,12 @@ function CSPS.CPListRowMouseEnter(control)
 		InitializeTooltip(InformationTooltip, control, LEFT)	
 		InformationTooltip:AddLine(control.data.name, "ZoFontWinH2")
 		ZO_Tooltip_AddDivider(InformationTooltip)
-		InformationTooltip:AddLine(zo_strformat(GS(CSPS_Tooltip_CPPreset), control.data.updated[1], control.data.updated[2], control.data.updated[3], control.data.website), "ZoFontGame")
-		
+		if control.data.addInfo then
+			InformationTooltip:AddLine(control.data.addInfo, "ZoFontGame") 
+			ZO_Tooltip_AddDivider(InformationTooltip)
+		end
+		InformationTooltip:AddLine(zo_strformat(GS(CSPS_Tooltip_CPPUpdate), control.data.updated[1], control.data.updated[2], control.data.updated[3]), "ZoFontGame")
+		if control.data.website then InformationTooltip:AddLine(zo_strformat(GS(CSPS_Tooltip_CPPWebsite), control.data.website), "ZoFontGame") end
 	end
 end
 
@@ -1560,10 +1652,11 @@ local function loadCPProfile(myType, myId, discipline)
 	CSPS.cp2UpdateHbMarks()
 	CSPS.toggleCP(discipline, true)
 	CSPS.unsavedChanges = true
+	changedCP = true
 	CSPS.showElement("apply", true)
 	CSPS.showElement("save", true)
-		CSPS.myTree:RefreshVisible()
-		CSPS.showElement("cpProfiles", false)
+	CSPS.myTree:RefreshVisible()
+	CSPS.showElement("cpProfiles", false)
 end
 
 local function loadDynamicCP(myList, mySlotted, myBase, discipline)
@@ -1571,6 +1664,7 @@ local function loadDynamicCP(myList, mySlotted, myBase, discipline)
 	local i = 1
 	local remainingPoints = GetNumSpentChampionPoints(GetChampionDisciplineId(discipline)) + GetNumUnspentChampionPoints(GetChampionDisciplineId(discipline))
 	local slottableSkills = {}
+	local strictOrder = CSPS.savedVariables.settings.strictOrder
 	if mySlotted ~= nil then
 		for _, v in pairs(mySlotted) do
 			slottableSkills[v] = true
@@ -1582,13 +1676,14 @@ local function loadDynamicCP(myList, mySlotted, myBase, discipline)
 			if remainingPoints >= myList[i][2] - CSPS.cp2Table[myList[i][1]][2] then
 				remainingPoints = remainingPoints + CSPS.cp2Table[myList[i][1]][2]
 				CSPS.cp2Table[myList[i][1]][2] = myList[i][2] 
+				if CSPS.cp2Table[myList[i][1]][2] > GetChampionSkillMaxPoints(myList[i][1]) then CSPS.cp2Table[myList[i][1]][2] = GetChampionSkillMaxPoints(myList[i][1]) end
 				CSPS.cp2UpdateUnlock(discipline)
-				remainingPoints = remainingPoints -  myList[i][2]
+				remainingPoints = remainingPoints -  CSPS.cp2Table[myList[i][1]][2]
 			else
 				if DoesChampionSkillHaveJumpPoints(myList[i][1]) then
 					local myJumpPoint = 0
 					for j, w in ipairs({GetChampionSkillJumpPoints(myList[i][1])}) do
-						if w <= remainingPoints - CSPS.cp2Table[myList[i][1]][2] then myJumpPoint = w else break end
+						if w <= remainingPoints + CSPS.cp2Table[myList[i][1]][2] then myJumpPoint = w else break end
 					end
 					if myJumpPoint > CSPS.cp2Table[myList[i][1]][2] then
 						remainingPoints = remainingPoints + CSPS.cp2Table[myList[i][1]][2]
@@ -1596,7 +1691,15 @@ local function loadDynamicCP(myList, mySlotted, myBase, discipline)
 						CSPS.cp2UpdateUnlock(discipline)
 						remainingPoints = remainingPoints - myJumpPoint
 					end
+				else
+					CSPS.cp2Table[myList[i][1]][2] = CSPS.cp2Table[myList[i][1]][2] + remainingPoints
+					remainingPoints = 0
+					if CSPS.cp2Table[myList[i][1]][2] > GetChampionSkillMaxPoints(myList[i][1]) then
+						remainingPoints = CSPS.cp2Table[myList[i][1]][2] - GetChampionSkillMaxPoints(myList[i][1])
+						CSPS.cp2Table[myList[i][1]][2] = GetChampionSkillMaxPoints(myList[i][1])
+					end
 				end
+				if strictOrder then break end
 			end
 		end
 		i = i +1
@@ -1622,6 +1725,7 @@ local function loadDynamicCP(myList, mySlotted, myBase, discipline)
 	CSPS.cp2HbIcons(discipline)		
 	CSPS.cp2UpdateHbMarks()
 	CSPS.unsavedChanges = true
+	changedCP = true
 	CSPS.showElement("apply", true)
 	CSPS.showElement("save", true)
 	CSPS.toggleCP(discipline, true)
@@ -1660,12 +1764,45 @@ local function loadCPPreset(myType, myId, discipline)
 	end
 end
 
+function CSPS.showPresetProfileContent(control, myType, myId, discipline)
+	if not myId or not myType or not discipline then return end
+	if myType ~= 4 then return end -- while I didn't implement this feature for custom profiles
+	
+	--[[ Will add this option for custom profiles at a later point
+		local myProfile = {}
+		if myType == 5 then return end
+		if myType == 1 then
+			myProfile = CSPS.savedVariables.cpProfiles[myId]
+		elseif myType == 2 then
+			myProfile = CSPS.currentCharData.cpProfiles[myId]
+		end
+		local cp2Comp = myProfile.cpComp or "" 
+		CSPS.cp2Extract(cp2Comp, discipline) 
+	]]--
+	
+	InitializeTooltip(InformationTooltip, control, LEFT)
+
+	local myPreset = CSPSCPPresets[myId]
+	InformationTooltip:AddLine(myPreset.name , "ZoFontWinH2")
+	ZO_Tooltip_AddDivider(InformationTooltip)
+	local myTooltip = {}
+	for i, v in pairs(myPreset.preset) do
+		table.insert(myTooltip, zo_strformat("|c<<1>><<C:2>>|r|cffffff(<<3>>)|r", cpColHex[discipline], GetChampionSkillName(v[1]), v[2]))
+	end
+	myTooltip = table.concat(myTooltip, ", ")
+	InformationTooltip:AddLine(myTooltip)
+end
+
 function CSPS.CPListRowMouseUp( control, button, upInside )
 	if upInside then
-		if control.data.type == 1 or control.data.type == 2 or control.data.type == 5 then
-			loadCPProfile(control.data.type, control.data.myId, control.data.discipline)
+		if button == 1 then
+			if control.data.type == 1 or control.data.type == 2 or control.data.type == 5 then
+				loadCPProfile(control.data.type, control.data.myId, control.data.discipline)
+			else
+				loadCPPreset(control.data.type, control.data.myId, control.data.discipline)
+			end
 		else
-			loadCPPreset(control.data.type, control.data.myId, control.data.discipline)
+			CSPS.showPresetProfileContent(control, control.data.type, control.data.myId, control.data.discipline)
 		end
 	end
 end
@@ -1688,6 +1825,7 @@ function CSPS.importListCP()
 		local skId, skValue = SplitString(":", v)
 		skId = tonumber(skId)
 		skValue = tonumber(skValue)
+		if skValue > GetChampionSkillMaxPoints(skId) then skValue = GetChampionSkillMaxPoints(skId) end
 		local myDisc = CSPS.cp2Disci[skId]
 		if myDisc ~= nil then 
 			if discLists[myDisc] ~= nil then
@@ -1755,6 +1893,7 @@ function CSPS.importListCP()
 	CSPS.myTree:RefreshVisible()
 	
 	CSPS.toggleImportExport(false)
+	changedCP = true
 	CSPS.showElement("apply", true)
 	CSPS.showElement("save", true)
 end
@@ -1769,7 +1908,7 @@ local function tryToSlot(myDiscipline)
 			for i,v in pairs(skillsToSlot) do
 				if DoesChampionSkillHaveJumpPoints(v) then
 					local _, myMinJumpPoint = GetChampionSkillJumpPoints(v)
-					if CSPS.cp2Table[v][2] <= myMinJumpPoint then 
+					if CSPS.cp2Table[v][2] < myMinJumpPoint then 
 						table.insert(unslottedSkills, v)
 					else
 						if #CSPS.cp2HbTable[myDiscipline] < 4 then 
@@ -1789,7 +1928,7 @@ local function tryToSlot(myDiscipline)
 		end
 	end
 	if #unslottedSkills > 0 then
-		d(GS(CSPS_MSG_Unslotted))
+		d(string.format("[CSPS] %s", GS(CSPS_MSG_Unslotted)))
 		for  i,v in pairs(unslottedSkills) do
 			d(zo_strformat(" - |c<<1>><<C:2>>|r", cpColHex[CSPS.cp2Disci[v]], GetChampionSkillName(v)))
 		end
@@ -1807,6 +1946,7 @@ local function applyCPMapping()
 		CSPS.myTree:RefreshVisible()
 		CSPS.showElement("apply", true)
 		CSPS.showElement("save", true)
+		changedCP = true
 		CSPS.showElement("cpImport", true)
 end
 
@@ -1861,12 +2001,12 @@ function CSPS.cp2DoMap()
 	local mapMe = nil
 	if mappingIndex <= #mappingUnclear then
 		mapMe = mappingUnclear[mappingIndex][2]
-		if GetChampionSkillMaxPoints(cpSkillToMap) < mapMe then d('Value is higher than the maximum for this skill.') return end
+		if GetChampionSkillMaxPoints(cpSkillToMap) < mapMe then d(string.format("[CSPS] %s", 'Value is higher than the maximum for this skill.')) return end
 		numMapCleared = numMapCleared + 1
 		numMapUnclear = numMapUnclear - 1
 	else
 		mapMe = unmappedSkills[mappingIndex - #mappingUnclear][2]
-		if GetChampionSkillMaxPoints(cpSkillToMap) < mapMe then d('Value is higher than the maximum for this skill.') return end
+		if GetChampionSkillMaxPoints(cpSkillToMap) < mapMe then d(string.format("[CSPS] %s", 'Value is higher than the maximum for this skill.')) return end
 		numRemapped = numRemapped + 1
 	end
 	CSPS.cp2Table[cpSkillToMap][2] = mapMe
@@ -1948,7 +2088,7 @@ function CSPS.exportTextCP(myDiscipline, myLang)
 	CSPSWindowImportExportTextEdit:SetText(table.concat(exportList, "\n"))
 end
 
-function CSPS.importTextCP(myDiscipline, convertMe)
+function CSPS.importTextCP(myDiscipline, convertMe, sumUp)
 	local myText = CSPSWindowImportExportTextEdit:GetText()
 	local myStartPos = 1
 	local myImportTable = {}
@@ -1995,8 +2135,10 @@ function CSPS.importTextCP(myDiscipline, convertMe)
 		local mustSlot = string.find(v[1], "slot")
 		local isBasestat = string.find(v[1], "basestat")
 		if myKey ~= nil then
-			if v[2] > GetChampionSkillMaxPoints(myKey) then 
-				table.insert(mappingUnclear , {myKey, v[2], GetChampionSkillName(myKey)})
+			if v[2] > GetChampionSkillMaxPoints(myKey) or GetChampionAbilityId(myKey) == 0 then 
+				local cpSkName = GetChampionSkillName(myKey)
+				cpSkName = cpSkName ~= "" and cpSkName or v[1]
+				table.insert(mappingUnclear , {myKey, v[2], cpSkName})
 				namesChecked[myKey] = true
 				numMapUnclear = numMapUnclear + 1	
 				if mustSlot then 
@@ -2079,7 +2221,7 @@ function CSPS.importTextCP(myDiscipline, convertMe)
 			table.insert(unmappedSkills, {v[3], v[2]})
 		end
 	end
-	os.date("%m, %d, %Y")
+		
 	if convertMe then
 		local myRole =  GetSelectedLFGRole()
 		if myRole == 1 and  CSPS.isMagOrStam() > 0 then myRole = 4 + CSPS.isMagOrStam() end
@@ -2097,9 +2239,13 @@ function CSPS.importTextCP(myDiscipline, convertMe)
 		}
 		local setValue = {}
 		for i, v in pairs(skillsToImport) do
-			if setValue[v[1]] ~= v[2] then
-				setValue[v[1]] = v[2]
-				table.insert(convPreset, string.format("\t\t{%s, %s},", v[1], v[2]))
+			if setValue[v[1]] ~= v[2] or sumUp then
+				local thisValue = v[2]
+				if sumUp and setValue[v[1]] ~= 0 and setValue[v[1]] ~= nil then
+					thisValue = thisValue + setValue[v[1]]
+				end
+				setValue[v[1]] = thisValue
+				table.insert(convPreset, string.format("\t\t{%s, %s},", v[1], thisValue))
 			end
 		end
 		table.insert(convPreset, "\t},")
@@ -2139,6 +2285,7 @@ function CSPS.importTextCP(myDiscipline, convertMe)
 		local skillsToSlotRev = {}
 		for i, v in pairs( skillsToImport) do
 			if CSPS.cp2Table[v[1]] ~= nil then 
+				if v[2] > GetChampionSkillMaxPoints(v[1]) then v[2] = GetChampionSkillMaxPoints(v[1]) end
 				if v[2] <= remainingPoints + CSPS.cp2Table[v[1]][2] then
 					remainingPoints = remainingPoints - v[2] + CSPS.cp2Table[v[1]][2]
 					CSPS.cp2Table[v[1]][2] = v[2] 
@@ -2149,7 +2296,6 @@ function CSPS.importTextCP(myDiscipline, convertMe)
 				end
 			end
 		end
-
 		CSPS.cp2UpdateSum(myDiscipline)
 		CSPS.cp2UpdateSumClusters()
 		if not CSPS.tabEx and not CSPS.tabExHalf then 
@@ -2170,7 +2316,7 @@ function CSPS.importTextCP(myDiscipline, convertMe)
 		cpDisciToMap = myDiscipline
 		updateCPMapProg()
 	else
-		d(GS(CSPS_CPImp_NoMatch))
+		d(string.format("[CSPS] %s", GS(CSPS_CPImp_NoMatch)))
 	end
 end
 
@@ -2241,6 +2387,12 @@ function CSPS.showFastestCPWays(myCpId)
 	return table.concat(allPaths, "\n")
 end
 
+function CSPS.checkCpOnClose()
+	if not changedCP then return end
+	d(string.format("[CSPS] %s", GS(CSPS_MSG_ApplyClosing)))
+	
+end
+
 -- CP reminder for raids and trials
 
 function CSPS.cpReminder() 
@@ -2250,5 +2402,5 @@ function CSPS.cpReminder()
 	if CSPS.locationBinding(zoneId) or not CSPS.cpRemindMe then return end
 	if not zoneAbbr[zoneId] then return end
 	if GetCurrentZoneDungeonDifficulty() < 2 then return end
-	d(GS(CSPS_MSG_TrialEntered))
+	d(string.format("[CSPS] %s", GS(CSPS_MSG_TrialEntered)))
 end

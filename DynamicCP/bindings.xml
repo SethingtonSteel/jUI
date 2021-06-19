@@ -16,6 +16,16 @@
                     DynamicCP.CycleQuickstars()
                 </Down>
             </Action>
+            <Action name="DCP_DIALOG_CONFIRM">
+                <Down>
+                    DynamicCP.OnModelessConfirm()
+                </Down>
+            </Action>
+            <Action name="DCP_DIALOG_CANCEL">
+                <Down>
+                    DynamicCP.OnModelessCancel()
+                </Down>
+            </Action>
         </Category>
     </Layer>
 </Bindings>

@@ -5,7 +5,7 @@ local Passives={
 	[40359]=true,--Fed on ally
 	[40525]=true,--Bit an ally
 	[43752]=true,--Soul Summons
-	[89683]=true,[66776]=true,[64210]=true,[84364]=true,[84365]=true,[99463]=true,[99462]=true,[85502]=true,[85503]=true,[91369]=true,[118985]=true,[136348]=true,--EXP Buff
+	[89683]=true,[66776]=true,[64210]=true,[77123]=true,[84364]=true,[84365]=true,[99463]=true,[99462]=true,[85502]=true,[85503]=true,[91369]=true,[118985]=true,[136348]=true,[152514]=true,--EXP Buff
 	[96118]=true,--Witchmother's Boon
 	[21676]=true,--Recall cooldown
 	[147687]=true,--Alliance Skill Gain Boost
@@ -1269,7 +1269,7 @@ end
 
 function BUI.Buffs.ShowTooltip(control)
 	local data=control.passives and BUI.PassiveBuffs[control.index] or (control.custom and BUI.CustomBuffs[control.index] or (control.widget and BUI.Widgets[control.index] or BUI.PlayerBuffs[control.index]))
-	if not data then return end
+	if not data or data.Blank then return end
 	if data.Target then for name in pairs(data) do if name~="Target" then data=data[name] break end end end
 	InitializeTooltip(InformationTooltip, control, BOTTOM, 0, -16)
 	InformationTooltip:AddLine(zo_strformat("<<C:1>>",data.Name),'$(BOLD_FONT)'..'|22',1,1,1)

@@ -1,19 +1,22 @@
 PP.notificationsScene = function()
+	local scenes = {
+		{ scene = NOTIFICATIONS_SCENE,	gVar = ZO_Notifications, },
+	}
+	local fragments	= { FRAME_PLAYER_FRAGMENT, FRAME_TARGET_STANDARD_RIGHT_PANEL_FRAGMENT, RIGHT_BG_FRAGMENT, TITLE_FRAGMENT, NOTIFICATIONS_TITLE_FRAGMENT, }
 
---ZO_Notifications--notifications--NOTIFICATIONS_SCENE---------------------------------------------
-	-- NOTIFICATIONS_SCENE:RemoveFragment(END_IN_WORLD_INTERACTIONS_FRAGMENT)
-	NOTIFICATIONS_SCENE:RemoveFragment(FRAME_TARGET_STANDARD_RIGHT_PANEL_FRAGMENT)
-	NOTIFICATIONS_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	NOTIFICATIONS_SCENE:RemoveFragment(TITLE_FRAGMENT)
-	NOTIFICATIONS_SCENE:RemoveFragment(NOTIFICATIONS_TITLE_FRAGMENT)
-	NOTIFICATIONS_SCENE:RemoveFragment(FRAME_PLAYER_FRAGMENT)
-	-- NOTIFICATIONS_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_SOCIAL)
-	NOTIFICATIONS_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
+	for i=1, #scenes do
+		local scene			= scenes[i].scene
+		local gVar			= scenes[i].gVar
 
-	PP.SetBackdrop(1, ZO_Notifications, NOTIFICATIONS_SCENE, -10, -10, 0, 10)
+		for i=1, #fragments do
+			scene:RemoveFragment(fragments[i])
+		end
 
-	PP.Anchor(ZO_Notifications, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 90,	--[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
+		local tlc = gVar.control or gVar
 
-	ZO_ScrollList_Commit(ZO_NotificationsList)
----------------------------------------------------------------------------------------------------
+		PP:CreateBackground(tlc, --[[#1]] nil, nil, nil, -10, -10, --[[#2]] nil, nil, nil, 0, 10, true)
+		PP.Anchor(tlc, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 90, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
+
+		ZO_ScrollList_Commit(tlc:GetNamedChild("List"))
+	end
 end

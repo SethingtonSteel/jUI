@@ -1,7 +1,7 @@
 ## Title: Dressing Room
-## APIVersion: 100033 100034
+## APIVersion: 100035
 ## Author: |cFFC300@amuridee|r
-## Version: 0.6.4
+## Version: 0.6.6
 ## SavedVariables: DressingRoomSavedVariables
 ## DependsOn: LibAddonMenu-2.0
 

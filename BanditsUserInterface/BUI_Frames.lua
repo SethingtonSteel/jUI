@@ -7,6 +7,7 @@ local TrialGroupInit
 local dot_off,dot_on="esoui/art/buttons/featuredot_inactive.dds","esoui/art/buttons/featuredot_active.dds"	--"/BanditsUserInterface/textures/point_off.dds","/BanditsUserInterface/textures/point_on.dds"
 local dodge_icon="esoui/art/icons/passive_armor_009.dds"
 local ReactionColor={
+	[UNIT_REACTION_COMPANION]={.1,.5,.1,1},
 	[UNIT_REACTION_DEFAULT]={.6,.1,.2,1},
 	[UNIT_REACTION_FRIENDLY]={.1,.5,.1,1},
 	[UNIT_REACTION_HOSTILE]={.6,.1,.2,1},
@@ -991,7 +992,7 @@ function BUI.Frames.TargetReactionUpdate()
 		if BUI.Target.Invul then
 			color=ReactionColor["INVULNERABLE"]
 		else
-			color=ReactionColor[GetUnitReaction('reticleover')]
+			color=ReactionColor[GetUnitReaction('reticleover')] or ReactionColor[UNIT_REACTION_NEUTRAL]
 		end
 		BUI.Target.color=color
 		BUI_TargetFrame.health.bar:SetColor(unpack(color))
@@ -1080,7 +1081,7 @@ function BUI.Frames.GetGroupData()
 	local list,tanks,healers,dds={},{},{},{}
 	for i=1,BUI.Group.members do
 		local unitTag	=GetGroupUnitTagByIndex(i)
-		if string.sub(unitTag, 0, 5)=="group" then	-- and DoesUnitExist(unitTag)
+		if unitTag and string.sub(unitTag, 0, 5)=="group" then	-- and DoesUnitExist(unitTag)
 			local accname	=GetUnitDisplayName(unitTag)
 			local name		=string.gsub(GetUnitName(unitTag),"%^%w+","")
 			local role_n	=GetGroupMemberSelectedRole(unitTag)

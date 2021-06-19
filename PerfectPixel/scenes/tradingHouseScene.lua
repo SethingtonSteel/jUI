@@ -1,19 +1,15 @@
 PP.tradingHouseScene = function()
+	local PP = PP
+	local TopOffsetY			= 110
+	local BottomOffsetY			= -90
 
 	TRADING_HOUSE_SCENE:RemoveFragment(RIGHT_BG_FRAGMENT)
-	-- TRADING_HOUSE_SCENE:RemoveFragment(TREE_UNDERLAY_FRAGMENT)
 	TRADING_HOUSE_SCENE:AddFragment(FRAME_TARGET_BLUR_STANDARD_RIGHT_PANEL_FRAGMENT)
 	PP:ForceRemoveFragment(TRADING_HOUSE_SCENE, TREE_UNDERLAY_FRAGMENT)
 
-	PP:CreateBackground(ZO_TradingHouse,		--[[#1]] nil, nil, nil, -20, 0, --[[#2]] nil, nil, nil, 0, 20, true)
+	PP:CreateBackground(ZO_TradingHouse,		--[[#1]] nil, nil, nil, -20, 0, --[[#2]] nil, nil, nil, 0, 6, true)
 	PP:HideBackgroundForScene(TRADING_HOUSE_SCENE, ZO_PlayerInventory.PP_BG)
 	PP:HideBackgroundForScene(TRADING_HOUSE_SCENE, ZO_CraftBag.PP_BG)
-
-	local tradingHouseLayout = BACKPACK_TRADING_HOUSE_LAYOUT_FRAGMENT
-	tradingHouseLayout.layoutData.inventoryTopOffsetY				= 100
-	tradingHouseLayout.layoutData.inventoryBottomOffsetY			= -91
-	tradingHouseLayout.layoutData.width								= 635
-	tradingHouseLayout.layoutData.sortByNameWidth					= 311
 
 --==ZO_TradingHouse==============================================================================--
 
@@ -100,6 +96,8 @@ PP.tradingHouseScene = function()
 			PP.Anchor(pricePerUnit, --[[#1]] TOPRIGHT, sellPrice, BOTTOMRIGHT, -2, -2)
 			if not AwesomeGuildStore then
 				pricePerUnit:SetText("@" .. pricePerUnit:GetText():gsub("|t.-:.-:", "|t13:13:"))
+			else
+				pricePerUnit:SetText(pricePerUnit:GetText():gsub("|t.-:.-:", "|t13:13:"))
 			end
 			--TimeRemaining--------------------
 			PP.Font(timeRemaining, --[[Font]] PP.f.Expressway, 15, "shadow", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
@@ -128,27 +126,26 @@ PP.tradingHouseScene = function()
 			backdrop:SetIntegralWrapping(PP.SV.list_skin.list_skin_edge_integral_wrapping)
 
 		--compobility others addons
-			PP:BlockFunction(sellPrice, 'SetFont')
-			PP:BlockFunction(sellPrice, 'SetAnchor')
-			PP:BlockFunction(sellPrice, 'ClearAnchors')
-			PP:BlockFunction(pricePerUnit, 'SetFont')
-			PP:BlockFunction(pricePerUnit, 'SetAnchor')
-			PP:BlockFunction(pricePerUnit, 'ClearAnchors')
+			PP:SetLockedFn(sellPrice, 'SetFont')
+			PP:SetLockedFn(sellPrice, 'SetAnchor')
+			PP:SetLockedFn(sellPrice, 'ClearAnchors')
+			PP:SetLockedFn(pricePerUnit, 'SetFont')
+			PP:SetLockedFn(pricePerUnit, 'SetAnchor')
+			PP:SetLockedFn(pricePerUnit, 'ClearAnchors')
 		end
 
 		PP:PostHooksSetupCallback(list, 1, 1, onCreateFn, onUpdateFn)
 		PP:PostHooksSetupCallback(list, 2, 1, onCreateFn, onUpdateFn)
 	end
 
-	PP.Anchor(ZO_TradingHouse,							--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 100, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -80)
+	PP.Anchor(ZO_TradingHouse,							--[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, TopOffsetY, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, BottomOffsetY)
 	PP.Font(ZO_TradingHouseTitleLabel, --[[Font]] PP.f.Expressway, 30, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)
 	ZO_TradingHouseTitleDivider:SetHidden(true)
 
-	-- PP.ListBackdrop(ZO_TradingHouseBrowseItemsRightPaneSearchResults, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .6, --[[edge]] 30, 30, 30, .6)
 	PP.ScrollBar(ZO_TradingHouseBrowseItemsRightPaneSearchResults, --[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 	PP.Anchor(ZO_TradingHouseBrowseItemsRightPaneSearchResults, --[[#1]] TOPLEFT, ZO_TradingHouseBrowseItemsRightPaneSearchSortBy, BOTTOMLEFT, 0, 0 , --[[#2]] true, BOTTOMRIGHT, ZO_TradingHouseBrowseItemsRightPane, BOTTOMRIGHT, 0, 0)
 
-	PP.Anchor(ZO_TradingHouseBrowseItemsRightPane,		--[[#1]] TOPLEFT, nil, TOPRIGHT, 30, 0, --[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, 0, -11)
+	PP.Anchor(ZO_TradingHouseBrowseItemsRightPane,		--[[#1]] TOPLEFT, nil, TOPRIGHT, 30, 0, --[[#2]] true, BOTTOMRIGHT, nil, BOTTOMRIGHT, 0, 0)
 	PP.Anchor(ZO_TradingHouseSubcategoryTabs,			--[[#1]] BOTTOMRIGHT, nil, TOPRIGHT, -33, -14)
 	PP.Anchor(ZO_TradingHouseTitle,						--[[#1]] BOTTOMLEFT, ZO_TradingHouse, TOPLEFT, -50, 6)
 
@@ -201,14 +198,6 @@ PP.tradingHouseScene = function()
 			text:SetWidth(text:GetStringWidth())
 		end
 	end
-
-	local money = ZO_TradingHouseSearchControlsMoney
-	PP.Anchor(money,	--[[#1]] TOPRIGHT,	nil, TOPRIGHT, -4, 4)
-	-- PP.Font(money,		--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .6)
-	-- ZO_PreHookHandler(money, 'OnTextChanged', function()
-		-- money:SetFont(PP.f.u67 .. "|18|outline")
-	-- end)
-
 
 --==ZO_TradingHouseBrowseItemsLeftPane===========================================================--
 	PP.Anchor(ZO_TradingHouseBrowseItemsLeftPaneCategoryListContainer, --[[#1]] TOPLEFT, ZO_TradingHouseBrowseItemsLeftPaneGlobalFeatureArea, BOTTOMLEFT, -15, 10, --[[#2]] true, BOTTOMRIGHT, ZO_TradingHouseBrowseItemsLeftPane, BOTTOMRIGHT, 0, 0)

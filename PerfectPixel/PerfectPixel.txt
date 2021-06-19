@@ -1,5 +1,5 @@
-## APIVersion: 100034
-## Version: 0.11.09
+## APIVersion: 100035
+## Version: 0.11.17
 ## Title: PerfectPixel
 ## Author: @KL1SK
 ## Description: PerfectPixle changes a lot UI elements |cf44336Attention!!!|r For correct display, the screen resolution must be at least 1920x1080. UI scaling should be disabled.
@@ -44,7 +44,6 @@ scenes\allianceWarSceneGroup.lua
 scenes\mailSceneGroup.lua
 scenes\notificationsScene.lua
 scenes\helpSceneGroup.lua
-scenes\performanceMeterScene.lua
 
 scenes\gameMenuInGameScene.lua
 
@@ -56,3 +55,4 @@ modules\compass.lua
 modules\scrolling.lua
 modules\playerProgressBar.lua
 modules\chatWindow.lua
+modules\performanceMeter.lua

@@ -63,7 +63,10 @@ PP.guildSceneGroup = function()
 
 --KEYBOARD_LINK_GUILD_INFO_SCENE GUILD_BROWSER_GUILD_INFO_KEYBOARD.control
 	PP:HideBackgroundForScene(KEYBOARD_GUILD_BROWSER_SCENE, GUILD_BROWSER_GUILD_INFO_KEYBOARD.control.PP_BG)
-
+	PP.Anchor(ZO_GuildBrowser_GuildList_Keyboard_TopLevel, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT,	0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT, 0, -70)
+	PP.Anchor(ZO_GuildBrowser_GuildList_Keyboard_TopLevelList, --[[#1]] nil, nil, nil, nil, nil, --[[#2]] true, nil, nil, nil, 0, 0)
+	PP.ScrollBar(ZO_GuildBrowser_GuildList_Keyboard_TopLevelList,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
+	ZO_Scroll_SetMaxFadeDistance(ZO_GuildBrowser_GuildList_Keyboard_TopLevelList, 10)
 --ZO_GuildSelector GUILD_SELECTOR
 	PP.Anchor(ZO_GuildSelector, --[[#1]] BOTTOMLEFT, ZO_GuildHome, TOPLEFT, -70, -8)
 	PP.Font(ZO_GuildSelectorComboBoxSelectedItemText, --[[Font]] PP.f.u67, 30, "outline", --[[Alpha]] .9, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .8)

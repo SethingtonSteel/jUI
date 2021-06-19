@@ -50,6 +50,26 @@ local function GenerateCustomList(input)
     return options, values
 end
 
+local dialogs = {
+    [1] = { -- Clear Whitelist
+        identifier = "LUIE_CLEAR_PET_WHITELIST",
+        title = GetString(SI_LUIE_LAM_UF_WHITELIST_CLEAR),
+        text = zo_strformat(GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_DIALOG), GetString(SI_LUIE_CUSTOM_LIST_UF_WHITELIST)),
+        callback = function(dialog)
+            UnitFrames.ClearCustomList(UnitFrames.SV.whitelist)
+            LUIE_WhitelistUF:UpdateChoices(GenerateCustomList(UnitFrames.SV.whitelist))
+            UnitFrames.CustomPetUpdate()
+        end,
+    },
+}
+
+local function loadDialogButtons()
+    for i = 1, #dialogs do
+        local dialog = dialogs[i]
+        LUIE.RegisterDialogueButton(dialog.identifier, dialog.title, dialog.text, dialog.callback)
+    end
+end
+
 function UnitFrames.CreateSettings()
     -- Load LibAddonMenu
     local LAM = LibAddonMenu2
@@ -63,6 +83,9 @@ function UnitFrames.CreateSettings()
     for f in pairs(LUIE.Fonts) do
         table.insert(FontsList, f)
     end
+
+    -- Load Dialog Buttons
+    loadDialogButtons()
 
     -- Get statusbar textures
     local StatusbarTexturesList = {}
@@ -409,8 +432,8 @@ function UnitFrames.CreateSettings()
             {
                 -- Custom Unit Frames Separate Shield Bar
                 type = "checkbox",
-                name = GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPERATE),
-                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPERATE_TP),
+                name = GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPARATE),
+                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPARATE_TP),
                 getFunc = function() return Settings.CustomShieldBarSeparate end,
                 setFunc = function(value) Settings.CustomShieldBarSeparate = value end,
                 width = "full",
@@ -421,8 +444,8 @@ function UnitFrames.CreateSettings()
             {
                 -- Custom Unit Frames Separate Shield Bar Height
                 type = "slider",
-                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPERATE_HEIGHT)),
-                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPERATE_HEIGHT_TP),
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPARATE_HEIGHT)),
+                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMES_SHIELD_SEPARATE_HEIGHT_TP),
                 min = 4, max = 12, step = 1,
                 getFunc = function() return Settings.CustomShieldBarHeight end,
                 setFunc = function(value) Settings.CustomShieldBarHeight = value UnitFrames.CustomFramesApplyLayoutPlayer(true) UnitFrames.CustomFramesApplyLayoutGroup() end,
@@ -463,18 +486,6 @@ function UnitFrames.CreateSettings()
                 setFunc = function(value) Settings.CustomSmoothBar = value end,
                 width = "full",
                 default = Defaults.CustomSmoothBar,
-                disabled = function() return not LUIE.SV.UnitFrames_Enabled end,
-            },
-            {
-                -- Champion Points Effective
-                type = "dropdown",
-                name = GetString(SI_LUIE_LAM_UF_CFRAMES_CHAMPION),
-                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMES_CHAMPION_TP),
-                choices = championOptions,
-                getFunc = function() return Settings.ChampionOptions end,
-                setFunc = function(var) Settings.ChampionOptions = var UnitFrames.OnPlayerActivated() end,
-                width = "full",
-                default = Defaults.ChampionOptions,
                 disabled = function() return not LUIE.SV.UnitFrames_Enabled end,
             },
         },
@@ -637,6 +648,16 @@ function UnitFrames.CreateSettings()
             {
                 -- Custom Unit Reaction color
                 type = "colorpicker",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMES_COLOR_FILL_R_COMPANION),
+                getFunc = function() return unpack(Settings.CustomColourCompanion) end,
+                setFunc = function(r,g,b,a) Settings.CustomColourCompanion={r,g,b} UnitFrames.CustomFramesApplyColours(true) end,
+                width = "full",
+                default = { r=Defaults.CustomColourCompanion[1], g=Defaults.CustomColourCompanion[2], b=Defaults.CustomColourCompanion[3] },
+                disabled = function() return not LUIE.SV.UnitFrames_Enabled end,
+            },
+            {
+                -- Custom Unit Reaction color
+                type = "colorpicker",
                 name = GetString(SI_LUIE_LAM_UF_CFRAMES_COLOR_FILL_R_HOSTILE),
                 getFunc = function() return unpack(Settings.CustomColourHostile) end,
                 setFunc = function(r,g,b,a) Settings.CustomColourHostile={r,g,b} UnitFrames.CustomFramesApplyColours(true) end,
@@ -674,6 +695,18 @@ function UnitFrames.CreateSettings()
                 default = { r=Defaults.CustomColourPet[1], g=Defaults.CustomColourPet[2], b=Defaults.CustomColourPet[3] },
                 disabled = function() return not LUIE.SV.UnitFrames_Enabled end,
             },
+
+            {
+                -- Custom Unit Frames Companion Bar Color
+                type = "colorpicker",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESPET_COLOR),
+                getFunc = function() return unpack(Settings.CustomColourCompanionFrame) end,
+                setFunc = function(r,g,b,a) Settings.CustomColourCompanionFrame={r,g,b} UnitFrames.CustomFramesApplyColours(true) end,
+                width = "full",
+                default = { r=Defaults.CustomColourCompanionFrame[1], g=Defaults.CustomColourCompanionFrame[2], b=Defaults.CustomColourCompanionFrame[3] },
+                disabled = function() return not LUIE.SV.UnitFrames_Enabled end,
+            },
+
         },
     }
 
@@ -1743,6 +1776,108 @@ function UnitFrames.CreateSettings()
         },
     }
 
+    -- Unit Frames - Custom Unit Frames (Companion) Options Submenu
+    optionsDataUnitFrames[#optionsDataUnitFrames + 1] = {
+        type = "submenu",
+        name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_HEADER),
+        controls = {
+            {
+                -- Enable Companion Frames
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_ENABLE),
+                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_ENABLE_TP),
+                getFunc = function() return Settings.CustomFramesCompanion end,
+                setFunc = function(value) Settings.CustomFramesCompanion = value end,
+                width = "full",
+                default = Defaults.CustomFramesCompanion,
+                warning = GetString(SI_LUIE_LAM_RELOADUI_WARNING),
+                disabled = function() return not LUIE.SV.UnitFrames_Enabled end,
+            },
+            {
+                -- Companion HP Bar Format
+                type = "dropdown",
+                name = GetString(SI_LUIE_LAM_UF_SHARED_LABEL),
+                tooltip = GetString(SI_LUIE_LAM_UF_SHARED_LABEL_TP),
+                choices = formatOptions,
+                getFunc = function() return Settings.CustomFormatCompanion end,
+                setFunc = function(var) Settings.CustomFormatCompanion = var UnitFrames.CustomFramesFormatLabels(true) UnitFrames.CustomFramesApplyLayoutCompanion(true) end,
+                width = "full",
+                disabled = function() return not ( LUIE.SV.UnitFrames_Enabled and Settings.CustomFramesCompanion ) end,
+                default = Defaults.CustomFormatCompanion,
+            },
+            {
+                -- Companion Bars Width
+                type = "slider",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_WIDTH),
+                min = 100, max = 500, step = 5,
+                getFunc = function() return Settings.CompanionWidth end,
+                setFunc = function(value) Settings.CompanionWidth = value UnitFrames.CustomFramesApplyLayoutCompanion(true) end,
+                width = "full",
+                default = Defaults.CompanionWidth,
+                disabled = function() return not ( LUIE.SV.UnitFrames_Enabled and Settings.CustomFramesCompanion ) end,
+            },
+            {
+                -- Companion Bars Height
+                type = "slider",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_HEIGHT),
+                min = 20, max = 70, step = 1,
+                getFunc = function() return Settings.CompanionHeight end,
+                setFunc = function(value) Settings.CompanionHeight = value UnitFrames.CustomFramesApplyLayoutCompanion(true) end,
+                width = "full",
+                default = Defaults.CompanionHeight,
+                disabled = function() return not ( LUIE.SV.UnitFrames_Enabled and Settings.CustomFramesCompanion ) end,
+            },
+            {
+                -- Companion - Out-of-Combat frame opacity
+                type = "slider",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_OOCPACITY),
+                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_OOCPACITY_TP),
+                min = 0, max = 100, step = 5,
+                getFunc = function() return Settings.CompanionOocAlpha end,
+                setFunc = function(value) Settings.CompanionOocAlpha = value UnitFrames.CustomFramesApplyInCombat() UnitFrames.CustomFramesApplyLayoutCompanion(true) end,
+                width = "full",
+                default = Defaults.CompanionOocAlpha,
+                disabled = function() return not ( LUIE.SV.UnitFrames_Enabled and Settings.CustomFramesCompanion ) end,
+            },
+            {
+                -- Companion - In-Combat frame opacity
+                type = "slider",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_ICPACITY),
+                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_ICPACITY_TP),
+                min = 0, max = 100, step = 5,
+                getFunc = function() return Settings.CompanionIncAlpha end,
+                setFunc = function(value) Settings.CompanionIncAlpha = value UnitFrames.CustomFramesApplyInCombat() UnitFrames.CustomFramesApplyLayoutCompanion(true) end,
+                width = "full",
+                default = Defaults.CompanionIncAlpha,
+                disabled = function() return not ( LUIE.SV.UnitFrames_Enabled and Settings.CustomFramesCompanion ) end,
+            },
+            {
+                -- Companion Name Clip
+                type = "slider",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_NAMECLIP),
+                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_NAMECLIP_TP),
+                min = 0, max = 200, step = 1,
+                getFunc = function() return Settings.CompanionNameClip end,
+                setFunc = function(value) Settings.CompanionNameClip = value UnitFrames.CustomFramesApplyLayoutCompanion(true) end,
+                width = "full",
+                default = Defaults.CompanionNameClip,
+                disabled = function() return not ( LUIE.SV.UnitFrames_Enabled and Settings.CustomFramesCompanion ) end,
+            },
+            {
+                -- Companion - Color Target by Class
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_USE_CLASS_COLOR),
+                tooltip = GetString(SI_LUIE_LAM_UF_CFRAMESCOMPANION_USE_CLASS_COLOR_TP),
+                getFunc = function() return Settings.CompanionUseClassColor end,
+                setFunc = function(value) Settings.CompanionUseClassColor = value UnitFrames.CustomFramesApplyColours(true) end,
+                width = "full",
+                default = Defaults.CompanionUseClassColor,
+                disabled = function() return not ( LUIE.SV.UnitFrames_Enabled and Settings.CustomFramesCompanion ) end,
+            },
+
+        },
+    }
+
     -- Unit Frames - Custom Unit Frames (Pet) Options Submenu
     optionsDataUnitFrames[#optionsDataUnitFrames + 1] = {
         type = "submenu",
@@ -1906,7 +2041,7 @@ function UnitFrames.CreateSettings()
                 type = "button",
                 name = GetString(SI_LUIE_LAM_UF_WHITELIST_CLEAR),
                 tooltip = GetString(SI_LUIE_LAM_UF_WHITELIST_CLEAR_TP),
-                func = function() UnitFrames.ClearCustomList(Settings.whitelist) LUIE_WhitelistUF:UpdateChoices(GenerateCustomList(Settings.whitelist)) UnitFrames.CustomPetUpdate() end,
+                func = function() ZO_Dialogs_ShowDialog("LUIE_CLEAR_PET_WHITELIST") end,
                 width = "half",
             },
 

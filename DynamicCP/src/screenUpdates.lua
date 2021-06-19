@@ -12,7 +12,6 @@ local lastSlottableChange = 0
 ---------------------------------------------------------------------
 -- Refresh/reset star labels to the default
 function DynamicCP.RefreshLabels(show)
-    DynamicCP.dbg("Refreshing labels")
     for i = 1, ZO_ChampionPerksCanvas:GetNumChildren() do
         local child = ZO_ChampionPerksCanvas:GetChild(i)
         if (child.star and child.star.championSkillData) then
@@ -62,7 +61,7 @@ end
 local function DockWindow(activeConstellation)
     local ox, oy = DynamicCPPresets:GetCenter()
     local tx, ty = DynamicCPPresets:GetCenter()
-    
+
     if (activeConstellation == "All" or activeConstellation == "Green" or activeConstellation == "Cluster") then
         tx = GuiRoot:GetWidth() - DynamicCPPresets:GetWidth() / 2 - 10
         ty = DynamicCPPresets:GetHeight() / 2 + 10
@@ -87,7 +86,6 @@ end
 -- utils
 local function IsInBounds(control)
     local x, y = control:GetCenter()
-    -- DynamicCP.dbg(control:GetName() .. " " .. tostring(x) .. " " .. tostring(y))
     return x >= 0 and x <= GuiRoot:GetWidth() and y >= 0 and y <= GuiRoot:GetHeight()
 end
 
@@ -114,13 +112,11 @@ local function OnCanvasAnimationStopped()
     elseif (redBounds) then
         activeConstellation = "Red"
     else
-        -- TODO: clusters
         activeConstellation = "Cluster"
         DynamicCP.RefreshLabels(DynamicCP.savedOptions.showLabels)
         DynamicCP.AddMouseDoubleClickStars()
     end
 
-    DynamicCP.dbg(activeConstellation)
     if (DynamicCP.savedOptions.dockWithSpace) then
         DockWindow(activeConstellation)
     end

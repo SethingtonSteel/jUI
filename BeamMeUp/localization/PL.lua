@@ -20,7 +20,7 @@ mkstr(SI.TELE_UI_BTN_REFRESH_ALL, "Odśwież listę")
 mkstr(SI.TELE_UI_BTN_UNLOCK_WS, "Odblokuj teleporty w obecnej strefie")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE, "Tylko otwarta strefa")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES, "Jaskinie w otwartej strefie")
-mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Mapy skarbów, surowców i wskazówki wizji")
+mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Mapy skarbów, surowców i wskazówki wizji\n|c777777(right-click for more options)")
 mkstr(SI.TELE_UI_BTN_SETTINGS, "Ustawienia")
 mkstr(SI.TELE_UI_BTN_FEEDBACK, "Pochwała/krytyka")
 mkstr(SI.TELE_UI_BTN_FIX_WINDOW, "Okno błędów")
@@ -32,6 +32,7 @@ mkstr(SI.TELE_UI_BTN_ANCHOR_ON_MAP, "Odepnij / Przypnij na mapie")
 mkstr(SI.TELE_UI_BTN_GUILD_BMU, "Gildie BeamMeUp i partnerzy")
 mkstr(SI.TELE_UI_BTN_GUILD_HOUSE_BMU, "Odwiedź siedzibę BeamMeUp")
 mkstr(SI.TELE_UI_BTN_PTF_INTEGRATION, "\"Port to Friend's House\" Integracja")
+mkstr(SI.TELE_UI_BTN_DUNGEON_FINDER, "Arenas / Trials / Dungeons\n|c777777(right-click for more options)")
 ---------
 --------- List
 mkstr(SI.TELE_UI_SOURCE_GROUP, "Grupa")
@@ -78,6 +79,11 @@ mkstr(SI.TELE_UI_TOGGLE_LEADS_MAP, "Wskazówki wizji")
 mkstr(SI.TELE_UI_VIEW_ANTIQUITY, "Zobacz kodeks")
 mkstr(SI.TELE_UI_JUMP_IN_FRONT_HOUSE, "Podróżowanie poza domem")
 mkstr(SI.TELE_UI_JUMP_IN_HOUSE, "Podróżowanie wewnątrz domu")
+mkstr(SI.TELE_UI_TOGGLE_ARENAS, "Solo Arenas")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_ARENAS, "Group Arenas")
+mkstr(SI.TELE_UI_TOGGLE_TRIALS, "Trials")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS, "Group Dungeons")
+mkstr(SI.TELE_UI_TOGGLE_SORT_ACRONYM, "Sort by Acronym")
 
 mkstr(SI.TELE_UI_SUBMENU_FAVORITES, "Ulubione")
 mkstr(SI.TELE_UI_SUBMENU_MISC, "Różne")
@@ -111,6 +117,7 @@ mkstr(SI.TELE_CHAT_UNLOCK_WS_DISCOVERED_TOTAL, "Ilość kapliczek odkrytych w st
 mkstr(SI.TELE_CHAT_UNLOCK_WS_ALL_KNOWN, "Wszystkie kapliczki w strefie są znane i mogą być użyte do podróży.")
 mkstr(SI.TELE_CHAT_UNLOCK_WS_NEED_DISCOVERED, "Następujące kapliczki nadal muszą być osobiście odwiedzone:")
 mkstr(SI.TELE_CHAT_SHARING_FOLLOW_LINK, "Przekierowanie do linka...")
+mkstr(SI.TELE_CHAT_TO_DUNGEON, "Fast Travel into Instance:")
 
 
 
@@ -204,8 +211,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "Automatyczne potwierdzeni
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "Wyłącz potwierdzanie podróży do kapliczki oknem dialogowym.")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "Pokaż aktualną strefę zawsze na górze")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "Pokazuj aktualną strefę zawsze na górze listy.")
-mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
-mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Ukryj posiadane domy")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Ukryj swoje posiadane domy (teleportacja na zewnątrz) w głównej liście.")
 
 
 -----------------------------------------------------------------------------
@@ -219,10 +226,11 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "Odśwież listę wyników")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "Odblokuj kapliczki w obecnej strefie")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "Podróżuj do lidera grupy")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "Aktywne zadania")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Podróż do Głównej Rezydencji")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Odwiedź siedzibę BeamMeUp")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Podróżuj do obecnej strefy")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Podróż na zewnątrz Głównej Rezydencji")
+mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_DUNGEON_FINDER, "Arenas / Trials / Dungeons")
 
 
 

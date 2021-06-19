@@ -14,7 +14,7 @@ if not DisableLayer then
     [Harvest.WOODWORKING] = "Woodworking",
     [Harvest.CHESTS] = "Chests",
     [Harvest.WATER] = "Water",
-    -- [Harvest.FISHING] = "Fishing",
+    [Harvest.FISHING] = "Fishing",
     [Harvest.HEAVYSACK] = "Heavy Sack",
     [Harvest.TROVE] = "Trove",
     [Harvest.JUSTICE] = "Justice",
@@ -46,57 +46,59 @@ function ProvinatusHarvestMap:UpdateElements()
   self.Elements = {}
   local NodeIds = {}
   local function CreateElement(Cache, NodeId)
-    local X, Y = LibGPS3:GlobalToLocal(Cache.globalX[NodeId], Cache.globalY[NodeId])
-    if X and Y then
+    local X, Y = Cache:GetLocal(NodeId)
+    local PinTypeId = Cache.pinTypeId[NodeId]
+    local Render =
+      Cache.hasCompassPin[NodeId] or not Provinatus.SavedVars.HarvestMap.OnlySpawned or
+      not Harvest.HARVEST_NODES[PinTypeId]
+    if X and Y and Render then
       return {
         X = X,
         Y = Y,
-        Height = Provinatus.SavedVars.HarvestMap.Size,
-        Width = Provinatus.SavedVars.HarvestMap.Size,
-        Texture = Harvest.settings.availableTextures[Cache.pinTypeId[NodeId]][1],
-        PinType = Cache.pinTypeId[NodeId],
+        Size = Provinatus.SavedVars.HarvestMap.Size,
+        Texture = Harvest.settings.savedVars.settings.pinLayouts[PinTypeId].texture,
+        PinType = PinTypeId,
         Alpha = Provinatus.SavedVars.HarvestMap.Alpha,
         NodeId = NodeId
       }
     end
   end
 
-  local function ShouldShow(Cache, NodeId)
-    return Provinatus.SavedVars.HarvestMap[Cache.pinTypeId[NodeId]] and
-      (Cache.hasCompassPin[NodeId] or not Harvest.HARVEST_NODES[Cache.pinTypeId[NodeId]])
-  end
-
-  local function AddNode(Cache, NodeId)
-    if not NodeIds[NodeId] and ShouldShow(Cache, NodeId) then
-      NodeIds[NodeId] = true
-      local Element = CreateElement(Cache, NodeId)
-      if Element then
-        table.insert(self.Elements, Element)
+  local function GetElements(divisionIndex)
+    for _, MapCache in pairs(Harvest["Data"]:GetCurrentZoneCache().mapCaches) do
+      for _, PinTypeId in pairs(Harvest.InRangePins.validPinTypeIds) do
+        local Divisions = MapCache.divisions[PinTypeId][divisionIndex]
+        if Divisions then
+          for _, NodeId in pairs(Divisions) do
+            if Provinatus.SavedVars.HarvestMap[PinTypeId] then
+              local Element = CreateElement(MapCache, NodeId)
+              if Element then
+                table.insert(self.Elements, Element)
+              end
+            end
+          end
+        end
       end
     end
   end
 
   if Provinatus.SavedVars.HarvestMap.Enabled and not DisableLayer and Provinatus.X and Provinatus.Y then
-    if Harvest and Harvest.InRangePins and Harvest.InRangePins.zoneCache and Harvest.InRangePins.zoneCache.mapCaches then
-      for Map, MapCache in pairs(Harvest.InRangePins.zoneCache.mapCaches) do
-        if MapCache then
-          MapCache:ForNodesInRange(
-            Harvest.InRangePins.worldX,
-            Harvest.InRangePins.worldY,
-            Provinatus.Heading,
-            Harvest.GetPinVisibleDistance(),
-            Harvest.PINTYPES,
-            AddNode
-          )
-          MapCache:ForNodesInRange(
-            Harvest.InRangePins.worldX,
-            Harvest.InRangePins.worldY,
-            Provinatus.Heading + math.pi,
-            Harvest.GetPinVisibleDistance(),
-            Harvest.PINTYPES,
-            AddNode
-          )
-        end
+    for Map, MapCache in pairs(Harvest.InRangePins.zoneCache.mapCaches) do
+      if MapCache and Harvest.InRangePins.worldX and Harvest.InRangePins.worldY and Provinatus.Heading then
+        MapCache:ForNodesInRange(
+          Harvest.InRangePins.worldX,
+          Harvest.InRangePins.worldY,
+          Provinatus.Heading,
+          Provinatus.SavedVars.HarvestMap.Distance,
+          GetElements
+        )
+        MapCache:ForNodesInRange(
+          Harvest.InRangePins.worldX,
+          Harvest.InRangePins.worldY,
+          Provinatus.Heading + math.pi,
+          Provinatus.SavedVars.HarvestMap.Distance,
+          GetElements
+        )
       end
     end
   end
@@ -205,6 +207,40 @@ function ProvinatusHarvestMap:GetMenu()
       tooltip = PROVINATUS_TRANSPARENCY_TT,
       width = "half",
       default = ProvinatusConfig.HarvestMap.Alpha * 100,
+      disabled = DisableLayer
+    },
+    {
+      type = "slider",
+      name = "Range",
+      setFunc = function(Range)
+        Provinatus.SavedVars.HarvestMap.Distance = Range
+      end,
+      getFunc = function()
+        return Provinatus.SavedVars.HarvestMap.Distance
+      end,
+      min = 5,
+      max = 1000,
+      step = 1,
+      clampInput = true,
+      decimals = 0,
+      autoSelect = true,
+      inputLocation = "below",
+      tooltip = PROVINATUS_ICON_SIZE_TT,
+      width = "half",
+      default = ProvinatusConfig.HarvestMap.Distance,
+      disabled = DisableLayer
+    },
+    {
+      type = "checkbox",
+      name = PROVINATUS_ONLY_SPAWNED,
+      getFunc = function()
+        return Provinatus.SavedVars.HarvestMap.OnlySpawned
+      end,
+      setFunc = function(value)
+        Provinatus.SavedVars.HarvestMap.OnlySpawned = value
+      end,
+      width = "half",
+      default = ProvinatusConfig.HarvestMap.OnlySpawned,
       disabled = DisableLayer
     },
     {

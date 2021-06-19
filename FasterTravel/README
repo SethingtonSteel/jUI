@@ -10,6 +10,8 @@ Mandatory dependencies:
 	LibWorldMapInfoTab
 	LibAddonMenu-2.0
 	LibSavedVars
+Optional dependencies:
+	LibZone
 
 WAYSHRINES TAB
 Marks the closest known wayshrine to your quests with the quest's icon from the map (when it is possible to obtain the data).
@@ -63,6 +65,33 @@ n > 2 - for debugging only
 /ft listlen - shows the max length of "Recent" list
 
 RECENT CHANGE LOG
+Version 2.5.9 (by SimonIllyan 2021-06-06)
+	- fixed some Blackwood wayshrines not showing up in the list
+	- improved search for wayshrines by name
+	- guild traders in Riften are actually closer to Skald's Retreat Wayshrine 
+
+Version 2.5.8 (by SimonIllyan 2021-05-19)
+	- fixed another bug with LibZone
+	
+Version 2.5.7 (by SimonIllyan 2021-05-18)
+	- fixed bug regarding LibZone
+	
+Version 2.5.6 (by SimonIllyan 2021-05-16)
+	- added option to sort Favourites alphabetically;
+	  when set to off (default), Favourites are shown in the order they were added
+	
+Version 2.5.5 (by SimonIllyan 2021-04-25)
+	- hopefully fixed problem with LibZone for non-EN users
+	
+Version 2.5.4 (by SimonIllyan 2021-04-23)
+	- updated for API 100035 (Blackwood)
+	- when you try to teleport to a zone and it is not possible, random jump will now
+	  first try the parent zone of your original target (e.g. if you wanted Fungal Grotto
+	  and it was not possible, Stonefalls will be used), unless it is not possible as well,
+	  in which case the jump will be fully random; this feature requires LibZone installed
+	- major refactoring of Teleport module - should be much more reliable now,
+	  as soon as the fresh bugs are caught and fixed ;->
+	
 Version 2.5.3 (by SimonIllyan 2021-03-30)
 	- minor fixes
 	

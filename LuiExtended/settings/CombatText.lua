@@ -5,8 +5,12 @@
 
 local CombatText = LUIE.CombatText
 local CombatTextConstants = LUIE.Data.CombatTextConstants
+local BlacklistPresets = LUIE.Data.CombatTextBlacklistPresets
 
 local zo_strformat = zo_strformat
+
+local globalIconOptions = { "All Crowd Control", "NPC CC Only", "Player CC Only" }
+local globalIconOptionsKeys = { ["All Crowd Control"] = 1, ["NPC CC Only"] = 2, ["Player CC Only"] = 3 }
 
 local callbackManager = CALLBACK_MANAGER
 
@@ -30,6 +34,25 @@ local function GenerateCustomList(input)
     return options, values
 end
 
+local dialogs = {
+    [1] = { -- Clear Blacklist
+        identifier = "LUIE_CLEAR_CT_BLACKLIST",
+        title = GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR),
+        text = zo_strformat(GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_DIALOG), GetString(SI_LUIE_LAM_CT_BLACKLIST_HEADER)),
+        callback = function(dialog)
+            CombatText.ClearCustomList(CombatText.SV.blacklist)
+            LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(CombatText.SV.blacklist))
+        end,
+    },
+}
+
+local function loadDialogButtons()
+    for i = 1, #dialogs do
+        local dialog = dialogs[i]
+        LUIE.RegisterDialogueButton(dialog.identifier, dialog.title, dialog.text, dialog.callback)
+    end
+end
+
 function CombatText.CreateSettings()
     -- Load LibAddonMenu
     local LAM = LibAddonMenu2
@@ -47,6 +70,9 @@ function CombatText.CreateSettings()
     for f in pairs(LUIE.Fonts) do
         table.insert(FontsList, f)
     end
+
+    -- Load Dialog Buttons
+    loadDialogButtons()
 
     local panelDataCombatText = {
         type = "panel",
@@ -154,6 +180,29 @@ function CombatText.CreateSettings()
                 setFunc = function(v) Settings.common.abbreviateNumbers = v end,
                 default = Defaults.common.abbreviateNumbers,
             },
+
+            {
+                -- Use Generic Icon for CC Type
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON),
+                tooltip = GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON_TP),
+                getFunc = function() return Settings.common.useDefaultIcon end,
+                setFunc = function(newValue) Settings.common.useDefaultIcon = newValue end,
+                default = Defaults.common.useDefaultIcon,
+            },
+            {
+                -- Generic Icon Options
+                type = "dropdown",
+                name = zo_strformat("\t\t\t\t\t<<1>>", GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON_OPTIONS)),
+                tooltip = GetString(SI_LUIE_LAM_CI_CCT_DEFAULT_ICON_OPTIONS_TP),
+                choices = globalIconOptions,
+                getFunc = function() return globalIconOptions[Settings.common.defaultIconOptions] end,
+                setFunc = function(value) Settings.common.defaultIconOptions = globalIconOptionsKeys[value] end,
+                width = "full",
+                disabled = function() return not Settings.common.useDefaultIcon end,
+                default = Defaults.common.defaultIconOptions,
+            },
+
         },
     }
 
@@ -166,12 +215,63 @@ function CombatText.CreateSettings()
                 type = "description",
                 text = GetString(SI_LUIE_LAM_BUFF_BLACKLIST_DESCRIPT),
             },
+
+            -- Blacklist Button - Crouch Drain
+            {
+                type = "button",
+                name = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_CROUCH),
+                tooltip = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_CROUCH_TP),
+                func = function() CombatText.AddBulkToCustomList(Settings.blacklist, BlacklistPresets.CrouchDrain) LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(Settings.blacklist)) end,
+                width = "half",
+            },
+            -- Blacklist Button - Sets
+            {
+                type = "button",
+                name = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_SETS),
+                tooltip = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_SETS_TP),
+                func = function() CombatText.AddBulkToCustomList(Settings.blacklist, BlacklistPresets.Sets) LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(Settings.blacklist)) end,
+                width = "half",
+            },
+            -- Blacklist Button - Sorcerer
+            {
+                type = "button",
+                name = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_SORCERER),
+                tooltip = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_SORCERER_TP),
+                func = function() CombatText.AddBulkToCustomList(Settings.blacklist, BlacklistPresets.Sorcerer) LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(Settings.blacklist)) end,
+                width = "half",
+            },
+            -- Blacklist Button - Templar
+            {
+                type = "button",
+                name = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_TEMPLAR),
+                tooltip = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_TEMPLAR_TP),
+                func = function() CombatText.AddBulkToCustomList(Settings.blacklist, BlacklistPresets.Templar) LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(Settings.blacklist)) end,
+                width = "half",
+            },
+            -- Blacklist Button - Warden
+            {
+                type = "button",
+                name = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_WARDEN),
+                tooltip = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_WARDEN_TP),
+                func = function() CombatText.AddBulkToCustomList(Settings.blacklist, BlacklistPresets.Warden) LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(Settings.blacklist)) end,
+                width = "half",
+            },
+            -- Blacklist Button - Necromancer
+            {
+                type = "button",
+                name = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_NECROMANCER),
+                tooltip = GetString(SI_LUIE_LAM_CT_BLACKLIST_ADD_NECROMANCER_TP),
+                func = function() CombatText.AddBulkToCustomList(Settings.blacklist, BlacklistPresets.Necromancer) LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(Settings.blacklist)) end,
+                width = "half",
+            },
+
+
             {
                 -- Clear Blacklist
                 type = "button",
                 name = GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR),
                 tooltip = GetString(SI_LUIE_LAM_UF_BLACKLIST_CLEAR_TP),
-                func = function() CombatText.ClearCustomList(Settings.blacklist) LUIE_BlacklistCT:UpdateChoices(GenerateCustomList(Settings.blacklist)) end,
+                func = function() ZO_Dialogs_ShowDialog("LUIE_CLEAR_CT_BLACKLIST") end,
                 width = "half",
             },
             {
@@ -387,7 +487,7 @@ function CombatText.CreateSettings()
                 default = {r=Defaults.colors.damage[2][1], g=Defaults.colors.damage[2][2], b=Defaults.colors.damage[2][3]}
             },
             {
-                -- Generic
+                -- Bleed
                 type    = "colorpicker",
                 name    = GetString(SI_LUIE_LAM_CT_COLOR_COMBAT_DAMAGE_BLEED),
                 tooltip = GetString(SI_LUIE_LAM_CT_COLOR_COMBAT_DAMAGE_BLEED_TP),

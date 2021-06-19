@@ -108,10 +108,6 @@ PP.compass = function()
 	ZO_CompassFrameRight:SetHidden(true)
 	ZO_CompassFrameCenter:SetHidden(true)
 
-	ZO_PreHook(ZO_CompassFrameLeft, "SetHidden", function() return true end)
-	ZO_PreHook(ZO_CompassFrameRight, "SetHidden", function() return true end)
-	ZO_PreHook(ZO_CompassFrameCenter, "SetHidden", function() return true end)
-
 	CreateControl("$(parent)Backdrop", compassFrame, CT_BACKDROP)
 
 	local CF_B = compassFrame:GetNamedChild("Backdrop")

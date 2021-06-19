@@ -96,17 +96,10 @@ function PP:ForceRemoveFragment(scene, targetFragment)
 	scene:RemoveFragment(fragment)
 end
 
-function PP:PostHookSetupCallback(dataType, postHookFunction)
-	local existingFn = dataType.setupCallback
-	dataType.setupCallback = function(control, data, ...)
-		existingFn(control, data, ...)
-		postHookFunction(control, data, ...)
-	end
-end
-
-function PP:BlockFunction(objectTable, existingFnName)
+function PP:SetLockedFn(objectTable, existingFnName)
 	local existingFn	= objectTable[existingFnName]
 	local marker		= 'locked_' .. existingFnName
+
 	objectTable[marker]	= true
 
 	local newFn = function(...)
@@ -116,6 +109,14 @@ function PP:BlockFunction(objectTable, existingFnName)
 		end
 	end
 	objectTable[existingFnName] = newFn
+end
+
+function PP:CallLockedFn(objectTable, existingFnName, ...)
+	local marker = 'locked_' .. existingFnName
+	if objectTable[marker] then
+		objectTable[marker] = false
+		return objectTable[existingFnName](objectTable, ...)
+	end
 end
 
 function PP:PostHooksSetupCallback(list, mode, dataTypeId, onCreateFn, onUpdateFn)
@@ -146,10 +147,14 @@ function PP:PostHooksSetupCallback(list, mode, dataTypeId, onCreateFn, onUpdateF
 	end
 end
 
--- OnСreation
--- OnUpdatingControl
--- updating list controls
 ---------------------------------------------------------------------------------------------------
+-- SCENE_FRAGMENT_SHOWN		= "shown"
+-- SCENE_FRAGMENT_HIDDEN	= "hidden"
+-- SCENE_FRAGMENT_SHOWING	= "showing"
+-- SCENE_FRAGMENT_HIDING	= "hiding"
+-- SCENE_SHOWN				= "shown"
+-- SCENE_HIDDEN				= "hidden"
+-- SCENE_SHOWING			= "showing"
 
 --(3)--TOPLEFT		(1)---TOP		(9)---TOPRIGHT
 --(2)--LEFT			(128)-CENTER	(8)---RIGHT
@@ -181,102 +186,6 @@ PP.Font = function(control, --[[Font]] font, size, outline, --[[Alpha]] a, --[[C
 	end
 end
 
--- CreateTopLevelWindow --
-local pp_tlw = CreateTopLevelWindow("PP_TopLevelWindow")
-pp_tlw:SetHidden(true)
-pp_tlw:SetDrawLayer(0)
-pp_tlw:SetDrawLevel(0)
-pp_tlw:SetDrawTier(0)
-
-local backdrop1 = CreateControl("$(parent)_Backdrop_1", pp_tlw, CT_BACKDROP)
-backdrop1:SetDrawLayer(0)
-backdrop1:SetDrawLevel(0)
-backdrop1:SetDrawTier(0)
-backdrop1:SetHidden(true)
-
-local backdrop2 = CreateControl("$(parent)_Backdrop_2", pp_tlw, CT_BACKDROP)
-backdrop2:SetDrawLayer(0)
-backdrop2:SetDrawLevel(0)
-backdrop2:SetDrawTier(0)
-backdrop2:SetHidden(true)
-
-local backdrop3 = CreateControl("$(parent)_Backdrop_3", pp_tlw, CT_BACKDROP)
-backdrop3:SetDrawLayer(0)
-backdrop3:SetDrawLevel(0)
-backdrop3:SetDrawTier(0)
-backdrop3:SetHidden(true)
--- ==================== --
-
--- SCENE_FRAGMENT_SHOWN		= "shown"
--- SCENE_FRAGMENT_HIDDEN	= "hidden"
--- SCENE_FRAGMENT_SHOWING	= "showing"
--- SCENE_FRAGMENT_HIDING	= "hiding"
--- SCENE_SHOWN				= "shown"
--- SCENE_HIDDEN				= "hidden"
--- SCENE_SHOWING			= "showing"
-
-PP_BACKDROP_FRAGMENT = ZO_SimpleSceneFragment:New(pp_tlw)
-
---Hide a backdrop control
-PP.HideBackdrop = function(backdropsToHide)
-	if not backdropsToHide then return end
-
-	local function tryHideBackdropNumber(bdNum)
-		if not bdNum or type(bdNum) ~= "number" or bdNum < 1 or bdNum > 3 then return end
-		local backdropToHide = pp_tlw:GetNamedChild("_Backdrop_" ..tostring(bdNum))
-		if backdropToHide ~= nil and backdropToHide.SetHidden then
-			backdropToHide:SetHidden(true)
-		end
-	end
-
-	if type(backdropsToHide) == "table" then
-		for _, backDropToHide in ipairs(backdropsToHide) do
-			tryHideBackdropNumber(backDropToHide)
-		end
-	else
-		tryHideBackdropNumber(backdropsToHide)
-	end
-end
-
-PP.SetBackdrop = function(num, control, targetScene, x_1, y_1, x_2, y_2, targetFragment, hideBackdrops)
-	--local backdrop = num == 1 and pp_tlw:GetNamedChild("_Backdrop_1") or num == 2 and pp_tlw:GetNamedChild("_Backdrop_2") or num == 3 and pp_tlw:GetNamedChild("_Backdrop_3")
-	if num < 1 or num > 3 then return end
-	local backdrop = pp_tlw:GetNamedChild("_Backdrop_" ..tostring(num))
-
-
-	local function SceneStateChange(oldState, newState)
-		if newState == SCENE_FRAGMENT_SHOWING then
-
-			PP.Anchor(backdrop, --[[#1]] TOPLEFT, control, TOPLEFT, x_1, y_1, --[[#2]] true, BOTTOMRIGHT, control, BOTTOMRIGHT, x_2, y_2)
-
-			backdrop:SetCenterTexture(PP.SV.skin_backdrop, PP.SV.skin_backdrop_tile_size, PP.SV.skin_backdrop_tile and 1 or 0)
-			backdrop:SetCenterColor(unpack(PP.SV.skin_backdrop_col))
-			backdrop:SetInsets(PP.SV.skin_backdrop_insets, PP.SV.skin_backdrop_insets, -PP.SV.skin_backdrop_insets, -PP.SV.skin_backdrop_insets)
-
-			backdrop:SetEdgeTexture(PP.SV.skin_edge, PP.SV.skin_edge_file_width, PP.SV.skin_edge_file_height, PP.SV.skin_edge_thickness, 0)
-			backdrop:SetEdgeColor(unpack(PP.SV.skin_edge_col))
-
-			backdrop:SetIntegralWrapping(PP.SV.skin_edge_integral_wrapping)
-
-			backdrop:SetHidden(false)
-
-			if hideBackdrops ~= nil then
-				PP.HideBackdrop(hideBackdrops)
-			end
-		elseif newState == SCENE_FRAGMENT_HIDDEN then
-			backdrop:SetHidden(true)
-		end
-	end
-
-	if targetScene ~= nil then
-		local scene = SCENE_MANAGER:GetScene(targetScene) or targetScene
-		scene:RegisterCallback("StateChange",  SceneStateChange)
-	elseif targetFragment ~= nil then
-		targetFragment:RegisterCallback("StateChange",  SceneStateChange)
-	end
-
-end
-
 PP.ListBackdrop = function(control, x_1, y_1, x_2, y_2, --[[tex]] tex, size, mod, --[[bd]] c_r, c_g, c_b, c_a, --[[edge]] edge_r, edge_g, edge_b, edge_a, --[[e_tex]] e_tex, e_t)
 	if not control:GetNamedChild("Backdrop") then
 		local targetBackdrop = CreateControl(control:GetName() .. "Backdrop", control, CT_BACKDROP)
@@ -292,20 +201,7 @@ PP.ListBackdrop = function(control, x_1, y_1, x_2, y_2, --[[tex]] tex, size, mod
 		-- targetBackdrop:SetInsets(1, 1, -1, -1)
 	end
 end
-----------------------------------
-PP.DividerLine = function(control, x_1, y_1, x_2, y_2, h)
-	if not control:GetNamedChild("DividerLine") then
-		local dividerLine = CreateControl("$(parent)DividerLine", control, CT_TEXTURE)
-		dividerLine:SetTexture(nil)
-		dividerLine:SetColor(0, 0, 0, .5)
-		dividerLine:SetDrawLayer(0)
-		dividerLine:SetDrawLevel(0)
-		dividerLine:SetDrawTier(0)
-		dividerLine:SetHeight(h)
-		dividerLine:SetAnchor(TOPLEFT,		control, BOTTOMLEFT,	x_1, y_1)
-		dividerLine:SetAnchor(TOPRIGHT,		control, BOTTOMRIGHT,	x_2, y_2)
-	end
-end
+
 ----------------------------------
 PP.CreateBackdrop = function(control)
 	if control.backdrop then return control.backdrop end
@@ -473,23 +369,6 @@ PP.Search = function(control, searched, func)
 	search(control)
 end
 
-PP.PostHook = function(objectTable, existingFunctionName, postHookFunction)
-    if(type(objectTable) == "string") then
-		postHookFunction = existingFunctionName
-		existingFunctionName = objectTable
-		objectTable = _G
-	end
-    local existingFn = objectTable[existingFunctionName]
-    if((existingFn ~= nil) and (type(existingFn) == "function")) then    
-		local newFn = function(...)
-				local results = { existingFn(...) }
-				postHookFunction(...)
-				return unpack(results)
-		end
-        objectTable[existingFunctionName] = newFn
-	end
-end
-
 PP.ResetStyle = function()
 	for _, list in ipairs(PP.TabList) do
 		for typeId in pairs(list.dataTypes) do
@@ -550,11 +429,112 @@ PP.Hook_SetupCallback = function(dataType, callback)
 	end
 end
 
+--
+local stateColor = {
+	[BSTATE_NORMAL]				= {173/255,			166/255,		132/255,		1},	--BSTATE_NORMAL
+	[BSTATE_PRESSED]			= {220/255,			220/255,		220/255,		1},	--BSTATE_PRESSED
+	[BSTATE_DISABLED]			= {173/255 * .5,	166/255 * .5,	132/255 * .5,	1},	--BSTATE_DISABLED_PRESSED
+	[BSTATE_DISABLED_PRESSED]	= {220/255 * .5,	220/255 * .5,	220/255 * .5,	1},	--BSTATE_DISABLED
+}
 
+function PP:CreateAnimatedButton(parent, --[[#1]] point1, relTo1, relPoint1, x1, y1, texture, height, width, tooltipText, sv, fn)
+	local control		= CreateControl(nil, parent, CT_CONTROL)
+	local over			= CreateControl(nil, control, CT_TEXTURE)
+	local checkBox		= CreateControl(nil, control, CT_TEXTURE)
+	parent.control		= control
+	control.over		= over
+	control.checkBox	= checkBox
 
+	control:SetAnchor(point1 or CENTER, relTo1 or parent, relPoint1 or CENTER, x1 or 0, y1 or 0)
+	control:SetDimensions(height, width)
+	control:SetMouseEnabled(true)
 
+	over:SetAnchorFill(control)
+	over:SetTexture(PP.t.gD)
+	over:SetColor(1, 1, 1, 1)
+	over:SetAlpha(0)
 
+	checkBox:SetPixelRoundingEnabled(false)
+	checkBox:SetAnchor(CENTER)
+	checkBox:SetDimensions(height, width)
+	checkBox:SetTexture(texture)
+	checkBox:SetColor(unpack(stateColor[BSTATE_NORMAL]))
 
+	--anim--
+	local animation, timeline	= CreateSimpleAnimation(ANIMATION_SCALE, checkBox)
+	checkBox.timeline			= timeline
+	animation:SetStartScale(1)
+	animation:SetEndScale(.8)
+	animation:SetDuration(100)
+	--anim--
 
+	function control:SetState(checkState)
+		local checkBox			= self.checkBox
+		local checkStateType	= type(checkState)
+		local state				= false
+		
+		if checkStateType == "boolean" then
+			state = checkState and BSTATE_PRESSED or BSTATE_NORMAL
+		elseif checkStateType == "number" then
+			state = checkState
+		end
 
+		local r, g, b, a = unpack(stateColor[state])
+		checkBox:SetColor(r, g, b, a)
+		control:SetMouseEnabled(true)
 
+		if state == BSTATE_DISABLED or state == BSTATE_DISABLED_PRESSED then
+			control:SetMouseEnabled(false)
+		end
+	end
+	
+	function control:SetToggleFunction(fn)
+		self.toggleFunction = fn
+	end
+
+	control:SetHandler("OnMouseEnter", function(self)
+		self.over:SetAlpha(.2)
+
+		if not self.tooltipText then return end
+		InitializeTooltip(InformationTooltip, control, BOTTOM, 0, -10)
+		SetTooltipText(InformationTooltip, self.tooltipText)
+	end)
+	control:SetHandler("OnMouseExit", function(self)
+		self.over:SetAlpha(0)
+
+		if not self.tooltipText then return end
+		ClearTooltip(InformationTooltip)
+	end)
+	control:SetHandler("OnMouseDown", function(self, button)
+		self.checkBox.timeline:PlayForward()
+	end)
+	control:SetHandler("OnMouseDoubleClick", control:GetHandler("OnMouseDown"))
+	control:SetHandler("OnMouseUp", function(self, button, upInside)
+		local state = self.toggleFunction()
+		self:SetState(state)
+		self.checkBox.timeline:PlayBackward()
+		PlaySound(SOUNDS.DEFAULT_CLICK)
+	end)
+
+	if tooltipText then
+		control.tooltipText = tooltipText
+	end
+
+	if sv == nil then
+		control:SetState(parent:GetState())
+		local orig_SetState = parent.SetState
+		function parent:SetState(newState, locked)
+			orig_SetState(self, newState, locked)
+			control:SetState(newState)
+		end
+		control:SetToggleFunction(function()
+			ZO_CheckButton_OnClicked(parent)
+			return ZO_CheckButton_IsChecked(parent)
+		end)
+	else
+		control:SetState(sv)
+		control:SetToggleFunction(fn)
+	end
+
+	return control
+end

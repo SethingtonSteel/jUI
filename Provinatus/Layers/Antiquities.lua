@@ -6,8 +6,9 @@ function ProvinatusAntiquities:New(...)
 end
 
 function ProvinatusAntiquities:Update()
+  local Elements = {}
+
   if Provinatus.SavedVars.Antiquities.Enabled and not DisableLayer then
-    local Elements = {}
     for AntiquityIndex = 1, GetNumInProgressAntiquities() do
       local InProgressId = GetInProgressAntiquityId(AntiquityIndex)
       local NumDigSites = GetNumDigSitesForInProgressAntiquity(AntiquityIndex)
@@ -29,10 +30,10 @@ function ProvinatusAntiquities:Update()
         end
       end
     end
+  end
 
-    for Element, Icon in pairs(Provinatus.DrawElements(self, Elements)) do
-      Icon:SetColor(1, 1, 1, Provinatus.SavedVars.Antiquities.Alpha)
-    end
+  for Element, Icon in pairs(Provinatus.DrawElements(self, Elements)) do
+    Icon:SetColor(1, 1, 1, Provinatus.SavedVars.Antiquities.Alpha)
   end
 end
 

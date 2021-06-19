@@ -204,7 +204,11 @@ local strings = {
 	NOTYOU_CAMERA_INTERRUPT = "Don't interrupt interactions",
 	NOTYOU_CAMERA_INTERRUPT_TOOLTIP = "Don't interrupt interactions (harvesting, fishing, ...) when you open map, inventory or other scenes.",
 	NOTYOU_CAMERA_ROTATE = "Don't rotate game camera",
-	NOTYOU_CAMERA_ROTATE_TOOLTIP = "Don't rotate game camera when you open map, inventory or other scenes.",
+	NOTYOU_CAMERA_ROTATE_TOOLTIP = "Don't rotate game camera while showing map, skills or other scenes.",
+	NOTYOU_CAMERA_ROTATE_STATS = "Don't rotate game camera while showing status",
+	NOTYOU_CAMERA_ROTATE_STATS_TOOLTIP = "Don't rotate game camera while showing status. If you turn this ON, you can't change outfit on status window by ESO feature.",
+	NOTYOU_CAMERA_ROTATE_INV = "Don't rotate game camera while showing inventory",
+	NOTYOU_CAMERA_ROTATE_INV_TOOLTIP = "Don't rotate game camera while showing inventory. If you turn this ON, you can't preview any item by ESO feature.",
 	
 	NOTYOU_AUTOLOOTITEMS_HEADER = "Auto-Loot Containers",
 	NOTYOU_AUTOLOOTITEMS = "Auto-Loot Containers",

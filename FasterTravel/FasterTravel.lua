@@ -4,7 +4,7 @@ local addon = {
     name = "FasterTravel",
     displayName = zo_strformat("|c40FF40Faster|r Travel"),
     author = "XanDDemoX, upyachka, Valandil, SimonIllyan",
-    version = "2.5.3",
+    version = "2.5.9",
     website = "https://www.esoui.com/downloads/info1089-FasterTravelWayshrinesmenuTeleporter.html",
 }
 FasterTravel.addon = addon
@@ -14,6 +14,7 @@ local CALLBACK_ID_ON_WORLDMAP_CHANGED = "OnWorldMapChanged"
 local CALLBACK_ID_ON_QUEST_TRACKER_TRACKING_STATE_CHANGED = "QuestTrackerTrackingStateChanged"
 local _events = {}
 local GROUP_ALIAS = "group"
+local active = false
 
 local function GetUniqueEventId(id)
     local count = _events[id] or 0
@@ -303,16 +304,22 @@ local function Setup()
         buttons = {
             [1] = {
                 text = SI_DIALOG_CONFIRM,
-                callback = 	function ()	-- callbackYes
-								Utils.chat(3, "Will try to jump to random destination")
-								Teleport.TeleportToZone()
-							end,
+                callback =
+					function ()	-- callbackYes
+						--[[
+						local zoneIndex = GetCurrentMapZoneIndex()
+						local zoneName = Utils.FormatStringCurrentLanguage(GetZoneNameByIndex(zoneIndex))
+						local parent = Teleport.GetParentZone(zoneName)
+						]]--
+						Teleport.TeleportToZone()
+					end,
             },
             [2] = {
                 text = SI_DIALOG_CANCEL,
-                callback = 	function ()	-- callbackNo
-								Utils.chat(3, "Random jump not confirmed")
-							end,
+                callback =
+					function ()	-- callbackNo
+						Utils.chat(3, "Random jump not confirmed")
+					end,
             }
         },
         setup = function(dialog, data) end,
@@ -340,6 +347,13 @@ local function Setup()
     FasterTravel.Campaign.RefreshIfRequired()
 
     addEvent(EVENT_PLAYER_ACTIVATED, function(eventCode)
+		if not active then
+			-- needs to be done at first player activation
+			Utils.chat(1, "%s %s initialized.",	addon.name, addon.version )
+			active = true
+			return
+		end
+		
 		local func = 	function()
 							SetCurrentZoneMapIndexes(GetCurrentMapZoneIndex())
 							currentWayshrineArgs = nil
@@ -586,7 +600,7 @@ local function Setup()
 
 	wayshrinesTab:SetAllWSOrder(FasterTravel.settings.ws_order)
     RefreshWayshrineDropDowns()
-
+	
 	-- add the "Jump to this zone" keybind strip button…
 	local ButtonGroup = {
 		{
@@ -664,23 +678,15 @@ local function Setup()
     local function processTeleport(destination)
 		-- fix for teleport bug during interactions
 		EndCurrentInteraction()
-
 		local result, name
 		if destination == GROUP_ALIAS then
 			result, name = Teleport.TeleportToGroup()
 		else
 			result, name = Teleport.TeleportToPlayer(destination)
+			Utils.chat(3, "No player named %s", destination)
 			if not result then
-				result, name = Teleport.TeleportToZone(destination)
+				Teleport.TeleportToZone(destination)
 			end
-		end
-
-		if result then
-			if name ~= destination then
-				Utils.chat(2, "%s replaced with %s", Utils.bold(destination), Utils.bold(name))
-			end
-		elseif name ~= nil then
-			Utils.chat(0, "Invalid teleport target %s", Utils.bold(name))
 		end
     end
 
@@ -695,6 +701,9 @@ local function Setup()
 		if args == "zone" then
 			-- the zone being displayed on the map or the current zone if no map shown
 			args = GetZoneNameByIndex(GetCurrentMapZoneIndex())
+			if args == '' then 
+				args = GetZoneNameByIndex(GetUnitZoneIndex("player"))
+			end
 		end
 		processTeleport(args)
     end
@@ -787,7 +796,6 @@ local function Setup()
 	end
 
 	FasterTravel.SurveyTheWorld.OnAddOnLoaded()
-	Utils.chat(1, "%s %s initialized.",	addon.name, addon.version )
 
 end -- Setup
 

@@ -239,9 +239,9 @@ function CSPS.NodeSectionSetup(node, control, data, open, userRequested, enabled
 	if data.variant == 4 then -- cp2 over section
 		CSPS.cp2ParentTreeSection = control
 		if (CSPS.applyCP and CSPS.unlockedCP)  or (not CSPS.showApply) then 
-			myCtrText:SetColor(cAct[1], cAct[2], cAct[3])
+			myCtrText:SetColor(unpack(cAct))
 		else
-			myCtrText:SetColor(cInact[1], cInact[2], cInact[3])
+			myCtrText:SetColor(unpack(cInact))
 		end
 	end
 	if data.variant == 5 then -- old cp over section
@@ -324,6 +324,7 @@ function CSPS.NodeSetupCP2Entry(node, control, data, open, userRequested, enable
 	--data: farbe = , i=discplineIndex, j=j,  skId, skType (and l if clusterentry)	
 	local myId = data.skId
 	local myValue = CSPS.cp2Table[myId][2]
+	local myCurrentValue = GetNumPointsSpentOnChampionSkill(myId)
 	local myMax = GetChampionSkillMaxPoints(myId)
 	local myValPercent = myValue / myMax
 	local isUnlocked = CSPS.cp2Table[myId][1]
@@ -457,7 +458,13 @@ function CSPS.NodeSetupCP2Entry(node, control, data, open, userRequested, enable
 		end
 		myCtrIcon:SetDesaturation(0)
 		myCtrText:SetColor(cAct[1], cAct[2], cAct[3])
-		myCtrValue:SetColor(cAct[1], cAct[2], cAct[3])
+		if myValue < myCurrentValue then
+			myCtrValue:SetColor(unpack(CSPS.colTbl.orange))
+		elseif myValue == myCurrentValue and myValue > 0 then
+			myCtrValue:SetColor(unpack(CSPS.colTbl.green))
+		else
+			myCtrValue:SetColor(unpack(cAct))
+		end
 		if myValue < GetChampionSkillMaxPoints(myId) then 
 			myCtrBtnPlus:SetHidden(false)
 		else

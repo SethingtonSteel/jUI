@@ -15,7 +15,7 @@ function Xynode.CreateMenu(svdefaults)
 		name = "Xynode Settings",
 		displayName = "|cffff00Xynode's|r All About Mechanics",
 		author = "Kukee2018",
-		version = "1.49",
+		version = "1.51",
 		registerForRefresh = true,
 		registerForDefaults = true,
 		slashCommand = "/xynodesettings",

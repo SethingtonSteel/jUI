@@ -3,7 +3,6 @@ PP.gameMenuInGameScene = function()
 	local SV_VER		= 0.1
 	local DEF = {
 		addons_toggle	= true,
-		addonsListBG	= false,
 	}
 	local SV = ZO_SavedVars:NewAccountWide(PP.ADDON_NAME, SV_VER, "GameMenuScene", DEF, GetWorldName())
 	---------------------------------------------
@@ -21,37 +20,23 @@ PP.gameMenuInGameScene = function()
 				default				= DEF.addons_toggle,
 				requiresReload		= true,
 			},
-			{	type				= "checkbox",
-				name				= GetString(PP_LAM_LIST_BG),
-				getFunc				= function() return SV.addonsListBG end,
-				setFunc				= function(value) SV.addonsListBG = value end,
-				default				= DEF.addonsListBG,
-				disabled			= function() return not SV.addons_toggle end,
-				requiresReload		= true,
-			},
 		},
 	})
 --===============================================================================================--
 
 	local gameMenuInGameScene = SCENE_MANAGER:GetScene('gameMenuInGame')
-	gameMenuInGameScene:AddFragment(PP_BACKDROP_FRAGMENT)
 
 --ADD-ONS------------------------------------------------------------------------------------------
 	if SV.addons_toggle then
-		PP.SetBackdrop(1, ZO_AddOns, ADDONS_FRAGMENT, 2, -4, 4, -2)
+		PP:CreateBackground(ZO_AddOns, --[[#1]] nil, nil, nil, 2, -4, --[[#2]] nil, nil, nil, 4, -2, true)
 
 		ZO_AddOnsBGLeft:SetHidden(true)
 		ZO_AddOnsDivider:SetHidden(true)
 
 		PP.ScrollBar(ZO_AddOnsList,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, false)
-		if SV.addonsListBG then
-			PP.ListBackdrop(ZO_AddOnsList, -3, -3, -3, 3, --[[tex]] nil, 8, 0, --[[bd]] 5, 5, 5, .5, --[[edge]] 30, 30, 30, .6)
-		end
 
 		PP.Anchor(ZO_AddOnsTitle,					--[[#1]] TOPLEFT, nil, TOPLEFT, 10, 5)
 		PP.Anchor(ZO_AddOnsList,					--[[#1]] TOPLEFT, ZO_AddOnsTitle, BOTTOMLEFT, 0, 5,		--[[#2]] true, BOTTOMRIGHT, ZO_AddOns, BOTTOMRIGHT, 0, -10)
-		PP.Anchor(ZO_AddOnsLoadOutOfDateAddOnsText,	--[[#1]] TOPRIGHT, ZO_AddOns, TOPRIGHT, -10, 10)
-		PP.Anchor(ZO_AddOnsLoadOutOfDateAddOns,		--[[#1]] RIGHT, ZO_AddOnsLoadOutOfDateAddOnsText, LEFT, -6, -1)
 		PP.Anchor(ZO_AddOnsCharacterSelectDropdown,	--[[#1]] LEFT, ZO_AddOnsTitle, RIGHT, 50, 1)
 
 		PP.Font(ZO_AddOnsMultiButtonKeyLabel,		--[[Font]] PP.f.Expressway, 16, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)

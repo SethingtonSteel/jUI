@@ -34,7 +34,7 @@ RDL.DropdownTooltips = {
 }
 
 RDL.DropdownData = {
-	ChoicesMajor  = { "Can Find", "Can Scry", "Missing Codex Entries", "Never dug out", "Actionable Leads", "All Leads", "Group Dungeons", "Markarth",},
+	ChoicesMajor  = { "Can Find", "Can Scry", "Missing Codex Entries", "Never dug out", "Actionable Leads", "All Leads", "Group Dungeons", "Blackwood",},
   
 	TooltipsMajor  = {
 		"Exludes found but not scried Leads as well as non-repeatable ones already found once",
@@ -44,7 +44,7 @@ RDL.DropdownData = {
 		"Shows all Leads except finished non-repeatables",
 		"Shows all Leads including finished non-repeatables",
 		"Shows only Leads coming from 4 Man dungeons",
-		"Shows only new Leads from Markarth DLC",
+		"Shows only new Leads from Blackwood DLC",
 	},
 	
 	ChoicesZone = {RDL.ZONENAME_ALLZONES, "Current Zone", "Exclude minor DLC", },
@@ -133,7 +133,7 @@ RDL.TOOLTIP_INKLING = {
 	"Thanks a lot for letting me use it",
 }
 
-
+RDL.TOOLTIP_MAPPINS = "Included in Hoft's MapPins Addon"
 
 
 

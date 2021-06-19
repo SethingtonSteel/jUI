@@ -135,7 +135,7 @@ RDL.TOOLTIP_INKLING = {
 	"Перевод на русский язык @AWEyeforaneye",
 }
 
-
+RDL.TOOLTIP_MAPPINS = "Included in Hoft's MapPins Addon"
 
 
 

@@ -85,25 +85,29 @@ local function where(iter,predicate)
 end
 
 local function map(iter,func)
-	local t = type(iter)
-	if t == "table" then
-		local tbl = {}
-		for i,v in ipairs(iter) do
-			tbl[i]=func(v)
-		end
-		return tbl
-	elseif t == "function" then
-		local cur
-		return function()
-			cur = iter()
-			if cur == nil then return nil end
-			return func(cur)
+	if iter ~= nil then
+		local t = type(iter)
+		if t == "table" then
+			local tbl = {}
+			for i,v in ipairs(iter) do
+				tbl[i]=func(v)
+			end
+			return tbl
+		elseif t == "function" then
+			local cur
+			return function()
+				cur = iter()
+				if cur == nil then return nil end
+				return func(cur)
+			end
 		end
 	end
+	return ""
 end
 
 local function concatToString(...)
-	return table.concat(map({...},function(a)
+	local args = {...}
+	return table.concat(map(args,function(a)
 		return tostring(a)
 	end))
 end
@@ -119,7 +123,7 @@ end
 local _lang
 
 local function FormatStringLanguage(lang,str)
-	if stringIsEmpty(str) == true then return str end
+	if stringIsEmpty(str) then return str end
 	lang = string.lower(lang)
 	if lang == "en" then 
 		return str
@@ -128,12 +132,16 @@ local function FormatStringLanguage(lang,str)
 	end 
 end 
 
-local function FormatStringCurrentLanguage(str)
+local function CurrentLanguage()
 	if _lang == nil then 
 		_lang = GetCVar("language.2")
 		_lang = string.lower(_lang)
 	end 
-	return FormatStringLanguage(_lang,str)
+	return _lang
+end
+
+local function FormatStringCurrentLanguage(str)
+	return FormatStringLanguage(CurrentLanguage(),str)
 end
 
 local function pairsByKeys(a_table, comparing_function)
@@ -198,12 +206,12 @@ local function Highlight(wayshrine_name)
 end
 
 local function chat(level, fmt, ...)
-	if FasterTravel.settings.verbosity and level <= FasterTravel.settings.verbosity then
+	if FasterTravel and FasterTravel.settings and
+	   FasterTravel.settings.verbosity and level <= FasterTravel.settings.verbosity then
 		local t = {}
-		for i, v in ipairs({...}) do
-			local w = v
-			if v == nil then w = "nil" end
-			table.insert(t, tostring(w))
+		local args = {...}
+		for i, v in ipairs(args) do
+			table.insert(t, v and tostring(v) or "nil")
 		end
 		if #t > 0 then
 			df(FasterTravel.prefix .. fmt, unpack(t))
@@ -227,6 +235,7 @@ Utils.toTable = toTable
 Utils.map = map
 Utils.where = where 
 Utils.extend = extend
+Utils.CurrentLanguage = CurrentLanguage
 Utils.FormatStringLanguage = FormatStringLanguage
 Utils.FormatStringCurrentLanguage = FormatStringCurrentLanguage
 Utils.concatToString = concatToString

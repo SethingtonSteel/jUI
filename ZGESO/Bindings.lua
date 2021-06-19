@@ -1,8 +1,8 @@
-local ZGV = _G.ZGV
 -----------------------------------------
--- LOCAL REFERENCES
+-- LOCALIZED GLOBAL VARIABLES
 -----------------------------------------
 
+local ZGV = _G.ZGV
 local L = ZGV.L
 local getGameTimeMS, ZO_CreateStringId = _G.GetGameTimeMilliseconds, _G.ZO_CreateStringId
 

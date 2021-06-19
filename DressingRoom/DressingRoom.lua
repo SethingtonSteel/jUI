@@ -30,7 +30,9 @@ DressingRoom = {
     EQUIP_SLOT_OFF_HAND,
     EQUIP_SLOT_BACKUP_OFF,
     EQUIP_SLOT_MAIN_HAND,
+	EQUIP_SLOT_POISON,
     EQUIP_SLOT_BACKUP_MAIN,
+	EQUIP_SLOT_BACKUP_POISON,
     EQUIP_SLOT_COSTUME,
   },
   
@@ -45,6 +47,7 @@ DressingRoom = {
   
   default_options = {
     clearEmptyGear = false,
+	clearEmptyPoisons = true,
     clearEmptySkill = false,
     activeBarOnly = true,
     fontSize = 18,
@@ -70,9 +73,20 @@ local function GetWornGear()
   local gearName = {}
   for _, gearSlot in ipairs(DressingRoom.gearSlots) do
     local itemId = GetItemUniqueId(BAG_WORN, gearSlot)
+	local instanceId = GetItemInstanceId(BAG_WORN, gearSlot)
     if itemId then
-      gear[Id64ToString(itemId)] = gearSlot
-      gearName[#gearName+1] = zo_strformat(SI_TOOLTIP_ITEM_NAME, GetItemLink(BAG_WORN, gearSlot, LINK_STYLE_DEFAULT))
+      if gearSlot == EQUIP_SLOT_BACKUP_POISON and instanceId == GetItemInstanceId(BAG_WORN, EQUIP_SLOT_POISON) then
+        DEBUG(1, "Identical poisons equipped on both bars, keeping only on bar 1")
+        table.insert(gear.emptySlots, gearSlot)
+      else
+        local equipType = select(6, GetItemInfo(BAG_WORN, gearSlot))
+        if equipType == EQUIP_TYPE_POISON then
+          gear[tostring(instanceId)] = gearSlot
+        else
+	      gear[Id64ToString(itemId)] = gearSlot
+		end
+        gearName[#gearName+1] = zo_strformat(SI_TOOLTIP_ITEM_NAME, GetItemLink(BAG_WORN, gearSlot, LINK_STYLE_DEFAULT))
+	  end
     elseif not ((gearSlot == EQUIP_SLOT_OFF_HAND and DressingRoom.twoHanded[GetItemWeaponType(BAG_WORN, EQUIP_SLOT_MAIN_HAND)])
              or (gearSlot == EQUIP_SLOT_BACKUP_OFF and DressingRoom.twoHanded[GetItemWeaponType(BAG_WORN, EQUIP_SLOT_BACKUP_MAIN)])) then
       -- save empty slots; off-hand is not considered empty if a two-handed weapon is equipped
@@ -119,6 +133,7 @@ local function EquipGear(gear)
   for _, gearSlot in ipairs(DressingRoom.gearSlots) do
     slotMap[gearSlot] = {
       id = Id64ToString(GetItemUniqueId(BAG_WORN, gearSlot)),
+	  instanceId = tostring(GetItemInstanceId(BAG_WORN, gearSlot)),
       equipType = select(6, GetItemInfo(BAG_WORN, gearSlot))
     }
   end
@@ -126,7 +141,11 @@ local function EquipGear(gear)
   while i <= #DressingRoom.gearSlots do
     local gearSlot = DressingRoom.gearSlots[i]
     local itemId = slotMap[gearSlot].id
+	local instanceId = slotMap[gearSlot].instanceId
     local newSlot = gear[itemId]
+	if slotMap[gearSlot].equipType == EQUIP_TYPE_POISON and gear[instanceId] then
+      newSlot = (instanceId ~= slotMap[gear[instanceId]].instanceId) and gear[instanceId]
+    end
     if newSlot and newSlot ~= gearSlot then
       if slotMap[newSlot].equipType == 0 or ZO_Character_DoesEquipSlotUseEquipType(gearSlot, slotMap[newSlot].equipType) then 
         doSwitch(gearSlot, newSlot, itemId)
@@ -148,7 +167,13 @@ local function EquipGear(gear)
   local bpSize = GetBagSize(BAG_BACKPACK)
   for bpSlot = 0, bpSize do
     local id = Id64ToString(GetItemUniqueId(BAG_BACKPACK, bpSlot))
+	local instanceId = tostring(GetItemInstanceId(BAG_BACKPACK, bpSlot))
+	local equipType = select(6, GetItemInfo(BAG_BACKPACK, bpSlot))
     local gearSlot = gear[id]
+	-- equippable poisons
+    if equipType == EQUIP_TYPE_POISON then
+      gearSlot = gear[instanceId]
+    end
     if gearSlot then
       -- UniqueIds seems really unique, no need to check whether an identical item is already equipped
       doEquip(BAG_BACKPACK, bpSlot, gearSlot, id)
@@ -157,8 +182,24 @@ local function EquipGear(gear)
   -- if relevant option is set, unequip empty saved slots
   if DressingRoom.sv.options.clearEmptyGear then
     for _, slot in ipairs(gear.emptySlots) do
-      local id = GetItemUniqueId(BAG_WORN, slot)
-      if id then doUnequip(slot, Id64ToString(id)) end
+	  if not ZO_Character_DoesEquipSlotUseEquipType(slot, EQUIP_TYPE_POISON) then
+        local id = GetItemUniqueId(BAG_WORN, slot)
+        if id then doUnequip(slot, Id64ToString(id)) end
+      end
+	end
+  end
+  if DressingRoom.sv.options.clearEmptyPoisons or DressingRoom.sv.options.clearEmptyGear then
+    local emptySlot = {}
+    for _, slot in ipairs(gear.emptySlots) do
+      emptySlot[slot] = true
+    end
+    if emptySlot[EQUIP_SLOT_POISON] and not (emptySlot[EQUIP_SLOT_MAIN_HAND] and emptySlot[EQUIP_SLOT_OFF_HAND]) then
+      local id = GetItemUniqueId(BAG_WORN, EQUIP_SLOT_POISON)
+      if id then doUnequip(EQUIP_SLOT_POISON, Id64ToString(id)) end
+    end
+    if emptySlot[EQUIP_SLOT_BACKUP_POISON] and not (emptySlot[EQUIP_SLOT_BACKUP_MAIN] and emptySlot[EQUIP_SLOT_BACKUP_OFF]) then
+      local id = GetItemUniqueId(BAG_WORN, EQUIP_SLOT_BACKUP_POISON)
+      if id then doUnequip(EQUIP_SLOT_BACKUP_POISON, Id64ToString(id)) end
     end
   end
   DressingRoom.gearQueue:run()

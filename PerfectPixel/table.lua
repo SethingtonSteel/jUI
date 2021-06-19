@@ -2,7 +2,7 @@ if not PP then PP = {} end
 PP.TabList = {
 	--PlayerInventory
 	ZO_PlayerInventoryList,
-	ZO_PlayerInventoryQuest,
+	ZO_QuestItemsList,
 	ZO_CraftBagList,
 	ZO_InventoryWalletList,
 	ZO_QuickSlotList,
@@ -28,6 +28,7 @@ PP.TabList = {
 	ZO_ListDialog1List,
 }
 PP.Tabs = {
+	ZO_QuestItemsTabs,
 	ZO_PlayerInventoryTabs,
 	ZO_PlayerBankTabs,
 	ZO_HouseBankTabs,
@@ -80,6 +81,7 @@ PP.MenuBar = {
 	ZO_MainMenuSceneGroupBar,
 }
 PP.InfoBar = {
+	ZO_QuestItemsInfoBar,
 	ZO_PlayerInventoryInfoBar,
 	ZO_PlayerBankInfoBar,
 	ZO_HouseBankInfoBar,
@@ -107,4 +109,5 @@ PP.InfoBar = {
 	ZO_HousingFurnitureRetrievalPanel_KeyboardTopLevelContentsInfoBar,
 	ZO_LockpickPanelInfoBar,
 	ZO_LockpickPanelGamepadInfoBar,
+	ZO_TradingHouseSearchControls,
 }

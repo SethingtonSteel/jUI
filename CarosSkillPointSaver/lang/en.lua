@@ -60,7 +60,8 @@ local L = {}
 	L.CSPS_Tooltiptext_MinusCP = "Remove champion point (hold Shift for 10 points / next stage)"
 	L.CSPS_Tooltiptext_CpHbHk = "Click here to change the hotkey for this profile."
 	L.CSPS_Tooltip_CPBar = "Drag & drop a skill from the list to slot it here. Use rightclick to remove a slotted skill."
-	L.CSPS_Tooltip_CPPreset = "Last updated: <<1>>/<<2>>/<<3>>\nFor the most recent updates visit:\n<<4>>"
+	L.CSPS_Tooltip_CPPUpdate = "Last updated: <<1>>/<<2>>/<<3>>"
+	L.CSPS_Tooltip_CPPWebsite = "For the most recent updates visit:\n<<1>>"
 	L.CSPS_Tooltip_CPCustomBar = "Toggles wether a bar for the slotted champion points should be shown as part of the HUD"
 	L.CSPS_Tooltip_CPCustomIcons = "Toggles wether the addon should use custom icons for slottable champion points"
 	
@@ -111,6 +112,16 @@ local L = {}
 	L.CSPS_CPBar_GroupKeybind = "Current keybind: %s"
 	L.CSPS_CPBar_Manage = "Manage champion bars"
 	
+	L.CSPS_CPPDescr_JoaTFarming = "This preset is optimized to be used with the addon 'Jack of all Trades' and focusses on farming ressources (combat, fishing and crime are added at a higher cp level)."
+	L.CSPS_CPPDescr_JoaTFishing = "This preset is optimized to be used with the addon 'Jack of all Trades' and focusses on fishing (farming, combat and crime are added at a higher cp level)."
+	L.CSPS_CPPDescr_JoaTThieving = "This preset is optimized to be used with the addon 'Jack of all Trades' and focusses on crime (farming, combat and fishing are added at a higher cp level)."
+	L.CSPS_CPPDescr_CombatFocus = "This preset is focussed on the combat related green champion points."
+	
+	L.CSPS_StrictOrder = "Strict Order"
+	L.CSPS_Tooltiptext_StrictOrder = "Check this box to let the addon stop loading a preset at the first skill for which you don't have enough points instead of checking if one of the following skills can be loaded instead. Choosing this option might leave you with more unspent points but might save you the respec-fee of 3000 gold later on."
+	L.CSPS_CPPCurrentlyApplied = "Currently applied:  <<1[No points/1 point/$d points]>>"
+		
+	L.CSPS_MSG_ApplyClosing = "You seem to have unapplied changes in your champion points. Please make sure you didn't forget to apply them."
 	
 	L.CSPS_CPBar_LocTrial = "Trial/Arena"
 	L.CSPS_CPBar_LocCurr = "Current location"

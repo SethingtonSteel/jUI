@@ -1,8 +1,8 @@
 ## Title: The Questing Guide
 ## Author: Alianym
 ## Description: A story-lover's guide to the original order of arcs throughout ESO. Set a keybind in CONTROLS or type /tqg and you're good to go.
-## Version: 0.19a
-## APIVersion: 100034
+## Version: 0.21.1
+## APIVersion: 100035
 ## SavedVariables:
 ## DependsOn: LibUespQuestData
 

@@ -59,7 +59,6 @@ PP.lootScene = function()
 	if not SV.toggle then return end
 
 	LOOT_SCENE:RemoveFragment(FRAME_EMOTE_FRAGMENT_LOOT)
-	LOOT_SCENE:AddFragment(PP_BACKDROP_FRAGMENT)
 
 	local lootWindow	= LOOT_WINDOW.control
 	local titleControl	= LOOT_WINDOW_FRAGMENT.titleControl
@@ -72,7 +71,7 @@ PP.lootScene = function()
 	
 	local reticle		= RETICLE.interactContext
 
-	PP.SetBackdrop(1, lootWindow, 'loot', -6, 34, 0, -44)
+	PP:CreateBackground(lootWindow, --[[#1]] nil, nil, nil, -6, 34, --[[#2]] nil, nil, nil, 0, -44)
 	PP.ScrollBar(lootList,	--[[sb_c]] 180, 180, 180, .7, --[[bd_c]] 20, 20, 20, .7, true)
 
 	bg:SetHidden(true)

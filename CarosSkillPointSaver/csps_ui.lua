@@ -89,7 +89,7 @@ function CSPS:InitLocalText()
 	CSPSWindowOptionsBtnCPReminder:SetText(GS(CSPS_CPReminderOn))
 	CSPSWindowOptionsBtnManageBars:SetText(GS(CSPS_CPBar_Manage))
 	CSPSWindowOptionsBtnCPAutoOpen:SetText(GS(CSPS_CPAutoOpen))
-	
+	CSPSWindowCPProfilesLblStrictOrder:SetText(GS(CSPS_StrictOrder))
 	CSPSWindowOptionsBtnCPCustomBar:SetText(GS(CSPS_CPCustomBar))
 	CSPSWindowOptionsBtnCPCustomIcons:SetText(GS(CSPS_CPCustomIcons))
 	
@@ -528,7 +528,7 @@ local function autoShowCSPS(oldState, newState)
 		if CSPS.useCustomIcons then CSPS.showCpBar() end
 		if CSPS.cpAutoOpen then CSPSWindow:SetHidden(false) end
 	elseif newState == SCENE_HIDDEN then
-		if CSPS.cpAutoOpen then CSPSWindow:SetHidden(true) end
+		if CSPS.cpAutoOpen then CSPSWindow:SetHidden(true) CSPS.checkCpOnClose() end
 	end
 end
 
@@ -585,7 +585,7 @@ function CSPS.toggleCPCustomBar(arg)
 			end
 		end
 		CSPS.HbRearrange()
-		CSPS.cpFragment = ZO_SimpleSceneFragment:New( CSPSCpHotbar )
+		if CSPS.cpFragment == nil then CSPS.cpFragment = ZO_SimpleSceneFragment:New( CSPSCpHotbar ) end
 		SCENE_MANAGER:GetScene('hud'):AddFragment( CSPS.cpFragment  )
 		SCENE_MANAGER:GetScene('hudui'):AddFragment( CSPS.cpFragment  )
 
@@ -595,7 +595,7 @@ function CSPS.toggleCPCustomBar(arg)
 			local myBG = CSPSWindowOptions:GetNamedChild(string.format("OptCPBar%sBG", i))
 			if myBG then myBG:SetCenterColor(0.0314, 0.0314, 0.0314) end
 		end
-		if CSPS.cpFragment then
+		if CSPS.cpFragment ~= nil then
 			SCENE_MANAGER:GetScene('hud'):RemoveFragment( CSPS.cpFragment )
 			SCENE_MANAGER:GetScene('hudui'):RemoveFragment( CSPS.cpFragment )	
 		end
@@ -939,6 +939,13 @@ function CSPS.toggleCPCapImport(arg)
 	toggleCheckbox("ImportExportChkCap", CSPS.cpImportCap)
 	CSPS.savedVariables.settings.cpImportCap = CSPS.cpImportCap
 end
+
+function CSPS.toggleStrictOrder(arg)
+	if arg ~= nil then CSPS.savedVariables.settings.strictOrder = arg else CSPS.savedVariables.settings.strictOrder = not CSPS.savedVariables.settings.strictOrder end
+	toggleCheckbox("CPProfilesChkStrictOrder", CSPS.savedVariables.settings.strictOrder)
+end
+
+
 
 function CSPS.toggleCPReverseImport(arg)
 	if arg ~= nil then CSPS.cpImportReverse = arg else CSPS.cpImportReverse = not CSPS.cpImportReverse end

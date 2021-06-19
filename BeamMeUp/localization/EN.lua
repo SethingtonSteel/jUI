@@ -20,7 +20,7 @@ mkstr(SI.TELE_UI_BTN_REFRESH_ALL, "Refresh result list")
 mkstr(SI.TELE_UI_BTN_UNLOCK_WS, "Unlock current zone wayshrines")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE, "Only displayed zone")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES, "Delves in displayed zone")
-mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Treasure maps & Survey maps & Leads")
+mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Treasure maps & Survey maps & Leads\n|c777777(right-click for more options)")
 mkstr(SI.TELE_UI_BTN_SETTINGS, "Settings")
 mkstr(SI.TELE_UI_BTN_FEEDBACK, "Feedback")
 mkstr(SI.TELE_UI_BTN_FIX_WINDOW, "Fix / Unfix window")
@@ -32,6 +32,7 @@ mkstr(SI.TELE_UI_BTN_ANCHOR_ON_MAP, "Undock / Dock on map")
 mkstr(SI.TELE_UI_BTN_GUILD_BMU, "BeamMeUp Guilds & Partner Guilds")
 mkstr(SI.TELE_UI_BTN_GUILD_HOUSE_BMU, "Visit BeamMeUp guild house")
 mkstr(SI.TELE_UI_BTN_PTF_INTEGRATION, "\"Port to Friend's House\" Integration")
+mkstr(SI.TELE_UI_BTN_DUNGEON_FINDER, "Arenas / Trials / Dungeons\n|c777777(right-click for more options)")
 ---------
 --------- List
 mkstr(SI.TELE_UI_SOURCE_GROUP, "Group")
@@ -78,6 +79,11 @@ mkstr(SI.TELE_UI_TOGGLE_LEADS_MAP, "Leads")
 mkstr(SI.TELE_UI_VIEW_ANTIQUITY, "View Codex")
 mkstr(SI.TELE_UI_JUMP_IN_FRONT_HOUSE, "Travel outside house")
 mkstr(SI.TELE_UI_JUMP_IN_HOUSE, "Travel inside house")
+mkstr(SI.TELE_UI_TOGGLE_ARENAS, "Solo Arenas")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_ARENAS, "Group Arenas")
+mkstr(SI.TELE_UI_TOGGLE_TRIALS, "Trials")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS, "Group Dungeons")
+mkstr(SI.TELE_UI_TOGGLE_SORT_ACRONYM, "Sort by Acronym")
 
 mkstr(SI.TELE_UI_SUBMENU_FAVORITES, "Favorites")
 mkstr(SI.TELE_UI_SUBMENU_MISC, "Miscellaneous")
@@ -111,6 +117,7 @@ mkstr(SI.TELE_CHAT_UNLOCK_WS_DISCOVERED_TOTAL, "Total wayshrines discovered in t
 mkstr(SI.TELE_CHAT_UNLOCK_WS_ALL_KNOWN, "All wayshrines in this zone are known and can be used for traveling.")
 mkstr(SI.TELE_CHAT_UNLOCK_WS_NEED_DISCOVERED, "The following wayshrines still need to be physically visited:")
 mkstr(SI.TELE_CHAT_SHARING_FOLLOW_LINK, "Following the link ...")
+mkstr(SI.TELE_CHAT_TO_DUNGEON, "Fast Travel into Instance:")
 
 
 
@@ -223,6 +230,7 @@ mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Visit BeamMeUp Guild House")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Port to current zone")
 mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
+mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_DUNGEON_FINDER, "Arenas / Trials / Dungeons")
 
 
 

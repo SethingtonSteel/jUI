@@ -121,10 +121,15 @@ function Teleporter.createTable(index, inputString, fZoneId, dontDisplay, filter
 	local playersZoneIndex = GetUnitZoneIndex("player")
 	local playersZoneId = GetZoneId(playersZoneIndex)
 	
-	-- if world map is not showing, take zone where the player is in (background: when you change the zone in the world map and you close, then the current zone is still the last showing map)
 	if SCENE_MANAGER:IsShowing("worldMap") then
-		currentZoneId = GetZoneId(GetCurrentMapZoneIndex()) -- get zone id of current / displayed zone
+		if DoesCurrentMapMatchMapForPlayerLocation() then
+			-- if shown map is the map/zone of the player, take playersZoneId because it is more reliable (especially in delves, the parent zone is often returned as currentZoneId)
+			currentZoneId = playersZoneId
+		else
+			currentZoneId = GetZoneId(GetCurrentMapZoneIndex()) -- get zone id of current / displayed zone
+		end
 	else
+		-- if world map is not showing, take zone where the player is actual in (background: when you change the zone in the world map and you close, then this zone is still the last showing map)
 		currentZoneId = playersZoneId
 	end
 
@@ -500,7 +505,7 @@ function Teleporter.addInfo_1(e, currentZoneId, playersZoneId, sourceIndexLeadin
 	end
 	
 	-- add second zone name
-	e.zoneNameSecondLanguage = Teleporter.getZoneNameSecondLanguage(e.zoneId, e.zoneName)
+	e.zoneNameSecondLanguage = Teleporter.getZoneNameSecondLanguage(e.zoneId)
 	
 	if e.displayName ~= "" and e.displayName ~= nil then
 		-- format character name
@@ -606,7 +611,7 @@ end
 
 
 -- add alternative zone name (second language) if feature active (see translation array)
-function Teleporter.getZoneNameSecondLanguage(zoneId, zoneName)
+function Teleporter.getZoneNameSecondLanguage(zoneId)
 	-- check if enabled
 	if mTeleSavedVars.secondLanguage ~= 1 then
 		local language = Teleporter.dropdownSecLangChoices[mTeleSavedVars.secondLanguage]
@@ -656,7 +661,8 @@ function Teleporter.filterAndDecide(index, e, inputString, currentZoneId, fZoneI
 	-- index == 1 -> only own zone
 	if index == 1 then
 		-- only add users in the current (displayed) zone
-		if e.currentZone then
+		-- OR if displayed zone is not overland and zone is parent of current zone
+		if e.currentZone or (Teleporter.categorizeZone(currentZoneId) ~= 9 and e.zoneId == Teleporter.getParentZoneId(currentZoneId) and Teleporter.checkOnceOnly(true, e)) then
 			return true
 		end
 		
@@ -681,7 +687,7 @@ function Teleporter.filterAndDecide(index, e, inputString, currentZoneId, fZoneI
 	-- index == 5 -> only Delves and open Dungeons in your own Zone
 	elseif index == 5 then
 		-- always use parent zone which is the same, when player is in e.g. overland zone
-		if Teleporter.isWhitelisted(Teleporter.whitelistDelves[Teleporter.getParentZoneId(currentZoneId)], e.zoneId, false) and not Teleporter.isBlacklisted(e.zoneId, e.sourceIndexLeading, false) and Teleporter.checkOnceOnly(mTeleSavedVars.zoneOnceOnly, e) then
+		if (Teleporter.isWhitelisted(Teleporter.overlandDelvesPublicDungeons[Teleporter.getParentZoneId(currentZoneId)].delves, e.zoneId, false) or Teleporter.isWhitelisted(Teleporter.overlandDelvesPublicDungeons[Teleporter.getParentZoneId(currentZoneId)].publicDungeons, e.zoneId, false)) and not Teleporter.isBlacklisted(e.zoneId, e.sourceIndexLeading, false) and Teleporter.checkOnceOnly(mTeleSavedVars.zoneOnceOnly, e) then
 			return true
 		end
 		
@@ -716,7 +722,8 @@ function Teleporter.isBlacklisted(zoneId, sourceIndex, onlyMaps)
 
 	-- use hard filter (like whitelist) if active
 	if onlyMaps then
-		if Teleporter.isWhitelisted(Teleporter.whitelistDelves, zoneId, true) then
+		-- only check the indecies!
+		if Teleporter.isWhitelisted(Teleporter.overlandDelvesPublicDungeons, zoneId, true) then
 			return false
 		else
 			-- seperate filtering, if group member (whitelisting)
@@ -1111,7 +1118,7 @@ function Teleporter.createUnrelatedItemRecord(zoneId)
 	record.textColorDisplayName = Teleporter.var.color.colDarkRed
 	record.textColorZoneName = Teleporter.var.color.colDarkRed
 	record.zoneNameClickable = true -- show zone on click
-	record.zoneNameSecondLanguage = Teleporter.getZoneNameSecondLanguage(zoneId, zoneName) -- add second zone language
+	record.zoneNameSecondLanguage = Teleporter.getZoneNameSecondLanguage(zoneId) -- add second zone language
 	-- add discovery info (for zone tooltip)
  	record.zoneWayhsrineDiscoveryInfo, record.zoneWayshrineDiscovered, record.zoneWayshrineTotal = Teleporter.getZoneGuideDiscoveryInfo(zoneId, ZONE_COMPLETION_TYPE_WAYSHRINES)
 	record.zoneSkyshardDiscoveryInfo, record.zoneSkyshardDiscovered, record.zoneSkyshardTotal = Teleporter.getZoneGuideDiscoveryInfo(zoneId, ZONE_COMPLETION_TYPE_SKYSHARDS)
@@ -1313,7 +1320,7 @@ function Teleporter.createUnrelatedQuestsRecords(unRelatedQuests)
 				-- add questIndex for quest map ping
 				table.insert(record.relatedQuestsSlotIndex, slotIndex)
 				record.zoneNameClickable = true -- show zone on click
-				record.zoneNameSecondLanguage = Teleporter.getZoneNameSecondLanguage(record.zoneId, record.zoneName) -- add second zone language
+				record.zoneNameSecondLanguage = Teleporter.getZoneNameSecondLanguage(record.zoneId) -- add second zone language
 				-- add discovery info (for zone tooltip)
 				record.zoneWayhsrineDiscoveryInfo, record.zoneWayshrineDiscovered, record.zoneWayshrineTotal = Teleporter.getZoneGuideDiscoveryInfo(record.zoneId, ZONE_COMPLETION_TYPE_WAYSHRINES)
 				record.zoneSkyshardDiscoveryInfo, record.zoneSkyshardDiscovered, record.zoneSkyshardTotal = Teleporter.getZoneGuideDiscoveryInfo(record.zoneId, ZONE_COMPLETION_TYPE_SKYSHARDS)
@@ -1500,28 +1507,7 @@ function Teleporter.addNumberPlayers(oldTable)
 		table.insert(newTable, record)
 	end
 	
-	return newTable	
-end
-
-
--- go over all overland zones and try to match with matchStr (item name)
-function Teleporter.findCorrespondingOverlandZone_OLD(matchStr, language)
-    local localizedSearchZoneData = Teleporter.LibZoneGivenZoneData[language]
-    if localizedSearchZoneData == nil then return nil end
-	
-	-- go over all overland zones
-	for overlandZoneId, _ in pairs(Teleporter.whitelistDelves) do
-		if Teleporter.tryMatchZoneToMatchStr(matchStr, overlandZoneId) then
-			return overlandZoneId
-		end
-	end
-	
-	-- check Cyrodiil separately (because not in overland zone list)
-	if Teleporter.tryMatchZoneToMatchStr(matchStr, 181) then
-		return 181
-	end
-	
-	return nil
+	return newTable
 end
 
 
@@ -1623,7 +1609,7 @@ function Teleporter.createTableHouses()
 		-- check if the addon "No Thank You" is active and if the incompatible option is set ("Owned houses" is set to "Hide")
 		if NO_THANK_YOU_VARS then
 			local sv = ZO_SavedVars:NewAccountWide("NO_THANK_YOU_VARS", 1, nil, nil, nil)
-			if sv.ownedHouses == 2 then
+			if sv and sv.ownedHouses and sv.ownedHouses == 2 then
 				-- show dialog and lock it for a specific time (so that the user is not spammed with dialogs)
 				if not Teleporter.blockDialogNTY then
 					-- lock flag
@@ -1631,14 +1617,13 @@ function Teleporter.createTableHouses()
 					-- timer
 					zo_callLater(function() Teleporter.blockDialogNTY = false end, 60000)
 					-- show dialog
-					Teleporter.showDialog("IncompatibilityNTY", "Incompatibility with addon \"No, thank you!\"", "We have detected that you are using the addon \"No, thank you!\" with incompatible settings. " .. Teleporter.var.color.colRed .. "Please change the option \"Owned Houses\" to \"Show\" in the settings of \"No, thank you!\" in the section \"Map\"!|r Otherwise BeamMeUp will not be able to display your houses.", nil, nil)
+					Teleporter.showDialog("IncompatibilityNTY", "Incompatibility with addon \"No, thank you!\"", "We have detected that you are using the addon \"No, thank you!\" with incompatible settings.\n\n" .. Teleporter.var.color.colRed .. "Please change the option \"Owned Houses\" to \"Show\" in the settings of \"No, thank you!\" in the section \"Map\"!|r\n\nOtherwise BeamMeUp will not be able to display your houses.", nil, nil)
 				end
 			end
 		end
 	end
 	
 	TeleporterList:add_messages(resultList)
-	
 end
 
 
@@ -1818,6 +1803,164 @@ function Teleporter.createTableGuilds()
 		zo_callLater(function() Teleporter.createTableGuilds() end, 550)
 	end
 end
+
+
+
+-- create table of Dungeons, Trials, Arenas depending on the settings
+function Teleporter.createTableDungeons()
+	-- change global state to 14, to have the correct tab active
+	Teleporter.changeState(14)
+	local resultListArenas = {}
+	local resultListGroupArenas = {}
+	local resultListTrials = {}
+	local resultListGroupDungeons = {}
+
+	if mTeleSavedVars.df_showArenas then		
+		for _, zoneId in ipairs(Teleporter.blacklistSoloArenas) do
+			local entry = Teleporter.createDungeonRecord(zoneId)
+			table.insert(resultListArenas, entry)
+		end
+		
+		if mTeleSavedVars.df_sortByAcronym then
+			-- sort by acronym
+			table.sort(resultListArenas, function(a, b)
+				return a.displayName < b.displayName
+			end)
+		else
+			-- sort by name
+			table.sort(resultListArenas, function(a, b)
+				return a.zoneName < b.zoneName
+			end)
+		end
+		
+		-- add headline
+		local entry = Teleporter.createBlankRecord()
+		entry.zoneName = "-- " .. string.upper(SI.get(SI.TELE_UI_TOGGLE_ARENAS)) .. " --"
+		entry.textColorZoneName = Teleporter.var.color.colTrash
+		table.insert(resultListArenas, 1, entry)
+	end
+	
+	
+	
+	if mTeleSavedVars.df_showGroupArenas then
+		for _, zoneId in ipairs(Teleporter.blacklistGroupArenas) do
+			local entry = Teleporter.createDungeonRecord(zoneId)
+			table.insert(resultListGroupArenas, entry)
+		end
+		
+		if mTeleSavedVars.df_sortByAcronym then
+			-- sort by acronym
+			table.sort(resultListGroupArenas, function(a, b)
+				return a.displayName < b.displayName
+			end)
+		else
+			-- sort by name
+			table.sort(resultListGroupArenas, function(a, b)
+				return a.zoneName < b.zoneName
+			end)
+		end
+		
+		-- add headline
+		local entry = Teleporter.createBlankRecord()
+		entry.zoneName = "-- " .. string.upper(SI.get(SI.TELE_UI_TOGGLE_GROUP_ARENAS)) .. " --"
+		entry.textColorZoneName = Teleporter.var.color.colTrash
+		table.insert(resultListGroupArenas, 1, entry)
+	end
+	
+	
+	if mTeleSavedVars.df_showTrials then
+		for _, zoneId in ipairs(Teleporter.blacklistRaids) do
+			local entry = Teleporter.createDungeonRecord(zoneId)
+			table.insert(resultListTrials, entry)
+		end
+		
+		if mTeleSavedVars.df_sortByAcronym then
+			-- sort by acronym
+			table.sort(resultListTrials, function(a, b)
+				return a.displayName < b.displayName
+			end)
+		else
+			-- sort by name
+			table.sort(resultListTrials, function(a, b)
+				return a.zoneName < b.zoneName
+			end)
+		end
+		
+		-- add headline
+		local entry = Teleporter.createBlankRecord()
+		entry.zoneName = "-- " .. string.upper(SI.get(SI.TELE_UI_TOGGLE_TRIALS)) .. " --"
+		entry.textColorZoneName = Teleporter.var.color.colTrash
+		table.insert(resultListTrials, 1, entry)
+	end
+
+
+	if mTeleSavedVars.df_showDungeons then
+		for _, zoneId in ipairs(Teleporter.blacklistGroupDungeons) do
+			local entry = Teleporter.createDungeonRecord(zoneId)
+			table.insert(resultListGroupDungeons, entry)
+		end
+		
+		if mTeleSavedVars.df_sortByAcronym then
+			-- sort by acronym
+			table.sort(resultListGroupDungeons, function(a, b)
+				return a.displayName < b.displayName
+			end)
+		else
+			-- sort by name
+			table.sort(resultListGroupDungeons, function(a, b)
+				return a.zoneName < b.zoneName
+			end)
+		end
+		
+		-- add headline
+		local entry = Teleporter.createBlankRecord()
+		entry.zoneName = "-- " .. string.upper(SI.get(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS)) .. " --"
+		entry.textColorZoneName = Teleporter.var.color.colTrash
+		table.insert(resultListGroupDungeons, 1, entry)
+	end
+	
+	-- merge all lists together
+	local resultList = {}
+	for _, v in pairs(resultListArenas) do table.insert(resultList, v) end
+	for _, v in pairs(resultListGroupArenas) do table.insert(resultList, v) end
+	for _, v in pairs(resultListTrials) do table.insert(resultList, v) end
+	for _, v in pairs(resultListGroupDungeons) do table.insert(resultList, v) end
+	
+	-- add no results info if player disabled all categories
+	if #resultList == 0 then
+		table.insert(resultList, Teleporter.createNoResultsInfo())
+	end
+	
+	TeleporterList:add_messages(resultList)
+end
+
+
+-- creates an record for an dungeon entry
+function Teleporter.createDungeonRecord(zoneId)
+	local entry = Teleporter.createBlankRecord()
+	entry.isDungeon = true
+	entry.zoneId = zoneId
+	entry.zoneNameUnformatted = GetZoneNameById(entry.zoneId)
+	--entry.textColorDisplayName = Teleporter.var.color.colTrash
+	entry.zoneNameClickable = true
+	entry.mapIndex, entry.parentZoneId = Teleporter.identifyMapIndex(entry.zoneId)
+	entry.parentZoneName = Teleporter.formatName(GetZoneNameById(entry.parentZoneId))
+	entry.category = Teleporter.categorizeZone(entry.zoneId)
+	entry.zoneNameSecondLanguage = Teleporter.getZoneNameSecondLanguage(entry.zoneId)
+	local nodeObject = Teleporter.nodeIndexMap[zoneId]
+	entry.nodeIndex = nodeObject[1]
+	--entry.zoneName = Teleporter.formatName(entry.zoneNameUnformatted) .. " " .. nodeObject[2]
+	entry.displayName = nodeObject[2]
+	entry.zoneName = Teleporter.formatName(entry.zoneNameUnformatted, mTeleSavedVars.formatZoneName)
+	entry.difficultyText = GetString(SI_DUNGEONDIFFICULTY1)
+	
+	if ZO_ConvertToIsVeteranDifficulty(ZO_GetEffectiveDungeonDifficulty()) then
+		entry.difficultyText = GetString(SI_DUNGEONDIFFICULTY2)
+	end
+	
+	return entry
+end
+
 
 -- create and initialize a list entry (record)
 function Teleporter.createBlankRecord()

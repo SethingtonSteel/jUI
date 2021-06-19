@@ -10,6 +10,7 @@ Xynode.dungeons = {
 		name = "Fungal Grotto I",
 		link = "https://www.xynodegaming.com/fungal-grotto-1",
 		sets = {838,919,886,1103},
+		video = "https://www.youtube.com/watch?v=vvHCjVhqDvI",
 		bosses =
 		{
 			[1] =
@@ -44,6 +45,7 @@ Xynode.dungeons = {
 		zoneid = 934,
 		name = "Fungal Grotto II",
 		link = "https://www.xynodegaming.com/fungalgrotto2",
+		video = "https://www.youtube.com/watch?v=fpDzgSwjGCE",
 		bosses =
 		{
 			[1] =
@@ -83,6 +85,7 @@ Xynode.dungeons = {
 		zoneid = 144,
 		name = "Spindleclutch I",
 		link = "https://www.xynodegaming.com/spindleclutch-1",
+		video = "https://www.youtube.com/watch?v=CDj17Bwwp3s",
 		bosses =
 		{
 			[1] =
@@ -117,6 +120,7 @@ Xynode.dungeons = {
 		zoneid = 936,
 		name = "Spindleclutch II",
 		link = "https://www.xynodegaming.com/spindleclutch2",
+		video = "https://www.youtube.com/watch?v=kB2NbTau5m8",
 		bosses =
 		{
 			[1] =
@@ -156,32 +160,38 @@ Xynode.dungeons = {
 		zoneid = 380,
 		name = "The Banished Cells I",
 		link = "https://www.xynodegaming.com/banished-cells-1",
+		video = "https://www.youtube.com/watch?v=qXOXfxhjTso",
 		bosses =
 		{
 			[1] =
 				{
 					name = "Cell Haunter",
-					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 CELL HAUNTER |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nFirstly you will have two skeletons to deal with, one with a sword n board and the other with a melee weapon. Be sure not to heavy attack the sword and board skeleton while he is blocking else he will knock you off balance, and be sure to block the heavy attacks of these particular enemies if you are the unlucky target. Get your tank to put both enemies on the boss while turning the boss away from the group.\n\nIt is KEY that the boss faces away from the group so that the Ice Tornado spell doesn't hit them.\nThe 2 adds/enemies should die to AOE (area of effect) damage while the DPS players focus down the boss.\n\n|cffff00Magic Missile|r - The Cell haunter himself will hit the tank (or whoever has agro) with a barrage of light ice attacks, usually between 2-4 in a row. After this one of two attacks will follow. These can be blocked and don't hit the tank too hard.\n\n|cffff00Health leech/Winter's Reach|r - Has a cast time and can be interrupted. If NOT interrupted in time, it will result in him casting a small ice tornado looking ability in the target's direction (hence why this must be turned away from the group, the other members can be hit too). This particular attack hits VERY hard, can almost one shot a dps character and will immobilize the target/s in ice for a few seconds (unless you break out of it).\n\n|cffff00Health leech/Drain|r - Cell Haunter's main attack and most devastating ability if not managed with blocks/shields/heals can strip a healer/dps player of their entire health bar. The boss with attach a beam of energy to its chosen target (this is random) and will drain it's life while healing itself. This ability is NOT interruptible and requires the healer to be on point and focus the victim and/or the dps player themselves to shield or heal during this phase. It is only about 3-4seconds long but the damage ticks are quite large.\n\n"
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 CELL HAUNTER |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nFirstly you will have two skeletons to deal with, one with a sword n board and the other with a melee weapon. Be sure not to heavy attack the sword and board skeleton while he is blocking else he will knock you off balance, and be sure to block the heavy attacks of these particular enemies if you are the unlucky target. Get your tank to put both enemies on the boss while turning the boss away from the group.\n\nIt is KEY that the boss faces away from the group so that the Ice Tornado spell doesn't hit them.\nThe 2 adds/enemies should die to AOE (area of effect) damage while the DPS players focus down the boss.\n\n|cffff00Magic Missile|r - The Cell haunter himself will hit the tank (or whoever has agro) with a barrage of light ice attacks, usually between 2-4 in a row. After this one of two attacks will follow. These can be blocked and don't hit the tank too hard.\n\n|cffff00Health leech/Winter's Reach|r - Has a cast time and can be interrupted. If NOT interrupted in time, it will result in him casting a small ice tornado looking ability in the target's direction (hence why this must be turned away from the group, the other members can be hit too). This particular attack hits VERY hard, can almost one shot a dps character and will immobilize the target/s in ice for a few seconds (unless you break out of it).\n\n|cffff00Health leech/Drain|r - Cell Haunter's main attack and most devastating ability if not managed with blocks/shields/heals can strip a healer/dps player of their entire health bar. The boss with attach a beam of energy to its chosen target (this is random) and will drain it's life while healing itself. This ability is NOT interruptible and requires the healer to be on point and focus the victim and/or the dps player themselves to shield or heal during this phase. It is only about 3-4seconds long but the damage ticks are quite large.\n\n",
+					video = "https://www.youtube.com/watch?v=qXOXfxhjTso&t=220s"
 				},
 			[2] =
 				{
 					name = "Shadowrend",
-					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 SHADOWREND |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis clanfear type boss is possibly one of the simplest in this dungeon since he can be held simply in one place without much trouble, the danger is when people start running around the room. There is NO need to run. Start with him dead center of the room and your tank should hold him there at all times. He has 3 major mechanics apart from his basic light attacks on the tank.\n\n|cffff00Shadow clone|r - Shadowrend spawns a duplicate in the form of a shadow of itself, it hits for the same damage as the boss but has a TINY amount of health. Kill this as fast as possible so it doesn't become a problem and STAY CLOSE or he will jump.\n\n|cffff00Charge and devour|r - IF someone moves away from the boss (roughly more than 10meters+) Shadowrend will launch at a random target, not always the furthest away) and start chewing on his victim causing huge damage. Shadowrend has to be interupted to stop his attack. Key to this is, DON'T run, stay in the middle, then he will never do it.\n\n|cffff00Tail swipe|r - This is his strongest hit and easiest to avoid. He will do a 360 degree tail whip and anyone caught inside of the aoe will be hit hard, and knocked down. Two ways to avoid it... Step slightly out of the circle, OR block. Either works fine and while blocking the damage is minimal. Key point above all, do not run! Simple.\n\n"
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 SHADOWREND |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis clanfear type boss is possibly one of the simplest in this dungeon since he can be held simply in one place without much trouble, the danger is when people start running around the room. There is NO need to run. Start with him dead center of the room and your tank should hold him there at all times. He has 3 major mechanics apart from his basic light attacks on the tank.\n\n|cffff00Shadow clone|r - Shadowrend spawns a duplicate in the form of a shadow of itself, it hits for the same damage as the boss but has a TINY amount of health. Kill this as fast as possible so it doesn't become a problem and STAY CLOSE or he will jump.\n\n|cffff00Charge and devour|r - IF someone moves away from the boss (roughly more than 10meters+) Shadowrend will launch at a random target, not always the furthest away) and start chewing on his victim causing huge damage. Shadowrend has to be interupted to stop his attack. Key to this is, DON'T run, stay in the middle, then he will never do it.\n\n|cffff00Tail swipe|r - This is his strongest hit and easiest to avoid. He will do a 360 degree tail whip and anyone caught inside of the aoe will be hit hard, and knocked down. Two ways to avoid it... Step slightly out of the circle, OR block. Either works fine and while blocking the damage is minimal. Key point above all, do not run! Simple.\n\n",
+					video = "https://www.youtube.com/watch?v=qXOXfxhjTso&t=359s"
 				},
 			[3] =
 				{
 					name = "Angata the Clannfear Handler",
-					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 ANGATA THE CLANNFEAR HANDLER |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThe clanfear handler herself is not so much the problem in this fight, the problem is the sheer amount of enemies in the room. You MUST get your tank to taunt/chain/pin as many as possible ESPECIALLY the ranged mage typoes. If they all focus a dps or healer they will die in a split second. So tank ALWAYS enters the room first. Pin as many targets on the boss as possible and turn her around away from the group. Burn down any enemies next to the boss with AOE damage and if you have to, focus the ranged targets and pay attention to interrupts.\n\n|cffff00Summon Clanfear|r - Every 10 seconds or so she will summon a single clanfear. They are not hard to kill but they do act as any other clan fear with nasty light attacks, a jump mechanic and tail swipe. So do not run away or it will hunt you down. Kill this as close to the boss as possible. The casting of the clanfear can be interrupted.\n\n|cffff00AOE Fire|r - Angata occasionally raises her staff and causes a small round aoe of fire on the ground, this is a very simple mechanic, just don't stand in it. Move a couple of feet out of it as it lands and you will be fine. This can be interrupted.\n\nThe rest of her attacks are mostly light flame attacks and should be manageable so long as the tank has her taunted.\n\n"
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 ANGATA THE CLANNFEAR HANDLER |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThe clanfear handler herself is not so much the problem in this fight, the problem is the sheer amount of enemies in the room. You MUST get your tank to taunt/chain/pin as many as possible ESPECIALLY the ranged mage typoes. If they all focus a dps or healer they will die in a split second. So tank ALWAYS enters the room first. Pin as many targets on the boss as possible and turn her around away from the group. Burn down any enemies next to the boss with AOE damage and if you have to, focus the ranged targets and pay attention to interrupts.\n\n|cffff00Summon Clanfear|r - Every 10 seconds or so she will summon a single clanfear. They are not hard to kill but they do act as any other clan fear with nasty light attacks, a jump mechanic and tail swipe. So do not run away or it will hunt you down. Kill this as close to the boss as possible. The casting of the clanfear can be interrupted.\n\n|cffff00AOE Fire|r - Angata occasionally raises her staff and causes a small round aoe of fire on the ground, this is a very simple mechanic, just don't stand in it. Move a couple of feet out of it as it lands and you will be fine. This can be interrupted.\n\nThe rest of her attacks are mostly light flame attacks and should be manageable so long as the tank has her taunted.\n\n",
+					video = "https://www.youtube.com/watch?v=qXOXfxhjTso&t=468s"
 				},
 			[4] =
 				{
 					name = "Skeletal Destroyer",
-					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 SKELETAL DESTROYER |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis Boss is a lot scarier to look at than he is, it is a case of having control of the boss and the enemies in the room. There are 4x Scamps around the room, after taunting the boss the tank should focus on pulling these in as close to the boss as possible. If this isnt possible then taunts are fine but the dps will have to focus them down. Kill them fast, watch their ground fire attacks and be sure to interrupt them if they are casting. Once they are down it is pretty smooth, just keep the boss still in the center and have everyone stay AWAY from his face. Again, don't run away if you have agro.\n\n|cffff00Summon skeletons|r - Every 10 seconds or so he will summon a set of 3x skeletons, they are relatively weak and can be killed with most aoe damage however you do want to focus these because if you don't kill them fast enough they will explode. Once they die, the timer from 10seconds starts again until the next wave.\n\n|cffff00Stomp|r - This is a very obvious aoe circle around his feet where he stomps the ground followed by a quick slap in the direction of his target. Simply stay out of this if you are a dps by taking a couple of steps back. If you are a tank or you get unlucky and caught in it...simply block, no running away!\n\n|cffff00Cleave|r - This one is very simple and should only really be affecting the tank, stay behind the boss if you are dps or healer and occasionally the boss will do a cone type attack in the form of a Cleave at the direction of the person who he is agroing. As the tank, all you have to do here is block. IF you are unlucky enough to have it attack you and you are NOT a tank, same applies..do NOT run, just block.\n\n"
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 SKELETAL DESTROYER |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis Boss is a lot scarier to look at than he is, it is a case of having control of the boss and the enemies in the room. There are 4x Scamps around the room, after taunting the boss the tank should focus on pulling these in as close to the boss as possible. If this isnt possible then taunts are fine but the dps will have to focus them down. Kill them fast, watch their ground fire attacks and be sure to interrupt them if they are casting. Once they are down it is pretty smooth, just keep the boss still in the center and have everyone stay AWAY from his face. Again, don't run away if you have agro.\n\n|cffff00Summon skeletons|r - Every 10 seconds or so he will summon a set of 3x skeletons, they are relatively weak and can be killed with most aoe damage however you do want to focus these because if you don't kill them fast enough they will explode. Once they die, the timer from 10seconds starts again until the next wave.\n\n|cffff00Stomp|r - This is a very obvious aoe circle around his feet where he stomps the ground followed by a quick slap in the direction of his target. Simply stay out of this if you are a dps by taking a couple of steps back. If you are a tank or you get unlucky and caught in it...simply block, no running away!\n\n|cffff00Cleave|r - This one is very simple and should only really be affecting the tank, stay behind the boss if you are dps or healer and occasionally the boss will do a cone type attack in the form of a Cleave at the direction of the person who he is agroing. As the tank, all you have to do here is block. IF you are unlucky enough to have it attack you and you are NOT a tank, same applies..do NOT run, just block.\n\n",
+					video = "https://www.youtube.com/watch?v=qXOXfxhjTso&t=567s"
 				},
 			[5] =
 				{
 					name = "HIGH KINLORD RILIS",
-					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 HIGH KINLORD RILIS |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThe final boss in banished cells. He has simple mechanics BUT he hits like a steam train! The easiest position for tanking him to start with is in the furthest corner of the room, this means the feasts that heal him have further to go and are easier to manage. His attacks are somewhat random timing wise but there is a window where you must pay close attention to avoid an almost guaranteed one shot. The tank should be able to tank him MOSTLY on the spot but be aware if you do move the boss be sure to keep him in any friendly aoe damage so he can continue to loose health. Running around the room will NOT help.\n\n|cffff00Feasts|r - Every few seconds a feast (healing orb) will spawn where the boss first started. They will float slowly to him no matter where he is and you must kill these as fast as possible. Do NOT let them reach him else he will heal for massive amounts of health. He has 5million health to start with on hard mode, make sure he doesn't heal.\n\n|cffff00Ghost fire|r - This ability is a barrage of nasty ground based fire aoes. He will raise his sword and place 4 pools on the ground one after another. Simply move out of them and watch your feet. Do not run away from the boss fight as such, just move a couple of feet at a time, or dodge roll to get out of the fire.\n\n|cffff00Heavy blow|r - This is his heavy attack. Simple heavy attack indicator like any enemy in the game for this one (white/yellowy flash from his body) be sure as the tank to BLOCK THIS. If you do not it will hurt a HUGE amount and if a dps gets hit with this without blocking, it is a one shot guaranteed. It hits INCREDIBLY hard. If you are a dps and it is coming for you, be sure to block it. If you are max health you will just about survive it, if not, you are dead.\n\n|cffff00Magic bolt|r - This fireball type ability is possibly his most dangerous mechanic aside form the heavy attack because it is powerful, fast, and very hard to avoid. After he does his Ghost fire or heavy attack he will RANDOMLY select a player to throw a magic bolt at. If you don't have solid resists, a damage shield or enough health in your bar this will almost guarantee a one shot to a dps or healer. SO you MUST block or dodge roll this mechanic. The safest way to stay alive is each time you see him raise his sword (Ghost fire Mechanic) OR heavy attack (Heavy Blow mechanic) hold block until you see him do the Magic Bolt (like a fire ball). Be aware however if the Ghost Fire ability has been cast you will still have to step out of the fire, while being ready to block. Avoiding this mechanic is the difference between a wipe and a pass because if people die this is VERY hard to recovery from.\n\n"
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 HIGH KINLORD RILIS |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThe final boss in banished cells. He has simple mechanics BUT he hits like a steam train! The easiest position for tanking him to start with is in the furthest corner of the room, this means the feasts that heal him have further to go and are easier to manage. His attacks are somewhat random timing wise but there is a window where you must pay close attention to avoid an almost guaranteed one shot. The tank should be able to tank him MOSTLY on the spot but be aware if you do move the boss be sure to keep him in any friendly aoe damage so he can continue to loose health. Running around the room will NOT help.\n\n|cffff00Feasts|r - Every few seconds a feast (healing orb) will spawn where the boss first started. They will float slowly to him no matter where he is and you must kill these as fast as possible. Do NOT let them reach him else he will heal for massive amounts of health. He has 5million health to start with on hard mode, make sure he doesn't heal.\n\n|cffff00Ghost fire|r - This ability is a barrage of nasty ground based fire aoes. He will raise his sword and place 4 pools on the ground one after another. Simply move out of them and watch your feet. Do not run away from the boss fight as such, just move a couple of feet at a time, or dodge roll to get out of the fire.\n\n|cffff00Heavy blow|r - This is his heavy attack. Simple heavy attack indicator like any enemy in the game for this one (white/yellowy flash from his body) be sure as the tank to BLOCK THIS. If you do not it will hurt a HUGE amount and if a dps gets hit with this without blocking, it is a one shot guaranteed. It hits INCREDIBLY hard. If you are a dps and it is coming for you, be sure to block it. If you are max health you will just about survive it, if not, you are dead.\n\n|cffff00Magic bolt|r - This fireball type ability is possibly his most dangerous mechanic aside form the heavy attack because it is powerful, fast, and very hard to avoid. After he does his Ghost fire or heavy attack he will RANDOMLY select a player to throw a magic bolt at. If you don't have solid resists, a damage shield or enough health in your bar this will almost guarantee a one shot to a dps or healer. SO you MUST block or dodge roll this mechanic. The safest way to stay alive is each time you see him raise his sword (Ghost fire Mechanic) OR heavy attack (Heavy Blow mechanic) hold block until you see him do the Magic Bolt (like a fire ball). Be aware however if the Ghost Fire ability has been cast you will still have to step out of the fire, while being ready to block. Avoiding this mechanic is the difference between a wipe and a pass because if people die this is VERY hard to recovery from.\n\n",
+					video = "https://www.youtube.com/watch?v=qXOXfxhjTso&t=781s"
 				}
 
 		}
@@ -191,6 +201,7 @@ Xynode.dungeons = {
 		zoneid = 935,
 		name = "The Banished Cells II",
 		link = "https://www.xynodegaming.com/banishedcells2",
+		video = "https://www.youtube.com/watch?v=lHgoKTIsOak",
 		bosses =
 		{
 			[1] =
@@ -230,6 +241,7 @@ Xynode.dungeons = {
 		zoneid = 63,
 		name = "Darkshade Caverns I",
 		link = "https://www.xynodegaming.com/darkshade-caverns-1",
+		video = "https://www.youtube.com/watch?v=xDp9D0hOQlI",
 		bosses =
 		{
 			[1] =
@@ -269,6 +281,7 @@ Xynode.dungeons = {
 		zoneid = 930,
 		name = "Darkshade Caverns II",
 		link = "https://www.xynodegaming.com/darkshadecaverns2",
+		video = "https://www.youtube.com/watch?v=1zM5MN2XUjk",
 		bosses =
 		{
 			[1] =
@@ -308,6 +321,7 @@ Xynode.dungeons = {
 		zoneid = 126,
 		name = "Elden Hollow I",
 		link = "https://www.xynodegaming.com/elden-hollow-1",
+		video = "https://www.youtube.com/watch?v=rNMpX5B8IOA",
 		bosses =
 		{
 			[1] =
@@ -347,6 +361,7 @@ Xynode.dungeons = {
 		zoneid = 931,
 		name = "Elden Hollow II",
 		link = "https://www.xynodegaming.com/elden-hollow-2",
+		video = "https://www.youtube.com/watch?v=5rnm1kvpL2A",
 		bosses =
 		{
 			[1] =
@@ -386,6 +401,7 @@ Xynode.dungeons = {
 		zoneid = 146,
 		name = "Wayrest Sewers I",
 		link = "https://www.xynodegaming.com/wayrest-sewers-1",
+		video = "https://www.youtube.com/watch?v=0zH11XetbiQ",
 		bosses =
 		{
 			[1] =
@@ -425,6 +441,7 @@ Xynode.dungeons = {
 		zoneid = 933,
 		name = "Wayrest Sewers II",
 		link = "https://www.xynodegaming.com/wayrest-sewers-2",
+		video = "https://www.youtube.com/watch?v=eMzfUAeDuhE",
 		bosses =
 		{
 			[1] =
@@ -464,6 +481,7 @@ Xynode.dungeons = {
 		zoneid = 148,
 		name = "Arx Corinium",
 		link = "https://www.xynodegaming.com/arx-corinium",
+		video = "https://www.youtube.com/watch?v=Un8ex_Uwt1g",
 		bosses =
 		{
 			[1] =
@@ -503,6 +521,7 @@ Xynode.dungeons = {
 		zoneid = 176,
 		name = "City of Ash I",
 		link = "https://www.xynodegaming.com/cityofash1",
+		video = "https://www.youtube.com/watch?v=3mNGHckmZEc",
 		bosses =
 		{
 			[1] =
@@ -542,6 +561,7 @@ Xynode.dungeons = {
 		zoneid = 681,
 		name = "City of Ash II",
 		link = "https://www.xynodegaming.com/city-of-ash-2",
+		video = "https://www.youtube.com/watch?v=Kh_y9pK1yK8",
 		bosses =
 		{
 			[1] =
@@ -586,6 +606,7 @@ Xynode.dungeons = {
 		zoneid = 130,
 		name = "Crypt of Hearts I",
 		link = "https://www.xynodegaming.com/cryptofhearts1",
+		video = "https://www.youtube.com/watch?v=biP9yE7zOfE",
 		bosses =
 		{
 			[1] =
@@ -625,6 +646,7 @@ Xynode.dungeons = {
 		zoneid = 932,
 		name = "Crypt of Hearts II",
 		link = "https://www.xynodegaming.com/cryptofhearts2",
+		video = "https://www.youtube.com/watch?v=w3GoDnRQBbM",
 		bosses =
 		{
 			[1] =
@@ -664,6 +686,7 @@ Xynode.dungeons = {
 		zoneid = 449,
 		name = "Direfrost Keep",
 		link = "https://www.xynodegaming.com/direfrost",
+		video = "https://www.youtube.com/watch?v=RBPYjLk1e3c",
 		bosses =
 		{
 			[1] =
@@ -703,6 +726,7 @@ Xynode.dungeons = {
 		zoneid = 131,
 		name = "Tempest Island",
 		link = "https://www.xynodegaming.com/tempest-island",
+		video = "https://www.youtube.com/watch?v=DDIbXPXUUkk",
 		bosses =
 		{
 			[1] =
@@ -742,6 +766,7 @@ Xynode.dungeons = {
 		zoneid = 22,
 		name = "Volenfell",
 		link = "https://www.xynodegaming.com/volenfell",
+		video = "https://www.youtube.com/watch?v=eVTf5jl9i7c",
 		bosses =
 		{
 			[1] =
@@ -781,6 +806,7 @@ Xynode.dungeons = {
 		zoneid = 38,
 		name = "Blackheart Haven",
 		link = "https://www.xynodegaming.com/blackheart-haven",
+		video = "https://www.youtube.com/watch?v=h8Zl4iqq3I0",
 		bosses =
 		{
 			[1] =
@@ -820,6 +846,7 @@ Xynode.dungeons = {
 		zoneid = 64,
 		name = "Blessed Crucible",
 		link = "https://www.xynodegaming.com/blessed-crucible",
+		video = "https://www.youtube.com/watch?v=SJf2g9oq8oQ",
 		bosses =
 		{
 			[1] =
@@ -859,6 +886,7 @@ Xynode.dungeons = {
 		zoneid = 31,
 		name = "Selene's Web",
 		link = "https://www.xynodegaming.com/selenes-web",
+		video = "https://www.youtube.com/watch?v=YtKMJxq9sZA",
 		bosses =
 		{
 			[1] =
@@ -898,6 +926,7 @@ Xynode.dungeons = {
 		zoneid = 11,
 		name = "Vaults of Madness",
 		link = "https://www.xynodegaming.com/vaults-of-madness",
+		video = "https://www.youtube.com/watch?v=ZcNi6PsrGD8",
 		bosses =
 		{
 			[1] =
@@ -947,6 +976,7 @@ Xynode.dungeons = {
 		zoneid = 973,
 		name = "Bloodroot Forge",
 		link = "https://www.xynodegaming.com/bloodroot-forge",
+		video = "https://www.youtube.com/watch?v=_ztZvtd77Mw",
 		bosses =
 		{
 			[1] =
@@ -986,6 +1016,7 @@ Xynode.dungeons = {
 		zoneid = 848,
 		name = "Cradle of Shadows",
 		link = "https://www.xynodegaming.com/cradle-of-shadows",
+		video = "https://www.youtube.com/watch?v=cRrL40vVn8Q",
 		bosses =
 		{
 			[1] =
@@ -1019,7 +1050,8 @@ Xynode.dungeons = {
 	{
 		zoneid = 1081,
 		name = "Depths of Malatar",
-		link = "https://www.xynodegaming.com/dept.hs-of-malatar",
+		link = "https://www.xynodegaming.com/depths-of-malatar",
+		video = "https://www.youtube.com/watch?v=HS4-WfimNQI",
 		bosses =
 		{
 			[1] =
@@ -1054,6 +1086,7 @@ Xynode.dungeons = {
 		zoneid = 974,
 		name = "Falkreath Hold",
 		link = "https://www.xynodegaming.com/falkreath-hold",
+		video = "https://www.youtube.com/watch?v=VCzikSum7x8",
 		bosses =
 		{
 			[1] =
@@ -1088,6 +1121,7 @@ Xynode.dungeons = {
 		zoneid = 1009,
 		name = "Fang Lair",
 		link = "https://www.xynodegaming.com/fanglair",
+		video = "https://www.youtube.com/watch?v=-z0W5rS-lDU",
 		bosses =
 		{
 			[1] =
@@ -1122,6 +1156,7 @@ Xynode.dungeons = {
 		zoneid = 1080,
 		name = "Frostvault",
 		link = "https://www.xynodegaming.com/frostvault",
+		video = "https://www.youtube.com/watch?v=CXSw6r0hAAg",
 		bosses =
 		{
 			[1] =
@@ -1156,6 +1191,7 @@ Xynode.dungeons = {
 		zoneid = 678,
 		name = "Imperial City Prison",
 		link = "https://www.xynodegaming.com/imperial-city-prison",
+		video = "https://www.youtube.com/watch?v=0rQeOQyPNqM",
 		bosses =
 		{
 			[1] =
@@ -1195,6 +1231,7 @@ Xynode.dungeons = {
 		zoneid = 1055,
 		name = "March of Sacrifices",
 		link = "https://www.xynodegaming.com/march-of-sacrifices",
+		video = "https://www.youtube.com/watch?v=sxLgJyIUPmk",
 		bosses =
 		{
 			[1] =
@@ -1229,6 +1266,7 @@ Xynode.dungeons = {
 		zoneid = 1052,
 		name = "Moon Hunter Keep",
 		link = "https://www.xynodegaming.com/moon-hunter-keep",
+		video = "https://www.youtube.com/watch?v=rUi-hQFMy9s",
 		bosses =
 		{
 			[1] =
@@ -1263,6 +1301,7 @@ Xynode.dungeons = {
 		zoneid = 843,
 		name = "Ruins of Mazzatun",
 		link = "https://www.xynodegaming.com/ruins-of-mazzatun",
+		video = "https://www.youtube.com/watch?v=1vZU0ZcG7wc",
 		bosses =
 		{
 			[1] =
@@ -1292,6 +1331,7 @@ Xynode.dungeons = {
 		zoneid = 1010,
 		name = "Scalecaller Peak",
 		link = "https://www.xynodegaming.com/scalecaller-peak",
+		video = "https://www.youtube.com/watch?v=T-0bx6SUxIo",
 		bosses =
 		{
 			[1] =
@@ -1326,6 +1366,7 @@ Xynode.dungeons = {
 		zoneid = 688,
 		name = "White-Gold Tower",
 		link = "https://www.xynodegaming.com/white-gold-tower",
+		video = "https://www.youtube.com/watch?v=neGKIiJLSWc",
 		bosses =
 		{
 			[1] =
@@ -1355,6 +1396,7 @@ Xynode.dungeons = {
 		zoneid = 635,
 		name = "Dragonstar Arena",
 		link = "https://www.xynodegaming.com/dragonstar-arena",
+		video = "https://www.youtube.com/watch?v=zS-qetKW_cs",
 		bosses =
 		{
 			[1] =
@@ -1416,6 +1458,7 @@ Xynode.dungeons = {
 		zoneid = 638,
 		name = "Aetherian Archive",
 		link = "https://www.xynodegaming.com/aetherian-archive",
+		video = "https://www.youtube.com/watch?v=hzD23Po9ytA",
 		bosses =
 		{
 			[1] =
@@ -1446,6 +1489,7 @@ Xynode.dungeons = {
 		zoneid = 639,
 		name = "Sanctum Ophidia",
 		link = "https://www.xynodegaming.com/sanctum-ophidia",
+		video = "https://www.youtube.com/watch?v=y3VXIH6TaXo",
 		bosses =
 		{
 			[1] =
@@ -1480,6 +1524,7 @@ Xynode.dungeons = {
 		zoneid = 636,
 		name = "HEL RA CITADEL",
 		link = "https://www.xynodegaming.com/hel-ra-citadel",
+		video = "https://www.youtube.com/watch?v=kqZOJC035UQ",
 		bosses =
 		{
 			[1] =
@@ -1514,6 +1559,7 @@ Xynode.dungeons = {
 		zoneid = 725,
 		name = "Maw of Lorkhaj",
 		link = "https://www.xynodegaming.com/maw-of-lorkhaj",
+		video = "https://www.youtube.com/watch?v=MFjjLDjYzAE",
 		bosses =
 		{
 			[1] =
@@ -1538,6 +1584,7 @@ Xynode.dungeons = {
 		zoneid = 1082,
 		name = "Blackrose Prison",
 		link = "https://www.xynodegaming.com/blackrose-prison",
+		video = "https://www.youtube.com/watch?v=LUSIB0nsZuI",
 		bosses =
 		{
 			[1] =
@@ -1572,6 +1619,7 @@ Xynode.dungeons = {
 		zoneid = 677,
 		name = "Maelstrom Arena",
 		link = "https://xynodegaming.com/maelstrom-arena/",
+		video = "https://www.youtube.com/watch?v=EpHMwmZAu-k",
 		bosses =
 		{
 			[1] =
@@ -1626,6 +1674,7 @@ Xynode.dungeons = {
 		zoneid = 1122,
 		name = "Moongrave Fane",
 		link = "https://xynodegaming.com/moongrave-fane/",
+		video = "https://www.youtube.com/watch?v=gwaY2Vj75ro",
 		bosses =
 		{
 			[1] =
@@ -1661,6 +1710,7 @@ Xynode.dungeons = {
 		zoneid = 1123,
 		name = "Lair Of Maarselok",
 		link = "https://xynodegaming.com/lair-of-maarselok/",
+		video = "https://www.youtube.com/watch?v=a1FvUt8_ZPI",
 		bosses =
 		{
 			[1] =
@@ -1696,6 +1746,7 @@ Xynode.dungeons = {
 		zoneid = 1152,
 		name = "Icereach",
 		link = "https://xynodegaming.com/icereach/",
+		video = "https://www.youtube.com/watch?v=BJkUjy9Fe_w",
 		bosses =
 		{
 			[1] =
@@ -1731,6 +1782,7 @@ Xynode.dungeons = {
 		zoneid = 1153,
 		name = "Unhallowed Grave",
 		link = "https://xynodegaming.com/unhallowed-grave/",
+		video = "https://www.youtube.com/watch?v=dDPYSZ8ZqOo",
 		bosses =
 		{
 			[1] =
@@ -1781,6 +1833,7 @@ Xynode.dungeons = {
 		zoneid = 975,
 		name = "Halls Of Fabrication",
 		link = "https://xynodegaming.com/Halls-Of-Fabrication/",
+		video = "https://www.youtube.com/watch?v=WLGF78wA-mc",
 		bosses =
 		{
 			[1] =
@@ -1816,6 +1869,7 @@ Xynode.dungeons = {
 		zoneid =1000,
 		name = "Asylum Sanctorium",
 		link = "https://xynodegaming.com/asylum-sanctorium/",
+		video = "https://www.youtube.com/watch?v=9D0G9FzkDqQ",
 		bosses =
 		{
 			[1] =
@@ -1832,6 +1886,41 @@ Xynode.dungeons = {
 				{
 					name = "SAINT OLMS",
 					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 SAINT OLMS |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThe Robot Chicken himself is quite honestly the easiest of the 3 bosses to kill but also the easiest to mess up. Some of his mechanics can cause a FAST wipe so you MUST pa attention. Generally it is not the mechanics that kill you…but your own TEAM running around like...you guessed it, 'headless chickens'.\n\nThe boss should be held to one side of the room and faced away from the group. While the group situated themselves in a strict semi circle behind the boss.\n\nOne healer should be at the back behind the tank and one should be behind the main force of the group (this will make more sense later).\n\nBe sure that you have noted the gate and the fence (or back and front) of the room so that you know that place is a safe zone for a later JUMP mechanic. This is all demonstrated also in the video. No it is NOT 'entrance and exit'…the exit is the front door, if you exit out of the back fence you mite hurt yourself in the face! Jokes aside call it what you must in order to understand your location/spacial awareness in the room. But these are important spots to remember for later.\n\n|cffff00Steam breath|r - The tank will occasionally have a MASSIVE cone aoe aimed at them where the boss is literally breathing in their face. This will apply a very long duration debuff and while on you, you will take a LOT of damage from all other attacks. Instead of receiving the damage, simply step to one side, let it pass and then get back into position again. You do NOT have to be hit by this. The boss is incredibly slow you have loads of time.\n\n|cffff00Heavy Attack|r - This is pretty simple. The boss will heavy attack the tank. block it!\n\n|cffff00Lighting Tail Whip|r - Be careful with the boss, if you spin him and the person with agro is BEHIND the boss, he will try to tail while you and several split up lightning shots will be fired at you across the floor. If you do not block this you will be stunned.\n\n|cffff00Lighting Circle|r - Saint Olms will spit into the air roughly once every 30-32 seconds firing a lightning circle on the ground at the FURTHEST away target. The back kiter or the front kiter will receive this unless  dps is not paying attention. Don't let this happen too often, kiters are there for a reason, pay attention. When it lands the kiter will have get out of it quick and stand to the side of it ready for the next one to land or simply wait out it's duration.\n\nIf you stand in it you will lose health rapidly and lose 50% resources per tick. So you really don't want to be in there. the kiter behind the tank has several cubby holes they can stand in to bait out the aoe. Once it lands all the have to do is move to the next one and rinse repeat.\n\nTIP: If you are scared, unsure, inexperienced or just want the help. Slot mist form. You basically just walk out of it with that buff on and protect yourself MUCH easier rather than taking a one shot for making silly mistakes.\n\n|cffff00JUMP!|r - At set health percentages (yes these can overlap if the boss is in a rotation and you do more damage) he will jump back and forth to the left and the right of the room over and over. This is when your group in the middle AND the BACK kiter will need to go to their closest safe spot (front or back of the room). Once there they must BLOCK. Doing so will protect them vs the big quake he affects each player with. If not you will die. You can survive with damage shields and such but just keep it simple for now, keep health up and block!\n\nIf the kiter does not get in place quickly by the way they are the first to die because his first jump location (right) is exactly where they are standing. The tank however can block the whole hit when he jumps on their head no problem.\n\nOnce the phase is over he will be back in position and you can continue the fight. This jump phase will happen at 91% 76% 51% and 26% so pay attention to the health and be ready to make a run early on!\n\n|cffff00Protectors|r - Tiny Drewmer roller drones will appear and come into the room. These are 100% your priority target for the entire fight. They situate in many different places at random and must be killed. If they are alive the boss is invulnerable. But you MUST be sure to maintain your semi circle formation as much as or as soon as possible if you feel like you need to move. The safest way is to let the people closest deal with it and you can just heavy attack the boss to get resources back during this phase if you cannot reach (if you need to) or if you HAVE ranged damage available, try to kill it from as far away as possible so your position in the semi circle is not compromised for long…the next mechanic is incredible important for that!\n\n|cffff00FAN OUT!|r - The boss will flap his wings and life OFF the ground into the air trying to be a real bird but looking like the robot chicken he is! When this happens, he will throw out some straight ground based electrical shots which must be avoided in several directions and at the same time…someone needs to shout 'FAN OUT!'…because that is exactly what you are about to do.\n\nEach player will be effected by a lightning aoe that they will drop on the floor. If they stay still it will hit them and kill them. If they move it will be dropped on the floor away from them. This will happen with 4 individual aoe drops per person. SO, you are already in a semi circle…so if everyone walks back wards!  NO ONE will cross ANYONE'S path and everyone will have loads of room either side of them. All you have to do, is go back back back, come back in. It's very simple.\n\nNO ONE should be overlapping, NO one should be standing behind anyone else and NO one should be dancing around the room.\n\nIn some situations you are in a tight squeeze so you can go in a small circle/square and drop them near you but do NOT interact with other players.\n\nMuch like the first boss, every body get out, every body get in again. This is the simplest mechanic in the entire trial and the one that kills EVERYONE because of that 'one person' that won't stick to their position. This WILL take some practice but once you nail it is can be very straight forward.\n\nThe key point is to ALWAYS maintain your semi circle position not stacking on anyone not standing in front or behind anyone and then this mechanic is done.\n\nThis will happen once every 60seconds or so , so keep your eyes peeled! And above all do NOT panic.\n\n|cffff00Fire Pot Spiders|r - During the fight these are running around like mad going into the group and blowing up. Don't panic, don't even taunt them just keep dots down and they will die. Failing that they will explode eventually anyway so just watch your feet. So long as you are not REALLY low health they shouldn't cause much of a problem.\n\nThe Room, The Room, The room is on FIRE! - At 25% health the boss introduces his FINAL mechanic. The easiest and most dramatic mechanic of the entire trial! NO it is NOT panic time It is NOT 'enrage time' there is no enrage!\n\nThe boss will glow orange and spit into the air. The left side will be consumed in fire (meteor type spreading fire) the tank and healer must block and then cleanse/heal the 4 second damage over time they receive.\n\nIf you are standing in your semi circle, this POP will NEVER hit the group. Panic over. On the right side of the room, another spreading boom of death will appear…if you are in the semi circle you will also NEVER be hit by this…the back kiter may need to move forward slightly for a split second...\n\nAnd the final boom! In the middle ISH…IF you maintain your positions and IF you are disciplined through all of the mechanics, you should be roughly in the middle of the room, which puts you on the edge of EITHER or the two random incoming aoes. Making it much easier to simply step out of it. So to make that clearer. The big boom will cover as much ground as the other two shots but it WON'T be dead center, it will be at the front of the room, or the back. All you need to know is where it is landing, and simply run to the gap. Once successful, run back into your spot and carry on like nothing happened.\n\nTIP: if this mechanic keeps tripping you up over and over and over, take off a dps skill (if you are a dps) and slot mist form. From full health IF you accidentally get caught, pop a mistform, and stand in the fire. You will take barely any damage at all. You can maintain mistform until your damage over time ability is off you, OR you can insta remove the skill channel and take a heal/purge. NICE and easy and GREAT for practicing and building confidence in that part of the fight!\n\nFrom there on out all of the above mechanics are rinse repeat! Maintain co-ordination throughout and you are fine. It is not a dps race it is an endurance consistency test. Don't be complacent, work as a team and don't Kill each other!\n\n\n\n|cffff00HARDMODE!!!!|r\n\n\n\nEssentially there are 2 different Types or stages of hard modes. One type, you basically take on Saint Olms and ONE of hits side bosses. Either Flelms OR Llothis. The way to do this is to kill the one you Don't want in the room, ignore the other one and come back down stairs and open the gate.\n\nThe other way is to fight them all at once! This is simple. Don't bother going up the ramps. Just run straight to the gate and open it.\n\nThe ENTIRE BOSS FIGHT is EXACTLY the same. ZERO new mechanics, however…now you have to deal with his minions and these do make a big difference.\n\n|cffff00Llothis|r - Llothis will enter the room after the first Jump (90-91%). You now have a 10million health version of Llothis and all of his mechanics to deal with. He will teleport around the room leaving poison dots. He will do the poison cone which people MUST block and stand still with and he will cast his channel ability which MUST be interrupted!\n\nIf you can manage these mechanics, you have one major condition as well as controlling the boss and mechanics…You need to sit him DOWN! He has 10million health and you have 3 minutes to kill him (sit him down) until he enrages. You can survive and still maintain if he enrages if your group is built for survival but really just push him as much as you can to stop that from happening.\n\nSo there technically is a dps check for this guy BUT it is VERY low. During mechanics though panic can alter how this pans out for the group. 3 minutes of 10million health is literally only 7k dps per player 'required'…But it is very easy to get overwhelmed with mechanics and slip. So do focus mechanics but also focus your damage on THIS guy.\n\nIf the off tank can manage it, try to stack him on St Olms so that aoe can still hit the boss while you aim to focus Llothis. Be aware though, you must still make Protectors and mechanics your main priority.\n\nOnce Lothis sits down, you have 45 seconds of free time until he gets back up again at full health.\n\nRinse repeat.\n\n|cffff00Felms|r - Felms will come in at the second jump (75-76%). Now you have both bosses in the room. This boss follows the same rules. 10mil health, 3min timer before enrage and of course 45 seconds sit down once he is dead before he comes back in again.\n\nTry to apply the same strategy with this boss as the other. Get the off tank to try to stack it on or close to the boss IF possible so that aoe can hit the boss and this guy can be focused.\n\nIf ONE of the minis is up, be sure to focus them. If BOTH are up, try to kill them as close together as possible so then you have 45 seconds breathing space with BOTH sat down. This will take practice.\n\nDuring his presence in the room he will NOT have adds, but he will have his teleport mechanic dropping the maim circle, which is why it is important for the group's position to be disciplined and for the back of the room kiter to always be in position to receive it as and when they can (demonstrated in the video, be sure to block/dodge). And, he will also have his big boom mechanic aimed at individuals. If you see it coming, just step out of it.\n\nOverall it is about pace. Relax, be co-ordinated and don't panic. The dps requirement for these two bosses are unbelievably low but complacency can waste a LOT of time. Focus as a team and this can be a breeze, panic and this can be a long day at the office!\n\nOverall you must maintain order of priority. Protectors MUST die first (one protector out makes Saint Olms, if two are out the mini is immune, if three are out they are ALL immune. After the protectors the mini bosses take priority, and the boss is always your last target. If you are playing wack-a-mole with the mini adds but doing even 1k dps to the boss over a long period of time, so long as you are keeping those mini bosses from enraging, you are still going to pass.\n\nSaint Olms does NOT have a dps check. Just manage the adds and pace it.\n\npractice makes perfect, you can do it! ;) get out as the big boom comes in and kill adds. Tank…don't die! Strict co-ordination and understanding of the 3 major mechanics and this can be an easy ride. Scattering complacency will make this a mess.\n\n"
+				}
+		}
+	},
+[50] =
+	{
+		zoneid =1201,
+		name = "Castle Thorn",
+		link = "https://xynodegaming.com/Castle-Thorn/",
+		video = "https://www.youtube.com/watch?v=nvoPWSlIS_E",
+		bosses =
+		{
+			[1] =
+				{
+					name = "DREAD TINDULRA",
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 DREAD TINDULRA |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis boss is pretty basic but for an early boss can be a bit of a PUG killer! The tank should turn it away from the group at all times while maintaining a static possition where possible. Running around the room will make this messy very quickly. So hold your ground as a tank unless you are avoiding standing in stupid.\n\nThe DPS and Healer should be behind the boss and stand where ever is safe. Be sure to NOT run around the room in circles as the boss does NOT like it and people will suffer from it.\n\n|cffff00Bite/Fire Balls|r - The boss hit with basic bite attacks but while at range will spit fire balls instead. Block these if they hit you but should really ONLY be on the tank. So a taunt MUST be maintained.\n\n|cffff00Fire Breath|r - This is pretty self explanatory, the boss breathes fire in the direction of the tank or whoever has the aggro at the time. Don't stand in this. If you are the tank you can block it, but it does hit pretty hard.\n\n|cffff00Fire puddles|r - The boss will spit fire into the air and it will land in many different places on the floor. usually aimed at people directly so when these attacks happen, be sure to step out of them. They will remain burning on the floor and take up a lot of space. Do NOT stand in them!\n\n|cffff00Big BOOM!|r - The boss will STOMP on the ground. When this happens ALL Fire AOE puddles on the ground will explode. If you are standing inside one when they go boom, you die! Don't stand in them!\n\n|cffff00PIN/Charge|r - The boss will occasionally charge at a member of the group to knock them down. Usually the furthest away. If you are charged at be sure to block.\n\nOccasionally however this is not just a charge but a FULL knock down pin. The boss will continuously bite on the player until they are dead. You MUST help by interrupting the boss to get them off your team mate before they are killed!\n\n|cffff00Adds|r - After 75% the boss will occasionally howl. When this happens, multiple mini dogs will come into the fight. The tank should pull these in and control them while the group kill them. Be sure to get rid of the adds so you are not overwhelmed. If you are dps/healer and you have aggro of these do NOT run around the room, try to maintain your composure and keep doing what you are doing, block if necessary while the tank gains aggro on them. Running around makes you susceptible to the charge mechanic more often due to your distance form the boss.\n\n"
+				},
+			[2] =
+				{
+					name = "BLOOD TWILIGHT",
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 BLOOD TWILIGHT |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis boss is very simple in terms of mechanics but it is very easy to make a mess of it if people panic. If you are following mechanics rather than 'nuke it or go home' there are some very simple rules to follow. The simplest way to tank the boss is to drag it into a corner and face it against the wall. Then the dps/healers should stand behind the boss at all times.\n\n|cffff00Heavy attack|r - The boss will disappear and then jump in on the tank with a heavy attack, much like the Shadow Strike type ability most Twilights do, including the bosses from Maw of Lorkhaj and Imperial City Prison. The tank simply needs to block this.\n\n|cffff00Machine Gun|r - This barrage of damage is the same as lord warden. He will fire multiple magical attacks like a machine gun and the tank needs to block this/stand in front of it until it is over. Absorption skills also work.\n\n|cffff00Imps|r - Four Imps will spawn around the room. The tank can pull these in OR the group can go off and individually kill them, but either way you want them dead. While they are alive the boss will be buffed and hit harder.\n\n|cffff00Blood phase|r - After the Imps have spawned, the boss will teleport into the middle of the room. He will be immune to damage and the group must stay OUT of the blood or die. Pull the boss back to the original position once the phase is over.\n\nHowever during this phase an add will spawn (see below) and also multiple ghost/spirit type reflections of the boss will appear and suddenly wing slap the group.\n\nThis is a very simple mechanic. BLOCK it, or get thrown into the middle.\n\nOnce the phase is over, simply carry on as normal.\n\n|cffff00Reanimated Vampire|r - During the Blood phase as well as having to block the wing slaps, you will have this add spawn. The tank must taunt it and turn it away from the group as it has some rather heavy hitting cleave attacks with his two hander weapon. This is now your primary target.\n\nKill this add with full focus on it, even if the boss blood phase is over and now back in the fight, you MUST focus this add. Getting overwhelmed with multiples will make a mess.\n\nThe rest of the fight is rinse repeat with NO enrage mechanics.\n\nIf you can do one phase, completion is inevitable because the rest are the same. It's repetitive.\n\n"
+				},
+			[3] =
+				{
+					name = "VADUROTH",
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 VADUROTH |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nWith this boss co-ordination is key. If you don't work well as a team this can get messy fast! You have already seen most of the major mechanics if you have gotten this far so you should be fine, but this is where it all gets put together at once.\n\nThe tank should maintain a taunt, hold the boss still and turn it away from the group at ALL times.\n\n|cffff00Heavy attack|r - The boss will attack whoever has aggro (should be the tank) with a huge swing of his Scythe. The tank MUST block this. If you are a dps/healer and this is going to hit you, dodge roll it. You won't live trying to block this as it is designed for a tanky character with block mitigation bonuses.\n\n|cffff00Swarm|r -  During the fight the boss will select a target and a swarm of crows will chase them. This circle AOE will cause HIGH damage if caught inside of it. The player effected should take it out of the group and kite it around the room in a safe place until it is over.\n\n|cffff00Scythe throw|r - at 75% 50% and 25% the boss with throw his Scythe across the room and it will draw in ALL players. Each player will have an aoe under their feet with a rapid timer on it before it explodes. When this happens you MUST co-ordinate as a group and agree who is going where! Basically spread out ASAP so that NO ONE overlaps. If you are all safe, the explosion will go off and you can continue as normal. If anyone overlaps, they will die!\n\nNOTE: After this you can attack the Scythe and then throw it at one of the hanging bodies to release some mini pets to help you in the fight.\n\n|cffff00Reanimated Vampire|r - After each throw phase the boss will spawn a Reanimated Vampire, much like the one in the previous boss fight. The mechanics are exactly the same and you MUST focus it. If you do not prioritize this target and you end up with multiple by over burning the boss and not the add, you will be in some serious trouble as these hit very hard.\n\n|cffff00Summoned goo!|r - Periodically throughout the fight the boss will also summon a purple ball of goo. It will attack players from range. Be sure to kill this as soon as you can. And continue on the boss once it is dead.\n\nKEY points: Co-ordinate with the split mechanic, an always focus adds over the boss.\n\n"
+				},
+			[4] =
+				{
+					name = "TALFYG",
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 TALFYG |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis boss is simple if you apply basic mechanics and awareness. But if can be hell if not. The tank should hold the boss at ALL times as still as possible unless they HAVE to move. This is a simple, 'hit the boss, hit the adds, back to the boss again' fight. Not hard really in essence but some mechanics will wipe the group quickly. So pay close attention.\n\n|cffff00Heavy attack|r - The boss will throw out a occasionally at the tank. Simply block this and you will be fine.\n\n|cffff00Ground pound|r - The boss will occasionally smash the ground leaving a large aoe on the ground. You can block this as the tank but be sure once it has landed that you step out of it. DPS/Healers do not want to be anywhere near this!\n\n|cffff00Gargoyles|r - Through0ut the fight the gargoyles from the sides of the room will spawn and slowly walk towards the boss. They hit pretty hard and have nasty growing AOE damage around them. be sure to focus these down as soon as they awaken. If you leave them to come join the main fight then the tank will get overwhelmed with a LOT of damage and it just makes a mess.\n\nGet off the boss, kill the awakened gargoyles, then get back on the boss again. Simple focus based mechanics of prioritizing targets.\n\n|cffff00BEAM!|r - The boss will aim a beam of damage with a ground based aoe attached to it. The tank can block this or simply step out of it.\n\n|cffff00GROUP BEAM!|r - At LOW health (after all of the gargoyles have been awakened and the boss is approaching low health) the boss will raise his hand in the air. When this happens the entire group needs to split up and go different directions to kite the beam away until it is over. Once the mechanic has finished, come back in and fight the boss again. IF you fail this you will die. It does massive damage, don't get caught (demonstrated in the video).\n\nThis mechanic at low health will repeat over and over until the boss is dead so pay attention to his actions.\n\n"
+				},
+			[5] =
+				{
+					name = "LADY THORN",
+					mechanic = "|t24:24:xynode/icons/xynode_boss_over.dds|t|cffff00 LADY THORN |r|t24:24:xynode/icons/xynode_boss_over.dds|t\n\nThis boss is very simple BUT hit's like a truck. So there are some CLEAR mechanics that you MUST pay attention. The tank should hold the boss as still as possible at all times while the group stays relatively CLOSE but behind her. If you spread out too much too often she will make things very difficult.\n\n|cffff00Heavy attack|r - The boss will heavy attack the tank, this is a BIG hitting ability and MUST be blocked. no block = dead tank, you WON'T survive.\n\n|cffff00Bombs|r - The boss The boss will cast multiple bomb type aoes on the ground. Step out, get away from them, come back in again. nice and simple, don't mess it up or they will kill you fast!\n\n|cffff00Bat Swam|r - The boss will disappear leaving a HUGE aoe on the ground of swarming bats. If you TOUCH this you will die. In the mean time, multiple smaller swarms will shoot OUT from it and then com back in again. Do not let any of these touch you as you will take HUGE damage. And in the mean time 3x small zombies will appear. Simply kill these and then carry on as normal.\n\nNote: When the phase is over she will spawn on a player of her choice with a LARGE aoe burst on the ground. Get out of this and don't let it hit you or you will die (70k+ damage in one hit).\n\n|cffff00Teleport punch|r - This mechanic is simple but fast. She will dash across the floor and hit one player of her choice (usually the furthest away but not always so stay close and maintain your positions). If it is YOU she is aiming at. You have two choices. BLOCK/DODGE and live…don't and DIE!\n\n|cffff00In the Light!|r - At 60% and at 20% the boss will be immune and a big circular light aoe will appear. The rest of the Room is a bat swarm. If you stay in the bat swarm you will die, if you stay in the light you will live.\n\nWhile in the circle it will move around and you must stay with it, but the boss will charge at the group. You can dodge this attack or block it, but if you are HIT you will be stunned/knocked down and have to break free.\n\nDuring this entire phase, periodically a Guardian add will spawn. This must be killed and interrupted occasionally to avoid it's channeled attack. And the tank must maintain aggro of it. Make this target your main focus, it MUST die, you don't want multiples.\n\nAlso during this phase SCAMPS will spawn. These are very low health but when they die they drop a synergy on the ground.\n\nTake the synergy 4x and the boss will come down and you can continue the fight as normal (the phase is over).\n\nNOTE: The synergy will allow you immunity to the bats for a couple of seconds if you run out and grab it but be sure to get back in the light fast.\n\nAlso note, on hard mode you will have multiple Zombies in the room too.\n\nOnce the phase is over it is rinse repeat until 20% and then rinse repeat until dead. There is NO enrage and NO dps check.\n\n|cffff00Hardmode Execute phase|r - After the second light phase at 20% is over. The room will REMAIN in darkness. The light will remain also! Now you must fight the boss, while on the move! She will have her BASIC mechanics and bombs.\n\nNo dps check, no enrage, just watch your feet and kill her.\n\nGOOD LUCK!\n\n"
 				}
 		}
 	}
@@ -1903,5 +1992,5 @@ SLASH_COMMANDS["/ir"] = function() showGuideFromSlash("Icereach") end
 SLASH_COMMANDS["/uhg"] = function() showGuideFromSlash("Unhallowed Grave") end
 SLASH_COMMANDS["/hof"] = function() showGuideFromSlash("Halls Of Fabrication") end
 SLASH_COMMANDS["/vas"] = function() showGuideFromSlash("Asylum Sanctorium") end
-
+SLASH_COMMANDS["/cas"] = function() showGuideFromSlash("Castle Thorn") end
 

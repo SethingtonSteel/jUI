@@ -20,7 +20,7 @@ mkstr(SI.TELE_UI_BTN_REFRESH_ALL        , "Rafraîchir toutes les zones"        
 mkstr(SI.TELE_UI_BTN_UNLOCK_WS          , "Déverrouiller les oratoires de la zone")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE       , "Seulement la zone affichée"            )
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES, "Antres de la zone affichée"            )
-mkstr(SI.TELE_UI_BTN_RELATED_ITEMS      , "Cartes au trésor, repérages & pistes"  )
+mkstr(SI.TELE_UI_BTN_RELATED_ITEMS      , "Cartes au trésor, repérages & pistes\n|c777777(right-click for more options)"  )
 mkstr(SI.TELE_UI_BTN_SETTINGS           , "Paramètres"                            )
 mkstr(SI.TELE_UI_BTN_FEEDBACK           , "Commentaires"                          )
 mkstr(SI.TELE_UI_BTN_FIX_WINDOW         , "Verrouiller / Déverrouiller la fenêtre")
@@ -32,6 +32,7 @@ mkstr(SI.TELE_UI_BTN_ANCHOR_ON_MAP      , "Ancrer à la carte / Libérer"       
 mkstr(SI.TELE_UI_BTN_GUILD_BMU          , "Guildes BeamMeUp & Guildes partenaires")
 mkstr(SI.TELE_UI_BTN_GUILD_HOUSE_BMU    , "Visiter la maison de guilde BeamMeUp"  )
 mkstr(SI.TELE_UI_BTN_PTF_INTEGRATION    , "Integration \"Port to Friend's House\"")
+mkstr(SI.TELE_UI_BTN_DUNGEON_FINDER		, "Arenas / Trials / Dungeons\n|c777777(right-click for more options)")
 ---------
 --------- List
 mkstr(SI.TELE_UI_SOURCE_GROUP         , "Groupe"                     )
@@ -78,6 +79,11 @@ mkstr(SI.TELE_UI_TOGGLE_LEADS_MAP        , "Pistes")
 mkstr(SI.TELE_UI_VIEW_ANTIQUITY        	 , "Afficher le codex")
 mkstr(SI.TELE_UI_JUMP_IN_FRONT_HOUSE	 , "Se rendre à l'extérieur de la maison")
 mkstr(SI.TELE_UI_JUMP_IN_HOUSE			 , "Se rendre dans la maison")
+mkstr(SI.TELE_UI_TOGGLE_ARENAS			 , "Solo Arenas")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_ARENAS	 , "Group Arenas")
+mkstr(SI.TELE_UI_TOGGLE_TRIALS			 , "Trials")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS	 , "Group Dungeons")
+mkstr(SI.TELE_UI_TOGGLE_SORT_ACRONYM	 , "Sort by Acronym")
 
 mkstr(SI.TELE_UI_SUBMENU_FAVORITES       , "Favoris")
 mkstr(SI.TELE_UI_SUBMENU_MISC            , "Divers")
@@ -111,6 +117,7 @@ mkstr(SI.TELE_CHAT_UNLOCK_WS_DISCOVERED_TOTAL      , "Nombre d'oratoires découv
 mkstr(SI.TELE_CHAT_UNLOCK_WS_ALL_KNOWN             , "Tous les oratoires de cette zone ont été découverts et peuvent être utilisé pour voyager."                                                    )
 mkstr(SI.TELE_CHAT_UNLOCK_WS_NEED_DISCOVERED       , "Vous devez toujours vous rendre sur place pour les oratoires suivants :"                                                                      )
 mkstr(SI.TELE_CHAT_SHARING_FOLLOW_LINK             , "Suivre le lien..."                                                                                                                            )
+mkstr(SI.TELE_CHAT_TO_DUNGEON					   , "Fast Travel into Instance:")
 
 
 
@@ -204,8 +211,8 @@ mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL, "Auto-confirmation du voya
 mkstr(SI.TELE_SETTINGS_AUTO_CONFIRM_WAYSHRINE_TRAVEL_TOOLTIP, "Désactive le dialogue de confirmation quand vous vous téléportez vers d'autres oratoires.")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP, "Afficher d'abord la zone courante")
 mkstr(SI.TELE_SETTINGS_CURRENT_ZONE_ALWAYS_TOP_TOOLTIP, "Toujours afficher la zone courante en début de liste.")
-mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Hide OWN Houses")
-mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Hide your own houses (teleport outside) in the main list.")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES, "Cacher MES maisons")
+mkstr(SI.TELE_SETTINGS_HIDE_OWN_HOUSES_TOOLTIP, "Cache vos propres maisons (téléportation à l'extérieur) dans la liste principale.")
 
 
 -----------------------------------------------------------------------------
@@ -219,10 +226,11 @@ mkstr(SI.TELE_KEYBINDING_REFRESH, "Actualiser")
 mkstr(SI.TELE_KEYBINDING_WAYSHRINE_UNLOCK, "Déblocage des oratoires")
 mkstr(SI.TELE_KEYBINDING_GROUP_LEADER, "Voyage vers le chef de groupe")
 mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_ACTIVE_QUESTS, "Quêtes actives")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Port into Primary Residence")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Se téléporter à l'intérieur de la résidence principale")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "Visiter la maison de guilde BeamMeUp")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Voyage dans la zone actuelle")
-mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Port outside Primary Residence")
+mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Se téléporter à l'extérieur de la résidence principale")
+mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_DUNGEON_FINDER, "Arenas / Trials / Dungeons")
 
 
 

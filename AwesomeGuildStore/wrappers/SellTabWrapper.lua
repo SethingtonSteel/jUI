@@ -70,10 +70,7 @@ end
 local function GetMasterMerchantPrice(itemLink)
     if(not MasterMerchant) then return end
 
-    local itemId = string.match(itemLink, '|H.-:item:(.-):')
-    local itemData = MasterMerchant.makeIndexFromLink(itemLink)
-
-    local postedStats = MasterMerchant:toolTipStats(tonumber(itemId), itemData)
+    local postedStats = MasterMerchant:itemStats(itemLink, false)
     return postedStats.avgPrice
 end
 
@@ -83,8 +80,7 @@ local function GetMasterMerchantLastUsedPrice(itemLink)
     local settings = MasterMerchant:ActiveSettings()
     if(not settings.pricingData) then return end
 
-    local itemId = string.match(itemLink, '|H.-:item:(.-):')
-    itemId = tonumber(itemId)
+    local itemId = GetItemLinkItemId(itemLink)
     if(not settings.pricingData[itemId]) then return end
 
     local itemIndex = MasterMerchant.makeIndexFromLink(itemLink)
@@ -701,18 +697,10 @@ local function IsCraftBagItemSellableOnTradingHouse(slot)
 end
 
 function SellTabWrapper:SetupCraftBag()
-    self.originalCraftBagAdditionalFilter = PLAYER_INVENTORY.inventories[INVENTORY_CRAFT_BAG].additionalFilter
-    PLAYER_INVENTORY.inventories[INVENTORY_CRAFT_BAG].additionalFilter = function(...)
-        if not IsCraftBagItemSellableOnTradingHouse(...) then return false end
-        if self.originalCraftBagAdditionalFilter then return self.originalCraftBagAdditionalFilter(...) end
-        return true
-    end
     -- no need to set the craft bag here, since UpdateFragments will be called right after OnOpen anyway
 end
 
 function SellTabWrapper:TeardownCraftBag()
-    PLAYER_INVENTORY.inventories[INVENTORY_CRAFT_BAG].additionalFilter = self.originalCraftBagAdditionalFilter
-    self.originalCraftBagAdditionalFilter = nil
     if(self.currentInventoryFragment == CRAFT_BAG_FRAGMENT) then
         ZO_PlayerInventoryInfoBar:SetParent(ZO_PlayerInventory)
         SCENE_MANAGER:RemoveFragment(CRAFT_BAG_FRAGMENT)

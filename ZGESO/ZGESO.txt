@@ -1,9 +1,9 @@
-## Title: Leveling Guides v1.4.672
-## Description: A Zygor addon updated by snichols7778, Hydra9268, Krandor1, and Sharlikran for the Greymoor expansion.
+## Title: Leveling Guides v1.4.840
+## Description: A Zygor addon updated by snichols7778, Hydra9268, Krandor1, and Sharlikran for the Blackwood expansion.
 ## Author: snichols7778, Hydra9268
-## Version: 1.4.672
+## Version: 1.4.840
 ## AddOnVersion: 14654
-## APIVersion: 100033 100034
+## APIVersion: 100034 100035
 ; ## DependsOn: LibGPS AceTimer-3.0>=146
 ## DependsOn: LibGPS>=65
 ## SavedVariables: ZGESOSettings
@@ -49,7 +49,7 @@ ZGESO.lua
 ZGESO.xml
 Functions.lua
 
--- Main Utilities?
+-- Utilities
 UiWidgets/Main.lua
 Class.lua
 Globals.lua
@@ -62,11 +62,13 @@ BugReport.lua
 
 Options.lua
 
+-- UI
 Pointer.xml
 Pointer.lua
 Arrows/Stealth/Arrow.lua
 Arrows/Stealth/Arrow.xml
 
+-- Data
 Travel/Main.lua
 Travel/Data.lua
 
@@ -95,6 +97,7 @@ Data/EbonheartPact/ObjectData.lua
 
 Data/Main.lua
 
+-- Guide
 Parser.lua
 GuideHandling.lua
 Guide.lua
@@ -104,6 +107,7 @@ Goal.lua
 Quest.lua
 QuestTracker.lua
 
+-- UI Widgets
 UiWidgets/Base.lua
 UiWidgets/Label.lua
 UiWidgets/Backdrop.lua
@@ -127,22 +131,27 @@ Viewer/GuideViewerFrame.lua
 Viewer/GuideViewerFrame.xml
 GuideMenu.lua
 
+-- Guides
 Guides/ZygorIncludeCommon.lua
 Guides/LevelingCommon.lua
 Guides/LevelingAldmeriDominion.lua
 Guides/LevelingDaggerfallCovenant.lua
 Guides/LevelingEbonheartPact.lua
 Guides/Skyshards.lua
-Guides/MorrowindDLC.lua
 Guides/MainQuestsOnly.lua
-Guides/Skyrim.lua
+Guides/DLCs.lua
+Guides/Expansions.lua
+Guides/Expansions2.lua
+; Guides/Testing.lua
 
-Testing/Main.lua
-Testing/UI.lua
-Testing/Localization.lua
-Testing/GuideParsing.lua
-Testing/DataCollecting.lua
-Testing/Quests.lua
+-- Testing
+; Testing/Main.lua
+; Testing/UI.lua
+; Testing/Localization.lua
+; Testing/GuideParsing.lua
+; Testing/DataCollecting.lua
+; Testing/Quests.lua
 
+-- Bindings
 Bindings.xml
 Bindings.lua

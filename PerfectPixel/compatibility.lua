@@ -1,4 +1,6 @@
 PP.compatibility = function()
+	local PP = PP
+
 	local function Compatibility()
 		--==CraftBagExtended==--
 			if CraftBagExtended then
@@ -24,11 +26,12 @@ PP.compatibility = function()
 
 		--==AddonSelector==--
 			if AddonSelector then
-				PP.Anchor(ZO_AddOnsList,					--[[#1]] TOPLEFT, AddonSelector, BOTTOMLEFT, 0, 5, --[[#2]] true, BOTTOMRIGHT, ZO_AddOns, BOTTOMRIGHT, 0, -10)
-				PP.Anchor(AddonSelectorBottomDivider,		--[[#1]] BOTTOM, AddonSelector, BOTTOM, 40, 0)
-				PP.Anchor(AddonSelectorSearchBox,			--[[#1]] TOPRIGHT, ZO_AddOns, TOPRIGHT, -6, 6)
-				PP.Anchor(ZO_AddOnsLoadOutOfDateAddOns,		--[[#1]] LEFT, AddonSelector, RIGHT, 60, -12)
-				PP.Anchor(ZO_AddOnsLoadOutOfDateAddOnsText,	--[[#1]] LEFT, ZO_AddOnsLoadOutOfDateAddOns, RIGHT, 5, 1)
+				PP.Anchor(ZO_AddOnsList,					--[[#1]] TOPLEFT,	AddonSelector,					BOTTOMLEFT, 0, 5, --[[#2]] true, BOTTOMRIGHT, ZO_AddOns, BOTTOMRIGHT, 0, -10)
+				PP.Anchor(AddonSelectorBottomDivider,		--[[#1]] BOTTOM,	AddonSelector,					BOTTOM, 40, 0)
+				PP.Anchor(AddonSelectorSearchBox,			--[[#1]] TOPRIGHT,	ZO_AddOns,						TOPRIGHT, -6, 6)
+				PP.Anchor(AddonSelectorAutoReloadUILabel,	--[[#1]] TOPRIGHT,	AddonSelectorSearchBox,			BOTTOMRIGHT, 0, 6)
+				PP.Anchor(AddonSelectorAutoReloadUI,		--[[#1]] RIGHT,		AddonSelectorAutoReloadUILabel,	LEFT, -6, 0)
+
 				PP.Font(AddonSelectorDeselectAddonsButtonKeyLabel,	--[[Font]] PP.f.u57, 16, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 				PP.Font(AddonSelectorDeselectAddonsButtonNameLabel,	--[[Font]] PP.f.u67, 18, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
 				PP.Font(AddonSelectorSelectAddonsButtonKeyLabel,	--[[Font]] PP.f.u57, 16, "outline", --[[Alpha]] nil, --[[Color]] nil, nil, nil, nil, --[[StyleColor]] 0, 0, 0, .5)
@@ -45,35 +48,11 @@ PP.compatibility = function()
 			end
 		--===============================================================================================--
 
-		--==ShissuRoster==--
-			if ShissuRoster then
-				local function SceneStateChange(oldState, newState)
-					if newState == SCENE_SHOWING then
-						PP.Anchor(ZO_GuildRoster, --[[#1]] TOPRIGHT, GuiRoot, TOPRIGHT, 0, 120, --[[#2]] true, BOTTOMRIGHT, GuiRoot, BOTTOMRIGHT,	0, -110)
-						PP.Anchor(PP_TopLevelWindow_Backdrop_1, --[[#1]] TOPLEFT, ZO_GuildRoster, TOPLEFT, -10, -10, --[[#2]] true, BOTTOMRIGHT, ZO_GuildRoster, BOTTOMRIGHT,	0, 50)
-						PP.Anchor(ZO_GuildRosterList, --[[#1]] TOPLEFT, ZO_GuildRosterHeaders, BOTTOMLEFT, 0, 3, --[[#2]] true, BOTTOMRIGHT, ZO_GuildRoster, BOTTOMRIGHT,	0, -40)
-						PP.Anchor(ZO_GuildRosterHeaders, --[[#1]] TOPLEFT, nil, TOPLEFT, 0, 74, --[[#2]] true, TOPRIGHT, nil, TOPRIGHT,	0, 74)
-						PP.Anchor(ZO_GuildRosterSearch, --[[#1]] TOPRIGHT, ZO_GuildRoster, TOPRIGHT, -320, 26)
-						PP.Anchor(SGT_Roster_RankLabel, --[[#1]] LEFT, ZO_GuildRoster, BOTTOMLEFT, 70, -5)
-						ZO_ScrollList_Commit(ZO_GuildRosterList)
-
-						GUILD_ROSTER_SCENE:UnregisterCallback("StateChange",  SceneStateChange)
-					end
-				end
-				GUILD_ROSTER_SCENE:RegisterCallback("StateChange",  SceneStateChange)
-			end
-		--===============================================================================================--
-
 		--==ESO Master Recipe List==--
 			if ESOMRL then
 				local resultTooltip	= PROVISIONER.resultTooltip
-				local detailsPane	= PROVISIONER.detailsPane
-				ZO_PreHook(resultTooltip, "ClearAnchors", function()
-					return true
-				end)
-				ZO_PreHook(resultTooltip, "SetAnchor", function()
-					return true
-				end)
+				PP:SetLockedFn(resultTooltip, 'SetAnchor')
+				PP:SetLockedFn(resultTooltip, 'ClearAnchors')
 			end
 		--===============================================================================================--
 
@@ -89,7 +68,7 @@ PP.compatibility = function()
 		--==AwesomeGuildStore==--
 		if AwesomeGuildStore then
 			local function func()
-				PP.Anchor(AwesomeGuildStoreFooter, --[[#1]] nil, nil, nil, nil, 42)
+				PP.Anchor(AwesomeGuildStoreFooter, --[[#1]] nil, nil, nil, nil, 50)
 				PP.Anchor(AwesomeGuildStoreActivityStatusLine, --[[#1]] nil, nil, nil, nil, -2)
 				PP.Anchor(AwesomeGuildStoreGuildSelector, --[[#1]] LEFT, ZO_TradingHouseTitle, LEFT, 0, -2)
 				PP.Anchor(AwesomeGuildStoreGuildSelectorComboBoxOpenDropdown, --[[#1]] LEFT, AwesomeGuildStoreGuildSelectorComboBoxSelectedItemText, RIGHT, 3, 5)
@@ -107,13 +86,24 @@ PP.compatibility = function()
 
 		--==MasterMerchant==--
 		if MasterMerchant then
-			PP.Anchor(ZO_TradingHouseBrowseItemsLeftPane, --[[#1]] nil, nil, nil, nil, nil, --[[#2]] true, nil, nil, nil, nil, -30)
+			PP.Anchor(ZO_TradingHouseBrowseItemsLeftPane, --[[#1]] nil, nil, nil, nil, nil, --[[#2]] true, nil, nil, nil, nil, -50)
 		end
 		--===============================================================================================--
 
 		--==ArkadiusTradeTools==--
 		if ArkadiusTradeTools then
-			PP.Anchor(ZO_TradingHouseBrowseItemsLeftPane, --[[#1]] nil, nil, nil, nil, nil, --[[#2]] true, nil, nil, nil, nil, -60)
+			PP.Anchor(ZO_TradingHouseBrowseItemsLeftPane, --[[#1]] nil, nil, nil, nil, nil, --[[#2]] true, nil, nil, nil, nil, -80)
+		end
+		--===============================================================================================--
+
+		--==VotansMiniMap==--
+		if VOTANS_MINIMAP then
+			ZO_CompassFrameLeft:SetHidden(true)
+			ZO_CompassFrameRight:SetHidden(true)
+			ZO_CompassFrameCenter:SetHidden(true)
+			PP:SetLockedFn(ZO_CompassFrameLeft, 'SetHidden')
+			PP:SetLockedFn(ZO_CompassFrameRight, 'SetHidden')
+			PP:SetLockedFn(ZO_CompassFrameCenter, 'SetHidden')
 		end
 		--===============================================================================================--
 

@@ -1,9 +1,9 @@
 ## Title: LibUespQuestData
 ## Description: Quest database from the UESP. Download uespLog to assist with data logging.
-## Version: 2021-03-07
-## AddOnVersion: 20210307
+## Version: 2021-05-30
+## AddOnVersion: 20210530
 ## Author: Enodoc
-## APIVersion: 100033 100034
+## APIVersion: 100034 100035
 ## IsLibrary: true
 
 LibUespQuestData/lang/en.lua

@@ -2,7 +2,7 @@ local DTAddon = _G['DTAddon']
 
 -- Update these when adding new entries to the database
 DTAddon.GDTotal = 53 -- total available group dungeons
-DTAddon.PDTotal = 26 -- total available public delves
+DTAddon.PDTotal = 28 -- total available public delves
 
 DTAddon.DungeonIndex = {
 -- vII = ID (in [] to left) of alt version if dungeon has two versions
@@ -100,6 +100,8 @@ DTAddon.DelveIndex = {
 [24] =	{zoneIndex = 681,	poiIndex = 13,	bA = 2440,	gA = 2444,	fP = 0,		icon = "|t48:48:/esoui/art/mappins/ava_borderkeep_pin_aldmeri.dds|t"}, 			-- Rimmen Necropolis
 [25] =	{zoneIndex = 743,	poiIndex = 12,	bA = 2717,	gA = 2714,	fP = 0,		icon = "|t48:48:/esoui/art/mappins/ava_borderkeep_pin_ebonheart.dds|t"}, 		-- Labyrinthian
 [26] =	{zoneIndex = 744,	poiIndex = 17,	bA = 2718,	gA = 2715,	fP = 0,		icon = "|t48:48:/esoui/art/mappins/ava_borderkeep_pin_ebonheart.dds|t"}, 		-- Nchuthnkarst
+[27] =	{zoneIndex = 834,	poiIndex = 32,	bA = 2996,	gA = 2994,	fP = 0,		icon = "|t48:48:/esoui/art/mappins/ava_borderkeep_pin_ebonheart.dds|t"}, 		-- Silent Halls
+[28] =	{zoneIndex = 834,	poiIndex = 19,	bA = 2997,	gA = 2995,	fP = 0,		icon = "|t48:48:/esoui/art/mappins/ava_borderkeep_pin_ebonheart.dds|t"}, 		-- Zenithar's Abbey
 }
 
 DTAddon.FinderNormalIndex = {

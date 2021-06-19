@@ -782,7 +782,7 @@ local function SetupUI()
 	
 	Teleporter.chatButtonBtn:SetHandler("OnMouseEnter", function(self)
 		Teleporter.chatButtonTex:SetTexture(Teleporter.textures.wayshrineBtnOver)
-		Teleporter:tooltipTextEnter(Teleporter.chatButtonBtn, appName, true)
+		Teleporter:tooltipTextEnter(Teleporter.chatButtonBtn, appName)
 	end)
   
 	Teleporter.chatButtonBtn:SetHandler("OnMouseExit", function(self)
@@ -856,7 +856,7 @@ local function SetupUI()
   teleporterWin.zoneGuideSwapTextureButton:SetHandler("OnMouseEnter", function(self)
       teleporterWin.zoneGuideSwapTexture:SetTexture(Teleporter.textures.swapBtnOver)
       Teleporter:tooltipTextEnter(teleporterWin.zoneGuideSwapTexture,
-          SI.get(SI.TELE_UI_BTN_TOGGLE_ZONE_GUIDE), true)
+          SI.get(SI.TELE_UI_BTN_TOGGLE_ZONE_GUIDE))
   end)
 
   teleporterWin.zoneGuideSwapTextureButton:SetHandler("OnMouseExit", function(self)
@@ -870,7 +870,7 @@ local function SetupUI()
 
   teleporterWin.feedbackTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
   teleporterWin.feedbackTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
-  teleporterWin.feedbackTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, TOPRIGHT -460*mTeleSavedVars.Scale, -75*mTeleSavedVars.Scale)
+  teleporterWin.feedbackTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, TOPRIGHT -470*mTeleSavedVars.Scale, -75*mTeleSavedVars.Scale)
   teleporterWin.feedbackTexture:SetTexture(Teleporter.textures.feedbackBtn)
 
   teleporterWin.feedbackTexturebutton = wm:CreateControl(nil, teleporterWin.feedbackTexture, CT_BUTTON)
@@ -884,7 +884,7 @@ local function SetupUI()
   teleporterWin.feedbackTexturebutton:SetHandler("OnMouseEnter", function(self)
       teleporterWin.feedbackTexture:SetTexture(Teleporter.textures.feedbackBtnOver)
       Teleporter:tooltipTextEnter(teleporterWin.feedbackTexture,
-          SI.get(SI.TELE_UI_BTN_FEEDBACK), true)
+          SI.get(SI.TELE_UI_BTN_FEEDBACK))
   end)
 
   teleporterWin.feedbackTexturebutton:SetHandler("OnMouseExit", function(self)
@@ -894,16 +894,17 @@ local function SetupUI()
   
       -------------------------------------------------------------------
   -- Guild BUTTON
-	teleporterWin.guildTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
-	teleporterWin.guildTexture:SetDimensions(40*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
-	teleporterWin.guildTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, TOPRIGHT -420*mTeleSavedVars.Scale, -75*mTeleSavedVars.Scale)
-	teleporterWin.guildTexture:SetTexture(Teleporter.textures.guildBtn)
-
-	teleporterWin.guildTexturebutton = wm:CreateControl(nil, teleporterWin.guildTexture, CT_BUTTON)
-	teleporterWin.guildTexturebutton:SetAnchorFill(teleporterWin.guildTexture)
-	teleporterWin.guildTexturebutton:SetDimensions(25*mTeleSavedVars.Scale, 25*mTeleSavedVars.Scale)
-	  
+  -- display button only if guilds are available on players game server
 	if Teleporter.var.BMUGuilds[GetWorldName()] ~= nil then
+		teleporterWin.guildTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
+		teleporterWin.guildTexture:SetDimensions(40*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
+		teleporterWin.guildTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, TOPRIGHT -430*mTeleSavedVars.Scale, -75*mTeleSavedVars.Scale)
+		teleporterWin.guildTexture:SetTexture(Teleporter.textures.guildBtn)
+
+		teleporterWin.guildTexturebutton = wm:CreateControl(nil, teleporterWin.guildTexture, CT_BUTTON)
+		teleporterWin.guildTexturebutton:SetAnchorFill(teleporterWin.guildTexture)
+		teleporterWin.guildTexturebutton:SetDimensions(25*mTeleSavedVars.Scale, 25*mTeleSavedVars.Scale)
+	  
 		teleporterWin.guildTexturebutton:SetHandler("OnClicked", function(self, button)
 			Teleporter.requestGuildData()
 			Teleporter.clearInputFields()
@@ -913,7 +914,7 @@ local function SetupUI()
 		teleporterWin.guildTexturebutton:SetHandler("OnMouseEnter", function(self)
 		  teleporterWin.guildTexture:SetTexture(Teleporter.textures.guildBtnOver)
 		  Teleporter:tooltipTextEnter(teleporterWin.guildTexture,
-			SI.get(SI.TELE_UI_BTN_GUILD_BMU), true)
+			SI.get(SI.TELE_UI_BTN_GUILD_BMU))
 		end)
 
 		teleporterWin.guildTexturebutton:SetHandler("OnMouseExit", function(self)
@@ -931,7 +932,7 @@ local function SetupUI()
   if Teleporter.var.guildHouse[GetWorldName()] ~= nil then
 	  teleporterWin.guildHouseTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
 	  teleporterWin.guildHouseTexture:SetDimensions(40*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
-	  teleporterWin.guildHouseTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, TOPRIGHT -380*mTeleSavedVars.Scale, -75*mTeleSavedVars.Scale)
+	  teleporterWin.guildHouseTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, TOPRIGHT -390*mTeleSavedVars.Scale, -75*mTeleSavedVars.Scale)
 	  teleporterWin.guildHouseTexture:SetTexture(Teleporter.textures.guildHouseBtn)
 
 	  teleporterWin.guildHouseTextureButton = wm:CreateControl(nil, teleporterWin.guildHouseTexture, CT_BUTTON)
@@ -945,7 +946,7 @@ local function SetupUI()
 	  teleporterWin.guildHouseTextureButton:SetHandler("OnMouseEnter", function(self)
 		  teleporterWin.guildHouseTexture:SetTexture(Teleporter.textures.guildHouseBtnOver)
 		  Teleporter:tooltipTextEnter(teleporterWin.guildHouseTexture,
-			  SI.get(SI.TELE_UI_BTN_GUILD_HOUSE_BMU), true)
+			  SI.get(SI.TELE_UI_BTN_GUILD_HOUSE_BMU))
 	  end)
 
 	  teleporterWin.guildHouseTextureButton:SetHandler("OnMouseExit", function(self)
@@ -1000,7 +1001,7 @@ local function SetupUI()
 			lockTexture = Teleporter.textures.lockOpenBtnOver
 		end
 		teleporterWin.fixWindowTexture:SetTexture(lockTexture)
-		Teleporter:tooltipTextEnter(teleporterWin.fixWindowTexture,SI.get(SI.TELE_UI_BTN_FIX_WINDOW), true)
+		Teleporter:tooltipTextEnter(teleporterWin.fixWindowTexture,SI.get(SI.TELE_UI_BTN_FIX_WINDOW))
 	end)
 
 	teleporterWin.fixWindowTextureButton:SetHandler("OnMouseExit", function(self)
@@ -1036,7 +1037,7 @@ local function SetupUI()
   teleporterWin.anchorTextureButton:SetHandler("OnMouseEnter", function(self)
 	teleporterWin.anchorTexture:SetTexture(Teleporter.textures.anchorMapBtnOver)
       Teleporter:tooltipTextEnter(teleporterWin.anchorTexture,
-          SI.get(SI.TELE_UI_BTN_ANCHOR_ON_MAP), true)
+          SI.get(SI.TELE_UI_BTN_ANCHOR_ON_MAP))
   end)
 
   teleporterWin.anchorTextureButton:SetHandler("OnMouseExit", function(self)
@@ -1065,7 +1066,7 @@ local function SetupUI()
   teleporterWin.closeTexturebutton:SetHandler("OnMouseEnter", function(self)
 	teleporterWin.closeTexture:SetTexture(Teleporter.textures.closeBtnOver)
       Teleporter:tooltipTextEnter(teleporterWin.closeTexture,
-          SI.get(SI.TELECLOSE), true)
+          SI.get(SI.TELECLOSE))
   end)
 
   teleporterWin.closeTexturebutton:SetHandler("OnMouseExit", function(self)
@@ -1088,13 +1089,20 @@ local function SetupUI()
 		end)
 	end
 
- 
+   ---------------------------------------------------------------------------------------------------------------
+   -- Search Symbol (no button)
+   
+  teleporterWin.SearchTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
+  teleporterWin.SearchTexture:SetDimensions(25*mTeleSavedVars.Scale, 25*mTeleSavedVars.Scale)
+  teleporterWin.SearchTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, TOPRIGHT -482*mTeleSavedVars.Scale, -10*mTeleSavedVars.Scale)
+  teleporterWin.SearchTexture:SetTexture(Teleporter.textures.searchBtn)
+  
   ---------------------------------------------------------------------------------------------------------------
   -- Searcher (Search for Players)
   
    teleporterWin.Searcher_Player = CreateControlFromVirtual("Teleporter_SEARCH_EDITBOX",  teleporterWin.Main_Control, "ZO_DefaultEditForBackdrop")
    teleporterWin.Searcher_Player:SetParent(teleporterWin.Main_Control)
-   teleporterWin.Searcher_Player:SetSimpleAnchorParent(15*mTeleSavedVars.Scale,-10*mTeleSavedVars.Scale)
+   teleporterWin.Searcher_Player:SetSimpleAnchorParent(10*mTeleSavedVars.Scale,-10*mTeleSavedVars.Scale)
    teleporterWin.Searcher_Player:SetDimensions(105*mTeleSavedVars.Scale,25*mTeleSavedVars.Scale)
    teleporterWin.Searcher_Player:SetResizeToFitDescendents(false)
    teleporterWin.Searcher_Player:SetFont(Teleporter.font1)
@@ -1139,47 +1147,13 @@ local function SetupUI()
 		teleporterWin.Searcher_Player.Placeholder:SetHidden(false)
 	end
   end)
-  
-  teleporterWin.SearchTexture = wm:CreateControl("teleporterWin.Main_Contmrol.SearchTexture",  teleporterWin.SearchBG, CT_TEXTURE)
-  teleporterWin.SearchTexture:SetDimensions(35*mTeleSavedVars.Scale,35*mTeleSavedVars.Scale)
-  teleporterWin.SearchTexture:SetAnchor(RIGHT,  teleporterWin.SearchBG, RIGHT, RIGHT + 28*mTeleSavedVars.Scale, 0)
-  teleporterWin.SearchTexture:SetTexture(Teleporter.textures.searchBtn)
-
-  
-  teleporterWin.Searcher_Player.SearchTextureLBL = wm:CreateControl("TELEPORTERALERTS", teleporterWin.SearchTexture, CT_BUTTON)
-  teleporterWin.Searcher_Player.SearchTextureLBL:SetParent(teleporterWin.SearchTexture)
-  teleporterWin.Searcher_Player.SearchTextureLBL:SetAnchorFill(teleporterWin.SearchTexture)
-  teleporterWin.Searcher_Player.SearchTextureLBL:SetFont(Teleporter.font1)
-  
-  teleporterWin.Searcher_Player.SearchTextureLBL:SetHandler("OnMouseEnter", function(self)
-      teleporterWin.Searcher_Player.SearchTextureLBL:SetAlpha(0.5)
-      Teleporter:tooltipTextEnter(teleporterWin.Searcher_Player.SearchTextureLBL,SI.get(SI.TELE_UI_BTN_SEARCH_PLAYER), true)
-	  teleporterWin.SearchTexture:SetTexture(Teleporter.textures.searchBtnOver)
-  end)
-
-  teleporterWin.Searcher_Player.SearchTextureLBL:SetHandler("OnMouseExit", function(self)
-      teleporterWin.Searcher_Player.SearchTextureLBL:SetAlpha(1)
-      Teleporter:tooltipTextEnter(teleporterWin.Searcher_Player.SearchTextureLBL)
-	  if Teleporter.state ~= 2 then
-		teleporterWin.SearchTexture:SetTexture(Teleporter.textures.searchBtn)
-	  end
-  end)
-  
-    --On Click refresh search
-  teleporterWin.Searcher_Player.SearchTextureLBL:SetHandler("OnClicked", function(self)
-	if teleporterWin.Searcher_Player:GetText() ~= "" or (teleporterWin.Searcher_Player:GetText() == "" and Teleporter.state == 2) then
-		Teleporter.createTable(2, teleporterWin.Searcher_Player:GetText())
-	end
-  end)
-
-
 
   ---------------------------------------------------------------------------------------------------------------
   -- Searcher (Search for zones)
 
   teleporterWin.Searcher_Zone = CreateControlFromVirtual("Teleporter_Searcher_Player_EDITBOX1",  teleporterWin.Main_Control, "ZO_DefaultEditForBackdrop")
   teleporterWin.Searcher_Zone:SetParent(teleporterWin.Main_Control)
-  teleporterWin.Searcher_Zone:SetSimpleAnchorParent(180*mTeleSavedVars.Scale,-10*mTeleSavedVars.Scale)
+  teleporterWin.Searcher_Zone:SetSimpleAnchorParent(140*mTeleSavedVars.Scale,-10*mTeleSavedVars.Scale)
   teleporterWin.Searcher_Zone:SetDimensions(105*mTeleSavedVars.Scale,25*mTeleSavedVars.Scale)
   teleporterWin.Searcher_Zone:SetResizeToFitDescendents(false)
   teleporterWin.Searcher_Zone:SetFont(Teleporter.font1)
@@ -1226,40 +1200,6 @@ local function SetupUI()
 	end)
 
 
-  teleporterWin.Search_Player_Texture = wm:CreateControl("teleporterWin.Main_Contmrol.SearchTexture1",  teleporterWin.Searcher_Zone, CT_TEXTURE)
-  teleporterWin.Search_Player_Texture:SetDimensions(35*mTeleSavedVars.Scale,35*mTeleSavedVars.Scale)
-  teleporterWin.Search_Player_Texture:SetAnchor(RIGHT,  teleporterWin.SearchBG_Player, RIGHT, RIGHT + 28*mTeleSavedVars.Scale, 0) -- 30
-  teleporterWin.Search_Player_Texture:SetTexture(Teleporter.textures.searchBtn)
-
-
-  teleporterWin.Searcher_Zone.Search_Player_TextureLBL = wm:CreateControl("TELEPORTERALERTS1", teleporterWin.Search_Player_Texture, CT_BUTTON)
-  teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetParent(teleporterWin.Search_Player_Texture)
-  teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetAnchorFill(teleporterWin.Search_Player_Texture)
-  teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetFont(Teleporter.font1)
-  
-  teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetHandler("OnMouseEnter", function(self)
-      --teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetAlpha(0.5)
-      Teleporter:tooltipTextEnter( teleporterWin.Searcher_Zone.Search_Player_TextureLBL,SI.get(SI.TELE_UI_BTN_SEARCH_ZONE), true)
-	  teleporterWin.Search_Player_Texture:SetTexture(Teleporter.textures.searchBtnOver)
-  end)
-
-  teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetHandler("OnMouseExit", function(self)
-      --teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetAlpha(1)
-      Teleporter:tooltipTextEnter(teleporterWin.Searcher_Zone.Search_Player_TextureLBL)
-	  if Teleporter.state ~= 3 then
-		teleporterWin.Search_Player_Texture:SetTexture(Teleporter.textures.searchBtn)
-	  end
-  end)
-
-  --On Click refresh search
-  teleporterWin.Searcher_Zone.Search_Player_TextureLBL:SetHandler("OnClicked", function(self)
-	if teleporterWin.Searcher_Zone:GetText() ~= "" or (teleporterWin.Searcher_Zone:GetText() == "" and Teleporter.state == 3) then
-		Teleporter.createTable(3, teleporterWin.Searcher_Zone:GetText())		
-	end
-  end)
-
-
-
   ---------------------------------------------------------------------------------------------------------------
   -- Refresh Button
   
@@ -1276,7 +1216,7 @@ local function SetupUI()
   teleporterWin.Main_Control.RefreshBtn:SetHandler("OnClicked", function() Teleporter.createTable(0) Teleporter.clearInputFields() end)    -- reset slider position, but does not work: control.slider:SetValue(0)
   teleporterWin.Main_Control.RefreshBtn:SetHandler("OnMouseEnter", function(self)
       Teleporter:tooltipTextEnter(teleporterWin.Main_Control.RefreshBtn,
-          SI.get(SI.TELE_UI_BTN_REFRESH_ALL), true)
+          SI.get(SI.TELE_UI_BTN_REFRESH_ALL))
       teleporterWin.Main_Control.RefreshTexture:SetTexture(Teleporter.textures.refreshBtnOver)end)
 
   teleporterWin.Main_Control.RefreshBtn:SetHandler("OnMouseExit", function(self)
@@ -1313,7 +1253,7 @@ local function SetupUI()
 			end
 		end
 		-- display number of unlocked wayshrines in current zone
-		Teleporter:tooltipTextEnter(teleporterWin.Main_Control.portalToAll, SI.get(SI.TELE_UI_BTN_UNLOCK_WS) .. " " .. tooltipTextCompletion, true)
+		Teleporter:tooltipTextEnter(teleporterWin.Main_Control.portalToAll, SI.get(SI.TELE_UI_BTN_UNLOCK_WS) .. " " .. tooltipTextCompletion)
 	end)
 
   teleporterWin.Main_Control.portalToAll:SetHandler("OnMouseExit", function(self)
@@ -1340,7 +1280,7 @@ local function SetupUI()
   teleporterWin.Main_Control.SettingsTextureBtn:SetHandler("OnClicked", function() Teleporter.HideTeleporter() LAM2:OpenToPanel(Teleporter.SettingsPanel) end)
   teleporterWin.Main_Control.SettingsTextureBtn:SetHandler("OnMouseEnter", function(self)
       Teleporter:tooltipTextEnter(teleporterWin.Main_Control.SettingsTextureBtn,
-          SI.get(SI.TELE_UI_BTN_SETTINGS), true)
+          SI.get(SI.TELE_UI_BTN_SETTINGS))
       teleporterWin.Main_Control.SettingsTexture:SetTexture(Teleporter.textures.settingsBtnOver)end)
 
   teleporterWin.Main_Control.SettingsTextureBtn:SetHandler("OnMouseExit", function(self)
@@ -1353,7 +1293,7 @@ local function SetupUI()
   
   teleporterWin.Main_Control.PTFTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
   teleporterWin.Main_Control.PTFTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
-  teleporterWin.Main_Control.PTFTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -205*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.PTFTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -250*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
 
   teleporterWin.Main_Control.PTFTextureBtn = wm:CreateControl(nil, teleporterWin.Main_Control.PTFTexture, CT_BUTTON)
   teleporterWin.Main_Control.PTFTextureBtn:SetAnchorFill(teleporterWin.Main_Control.PTFTexture)
@@ -1369,7 +1309,7 @@ local function SetupUI()
 		end)
   
 		teleporterWin.Main_Control.PTFTextureBtn:SetHandler("OnMouseEnter", function(self)
-			Teleporter:tooltipTextEnter(teleporterWin.Main_Control.PTFTextureBtn, SI.get(SI.TELE_UI_BTN_PTF_INTEGRATION), true)
+			Teleporter:tooltipTextEnter(teleporterWin.Main_Control.PTFTextureBtn, SI.get(SI.TELE_UI_BTN_PTF_INTEGRATION))
 			teleporterWin.Main_Control.PTFTexture:SetTexture(Teleporter.textures.ptfHouseBtnOver)
 		end)
 
@@ -1388,7 +1328,7 @@ local function SetupUI()
 		end)
 		
 		teleporterWin.Main_Control.PTFTextureBtn:SetHandler("OnMouseEnter", function(self)
-			Teleporter:tooltipTextEnter(teleporterWin.Main_Control.PTFTextureBtn, SI.get(SI.TELE_UI_BTN_PTF_INTEGRATION), true)
+			Teleporter:tooltipTextEnter(teleporterWin.Main_Control.PTFTextureBtn, SI.get(SI.TELE_UI_BTN_PTF_INTEGRATION))
 			--teleporterWin.Main_Control.PTFTexture:SetTexture(Teleporter.textures.ptfHouseBtnOver)
 		end)
 		
@@ -1406,7 +1346,7 @@ local function SetupUI()
   
   teleporterWin.Main_Control.OwnHouseTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
   teleporterWin.Main_Control.OwnHouseTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
-  teleporterWin.Main_Control.OwnHouseTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -160*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.OwnHouseTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -205*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
   teleporterWin.Main_Control.OwnHouseTexture:SetTexture(Teleporter.textures.houseBtn)
 
   teleporterWin.Main_Control.OwnHouseTextureBtn = wm:CreateControl(nil, teleporterWin.Main_Control.OwnHouseTexture, CT_BUTTON)
@@ -1419,7 +1359,7 @@ local function SetupUI()
   end)
   
   teleporterWin.Main_Control.OwnHouseTextureBtn:SetHandler("OnMouseEnter", function(self)
-    Teleporter:tooltipTextEnter(teleporterWin.Main_Control.OwnHouseTextureBtn, SI.get(SI.TELE_UI_BTN_PORT_TO_OWN_HOUSE), true)
+    Teleporter:tooltipTextEnter(teleporterWin.Main_Control.OwnHouseTextureBtn, SI.get(SI.TELE_UI_BTN_PORT_TO_OWN_HOUSE))
     teleporterWin.Main_Control.OwnHouseTexture:SetTexture(Teleporter.textures.houseBtnOver)
   end)
 
@@ -1436,7 +1376,7 @@ local function SetupUI()
   
   teleporterWin.Main_Control.QuestTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
   teleporterWin.Main_Control.QuestTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
-  teleporterWin.Main_Control.QuestTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -120*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.QuestTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -160*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
   teleporterWin.Main_Control.QuestTexture:SetTexture(Teleporter.textures.questBtn)
 
   teleporterWin.Main_Control.QuestTextureBtn = wm:CreateControl(nil, teleporterWin.Main_Control.QuestTexture, CT_BUTTON)
@@ -1449,7 +1389,7 @@ local function SetupUI()
   end)
   
   teleporterWin.Main_Control.QuestTextureBtn:SetHandler("OnMouseEnter", function(self)
-    Teleporter:tooltipTextEnter(teleporterWin.Main_Control.QuestTextureBtn, SI.get(SI.TELE_UI_BTN_RELATED_QUESTS), true)
+    Teleporter:tooltipTextEnter(teleporterWin.Main_Control.QuestTextureBtn, SI.get(SI.TELE_UI_BTN_RELATED_QUESTS))
     teleporterWin.Main_Control.QuestTexture:SetTexture(Teleporter.textures.questBtnOver)
   end)
 
@@ -1466,7 +1406,7 @@ local function SetupUI()
   
   teleporterWin.Main_Control.ItemTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
   teleporterWin.Main_Control.ItemTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
-  teleporterWin.Main_Control.ItemTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -80*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.ItemTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -120*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
   teleporterWin.Main_Control.ItemTexture:SetTexture(Teleporter.textures.relatedItemsBtn)
 
   teleporterWin.Main_Control.ItemTextureBtn = wm:CreateControl(nil, teleporterWin.Main_Control.ItemTexture, CT_BUTTON)
@@ -1499,7 +1439,7 @@ local function SetupUI()
   
   teleporterWin.Main_Control.ItemTextureBtn:SetHandler("OnMouseEnter", function(self)
       Teleporter:tooltipTextEnter(teleporterWin.Main_Control.ItemTextureBtn,
-          SI.get(SI.TELE_UI_BTN_RELATED_ITEMS), true)
+          SI.get(SI.TELE_UI_BTN_RELATED_ITEMS))
       teleporterWin.Main_Control.ItemTexture:SetTexture(Teleporter.textures.relatedItemsBtnOver)end)
 
   teleporterWin.Main_Control.ItemTextureBtn:SetHandler("OnMouseExit", function(self)
@@ -1516,7 +1456,7 @@ local function SetupUI()
 
   teleporterWin.Main_Control.OnlyYourzoneTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
   teleporterWin.Main_Control.OnlyYourzoneTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
-  teleporterWin.Main_Control.OnlyYourzoneTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -40*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.OnlyYourzoneTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -80*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
   teleporterWin.Main_Control.OnlyYourzoneTexture:SetTexture(Teleporter.textures.currentZoneBtn)
 
   teleporterWin.Main_Control.OnlyYourzone = wm:CreateControl(nil, teleporterWin.Main_Control.OnlyYourzoneTexture, CT_BUTTON)
@@ -1529,7 +1469,7 @@ local function SetupUI()
 	end)
   
     teleporterWin.Main_Control.OnlyYourzone:SetHandler("OnMouseEnter", function(self)
-		Teleporter:tooltipTextEnter(teleporterWin.Main_Control.OnlyYourzone, SI.get(SI.TELE_UI_BTN_CURRENT_ZONE), true)
+		Teleporter:tooltipTextEnter(teleporterWin.Main_Control.OnlyYourzone, SI.get(SI.TELE_UI_BTN_CURRENT_ZONE))
 		teleporterWin.Main_Control.OnlyYourzoneTexture:SetTexture(Teleporter.textures.currentZoneBtnOver)
 	end)
 	
@@ -1547,7 +1487,7 @@ local function SetupUI()
   
   teleporterWin.Main_Control.DelvesTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
   teleporterWin.Main_Control.DelvesTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
-  teleporterWin.Main_Control.DelvesTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, 0, 40*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.DelvesTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, -40*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
   teleporterWin.Main_Control.DelvesTexture:SetTexture(Teleporter.textures.delvesBtn)
 
   teleporterWin.Main_Control.DelvesTextureBtn = wm:CreateControl(nil, teleporterWin.Main_Control.DelvesTexture, CT_BUTTON)
@@ -1560,7 +1500,7 @@ local function SetupUI()
   end)
   
   teleporterWin.Main_Control.DelvesTextureBtn:SetHandler("OnMouseEnter", function(self)
-	Teleporter:tooltipTextEnter(teleporterWin.Main_Control.DelvesTextureBtn, SI.get(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES), true)
+	Teleporter:tooltipTextEnter(teleporterWin.Main_Control.DelvesTextureBtn, SI.get(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES))
     teleporterWin.Main_Control.DelvesTexture:SetTexture(Teleporter.textures.delvesBtnOver)
   end)
 
@@ -1568,6 +1508,83 @@ local function SetupUI()
     Teleporter:tooltipTextEnter(teleporterWin.Main_Control.DelvesTextureBtn)
 	if Teleporter.state ~= 5 then
 		teleporterWin.Main_Control.DelvesTexture:SetTexture(Teleporter.textures.delvesBtn)
+	end
+  end)
+  
+  
+    ---------------------------------------------------------------------------------------------------------------
+  -- DUNGEON FINDER
+  
+  teleporterWin.Main_Control.DungeonTexture = wm:CreateControl(nil, teleporterWin.Main_Control, CT_TEXTURE)
+  teleporterWin.Main_Control.DungeonTexture:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.DungeonTexture:SetAnchor(TOPRIGHT, teleporterWin.Main_Control, TOPRIGHT, 0*mTeleSavedVars.Scale, 40*mTeleSavedVars.Scale)
+  teleporterWin.Main_Control.DungeonTexture:SetTexture(Teleporter.textures.soloArenaBtn)
+
+  teleporterWin.Main_Control.DungeonTextureBtn = wm:CreateControl(nil, teleporterWin.Main_Control.DungeonTexture, CT_BUTTON)
+  teleporterWin.Main_Control.DungeonTextureBtn:SetAnchorFill(teleporterWin.Main_Control.DungeonTexture)
+  teleporterWin.Main_Control.DungeonTextureBtn:SetDimensions(50*mTeleSavedVars.Scale, 50*mTeleSavedVars.Scale)
+
+  teleporterWin.Main_Control.DungeonTextureBtn:SetHandler("OnMouseUp", function(self, button)
+	if button == MOUSE_BUTTON_INDEX_RIGHT then
+		-- show filter menu
+		ClearMenu()
+		-- add filters
+		AddCustomSubMenuItem(SI.get(SI.TELE_UI_SUBMENU_FILTER),
+			{
+				{
+					label = SI.get(SI.TELE_UI_TOGGLE_ARENAS),
+					callback = function() mTeleSavedVars.df_showArenas = not mTeleSavedVars.df_showArenas Teleporter.createTableDungeons() end,
+					itemType = MENU_ADD_OPTION_CHECKBOX,
+					checked = function() return mTeleSavedVars.df_showArenas end,
+				},
+				{
+					label = SI.get(SI.TELE_UI_TOGGLE_GROUP_ARENAS),
+					callback = function() mTeleSavedVars.df_showGroupArenas = not mTeleSavedVars.df_showGroupArenas Teleporter.createTableDungeons() end,
+					itemType = MENU_ADD_OPTION_CHECKBOX,
+					checked = function() return mTeleSavedVars.df_showGroupArenas end,
+				},
+				{
+					label = SI.get(SI.TELE_UI_TOGGLE_TRIALS),
+					callback = function() mTeleSavedVars.df_showTrials = not mTeleSavedVars.df_showTrials Teleporter.createTableDungeons() end,
+					itemType = MENU_ADD_OPTION_CHECKBOX,
+					checked = function() return mTeleSavedVars.df_showTrials end,
+				},
+				{
+					label = SI.get(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS),
+					callback = function() mTeleSavedVars.df_showDungeons = not mTeleSavedVars.df_showDungeons Teleporter.createTableDungeons() end,
+					itemType = MENU_ADD_OPTION_CHECKBOX,
+					checked = function() return mTeleSavedVars.df_showDungeons end,
+				},
+			}
+		)
+		-- sorting
+		local menuIndex = AddCustomMenuItem(SI.get(SI.TELE_UI_TOGGLE_SORT_ACRONYM), function() mTeleSavedVars.df_sortByAcronym = not mTeleSavedVars.df_sortByAcronym Teleporter.createTableDungeons() end, MENU_ADD_OPTION_CHECKBOX)
+			if mTeleSavedVars.df_sortByAcronym then
+				ZO_CheckButton_SetChecked(ZO_Menu.items[menuIndex].checkbox)
+			end
+			-- add dungeon difficulty toggle
+		if CanPlayerChangeGroupDifficulty() then
+			local menuIndex = AddCustomMenuItem(Teleporter.textures.dungeonDifficultyVeteran .. GetString(SI_DUNGEONDIFFICULTY2), function() SetVeteranDifficulty(not ZO_ConvertToIsVeteranDifficulty(ZO_GetEffectiveDungeonDifficulty())) zo_callLater(function() Teleporter.createTableDungeons() end, 200) end, MENU_ADD_OPTION_CHECKBOX)
+			if ZO_ConvertToIsVeteranDifficulty(ZO_GetEffectiveDungeonDifficulty()) then
+				ZO_CheckButton_SetChecked(ZO_Menu.items[menuIndex].checkbox)
+			end
+		end
+		ShowMenu()
+	else
+		Teleporter.createTableDungeons()
+		Teleporter.clearInputFields()
+	end
+  end)
+  
+  teleporterWin.Main_Control.DungeonTextureBtn:SetHandler("OnMouseEnter", function(self)
+	Teleporter:tooltipTextEnter(teleporterWin.Main_Control.DungeonTextureBtn, SI.get(SI.TELE_UI_BTN_DUNGEON_FINDER))
+    teleporterWin.Main_Control.DungeonTexture:SetTexture(Teleporter.textures.soloArenaBtnOver)
+  end)
+
+  teleporterWin.Main_Control.DungeonTextureBtn:SetHandler("OnMouseExit", function(self)
+    Teleporter:tooltipTextEnter(teleporterWin.Main_Control.DungeonTextureBtn)
+	if Teleporter.state ~= 14 then
+		teleporterWin.Main_Control.DungeonTexture:SetTexture(Teleporter.textures.soloArenaBtn)
 	end
   end)
 
@@ -1632,7 +1649,7 @@ function Teleporter.closeBtnSwitchTexture(flag)
 		teleporterWin.closeTexturebutton:SetHandler("OnMouseEnter", function(self)
 			teleporterWin.closeTexture:SetTexture(Teleporter.textures.swapBtnOver)
 			Teleporter:tooltipTextEnter(teleporterWin.closeTexture,
-				SI.get(SI.TELE_UI_BTN_TOGGLE_BMU), true)
+				SI.get(SI.TELE_UI_BTN_TOGGLE_BMU))
 		end)
 		teleporterWin.closeTexturebutton:SetHandler("OnMouseExit", function(self)
 			Teleporter:tooltipTextEnter(teleporterWin.closeTexture)
@@ -1646,7 +1663,7 @@ function Teleporter.closeBtnSwitchTexture(flag)
 		teleporterWin.closeTexturebutton:SetHandler("OnMouseEnter", function(self)
 		teleporterWin.closeTexture:SetTexture(Teleporter.textures.closeBtnOver)
 			Teleporter:tooltipTextEnter(teleporterWin.closeTexture,
-				SI.get(SI.TELECLOSE), true)
+				SI.get(SI.TELECLOSE))
 		end)
 		teleporterWin.closeTexturebutton:SetHandler("OnMouseExit", function(self)
 			Teleporter:tooltipTextEnter(teleporterWin.closeTexture)
@@ -1680,11 +1697,13 @@ function Teleporter.changeState(index)
 	teleporterWin.Main_Control.OnlyYourzoneTexture:SetTexture(Teleporter.textures.currentZoneBtn)
 	teleporterWin.Main_Control.DelvesTexture:SetTexture(Teleporter.textures.delvesBtn)
 	teleporterWin.SearchTexture:SetTexture(Teleporter.textures.searchBtn)
-	teleporterWin.Search_Player_Texture:SetTexture(Teleporter.textures.searchBtn)
 	teleporterWin.Main_Control.QuestTexture:SetTexture(Teleporter.textures.questBtn)
 	teleporterWin.Main_Control.OwnHouseTexture:SetTexture(Teleporter.textures.houseBtn)
 	teleporterWin.Main_Control.PTFTexture:SetTexture(Teleporter.textures.ptfHouseBtn)
-	teleporterWin.guildTexture:SetTexture(Teleporter.textures.guildBtn)
+	teleporterWin.Main_Control.DungeonTexture:SetTexture(Teleporter.textures.soloArenaBtn)
+	if teleporterWin.guildTexture then
+		teleporterWin.guildTexture:SetTexture(Teleporter.textures.guildBtn)
+	end
 	
 	-- check new state
 	if index == 4 then
@@ -1696,12 +1715,9 @@ function Teleporter.changeState(index)
 	elseif index == 5 then
 		-- current zone delves
 		teleporterWin.Main_Control.DelvesTexture:SetTexture(Teleporter.textures.delvesBtnOver)
-	elseif index == 2 then
-		-- serach by player name
+	elseif index == 2 or index == 3 then
+		-- serach by player name or zone name
 		teleporterWin.SearchTexture:SetTexture(Teleporter.textures.searchBtnOver)
-	elseif index == 3 then
-		-- search by zone name
-		teleporterWin.Search_Player_Texture:SetTexture(Teleporter.textures.searchBtnOver)
 	elseif index == 9 then
 		-- related quests
 		teleporterWin.Main_Control.QuestTexture:SetTexture(Teleporter.textures.questBtnOver)
@@ -1709,11 +1725,16 @@ function Teleporter.changeState(index)
 		-- own houses
 		teleporterWin.Main_Control.OwnHouseTexture:SetTexture(Teleporter.textures.houseBtnOver)
 	elseif index == 12 then
-		-- own houses
+		-- PTF houses
 		teleporterWin.Main_Control.PTFTexture:SetTexture(Teleporter.textures.ptfHouseBtnOver)
 	elseif index == 13 then
 		-- guilds
-		teleporterWin.guildTexture:SetTexture(Teleporter.textures.guildBtnOver)
+		if teleporterWin.guildTexture then
+			teleporterWin.guildTexture:SetTexture(Teleporter.textures.guildBtnOver)
+		end
+	elseif index == 14 then
+		-- dungeon finder
+		teleporterWin.Main_Control.DungeonTexture:SetTexture(Teleporter.textures.soloArenaBtnOver)
 	end
 	
 	Teleporter.state = index

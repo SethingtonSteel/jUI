@@ -42,8 +42,8 @@ local function OnPlayerActivated(EventCode, Initial)
     [7] = ProvinatusWaypoint:New(),
     [8] = ProvinatusServicePins:New(),
     [9] = ProvinatusSkyshards:New(),
-    [10] = ProvinatusTreasureMaps:New(),
-    [11] = ProvinatusPOI:New(),
+    [10] = ProvinatusPOI:New(),
+    [11] = ProvinatusTreasureMaps:New(),
     [LOREBOOKS_LAYER_INDEX] = ProvinatusLoreBooks:New(),
     [13] = ProvinatusRallyPoint:New(),
     [14] = ProvinatusPlayerOrientation:New(),
@@ -144,7 +144,11 @@ function Provinatus.DrawElements(Layer, Elements)
         Projection.XProjected,
         Projection.YProjected
       )
-      Provinatus.Icons[Layer][Index]:SetDimensions(Element.Width, Element.Height)
+      if Element.Size then
+        Provinatus.Icons[Layer][Index]:SetDimensions(Element.Size, Element.Size)
+      else
+        Provinatus.Icons[Layer][Index]:SetDimensions(Element.Width, Element.Height)
+      end
       Provinatus.Icons[Layer][Index]:SetTexture(Element.Texture)
 
       -- Map the icon to the element in case the caller wants to modify it

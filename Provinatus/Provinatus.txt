@@ -1,10 +1,10 @@
 # Manifest generated using eso-manifest. https://www.npmjs.com/package/eso-manifest
-## Title: |cFF69B4Provinatus|r 2.1.8
-## APIVersion: 100034
-## AddOnVersion: 2128
+## Title: |cFF69B4Provinatus|r 2.1.15
+## APIVersion: 100035
+## AddOnVersion: 2149
 ## Author: |cFF69B4@AlbinoPython (NA Server)|r
 ## Description: Heads up display that shows: group members' locations, quest markers, rally points, and more
-## Version: 2.1.8
+## Version: 2.1.15
 ## SavedVariables: ProvinatusVariables ProvinatusProfileConfig
 ## DependsOn: LibAddonMenu-2.0 LibGPS>=30
 ## OptionalDependsOn: DungeonChampions SkyShards LoreBooks LostTreasure HarvestMap

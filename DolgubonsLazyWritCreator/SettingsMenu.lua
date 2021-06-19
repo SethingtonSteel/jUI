@@ -464,7 +464,9 @@ function WritCreater.Options() --Sentimental
 			getFunc = function() return WritCreater.savedVarsAccountWide.masterWrits end,
 			setFunc = function(value) 
 			WritCreater.savedVarsAccountWide.masterWrits = value
-			WritCreater.savedVarsAccountWide.rightClick = not value
+			if LibCustomMenu or WritCreater.savedVarsAccountWide.rightClick then
+				WritCreater.savedVarsAccountWide.rightClick = not value
+			end
 			WritCreater.LLCInteraction:cancelItem()
 				if value  then
 					
@@ -479,6 +481,8 @@ function WritCreater.Options() --Sentimental
 			name = WritCreater.optionStrings["right click to craft"],--"Master Writs",
 			tooltip = WritCreater.optionStrings["right click to craft tooltip"],--"Craft Master Writ Items",
 			getFunc = function() return WritCreater.savedVarsAccountWide.rightClick end,
+			disabled = not LibCustomMenu or WritCreater.savedVarsAccountWide.rightClick,
+			warning = "This option requires LibCustomMenu",
 			setFunc = function(value) 
 			WritCreater.savedVarsAccountWide.masterWrits = not value
 			WritCreater.savedVarsAccountWide.rightClick = value

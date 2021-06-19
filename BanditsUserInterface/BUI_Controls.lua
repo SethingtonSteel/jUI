@@ -16,7 +16,6 @@ local fonts={
 	gamepad_medium	="EsoUI/Common/Fonts/FTN57.otf",
 	gamepad_bold	="EsoUI/Common/Fonts/FTN87.otf",
 	ExpresswayBUI	="LMP_MediaStash/fonts/Expressway.ttf",
-
 }
 --	/script BUI_PlayerFrame_HealthCurrent:SetFont(BUI.UI.Font("/EsoUI/Common/Fonts/FTN57.otf",17,true))
 
@@ -533,16 +532,15 @@ function BUI.UI.Slider(name, parent, dims, anchor, hidden, func, MinMaxStep, tex
 	return control
 end
 
-function BUI.UI.ComboBox(name, parent, dims, anchor, array, val, fun, hidden)
+function BUI.UI.ComboBox(name, parent, dims, anchor, array, val, fun, hidden, scroll)
 	--Validate arguments
 	if (name==nil or name=="") then return end
 	parent=(parent==nil) and GuiRoot or parent
 	if (dims=="inherit" or #dims~=2) then dims={parent:GetWidth(), parent:GetHeight()} end
 	if (#anchor~=4 and #anchor~=5) then return end
 	hidden=(hidden==nil) and false or hidden
-
 	--Create the control
-	local control=_G[name] or WINDOW_MANAGER:CreateControlFromVirtual(name, parent, "ZO_ComboBox")
+	local control=_G[name] or WINDOW_MANAGER:CreateControlFromVirtual(name, parent, (scroll and #array>20) and "ZO_ScrollableComboBox" or "ZO_ComboBox")
 	control:GetNamedChild("BGMungeOverlay"):SetHidden(true)
 	--Apply properties
 	control:SetDimensions(dims[1], dims[2])
@@ -552,7 +550,9 @@ function BUI.UI.ComboBox(name, parent, dims, anchor, array, val, fun, hidden)
 	control.m_comboBox:SetSortsItems(false)
 	local fs=math.min(18,dims[2]-8)
 	control.m_comboBox:SetFont(BUI.UI.Font("standard",fs,false))
-
+	if scroll and #array>20 then
+		control.m_comboBox:SetHeight(math.min(control.m_comboBox:GetEntryTemplateHeightWithSpacing()*#array-control.m_comboBox.m_spacing+ZO_SCROLLABLE_COMBO_BOX_LIST_PADDING_Y*2,400))
+	end
 	--Set values
 	control.UpdateValues=function(self,array,index)
 		local comboBox=self.m_comboBox

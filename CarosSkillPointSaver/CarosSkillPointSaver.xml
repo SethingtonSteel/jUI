@@ -400,7 +400,7 @@
 					<Dimensions y="25" x="25" />
 					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$(parent)" offsetX="-10"  offsetY="5" />
 					<Textures normal="esoui/art/buttons/decline_up.dds" pressed="esoui/art/buttons/decline_down.dds" mouseOver="esoui/art/buttons/decline_over.dds" />
-					<OnClicked>CSPSWindow:SetHidden(true)</OnClicked>
+					<OnClicked>CSPSWindow:SetHidden(true) CSPS.checkCpOnClose()</OnClicked>
 					<OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, RIGHT, GetString(CSPS_Tooltiptext_Close))</OnMouseEnter>
 					<OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
 				</Button>
@@ -575,19 +575,19 @@
 						<Label name="$(parent)HeaderPoints" font="ZoFontGameLargeBold" text="Points" horizontalAlignment="1" color="FFAA33" mouseEnabled="true">
 							<Anchor point="LEFT" relativeTo="$(parent)CPProfilePlus" relativePoint="RIGHT" offsetX="5"  />
 							<OnMouseUp>CSPS.cppSort("points")</OnMouseUp>
-							<Dimensions x="84" y="24" />
+							<Dimensions x="59" y="24" />
 						</Label>
 						
-						<Button name="$(parent)HeaderHotkey" hidden="true">
+						<Button name="$(parent)HeaderHotkey" hidden="true" mouseEnabled="true">
 							<Dimensions y="25" x="25" />
 							<Textures normal="esoui/art/skillsadvisor/advisor_tabicon_settings_up.dds" pressed="esoui/art/skillsadvisor/advisor_tabicon_settings_down.dds" mouseOver="esoui/art/skillsadvisor/advisor_tabicon_settings_over.dds" />
-							<Anchor point="RIGHT" relativePoint="RIGHT" relativeTo="$(parent)HeaderPoints"  />
+							<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$(parent)HeaderPoints"  />
 							<OnClicked>CSPS.toggleManageBars(true)</OnClicked>
 							<OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, RIGHT, GetString(CSPS_CPBar_Manage))</OnMouseEnter>
 							<OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
 						</Button>
 						<Label name="$(parent)HeaderName" font="ZoFontGameLargeBold" text="Name" color="FFAA33" mouseEnabled="true">
-							<Anchor point="LEFT" relativeTo="$(parent)HeaderPoints" relativePoint="RIGHT" offsetX="5"  />
+							<Anchor point="LEFT" relativeTo="$(parent)HeaderHotkey" relativePoint="RIGHT" offsetX="5"  />
 							<OnMouseUp>CSPS.cppSort("name")</OnMouseUp>
 							<Dimensions x="342" y="24" />
 						</Label>
@@ -606,12 +606,30 @@
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$(parent)CPProfilePlus" offsetY="2" offsetX="0" />
 							<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$(parent)" offsetY="-38" offsetX="-5"/>
 						</Control>
+						<Button name="$(parent)ChkStrictOrder">
+							<Dimensions y="17" x="17" /> 
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" relativeTo="$(parent)" offsetX="9" offsetY="-9" />
+							<Textures normal="esoui/art/buttons/checkbox_checked.dds" pressed="esoui/art/buttons/checkbox_checked.dds" mouseOver="esoui/art/buttons/checkbox_checked.dds" />
+							<OnClicked>CSPS.toggleStrictOrder()</OnClicked>
+							<OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, RIGHT,  GetString(CSPS_Tooltiptext_StrictOrder)	)</OnMouseEnter>
+							<OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
+						</Button>	
+						<Label name="$(parent)LblStrictOrder" font="ZoFontGame" text="Strict order" mouseEnabled="true">
+							<Anchor point="LEFT" relativeTo="$(parent)ChkStrictOrder" relativePoint="RIGHT" offsetX="5"/>
+							<OnMouseUp>if upInside then CSPS.toggleStrictOrder() end</OnMouseUp>
+							<OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, RIGHT,  GetString(CSPS_Tooltiptext_StrictOrder)	)</OnMouseEnter>
+							<OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
+						</Label>
 						<Button name="$(parent)Close">
 							<Anchor point="BOTTOM" relativeTo="$(parent)" relativePoint="BOTTOM" offsetY="-5" />
 							<Dimensions x="28" y="28" />
 							<Textures normal="esoui/art/buttons/large_uparrow_up.dds" pressed="esoui/art/buttons/large_uparrow_down.dds" mouseOver="esoui/art/buttons/large_uparrow_over.dds" />
 							<OnClicked>CSPS.showElement("cpProfiles", false)</OnClicked>
 						</Button>
+						<Control name="$(parent)RoleFilter" inherits="ZO_ComboBox" >
+							<Dimensions x="180" y="25" />
+							<Anchor point="BOTTOMRIGHT" relativeTo="$(parent)" relativePoint="BOTTOMRIGHT" offsetX="-5" offsetY="-5"/>
+                        </Control>
 					</Controls>	
 				</Backdrop>
 				
@@ -1529,7 +1547,7 @@
 							<FontColors normalColor="E8DFAF" mouseOverColor="FFAA33"/>
 								<OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, RIGHT, GetString(CSPS_ImpEx_BtnImpTT))</OnMouseEnter>
 								<OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
-								<OnClicked>CSPS.importLink(ctrl, shift)</OnClicked>
+								<OnClicked>CSPS.importLink(ctrl, shift, alt)</OnClicked>
 						</Button>
 						<Button font="ZoFontGame" text="Generate Link" name="$(parent)BtnExp1" inherits="ZO_DefaultButton">
 							<Anchor point="TOPLEFT" relativeTo="$(parent)BtnImp1" relativePoint="TOPRIGHT" offsetX="15" offsetY="0" />

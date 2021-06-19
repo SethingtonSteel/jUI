@@ -71,12 +71,12 @@ function Interaction.OnLootReceived( eventCode, receivedBy, itemLink, stackCount
 		return
 	end
 	
-	local mapMetaData, globalX, globalY = Harvest.mapTools:GetPlayerMapMetaDataAndGlobalPosition()
+	local mapMetaData = Harvest.mapTools:GetPlayerMapMetaData()
 	local worldX, worldY, worldZ = Harvest.GetPlayer3DPosition()
 	
-	Interaction:Info("Discovered a new node. pintypeid: %d, map: %s, global: %f, %f, world: %f, %f, %f",
-			pinTypeId, mapMetaData.map, globalX, globalY, worldX, worldY, worldZ )
-	CallbackManager:FireCallbacks(Events.NODE_DISCOVERED, mapMetaData, worldX, worldY, worldZ, globalX, globalY, pinTypeId)
+	Interaction:Info("Discovered a new node. pintypeid: %d, map: %s, world: %f, %f, %f",
+			pinTypeId, mapMetaData.map, worldX, worldY, worldZ )
+	CallbackManager:FireCallbacks(Events.NODE_DISCOVERED, mapMetaData, worldX, worldY, worldZ, pinTypeId)
 	
 	-- reset the interaction state, so we do not fire the event again for other items in the same container/node
 	Interaction.lastInteractionType = nil
@@ -118,6 +118,12 @@ function Interaction.UpdateInteractionType(timeInMs)
 	end
 end
 
+local function DoesRawWorldDiffer()
+	local _, x, y, z = GetUnitWorldPosition("player")
+	local _, x2, y2, z2 = GetUnitRawWorldPosition("player")
+	return (x - x2)^2 + (y - y2)^2 + (z - z2)^2 > 100*100
+end
+
 function Interaction.BeginLockpicking()
 	local pinTypeId = nil
 	-- normal chests aren't owned and their interaction is called "unlock"
@@ -143,28 +149,28 @@ function Interaction.BeginLockpicking()
 	
 	-- lockpicking has its own interaction camera, which is different from the player position
 	local worldX, worldY, worldZ
-	if IsInteractionUsingInteractCamera() then
+	if IsInteractionUsingInteractCamera() and not DoesRawWorldDiffer() then
 		worldX, worldY, worldZ = Harvest.GetCamera3DPosition()
 	else
 		-- this function returns wrong height values, if the interaction camera is active
 		worldX, worldY, worldZ = Harvest.GetPlayer3DPosition()
 	end
 	
-	local mapMetaData, globalX, globalY = Harvest.mapTools:GetPlayerMapMetaDataAndGlobalPosition()
-	Interaction:Info("Discovered a new node. pintypeid: %d, map: %s, global: %f, %f, world: %f, %f, %f",
-			pinTypeId, mapMetaData.map, globalX, globalY, worldX, worldY, worldZ )
-	CallbackManager:FireCallbacks(Events.NODE_DISCOVERED, mapMetaData, worldX, worldY, worldZ, globalX, globalY, pinTypeId)
+	local mapMetaData = Harvest.mapTools:GetPlayerMapMetaData()
+	Interaction:Info("Discovered a new node. pintypeid: %d, map: %s, world: %f, %f, %f",
+			pinTypeId, mapMetaData.map, worldX, worldY, worldZ )
+	CallbackManager:FireCallbacks(Events.NODE_DISCOVERED, mapMetaData, worldX, worldY, worldZ, pinTypeId)
 end
 
 function Interaction.CheckFishingState()
 	EVENT_MANAGER:UnregisterForUpdate("HarvestMap-FishState")
 	if GetInteractionType() == INTERACTION_FISH then
-		local mapMetaData, globalX, globalY = Harvest.mapTools:GetPlayerMapMetaDataAndGlobalPosition()
+		local mapMetaData = Harvest.mapTools:GetPlayerMapMetaData()
 		local worldX, worldY, worldZ = Harvest.GetPlayer3DPosition()
 		local pinTypeId = Harvest.FISHING
-		Interaction:Info("Discovered a new node. pintypeid: %d, map: %s, global: %f, %f, world: %f, %f, %f",
-			pinTypeId, mapMetaData.map, globalX, globalY, worldX, worldY, worldZ )
-		CallbackManager:FireCallbacks(Events.NODE_DISCOVERED, mapMetaData, worldX, worldY, worldZ, globalX, globalY, pinTypeId)
+		Interaction:Info("Discovered a new node. pintypeid: %d, map: %s, world: %f, %f, %f",
+			pinTypeId, mapMetaData.map, worldX, worldY, worldZ )
+		CallbackManager:FireCallbacks(Events.NODE_DISCOVERED, mapMetaData, worldX, worldY, worldZ, pinTypeId)
 	end
 end
 	

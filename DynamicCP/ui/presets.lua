@@ -77,6 +77,23 @@ end
 
 
 ---------------------------------------------------------------------
+local function DisplayMildWarning(text)
+    DynamicCPMildWarningLabel:SetText(text)
+    DynamicCPMildWarning:SetHidden(false)
+    DynamicCPMildWarning:ClearAnchors()
+    DynamicCPMildWarning:SetAnchor(BOTTOM, DynamicCPWarning, TOP, 0, -10)
+end
+
+local function SetMildWarning(text)
+    DynamicCPMildWarning:SetText(text)
+end
+
+local function HideMildWarning()
+    DynamicCPMildWarning:SetHidden(true)
+end
+
+
+---------------------------------------------------------------------
 -- Find and build string of the diff between two cp sets
 -- TODO: pull the logic portion out into points.lua
 local function GenerateDiff(before, after)
@@ -117,11 +134,11 @@ local function GenerateTree(cp, tree)
     local result = "|cBBBBBB"
 
     local disciplineIndex = TREE_TO_DISCIPLINE[tree]
-    for skill = 1, GetNumChampionDisciplineSkills(disciplineIndex) do
-        local points = cp[disciplineIndex][skill]
+    for skillIndex = 1, GetNumChampionDisciplineSkills(disciplineIndex) do
+        local points = cp[disciplineIndex][skillIndex]
         if (points ~= 0) then
             local line = zo_strformat("\n<<C:1>>:  <<2>>",
-                GetChampionSkillName(GetChampionSkillId(disciplineIndex, skill)),
+                GetChampionSkillName(GetChampionSkillId(disciplineIndex, skillIndex)),
                 points)
             result = result .. line
         end
@@ -161,27 +178,35 @@ function DynamicCP:OnApplyClicked(button)
     -- Apply all stars within the tree
     local cp = DynamicCP.savedOptions.cp[tree][presetName]
     local disciplineIndex = TREE_TO_DISCIPLINE[tree]
-    local numSlottables = 0
-    local toSlot = {}
+    local slottablesData = {}
+    local hasOverMaxPoints = false
     for skill = 1, GetNumChampionDisciplineSkills(disciplineIndex) do
         local id = GetChampionSkillId(disciplineIndex, skill)
         local numPoints = 0
-        if (cp[disciplineIndex] and cp[disciplineIndex][skill]) then
-            numPoints = cp[disciplineIndex][skill]
+        if (cp[disciplineIndex] and cp[disciplineIndex][skill] ~= nil) then
+            local maxPoints = GetChampionSkillMaxPoints(id)
+            if (cp[disciplineIndex][skill] > maxPoints) then
+                numPoints = maxPoints
+                hasOverMaxPoints = true
+            else
+                numPoints = cp[disciplineIndex][skill]
+            end
         else
-            numPoints = currentCP[disciplineIndex][skill]
+            DynamicCP.dbg("else" .. GetChampionSkillName(id))
+            numPoints = 0
         end
 
         -- Unslot slottables that are no longer slottable because of not enough points
+        -- We still do this even though slottables are replaced later because user could have slotStars setting off
         if (currentHotbar[id] and not WouldChampionSkillNodeBeUnlocked(id, numPoints)) then
-            DynamicCP.SetSlottablePoints(currentHotbar[id], -1)
+            DynamicCP.dbg("unslotting" .. GetChampionSkillName(id))
+            DynamicCP.SetSlottableInIndex(currentHotbar[id], -1)
         end
 
         -- Collect slottables
         local isSlottable = CanChampionSkillTypeBeSlotted(GetChampionSkillType(id))
         if (isSlottable and WouldChampionSkillNodeBeUnlocked(id, numPoints)) then
-            numSlottables = numSlottables + 1
-            toSlot[numSlottables] = id
+            table.insert(slottablesData, {skillIndex = skill, points = numPoints, maxPoints = GetChampionSkillMaxPoints(id)})
         end
 
         DynamicCP.SetStarPoints(disciplineIndex, skill, numPoints)
@@ -189,16 +214,29 @@ function DynamicCP:OnApplyClicked(button)
 
     -- Apply slottables if applicable
     if (DynamicCP.savedOptions.slotStars) then
-        if (numSlottables <= 4) then
-            local offset = HOTBAR_OFFSET[tree]
-            for index, id in pairs(toSlot) do
-                DynamicCP.SetSlottablePoints(index + offset, id)
-                -- DynamicCP.dbg(zo_strformat("adding <<C:1>> to slot <<2>>", GetChampionSkillName(id), index + offset))
+        -- Sort by most maxed
+        table.sort(slottablesData, function(item1, item2)
+            local prop1 = item1.points / item1.maxPoints
+            local prop2 = item2.points / item2.maxPoints
+            if (prop1 == prop2) then
+                if (item1.maxPoints == item2.maxPoints) then
+                    -- Last resort, sort by skill index
+                    return item1.skillIndex < item2.skillIndex
+                end
+                -- If proportions are equal, prioritize ones with higher max because idk
+                return item1.maxPoints > item2.maxPoints
             end
-        else
-            DynamicCP.dbg("too many slottables to slot automatically")
-            -- Find the 4 with highest values
-            -- TODO: do this after refactoring to keep separate track of the data, otherwise don't know pending points. Could add to it within the loop but gonna need to rewrite this anyway
+            return prop1 > prop2
+        end)
+
+        -- Assign the first 4
+        local offset = HOTBAR_OFFSET[tree]
+        for i = 1, 4 do
+            if (slottablesData[i]) then
+                local id = GetChampionSkillId(disciplineIndex, slottablesData[i].skillIndex)
+                DynamicCP.SetSlottableInIndex(i + offset, id)
+                DynamicCP.dbg(zo_strformat("adding <<C:1>> to slot <<2>>", GetChampionSkillName(id), i + offset))
+            end
         end
     end
 
@@ -210,6 +248,11 @@ function DynamicCP:OnApplyClicked(button)
         DynamicCPPresetsInnerConfirmButton:SetText("Confirm (" .. tostring(GetChampionRespecCost()) .. " |t18:18:esoui/art/currency/currency_gold.dds|t)")
     else
         DynamicCPPresetsInnerConfirmButton:SetText("Confirm")
+    end
+
+    -- Show warning message
+    if (hasOverMaxPoints) then
+        DisplayMildWarning("Warning: the preset you applied has more than the maximum points allowed in certain stars. The points will be left as extra. Make sure to save the preset after you allocate your points to overwrite the old preset! If this was a default preset, you can also re-import all of the default presets in the add-on settings by clicking on the gear icon.")
     end
 end
 
@@ -296,6 +339,17 @@ function DynamicCP:OnSaveClicked(button, tree)
     newCP[disciplineIndex] = {}
     for k, v in pairs(currentCP[disciplineIndex]) do
         newCP[disciplineIndex][k] = v
+    end
+    -- Also copy the other things like role and class
+    if (DynamicCP.savedOptions.cp[tree][presetName]) then
+        for index, _ in pairs(DynamicCP.savedOptions.cp[tree][presetName]) do
+            if (index ~= disciplineIndex and type(index) ~= "number") then
+                newCP[index] = {}
+                for k, v in pairs(DynamicCP.savedOptions.cp[tree][presetName][index]) do
+                    newCP[index][k] = v
+                end
+            end
+        end
     end
 
     -- Don't want to deal with formatting, colors are stripped when parsing name from dropdown
@@ -470,7 +524,7 @@ function DynamicCP:ToggleOptionButton(textureButton)
             DynamicCP.savedOptions.cp[tree][presetName].roles = {
                 Tank = true,
                 Healer = true,
-                Dps = true, 
+                Dps = true,
             }
         end
         DynamicCP.savedOptions.cp[tree][presetName].roles[textureButton.role] = textureButton.enabled
@@ -537,10 +591,22 @@ function DynamicCP:InitializeDropdown(tree, desiredEntryName)
 
         local buttons = DynamicCPPresetsInner:GetNamedChild(tree .. "OptionsButtons")
         for class, _ in pairs(CLASSES) do
-            SetTextureButtonEnabled(buttons:GetNamedChild(class), data.classes == nil or data.classes[class] == nil or data.classes[class]) -- Both nil or true
+            local button = buttons:GetNamedChild(class)
+            SetTextureButtonEnabled(button, data.classes == nil or data.classes[class] == nil or data.classes[class]) -- Both nil or true
+            -- Completely hide button rows
+            button:SetHidden(not DynamicCP.savedOptions.presetsShowClassButtons)
         end
         for role, _ in pairs(ROLES) do
             SetTextureButtonEnabled(buttons:GetNamedChild(role), data.roles == nil or data.roles[role] == nil or data.roles[role]) -- Both nil or true
+        end
+
+        -- If class buttons are hidden, role buttons should be anchored higher
+        if (DynamicCP.savedOptions.presetsShowClassButtons) then
+            buttons:GetNamedChild("Tank"):SetAnchor(TOP, buttons:GetNamedChild("Dragonknight"), BOTTOM, 4, 6)
+            buttons:GetNamedChild("Help"):SetAnchor(TOP, buttons:GetNamedChild("Necromancer"), BOTTOM, 0, 6)
+        else
+            buttons:GetNamedChild("Tank"):SetAnchor(TOPLEFT, buttons, TOPLEFT, 2)
+            buttons:GetNamedChild("Help"):SetAnchor(TOPRIGHT, buttons, TOPRIGHT, -2)
         end
 
         if (presetName == CREATE_NEW_STRING) then

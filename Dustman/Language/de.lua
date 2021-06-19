@@ -142,6 +142,8 @@ SafeAddString(DUSTMAN_TREASURE_MAPS,					"Markiere Schatzkarten", 1 )
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESC,				"Wenn aktiviert, werden Schatzkarten als Trödel markiert.", 1)
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESTROY,			"...und zerstöre Sie!", 1)
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESTROY_DESC,		"Zerstöre automatisch alle Schatzkarten.", 1)
+SafeAddString(DUSTMAN_JEWELRY_MASTER_WRITS,				"Destroy Jewelry Master Writs", 1) --TO TRANSLATE
+SafeAddString(DUSTMAN_JEWELRY_MASTER_WRITS_DESC,		"Automatically destroy Jewelry Master Writs", 1)  --TO TRANSLATE
 --treasures and trophies submenu
 SafeAddString(DUSTMAN_TREASURES,                    	"Schätze und Trophäen", 1)
 SafeAddString(DUSTMAN_TREASURE,                     	"Markiere Schätze", 1)

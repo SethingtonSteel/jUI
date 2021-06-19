@@ -547,7 +547,7 @@ BlackListHeader	="Buffs black list",
 EnableBlackList	="Apply black list to buffs",
 EnableBlackListDesc	=default..(BUI.Defaults.EnableBlackList and on or off),
 BlackListAdd	="Add to black list",
-BlackListAddDesc	="Enter name or buff id to add it to black list. Or just right click on it in buff panel.",
+BlackListAddDesc	="Enter buff name (for all buffs with specific name, case sensitive) or id to add it to black list.\nOr just right click on it in buff panel.",
 BlackListDel	="Remove from black list",
 BlackListDelDesc	="Select buff to remove it from black list",
 

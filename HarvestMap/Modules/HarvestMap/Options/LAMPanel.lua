@@ -1,34 +1,26 @@
 
 local LAM = LibAddonMenu2
-assert(LAM, "\n\nThe library LibAddonMenu could not be loaded. Your installation of the library is probably missing some files.")
---if not LAM then
-	--local addOnManager = GetAddOnManager()
-	--for id = 1, addOnManager:GetNumAddOns() do
-	--	local name, displayName = addOnManager:GetAddOnInfo(id)
-	--	if name == "LibAddonMenu-2.0" then
-	--		local path = addOnManager:GetAddOnRootDirectoryPath(id)
-	--		path = path:gsub("user:/", "")
-	--		error("The installation of LibAddonMenu is corrupted.\nThe library was loaded from '" .. path .. "'.")
-	--	end
-	--end
---end
-
 
 local Settings = Harvest.settings
+local CallbackManager = Harvest.callbackManager
+local Events = Harvest.events
+local FilterProfiles = Harvest.filterProfiles
 
-local function CreateFilter( pinTypeId )
+local function CreateSpawnFilterForPinType(pinTypeId)
 	local pinTypeId = pinTypeId
 	local filter = {
 		type = "checkbox",
 		name = Harvest.GetLocalization( "pintype" .. pinTypeId ),
-		tooltip = Harvest.GetLocalization( "pintypetooltip" .. pinTypeId ),
 		getFunc = function()
-			return Harvest.IsMapPinTypeVisible( pinTypeId )
+			return Settings.savedVars.settings.isSpawnFilterUsedForPinType[pinTypeId]
 		end,
-		setFunc = function( value )
-			Harvest.SetMapPinTypeVisible( pinTypeId, value )
+		setFunc = function(enabled)
+			Settings.savedVars.settings.isSpawnFilterUsedForPinType[pinTypeId] = enabled
+			CallbackManager:FireCallbacks(Events.SETTING_CHANGED, "isSpawnFilterUsedForPinType", pinTypeId, enabled)
 		end,
-		default = Harvest.settings.defaultSettings.isPinTypeVisible[ pinTypeId ],
+		default = Harvest.settings.defaultSettings.isSpawnFilterUsedForPinType[pinTypeId],
+		disabled = (LibNodeDetection == nil),
+		width = "full"
 	}
 	return filter
 end
@@ -37,17 +29,15 @@ local function CreateIconPicker( pinTypeId )
 	local pinTypeId = pinTypeId
 	local filter = {
 		type = "iconpicker",
-		name = Harvest.GetLocalization( "pintexture" ),
-		--tooltip = Harvest.GetLocalization( "pintexturetooltip" .. pinTypeId ),
+		name = Harvest.GetLocalization("pintexture"),
 		getFunc = function()
-			return Harvest.GetPinTypeTexture( pinTypeId )
+			return Harvest.GetPinTypeTexture(pinTypeId)
 		end,
-		setFunc = function( value )
-			Harvest.SetPinTypeTexture( pinTypeId, value )
+		setFunc = function(newTexture)
+			Harvest.SetPinTypeTexture(pinTypeId, newTexture)
 		end,
-		choices = Harvest.settings.availableTextures[pinTypeId],
-		default = Harvest.settings.defaultSettings.pinLayouts[ pinTypeId ].texture,
-		--width = "half",
+		choices = Harvest.settings.availableTextures,
+		default = Harvest.settings.defaultSettings.pinLayouts[pinTypeId].texture,
 	}
 	return filter
 end
@@ -73,34 +63,84 @@ local function CreateSizeSlider( pinTypeId )
 	local pinTypeId = pinTypeId
 	local sizeSlider = {
 		type = "slider",
-		name = Harvest.GetLocalization( "pinsize" ),
-		tooltip = Harvest.GetLocalization( "pinsizetooltip" ),
-		min = 12,
+		name = Harvest.GetLocalization("pinsize"),
+		tooltip = Harvest.GetLocalization("pinsizetooltip"),
+		min = 8,
 		max = 64,
 		getFunc = function()
-			return Harvest.GetMapPinSize( pinTypeId )
+			return Harvest.GetMapPinSize(pinTypeId)
 		end,
-		setFunc = function( value )
-			Harvest.SetMapPinSize( pinTypeId, value )
+		setFunc = function(newSize)
+			Harvest.SetMapPinSize(pinTypeId, newSize)
 		end,
-		default = Harvest.settings.defaultSettings.pinLayouts[ pinTypeId ].size,
-		--width = "half",
+		default = Harvest.settings.defaultSettings.pinLayouts[pinTypeId].size,
 	}
 	return sizeSlider
 end
 
-local function CreateColorPicker( pinTypeId )
+local function CreateColorPicker(pinTypeId)
 	local pinTypeId = pinTypeId
 	local colorPicker = {
 		type = "colorpicker",
-		name = Harvest.GetLocalization( "pincolor" ),
-		tooltip = zo_strformat( Harvest.GetLocalization( "pincolortooltip" ), Harvest.GetLocalization( "pintype" .. pinTypeId ) ),
-		getFunc = function() return Harvest.GetPinColor( pinTypeId ) end,
-		setFunc = function( r, g, b, a ) Harvest.SetPinColor( pinTypeId, r, g, b, a ) end,
+		name = Harvest.GetLocalization("pincolor"),
+		tooltip = zo_strformat(Harvest.GetLocalization( "pincolortooltip" ), Harvest.GetLocalization( "pintype" .. pinTypeId)),
+		getFunc = function() return Harvest.GetPinColor(pinTypeId) end,
+		setFunc = function(r, g, b, a) Harvest.SetPinColor(pinTypeId, r, g, b, a) end,
 		default = Harvest.settings.defaultSettings.pinLayouts[ pinTypeId ].tint,
-		--width = "half",
 	}
 	return colorPicker
+end
+
+local function FilterSetting(pinTypeId, profileGetter, IsMapProfile)
+	local setting = {
+		type = "checkbox",
+		name = Harvest.GetLocalization("pintype" .. pinTypeId),
+		getFunc = function()
+			local filterProfile = FilterProfiles[profileGetter](FilterProfiles)
+			return filterProfile[pinTypeId]
+		end,
+		setFunc = function(isVisible)
+			local filterProfile = FilterProfiles[profileGetter](FilterProfiles)
+			filterProfile[pinTypeId] = isVisible
+			CallbackManager:FireCallbacks(Events.FILTER_PROFILE_CHANGED, filterProfile, pinTypeId, isVisible)
+		end,
+		disabled = IsMapProfile,
+	}
+	return setting
+end
+	
+local function ProfileDropdown(defaultProfileName, ProfileGetter, ProfileSetter)
+	local option = {
+		type = "dropdown",
+		name = Harvest.GetLocalization("visiblepintypes"),
+		choices = {
+			Harvest.GetLocalization("same_as_map"),
+			Harvest.GetLocalization("custom")
+		},
+		choicesValues = {"map", "custom"},
+		getFunc = function()
+			if FilterProfiles:GetMapProfile() == FilterProfiles[ProfileGetter](FilterProfiles) then
+				return "map"
+			else
+				return "custom"
+			end
+		end,
+		setFunc = function(value)
+			if value == "map" then
+				FilterProfiles[ProfileSetter](FilterProfiles, Harvest.filterProfiles:GetMapProfile())
+				return
+			end
+			if FilterProfiles:GetMapProfile() == FilterProfiles[ProfileGetter](FilterProfiles) then
+				local profile = FilterProfiles:FindProfileWithName(defaultProfileName)
+				if not profile then
+					profile = FilterProfiles:ConstructNewProfile()
+					profile.name = defaultProfileName
+				end
+				FilterProfiles[ProfileSetter](FilterProfiles, profile)
+			end
+		end,
+	}
+	return option
 end
 
 function Settings:InitializeLAM()
@@ -136,37 +176,9 @@ function Settings:InitializeLAM()
 	optionsTable:insert({
 		type = "description",
 		title = nil,
-		text = Harvest.GetLocalization("exchangedescription"),
+		text = Harvest.GetLocalization("exchangedescription2"),
 		width = "full",
 	})
-	--[[
-	optionsTable:insert({
-		type = "header",
-		name = "",
-	})
-	
-	optionsTable:insert({
-		type = "description",
-		title = nil,
-		text = Harvest.GetLocalization("debuginfodescription"),
-		width = "full",
-	})
-	
-	optionsTable:insert({
-		type = "button",
-		name = Harvest.GetLocalization("printdebuginfo"),
-		func = Harvest.ShowDebugInfo,
-		width = "half",
-	})
-	--]]
-	
-	--[[
-	optionsTable:insert({
-		type = "button",
-		name = Harvest.GetLocalization("openesoui"),
-		func = function() RequestOpenUnsafeURL("http://esoui.com/downloads/info57#comments") end,
-		width = "half",
-	})]]
 	
 	optionsTable:insert({
 		type = "header",
@@ -186,61 +198,7 @@ function Settings:InitializeLAM()
 		text = Harvest.GetLocalization("outdateddatainfo")
 	})
 	
-	local validGameVersions = {
-		"4.3.0", -- wrathstone
-		"4.2.0", -- murkmire
-		"4.1.0", -- wolfhunter
-		"4.0.0", -- summerset
-		"3.3.0", -- dragon bones
-		"3.2.0", -- CwC
-		"3.1.0", -- hoftr
-		"3.0.0", -- morrowind
-		"2.7.0", -- housing
-		"2.6.0", -- one tamriel
-		"2.5.0", -- shadow of the hist
-		"2.4.0", -- dark bortherhood
-		"2.3.0", -- thieves guild
-		-- the following game versions weren't stored in the node data
-		-- "2.2.0", -- wrothgar
-		-- "2.1.0", -- imperial city
-		-- "2.0.0", -- tamriel unlimited
-		"1.0.0",
-	}
-
-	local validGameVersionsDisplay = {
-		"4.3.0 - Wrathstone",
-		"4.2.0 - Murkmire",
-		"4.1.0 - Wolfhunter",
-		"4.0.0 - Summerset",
-		"3.3.0 - Dragon Bones",
-		"3.2.0 - Clockwork City",
-		"3.1.0 - Horns of the Reach",
-		"3.0.0 - Morrowind",
-		"2.7.0 - Housing",
-		"2.6.0 - One Tamriel",
-		"2.5.0 - Shadows of the Hist",
-		"2.4.0 - Dark Brotherhood",
-		"2.3.0 - Thieves Guild",
-		-- the following game versions weren't stored in the node data
-		-- "2.2.0", -- wrothgar
-		-- "2.1.0", -- imperial city
-		-- "2.0.0", -- tamriel unlimited
-		"1.0.0",
-	}
-	
 	submenuTable:insert({
-		type = "dropdown",
-		name = Harvest.GetLocalization("mingameversion"),
-		tooltip = Harvest.GetLocalization("mingameversiontooltip"),
-		choices = validGameVersionsDisplay,
-		choicesValues = validGameVersions,
-		getFunc = Harvest.GetDisplayedMinGameVersion,
-		setFunc = Harvest.SetDisplayedMinGameVersion,
-		width = "half",
-		--default = Harvest.settings.defaultSettings.minGameVersion,
-	})
-	
-	submenuTable:insert({--optionsTable
 		type = "slider",
 		name = Harvest.GetLocalization("timedifference"),
 		tooltip = Harvest.GetLocalization("timedifferencetooltip"),
@@ -258,7 +216,7 @@ function Settings:InitializeLAM()
 	
 	submenuTable:insert({
 		type = "button",
-		name = GetString(SI_APPLY),--Harvest.GetLocalization("apply"),
+		name = GetString(SI_APPLY),
 		func = Harvest.ApplyTimeDifference,
 		width = "half",
 		warning = Harvest.GetLocalization("applywarning")
@@ -307,26 +265,10 @@ function Settings:InitializeLAM()
 	submenuTable:insert({
 		type = "checkbox",
 		name = Harvest.GetLocalization("mappins"),
-		tooltip = Harvest.GetLocalization("mappinstooltip"),
+		--tooltip = Harvest.GetLocalization("mappinstooltip"),
 		getFunc = Harvest.AreMapPinsVisible,
 		setFunc = Harvest.SetMapPinsVisible,
 		default = Harvest.settings.defaultSettings.displayMapPins,
-		width = "full",
-	})
-	
-	local spawnfiltertooltip = Harvest.GetLocalization("spawnfiltertooltip")
-	if not LibNodeDetection then
-		spawnfiltertooltip = Harvest.GetLocalization("nodedetectionmissing")
-	end
-	submenuTable:insert({
-		type = "checkbox",
-		name = Harvest.GetLocalization("mapspawnfilter"),
-		tooltip = spawnfiltertooltip,
-		setFunc = Harvest.SetMapSpawnFilterEnabled,
-		getFunc = Harvest.IsMapSpawnFilterEnabled,
-		default = Harvest.settings.defaultSettings.mapSpawnFilter,
-		warning = Harvest.GetLocalization("spawnfilterwarning"),
-		disabled = (LibNodeDetection == nil),
 		width = "full",
 	})
 	
@@ -337,18 +279,6 @@ function Settings:InitializeLAM()
 		getFunc = Harvest.AreMinimapPinsVisible,
 		setFunc = Harvest.SetMinimapPinsVisible,
 		default = Harvest.settings.defaultSettings.displayMinimapPins,
-		width = "full",
-	})
-	
-	submenuTable:insert({
-		type = "checkbox",
-		name = Harvest.GetLocalization("minimapspawnfilter"),
-		tooltip = spawnfiltertooltip,
-		setFunc = Harvest.SetMinimapSpawnFilterEnabled,
-		getFunc = Harvest.IsMinimapSpawnFilterEnabled,
-		default = Harvest.settings.defaultSettings.minimapSpawnFilter,
-		warning = Harvest.GetLocalization("spawnfilterwarning"),
-		disabled = (LibNodeDetection == nil),
 		width = "full",
 	})
 	
@@ -390,58 +320,36 @@ function Settings:InitializeLAM()
 	submenuTable:insert({
 		type = "checkbox",
 		name = Harvest.GetLocalization("level"),
-		tooltip = Harvest.GetLocalization("leveltooltip"),
+		--tooltip = Harvest.GetLocalization("leveltooltip"),
 		getFunc = Harvest.ArePinsAbovePOI,
 		setFunc = Harvest.SetPinsAbovePOI,
 		default = Harvest.settings.defaultSettings.pinsAbovePoi,
 		disabled = IsMapDisabled,
-		width = "half",
+		--width = "half",
 	})
 	
+	local filterTable = setmetatable({}, { __index = table })
 	submenuTable:insert({
-		type = "slider",
-		name = Harvest.GetLocalization( "pinminsize" ),
-		tooltip = Harvest.GetLocalization( "pinminsizetooltip" ),
-		min = 8,
-		max = 32,
-		getFunc = function()
-			return Harvest.GetMapPinMinSize()
-		end,
-		setFunc = function( value )
-			Harvest.SetMapPinMinSize( value )
-		end,
-		default = Harvest.settings.defaultSettings.mapPinMinSize,
-		disabled = IsMapDisabled,
-		width = "half",
+		type = "submenu",
+		name = Harvest.GetLocalization("visiblepintypes"),
+		controls = filterTable,
 	})
 	
 	--[[
-	local compatibilityTable = setmetatable({}, { __index = table })
-	submenuTable:insert({
-		type = "submenu",
-		name = Harvest.GetLocalization("rotatingcompatibility"),
-		controls = compatibilityTable,
-	})
-	
-	compatibilityTable:insert({
+	filterTable:insert({
 		type = "description",
 		title = nil,
-		text = Harvest.GetLocalization("minimapcompatibilitymodedescription"),
+		text = Harvest.GetLocalization("mapvisiblepintypedescription"),
 		width = "full",
 	})
+	--]]
 	
-	compatibilityTable:insert({
-		type = "checkbox",
-		name = Harvest.GetLocalization("minimapcompatibilitymode"),
-		tooltip = Harvest.GetLocalization("minimapcompatibilitymodewarning"),
-		warning = Harvest.GetLocalization("minimapcompatibilitymodewarning"),
-		getFunc = Harvest.IsMinimapCompatibilityModeEnabled,
-		setFunc = Harvest.SetMinimapCompatibilityModeEnabled,
-		--default = Harvest.settings.defaultSettings.minimapCompatibility,
-		disabled = IsMapDisabled,
-		width = "full",
-	})
-	]]
+	local NeverDisabled = function() return false end
+	for _, pinTypeId in ipairs(Harvest.PINTYPES) do
+		if not Harvest.HIDDEN_PINTYPES[pinTypeId] then
+			filterTable:insert(FilterSetting(pinTypeId, "GetMapProfile", NeverDisabled))
+		end
+	end
 	
 	--[[
 	#####
@@ -461,25 +369,12 @@ function Settings:InitializeLAM()
 	submenuTable:insert({
 		type = "checkbox",
 		name = Harvest.GetLocalization("compass"),
-		tooltip = Harvest.GetLocalization("compasstooltip"),
+		--tooltip = Harvest.GetLocalization("compasstooltip"),
 		getFunc = Harvest.AreCompassPinsVisible,
 		setFunc = function(...)
 			Harvest.SetCompassPinsVisible(...)
-			CALLBACK_MANAGER:FireCallbacks("LAM-RefreshPanel", HarvestMapInRangeMenu.panel)
 		end,
 		default = Harvest.settings.defaultSettings.displayCompassPins,
-		width = "full",
-	})
-	
-	submenuTable:insert({
-		type = "checkbox",
-		name = Harvest.GetLocalization("compassspawnfilter"),
-		tooltip = spawnfiltertooltip,
-		getFunc = Harvest.IsCompassSpawnFilterEnabled,
-		setFunc = Harvest.SetCompassSpawnFilterEnabled,
-		default = Harvest.settings.defaultSettings.compassSpawnFilter,
-		warning = Harvest.GetLocalization("spawnfilterwarning"),
-		disabled = (LibNodeDetection == nil),
 		width = "full",
 	})
 	
@@ -494,6 +389,24 @@ function Settings:InitializeLAM()
 		default = Harvest.settings.defaultSettings.compassDistanceInMeters,
 		disabled = IsCompassDisabled,
 	})
+	
+	local filterTable = setmetatable({}, { __index = table })
+	submenuTable:insert({
+		type = "submenu",
+		name = Harvest.GetLocalization("visiblepintypes"),
+		controls = filterTable,
+	})
+	
+	filterTable:insert(ProfileDropdown("Compass Profile", "GetCompassProfile", "SetCompassProfile"))
+	
+	local IsMapProfile = function()
+		return (FilterProfiles:GetMapProfile() == FilterProfiles:GetCompassProfile())
+	end
+	for _, pinTypeId in ipairs(Harvest.PINTYPES) do
+		if not Harvest.HIDDEN_PINTYPES[pinTypeId] then
+			filterTable:insert(FilterSetting(pinTypeId, "GetCompassProfile", IsMapProfile))
+		end
+	end
 	
 	--[[
 	#####
@@ -513,25 +426,12 @@ function Settings:InitializeLAM()
 	submenuTable:insert({
 		type = "checkbox",
 		name = Harvest.GetLocalization("worldpins"),
-		tooltip = Harvest.GetLocalization("worldpinstooltip"),
+		--tooltip = Harvest.GetLocalization("worldpinstooltip"),
 		getFunc = Harvest.AreWorldPinsVisible,
 		setFunc = function(...)
 			Harvest.SetWorldPinsVisible(...)
-			CALLBACK_MANAGER:FireCallbacks("LAM-RefreshPanel", HarvestMapInRangeMenu.panel)
 		end,
 		default = Harvest.settings.defaultSettings.displayWorldPins,
-		width = "full",
-	})
-	
-	submenuTable:insert({
-		type = "checkbox",
-		name = Harvest.GetLocalization("worldspawnfilter"),
-		tooltip = spawnfiltertooltip,
-		setFunc = Harvest.SetWorldSpawnFilterEnabled,
-		getFunc = Harvest.IsWorldSpawnFilterEnabled,
-		default = Harvest.settings.defaultSettings.worldSpawnFilter,
-		warning = Harvest.GetLocalization("spawnfilterwarning"),
-		disabled = (LibNodeDetection == nil),
 		width = "full",
 	})
 	
@@ -582,6 +482,99 @@ function Settings:InitializeLAM()
 		disabled = IsWorldDisabled,
 	})
 	
+	local filterTable = setmetatable({}, { __index = table })
+	submenuTable:insert({
+		type = "submenu",
+		name = Harvest.GetLocalization("visiblepintypes"),
+		controls = filterTable,
+	})
+	
+	filterTable:insert(ProfileDropdown("3D Profile", "GetWorldProfile", "SetWorldProfile"))
+	
+	local IsMapProfile = function()
+		return (FilterProfiles:GetMapProfile() == FilterProfiles:GetWorldProfile())
+	end
+	for _, pinTypeId in ipairs(Harvest.PINTYPES) do
+		if not Harvest.HIDDEN_PINTYPES[pinTypeId] then
+			filterTable:insert(FilterSetting(pinTypeId, "GetWorldProfile", IsMapProfile))
+		end
+	end
+	
+	--[[
+	#####
+	#####  SPAWN FILTER
+	#####
+	--]]
+	
+	local submenuTable = setmetatable({}, { __index = table })
+	optionsTable:insert({
+		type = "submenu",
+		name = Harvest.GetLocalization("spawnfilter"),
+		controls = submenuTable,
+	})
+	
+	local description = Harvest.GetLocalization("spawnfilterdescription")
+	if not LibNodeDetection then
+		description = ZO_ERROR_COLOR:Colorize(Harvest.GetLocalization("nodedetectionmissing")) .. "\n" .. description
+	end
+	submenuTable:insert({
+		type = "description",
+		title = nil,
+		text = description,
+		width = "full",
+	})
+	
+	submenuTable:insert({
+		type = "checkbox",
+		name = Harvest.GetLocalization("spawnfilter_map"),
+		setFunc = Harvest.SetMapSpawnFilterEnabled,
+		getFunc = Harvest.IsMapSpawnFilterEnabled,
+		default = Harvest.settings.defaultSettings.mapSpawnFilter,
+		disabled = (LibNodeDetection == nil),
+		width = "full",
+	})
+	
+	submenuTable:insert({
+		type = "checkbox",
+		name = Harvest.GetLocalization("spawnfilter_minimap"),
+		setFunc = Harvest.SetMinimapSpawnFilterEnabled,
+		getFunc = Harvest.IsMinimapSpawnFilterEnabled,
+		default = Harvest.settings.defaultSettings.minimapSpawnFilter,
+		disabled = (LibNodeDetection == nil),
+		width = "full",
+	})
+	
+	submenuTable:insert({
+		type = "checkbox",
+		name = Harvest.GetLocalization("spawnfilter_compass"),
+		getFunc = Harvest.IsCompassSpawnFilterEnabled,
+		setFunc = Harvest.SetCompassSpawnFilterEnabled,
+		default = Harvest.settings.defaultSettings.compassSpawnFilter,
+		disabled = (LibNodeDetection == nil),
+		width = "full",
+	})
+	
+	submenuTable:insert({
+		type = "checkbox",
+		name = Harvest.GetLocalization("spawnfilter_world"),
+		setFunc = Harvest.SetWorldSpawnFilterEnabled,
+		getFunc = Harvest.IsWorldSpawnFilterEnabled,
+		default = Harvest.settings.defaultSettings.worldSpawnFilter,
+		disabled = (LibNodeDetection == nil),
+		width = "full",
+	})
+	
+	submenuTable:insert({
+		type = "header",
+		name = Harvest.GetLocalization( "spawnfilter_pintype" )
+	})
+	
+	for _, pinTypeId in ipairs(Harvest.PINTYPES) do
+		if Harvest.HARVEST_NODES[pinTypeId] then
+			submenuTable:insert(CreateSpawnFilterForPinType(pinTypeId))
+		end
+	end
+	
 	--[[
 	#####
 	#####  FARMING HELPER
@@ -591,7 +584,7 @@ function Settings:InitializeLAM()
 	local submenuTable = setmetatable({}, { __index = table })
 	optionsTable:insert({
 		type = "submenu",
-		name = Harvest.GetLocalization("farmandrespawn"),
+		name = Harvest.GetLocalization("visitednodes"),
 		controls = submenuTable,
 	})
 	
@@ -633,7 +626,6 @@ function Settings:InitializeLAM()
 		type = "checkbox",
 		name = Harvest.GetLocalization("hiddenonharvest"),
 		tooltip = Harvest.GetLocalization("hiddenonharvesttooltip"),
-		warning = Harvest.GetLocalization("hiddenonharvestwarning"),
 		getFunc = Harvest.IsHiddenOnHarvest,
 		setFunc = Harvest.SetHiddenOnHarvest,
 		default = Harvest.settings.defaultSettings.hiddenOnHarvest,
@@ -654,28 +646,31 @@ function Settings:InitializeLAM()
 		controls = submenuTable,
 	})
 	
+	--[[
 	submenuTable:insert({
 		type = "description",
 		title = nil,
-		text = Harvest.GetLocalization("extendedpinoptions"),
+		text = Harvest.GetLocalization("filterprofiledescription"),
 		width = "full",
 	})
-
+	-- todo: remove extended pin option and pin filter
+	-- and instead add reference to filter profiles
 	submenuTable:insert({
 		type = "button",
-		name = Harvest.GetLocalization("extendedpinoptionsbutton"),
-		func = function() Harvest.menu:Toggle() end,
+		name = Harvest.GetLocalization("filterprofilebutton"),
+		func = function()
+			Harvest.filterProfiles:Show()
+			SCENE_MANAGER:Show("hud")
+		end,
 		width = "half",
 	})
-	
+	--]]
 	for _, pinTypeId in ipairs( Harvest.PINTYPES ) do
-		if not Harvest.HIDDEN_PINTYPES[pinTypeId] then--and not Harvest.GetPinTypeInGroup(pinTypeId) then
+		if not Harvest.HIDDEN_PINTYPES[pinTypeId] then
 			submenuTable:insert({
 				type = "header",
 				name = Harvest.GetLocalization( "pintype" .. pinTypeId )
 			})
-			submenuTable:insert( CreateFilter( pinTypeId ) )
-			--optionsTable:insert( CreateImportFilter( pinTypeId ) ) -- moved to the HarvestImport folder
 			if pinTypeId ~= Harvest.UNKNOWN then
 				submenuTable:insert( CreateGatherFilter( pinTypeId ) )
 			end
@@ -684,23 +679,22 @@ function Settings:InitializeLAM()
 			submenuTable:insert( CreateSizeSlider( pinTypeId ) )
 		end
 	end
-
-	--optionsTable:insert({
-	--	type = "header",
-	--	name = Harvest.GetLocalization("debugoptions"),
-	--})
-	--[[
-	optionsTable:insert({
-		type = "checkbox",
-		name = Harvest.GetLocalization( "debug" ),
-		tooltip = Harvest.GetLocalization( "debugtooltip" ),
-		getFunc = Harvest.AreDebugMessagesEnabled,
-		setFunc = Harvest.SetDebugMessagesEnabled,
-		default = Harvest.settings.defaultSettings.debug,
-	})
-	]]
+	
 	Harvest.optionsPanel = LAM:RegisterAddonPanel("HarvestMapControl", panelData)
 	LAM:RegisterOptionControls("HarvestMapControl", optionsTable)
 	self.optionsTable = optionsTable
-
+	
+	CallbackManager:RegisterForEvent(Events.FILTER_PROFILE_CHANGED, function(event, profile, pinTypeId, visible)
+		CALLBACK_MANAGER:FireCallbacks("LAM-RefreshPanel", Harvest.optionsPanel)
+	end)
+	
+	local settingsForRefresh = {
+		compassFilterProfile = true,
+		worldFilterProfile = true,
+	}
+	CallbackManager:RegisterForEvent(Events.SETTING_CHANGED, function(event, setting, value)
+		if settingsForRefresh[setting] then
+			CALLBACK_MANAGER:FireCallbacks("LAM-RefreshPanel", Harvest.optionsPanel)
+		end
+	end)
 end

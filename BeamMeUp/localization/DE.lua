@@ -20,7 +20,7 @@ mkstr(SI.TELE_UI_BTN_REFRESH_ALL, "Trefferliste neu laden")
 mkstr(SI.TELE_UI_BTN_UNLOCK_WS, "Unbekannte Wegschreine im aktuellen Gebiet freischalten")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE, "Nur angezeigtes Gebiet")
 mkstr(SI.TELE_UI_BTN_CURRENT_ZONE_DELVES, "Gewölbe im angezeigten Gebiet")
-mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Schatzkarten & Fundberichte & Spuren")
+mkstr(SI.TELE_UI_BTN_RELATED_ITEMS, "Schatzkarten & Fundberichte & Spuren\n|c777777(Rechtsklick für weitere Optionen)")
 mkstr(SI.TELE_UI_BTN_SETTINGS, "Einstellungen")
 mkstr(SI.TELE_UI_BTN_FEEDBACK, "Feedback")
 mkstr(SI.TELE_UI_BTN_FIX_WINDOW, "Fenster fixieren / lösen")
@@ -32,6 +32,7 @@ mkstr(SI.TELE_UI_BTN_ANCHOR_ON_MAP, "Ab- / Andocken an Karte")
 mkstr(SI.TELE_UI_BTN_GUILD_BMU, "BeamMeUp Gilden & Partner Gilden")
 mkstr(SI.TELE_UI_BTN_GUILD_HOUSE_BMU, "BeamMeUp Gildenhaus besuchen")
 mkstr(SI.TELE_UI_BTN_PTF_INTEGRATION, "\"Port to Friend's House\" Integration")
+mkstr(SI.TELE_UI_BTN_DUNGEON_FINDER, "Arenen / Prüfungen / Verliese\n|c777777(Rechtsklick für weitere Optionen)")
 ---------
 --------- List
 mkstr(SI.TELE_UI_SOURCE_GROUP, "Gruppe")
@@ -78,6 +79,11 @@ mkstr(SI.TELE_UI_TOGGLE_LEADS_MAP, "Spuren")
 mkstr(SI.TELE_UI_VIEW_ANTIQUITY, "Zeige Kodex")
 mkstr(SI.TELE_UI_JUMP_IN_FRONT_HOUSE, "Vor das Haus reisen")
 mkstr(SI.TELE_UI_JUMP_IN_HOUSE, "In das Haus reisen")
+mkstr(SI.TELE_UI_TOGGLE_ARENAS, "Solo-Arenen")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_ARENAS, "Gruppen-Arenen")
+mkstr(SI.TELE_UI_TOGGLE_TRIALS, "Prüfungen")
+mkstr(SI.TELE_UI_TOGGLE_GROUP_DUNGEONS, "Verliese")
+mkstr(SI.TELE_UI_TOGGLE_SORT_ACRONYM, "Nach Kürzel sortieren")
 
 mkstr(SI.TELE_UI_SUBMENU_FAVORITES, "Favoriten")
 mkstr(SI.TELE_UI_SUBMENU_MISC, "Verschiedenes")
@@ -111,6 +117,7 @@ mkstr(SI.TELE_CHAT_UNLOCK_WS_DISCOVERED_TOTAL, "Insgesamt entdeckte Wegschreine 
 mkstr(SI.TELE_CHAT_UNLOCK_WS_ALL_KNOWN, "Alle Wegschreine in dieser Zone sind bekannt und können für Reisen genutzt werden.")
 mkstr(SI.TELE_CHAT_UNLOCK_WS_NEED_DISCOVERED, "Die folgenden Wegschreine müssen noch physisch besucht werden:")
 mkstr(SI.TELE_CHAT_SHARING_FOLLOW_LINK, "Folge dem Link ...")
+mkstr(SI.TELE_CHAT_TO_DUNGEON, "Schnellreise in die Instanz:")
 
 
 
@@ -223,6 +230,7 @@ mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE, "Schnellreise in den Hauptwohnsitz")
 mkstr(SI.TELE_KEYBINDING_GUILD_HOUSE_BMU, "BeamMeUp Gildenhaus besuchen")
 mkstr(SI.TELE_KEYBINDING_CURRENT_ZONE, "Schnellreise ins aktuelle Gebiet")
 mkstr(SI.TELE_KEYBINDING_PRIMARY_RESIDENCE_OUTSIDE, "Schnellreise vor den Hauptwohnsitz")
+mkstr(SI.TELE_KEYBINDING_TOGGLE_MAIN_DUNGEON_FINDER, "Arenen / Prüfungen / Verliese")
 
 
 

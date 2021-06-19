@@ -157,6 +157,36 @@ function PortToFriendData.CreateEuDataList()
 		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
 	}
 	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 83,
+		description = "Markarth Bath House\r\n\r\nA relaxing spa and bath house with an arts and craft centre for visitors to unwind. Or pay extra to stay the night in our VIP suite.",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY, PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 15,
+		description = "Treeboat house\r\n\r\nNo one know how an imperial ship ended up in the treetops, but it makes a great treehouse.",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 86,
+		description = "Varlaisvea College\r\n\r\nAn ancient library has been discovered deep inside an Ayleid ruin.",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 55,
+		description = "City on the Moon\r\n\r\nCity Moonbase with housing and an inn under the stars.",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY, PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@seecodenotgames",
+		houseId = 64,
+		description = "Lakemire Water Gardens\r\n\r\nRelaxing hanging gardens and a fish restaurant beneath the Xanmeer.",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
 		name = "@Holy_Mary",
 		houseId = 47,
 		description = "Former Guild House of Just Traders and Tamriel Stock Exchange and current main Guild House of First Trading Guild. All sets, all munduses, different dummies, transmute station.",
@@ -373,6 +403,12 @@ function PortToFriendData.CreateEuDataList()
 		category = {PortToFriend.constants.FILTER_ID_JUMPNRUN, PortToFriend.constants.FILTER_ID_HIGHLIGHT}
 	}
 	list[#list + 1] = {
+		name = "@Nalos",
+		houseId = 62,
+		description = "Pompeji vor dem Ausbruch des Vulkans",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
 		name = "@Grila",
 		houseId = 81,
 		description = "Dschungelhaus",
@@ -394,6 +430,12 @@ function PortToFriendData.CreateEuDataList()
 		name = "@Grila",
 		houseId = 70,
 		description = "Only, in the ancient legends it is stated, that one day an undead shall be chosen to leave the undead asylum, in pilgrimage, to the land of ancient lords, Lordran. Enjoy your visit to beautiful Blighttown, Dukes Archive, Lost Izalith and Darkroot Forest!",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Grila",
+		houseId = 25,
+		description = "Grüne Laube",
 		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
 	}
 	list[#list + 1] = {
@@ -456,11 +498,191 @@ function PortToFriendData.CreateEuDataList()
 		description = "Kleine Taverne am Rande des Weges",
 		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
 	}
+	list[#list + 1] = {
+		name = "@Kyatos",
+		houseId = 81,
+		description = "Just a vampiric styled house. All munduses, about 3/4 crafting set stations collected for now (still in progress), training dummies, ayleid well, vampire thrall/fountain, transmute station",
+		category = {PortToFriend.constants.FILTER_ID_CRAFTING, PortToFriend.constants.FILTER_ID_GUILD, PortToFriend.constants.FILTER_ID_RAID}
+	}
+	list[#list + 1] = {
+		name = "@Nemedon",
+		houseId = 81,
+		description = "Escape House",
+		category = {PortToFriend.constants.FILTER_ID_LABYRINTH, PortToFriend.constants.FILTER_ID_JUMPNRUN}
+	}
+	list[#list + 1] = {
+		name = "@ClevaTreva",
+		houseId = 81,
+		description = "Antiquarians College",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT, PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@ClevaTreva",
+		houseId = 49,
+		description = "Witch Evicted by Covenant Forces",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT, PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@ClevaTreva",
+		houseId = 32,
+		description = "Adventurers beware!",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT, PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@ClevaTreva",
+		houseId = 80,
+		description = "Nord themed Wedding Venue - with Nightclub!",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT, PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@ClevaTreva",
+		houseId = 86,
+		description = "Warden's Retreat & Spa",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT, PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@ClevaTreva",
+		houseId = 59,
+		description = "Museum with scratchbuilt courtyard extension",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 62,
+		description = "Ein Ort für Handwerk und Transmutieren oder einfach zur geistigen Entspannung und zum Abschalten. Inkl. alle Antiquitäten",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT, PortToFriend.constants.FILTER_ID_ROLEPLAY, PortToFriend.constants.FILTER_ID_RAID}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 59,
+		description = "Gemütlich",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 81,
+		description = "Nicht nur für Vampire",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 23,
+		description = "Teppiche mal anders ;)",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 70,
+		description = "Liebe Elsweyr einfach. Gemütlich",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 64,
+		description = "Relaxen, Fische schauen",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 73,
+		description = "Gemütlich",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 83,
+		description = "Dwemer Idylle",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Lokia99",
+		houseId = 78,
+		description = "Gemütliches Stadthaus",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Heynrich1976",
+		houseId = 41,
+		description = "Felsgold-Kaverne/Rockgold Cavern\r\n\r\nRebuild cave ruins with merchants & bank, training & crafing area.",
+		category = {PortToFriend.constants.FILTER_ID_GUILD}
+	}
+	list[#list + 1] = {
+		name = "@Heynrich1976",
+		houseId = 70,
+		description = "Elsweyr-Heldenhalle/Elweyr Heroes Hall\r\n\r\nService Hall with portals to POI.",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Heynrich1976",
+		houseId = 1,
+		description = "Vulkhelwacht Stube/Vulkhel Guard Room\r\n\r\nNice fireplace.",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Heynrich1976",
+		houseId = 13,
+		description = "Eldenwurz Baumhaus/Elden Root Treehouse\r\n\r\nBuild in a second floor.",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@mae_glunenstein",
+		houseId = 64,
+		description = "Argonische Wohlfühloase",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@mae_glunenstein",
+		houseId = 71,
+		description = "Niederländisches Dorf",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@mae_glunenstein",
+		houseId = 70,
+		description = "Dekadentes Katzenhaus ganz ohne Mäuse",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@mae_glunenstein",
+		houseId = 61,
+		description = "Poolhaus in Stein gemeißelt",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Moytira",
+		houseId = 71,
+		description = "Alle Settische, Transmutation, Monturtisch, Übungspuppen. Gemütliches Strandcafé",
+		category = {PortToFriend.constants.FILTER_ID_CRAFTING}
+	}
+	list[#list + 1] = {
+		name = "@Moytira",
+		houseId = 62,
+		description = "Ein Ort des Wissens und Forschens",
+		category = {PortToFriend.constants.FILTER_ID_HIGHLIGHT}
+	}
+	list[#list + 1] = {
+		name = "@Troodon80",
+		houseId = 47,
+		description = "",
+		category = {PortToFriend.constants.FILTER_ID_CRAFTING}
+	}
 end
 
 function PortToFriendData.CreateNaDataList()
 	local i = 1
 	local list = PortToFriendData.naData
+	list[#list + 1] = {
+		name = "@craybest",
+		houseId = 78,
+		description = "The new abandoned Ravenhill Manor, up in the Skyrim ravines. It's still a mystery what truly happened in there, but you can feel an uneasy feeling whenever you get close to it. Signs of failed summonings, corpses lying around in a darkness that envelopps the area. what is its true story? maybe you can help finally solving the mystery, if you're brave enough to enter, that is.",
+		category = {PortToFriend.constants.FILTER_ID_ROLEPLAY}
+	}
+	list[#list + 1] = {
+		name = "@Gadolyah",
+		houseId = 47,
+		description = "Maw of Lorkaj Training Centre",
+		category = {PortToFriend.constants.FILTER_ID_RAID}
+	}
 end
 
 function PortToFriendData.CreateDataList()

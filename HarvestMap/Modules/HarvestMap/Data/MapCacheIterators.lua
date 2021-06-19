@@ -107,7 +107,7 @@ end
 -- used for the nearby map pins display
 -- updates the position, adds newly visible pins to the output-queue and
 -- removes newly out of range pins from the output-queue
-function MapCache:SetPrevAndCurVisibleNodesToTable(previousX, previousY, currentX, currentY, visibleDistanceInMeters, queue)
+function MapCache:SetPrevAndCurVisibleNodesToTable(previousX, previousY, currentX, currentY, visibleDistanceInMeters, filterProfile, queue)
 	if not Harvest.AreAnyMapPinsVisible() then return end
 	self.time = GetFrameTimeSeconds()
 	if self.mapMetaData.isBlacklisted then return end
@@ -144,7 +144,7 @@ function MapCache:SetPrevAndCurVisibleNodesToTable(previousX, previousY, current
 					for _, pinTypeId in ipairs(Harvest.PINTYPES) do
 						division = self.divisions[pinTypeId][(i + j * self.numDivisions) % self.TotalNumDivisions]
 						if division then
-							if Harvest.IsMapPinTypeVisible(pinTypeId) then
+							if filterProfile[pinTypeId] then
 								queue:AddDivision((i + j * self.numDivisions) % self.TotalNumDivisions, pinTypeId)
 							end
 						end
@@ -170,7 +170,7 @@ function MapCache:SetPrevAndCurVisibleNodesToTable(previousX, previousY, current
 					for _, pinTypeId in ipairs(Harvest.PINTYPES) do
 						division = self.divisions[pinTypeId][(i + j * self.numDivisions) % self.TotalNumDivisions]
 						if division then
-							if Harvest.IsMapPinTypeVisible(pinTypeId) then
+							if filterProfile[pinTypeId] then
 								queue:RemoveDivision((i + j * self.numDivisions) % self.TotalNumDivisions, pinTypeId)
 							end
 						end
@@ -182,9 +182,7 @@ function MapCache:SetPrevAndCurVisibleNodesToTable(previousX, previousY, current
 	return true
 end
 
-function MapCache:ForNodesInRange(worldX, worldY, heading, visibleDistanceInMeters, validPinTypes, callback, ...)
-	if self.mapMetaData.isBlacklisted then return end
-	if not self.zoneMeasurement then return end
+function MapCache:ForNodesInRange(worldX, worldY, heading, visibleDistanceInMeters, callback, ...)
 	
 	local maxDistance = visibleDistanceInMeters + 0.5 * self.DivisionWidthInMeters
 	local maxDistanceSquared = maxDistance * maxDistance
@@ -211,16 +209,7 @@ function MapCache:ForNodesInRange(worldX, worldY, heading, visibleDistanceInMete
 			dy = centerY - worldY
 			if dx * dirX + dy * dirY < distToCenter and dx * dx + dy * dy < maxDistanceSquared then
 				index = (i + j * self.numDivisions) % self.TotalNumDivisions
-				for _, pinTypeId in pairs(validPinTypes) do
-					division = self.divisions[pinTypeId][index]
-					if division then
-						for _, nodeId in pairs(division) do
-							if (not self.hiddenTime[nodeId]) then
-								callback(self, nodeId, ...)
-							end
-						end
-					end
-				end
+				callback(index, ...)
 			end
 		end
 	end

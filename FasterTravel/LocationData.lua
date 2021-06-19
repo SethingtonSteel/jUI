@@ -31,6 +31,7 @@ local _factionZoneOrderLookup = {
 		"elsweyr", "southernelsweyr", "tideholm", 
 		"westernskyrim", "blackreach", 
 		"u28_blackreach", "reach", 
+		"blackwood",
 	},
 	[ALLIANCE_WORLD] = { "tamriel", "mundus", }
 }
@@ -103,8 +104,9 @@ local _locationsList = {
 	{["subzone"] = "westernskyrim",		["zone"] = "skyrim",			["mapIndex"] = 38,	["zoneIndex"] = 743,			["name"] = "Western Skyrim",				["key"] = "skyrim/westernskyrim",				["tile"] = "art/maps/skyrim/westernskyrim_base_0.dds",		},
 	{["subzone"] = "blackreach",		["zone"] = "skyrim",			["mapIndex"] = 39,	["zoneIndex"] = 744,			["name"] = "Blackreach: Greymoor Caverns",	["key"] = "skyrim/blackreach",					["tile"] = "art/maps/skyrim/blackreach_base_0.dds",			},
 --	{["subzone"] = "blackreach",		["zone"] = "skyrim",			["mapIndex"] = 40,	["zoneIndex"] = 745,			["name"] = "Blackreach",					["key"] = "skyrim/blackreach",					["tile"] = "art/maps/skyrim/blackreach_base_0.dds",			},
-	{["subzone"] = "u28_blackreach",	["zone"] = "reach",				["mapIndex"] = 41,	["zoneIndex"] = 784,			["name"] = "Blackreach: Arkthzand Cavern",	["key"] = "reach/u28_blackreach",				["tile"] = "art/maps/reach/U28_blackreach_base_0.dds",		},
-	{["subzone"] = "reach",				["zone"] = "reach",				["mapIndex"] = 42,	["zoneIndex"] = 783,			["name"] = "The Reach",						["key"] = "reach/reach",						["tile"] = "art/maps/reach/reach_base_0.dds",				},
+	{["subzone"] = "u28_blackreach",	["zone"] = "reach",				["mapIndex"] = 41,	["zoneIndex"] = 783,			["name"] = "Blackreach: Arkthzand Cavern",	["key"] = "reach/u28_blackreach",				["tile"] = "art/maps/reach/U28_blackreach_base_0.dds",		},
+	{["subzone"] = "reach",				["zone"] = "reach",				["mapIndex"] = 42,	["zoneIndex"] = 784,			["name"] = "The Reach",						["key"] = "reach/reach",						["tile"] = "art/maps/reach/reach_base_0.dds",				},
+	{["subzone"] = "blackwood",			["zone"] = "blackwood",			["mapIndex"] = 43,	["zoneIndex"] = 834,			["name"] = "Blackwood",						["key"] = "reach/reach",						["tile"] = "art/maps/blackwood/blackwood_base_0.dds",		},
 	{ -- manually added
 		["zoneIndex"] = 99,
 		["name"] = "Eyevea",
@@ -118,11 +120,27 @@ local _locationsList = {
 	}
 }
 
+-- add localized zone names
+for i, v in ipairs(_locationsList) do
+	v.name = Utils.FormatStringCurrentLanguage(GetZoneNameByIndex(v.zoneIndex))
+end
+
 local ZONE_INDEX_CYRODIIL = 37
 
 local _locations
 local _locationsLookup
 local _zoneFactionLookup
+
+local _zoneIdReverseLookup = {}
+for zoneIndex=0, GetNumZones() do
+    local zoneId = GetZoneId(zoneIndex)
+	local zoneName = Utils.FormatStringCurrentLanguage(GetZoneNameById(zoneId))
+	_zoneIdReverseLookup[zoneName] = zoneId
+end
+	
+local function GetZoneIdByName(name)
+	return _zoneIdReverseLookup[name]
+end
 
 local function GetMapZone(path)
 	path = path or GetMapTileTexture()
@@ -360,6 +378,7 @@ end
 
 local Data = {}
 Data.ZONE_INDEX_CYRODIIL = ZONE_INDEX_CYRODIIL
+Data.GetZoneIdByName = GetZoneIdByName
 Data.GetMapZoneKey = GetMapZoneKey
 Data.GetList = GetList
 Data.GetLookup = GetLookup

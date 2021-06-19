@@ -1,27 +1,18 @@
+-----------------------------------------
+-- LOCALIZED GLOBAL VARIABLES
+-----------------------------------------
+
 local ZGV = _G.ZGV
-
------------------------------------------
--- INFORMATION
------------------------------------------
-
------------------------------------------
--- LOCAL REFERENCES
------------------------------------------
-
-local tinsert,tremove,sort,min,max,floor,type,pairs,ipairs,class = table.insert,table.remove,table.sort,math.min,math.max,math.floor,type,pairs,ipairs,_G.class
-local print = ZGV.print
-local CHAIN = ZGV.Utils.ChainCall
-local GetMapNameByTexture = ZGV.Utils.GetMapNameByTexture
-local L = ZGV.L
-
------------------------------------------
--- LOCAL VARIABLES
------------------------------------------
-
+local GetZoneNameByIndex = _G.GetZoneNameByIndex
+local GetCurrentMapZoneIndex = _G.GetCurrentMapZoneIndex
 local Viewer
 local LONG_STEP_INTERVAL = 1
 local SHORT_STEP_INTERVAL = .1
 local completeionInterval = LONG_STEP_INTERVAL
+local tinsert,tremove,type,ipairs,class = table.insert,table.remove,type,ipairs,_G.class
+local CHAIN = ZGV.Utils.ChainCall
+local L = ZGV.L
+local GPS = LibGPS2
 
 -----------------------------------------
 -- SAVED REFERENCES
@@ -52,9 +43,11 @@ function ZGV:PreviousStep(fast,quiet)
 
 	-- drop 'backed' history states
 	local history = self.sv.char.stephistory
-	for i=1,backed do tremove(history) end
+	for _ = 1, backed do
+		tremove(history)
+	end
 
-	if #history==0 then
+	if #history == 0 then
 		self.fastforward = false
 		self.pause = true
 	else
@@ -78,12 +71,12 @@ function ZGV:SkipStep(fast,quiet)
 	if self.force_pause then  -- forced next+1 step
 		step=self.CurrentGuide.steps[self.CurrentStepNum+1]
 		self.CurrentStep.needsreload=nil
-	end  -- HACK.
+	end -- HACK.
 
-	if not step then  -- when not forced, that is: usually.
+	if not step then -- when not forced, that is: usually.
 		local step2,stepnum,guide
 
-		local instantskip = nil			--TODO
+		local instantskip = nil -- TODO
 
 		if fast and instantskip then
 			step2,stepnum,guide = self.CurrentStep:GetNextCompletableStep()
@@ -91,7 +84,7 @@ function ZGV:SkipStep(fast,quiet)
 			step2,stepnum,guide = self.CurrentStep:GetNextValidStep()
 		end  -- always returns a step, unless we're at the end.
 
-		if guide then		-- TODO maybe don't ask to advance, just do it?
+		if guide then -- TODO maybe don't ask to advance, just do it?
 			guide = self:GetGuideByTitle(guide)
 			guide:AdvertiseWithPopup()
 			return
@@ -104,8 +97,7 @@ function ZGV:SkipStep(fast,quiet)
 		self:Debug("SkipStep to ".. step.num..(fast and ' (fast)' or ''))
 
 		if step.num == #self.CurrentGuide.steps then
-			-- final step
-			self.pause = true
+			self.pause = true -- final step
 		else
 			self.pause = not fast
 		end
@@ -121,7 +113,7 @@ function ZGV:SkipStep(fast,quiet)
 		if self.CurrentGuide.next then
 			self:SetGuide(self.CurrentGuide.next,1)
 			return
-		elseif self.CurrentGuide.steps and #self.CurrentGuide.steps>1 then
+		elseif self.CurrentGuide.steps and #self.CurrentGuide.steps > 1 then
 			if not self.EndGuidePopup then
 				local popup = ZGV.Popup:New("Zygor_EndGuide_Popup")
 				local BOTTOM = _G.BOTTOM
@@ -182,27 +174,27 @@ function ZGV:GetPreviousValidStep()
 end
 
 function ZGV:FocusStep(num,quiet)
-	if type(num)=="string" and self.CurrentGuide.steplabels then
-		local s=num
-		num=self.CurrentGuide.steplabels[num]
+	if type(num) == "string" and self.CurrentGuide.steplabels then
+		local s = num
+		num = self.CurrentGuide.steplabels[num]
 		if num then
-			num=num[1]
+			num = num[1]
 		end
 
 		self:Debug("FocusStep: "..s.." = "..tostring(num))
 	end
-	if type(num)=="table" then
+	if type(num) == "table" then
 		num = num.num
 	end
-	if not num or num<=0 then return end
+	if not num or num <= 0 then return end
 	if not self.CurrentGuide then return end
 	if not self.CurrentGuide.steps then return end
-	if num>#self.CurrentGuide.steps then return end
+	if num > #self.CurrentGuide.steps then return end
 
 	self:Debug("FocusStep "..num..(quiet and " (quiet)" or ""))
 
 	-- Record step into history
-	if self.LastSkip>0 and self.CurrentStep then
+	if self.LastSkip > 0 and self.CurrentStep then
 		tinsert(self.sv.char.stephistory,self.CurrentStep.num)
 	end
 
@@ -223,9 +215,9 @@ function ZGV:FocusStep(num,quiet)
 
 	self.stepchanged = true
 
-	local stepcomplete,steppossible = self.CurrentStep:IsComplete()
+	local stepcomplete,_ = self.CurrentStep:IsComplete()
 	if self.pause then
-		self.LastSkip=1
+		self.LastSkip = 1
 		if not stepcomplete then
 			self:Debug("unpausing")
 			self.pause = nil
@@ -268,8 +260,7 @@ function ZGV:SetWaypoint(what)
 			for gi,goal in ipairs(self.CurrentStep.goals) do
 				if goal.x and goal.y and not goal.force_noway then
 					ZGV.Pointer:SetWaypoint(goal.map or nil,goal.floor or 0,goal.x,goal.y,{title = goal:GetText(),goalnum = gi})
-					set=true
-					--break
+					set = true
 				end
 			end
 			-- point to first completable
@@ -299,8 +290,8 @@ function ZGV:TryToCompleteStep(force)
 	self.completionelapsed = 0
 
 	stepcomplete,steppossible = self.CurrentStep:IsComplete()
-	if not self.CurrentStep:AreRequirementsMet() and self.stepMatchedReqs~=self.CurrentStep then
-		stepcomplete,steppossible=true,true
+	if not self.CurrentStep:AreRequirementsMet() and self.stepMatchedReqs ~= self.CurrentStep then
+		stepcomplete,steppossible = true,true
 	end
 
 	completing = stepcomplete
@@ -320,7 +311,7 @@ function ZGV:TryToCompleteStep(force)
 	end
 
 	-- Is one of the goals a confirm that is not completed?
-	for i,goal in ipairs(self.CurrentStep.goals) do
+	for _,goal in ipairs(self.CurrentStep.goals) do
 		if goal.action == "confirm" and goal.always then
 			confirmfound = true
 			if goal.status == "complete" then
@@ -403,12 +394,14 @@ end
 function ZGV:GetGuideByTitle(title)
 	if not title then return end
 	title = ZGV:SanitizeGuideTitle(title)  -- code-side fix for "common" guides.
-	for i,v in ipairs(self.registeredguides) do
-		if v.title == title then return v end
+	for _,v in ipairs(self.registeredguides) do
+		if v.title == title then
+			return v
+		end
 	end
 end
 
-function ZGV:MaybeSuggestNextGuide()		-- TODO Assume all guides must be completed for the time being. Moving to next guides is handled with a |next line
+function ZGV:MaybeSuggestNextGuide() -- TODO Assume all guides must be completed for the time being. Moving to next guides is handled with a |next line
 	if true then return end
 	-- And now check if the next guide is up for suggesting.
 	-- However, don't bother suggesting others when we're exclusive and still suggested.
@@ -430,8 +423,8 @@ end
 
 function ZGV:FindSuggestedGuides()
 	local suggested = {}
-	for i,guide in ipairs(self.registeredguides) do
-		if guide:GetStatus()=="SUGGESTED" then
+	for _,guide in ipairs(self.registeredguides) do
+		if guide:GetStatus() == "SUGGESTED" then
 			if guide.condition_suggested_exclusive then
 				return {guide}
 			else
@@ -453,7 +446,7 @@ function ZGV:RegisterGuide(title,data,extra)
 	title = self:SanitizeGuideTitle(title)
 
 	local guide = ZGV.GuideProto:New(title,data,extra)
-	
+
 	if guide then
 		guide:Parse(false)
 	end
@@ -497,14 +490,14 @@ function ZGV:SetGuide(name,step)
 	local err
 
 	-- Get the guide object
-	if type(name)=="number" then
+	if type(name) == "number" then
 		local num = name
 		if self.registeredguides[num] then
 			guide = self.registeredguides[num]
 		else
 			err = "No guide by that number"
 		end
-	elseif type(name)=="string" then
+	elseif type(name) == "string" then
 		guide = self:GetGuideByTitle(name)
 		if not guide then
 			err = "No guide by that title"
@@ -515,12 +508,12 @@ function ZGV:SetGuide(name,step)
 
 	if guide then
 		assert(class(guide) == "Guide","Must be a Guide object to set guide.")
-		if guide.steps and step>#guide.steps then
+		if guide.steps and step > #guide.steps then
 			step = 1
 		end  -- safety check
 		local status,msg = guide:GetStatus()
 		-- Use title_short instead of title because matching with backslashes in it seems off?
-		if status=="INVALID" and not ZGV.db.char.goodbadguides[guide.title_short] then
+		if status == "INVALID" and not ZGV.db.char.goodbadguides[guide.title_short] then
 			if not self.BadGuidePopup then
 				local popup = ZGV.Popup:New("Zygor_BadGuide_Popup")
 
@@ -529,7 +522,7 @@ function ZGV:SetGuide(name,step)
 					ZGV:SetGuide(me.guide,me.step)
 				end
 
-				popup.OnDecline = function(me)
+				popup.OnDecline = function()
 					ZGV.GuideMenu:Show()
 				end
 
@@ -538,8 +531,8 @@ function ZGV:SetGuide(name,step)
 
 			self.BadGuidePopup:SetText(L['static_badguide']:format(guide.title_short,msg or ""))
 
-			self.BadGuidePopup.guide=guide
-			self.BadGuidePopup.step=step
+			self.BadGuidePopup.guide = guide
+			self.BadGuidePopup.step = step
 
 			self.BadGuidePopup:Show()
 
@@ -551,7 +544,7 @@ function ZGV:SetGuide(name,step)
 			self.CurrentGuide:Unload()
 		end
 
-		guide:Parse(true)		-- Make sure this is parsed
+		guide:Parse(true) -- Make sure this is parsed
 
 		if guide.steps and #guide.steps > 0 and not guide.parse_failed then
 			local name = guide.title
@@ -600,12 +593,19 @@ function ZGV:GuideLoadStartup()
 		if gs['LEVELING'] then
 			gs = gs['LEVELING']
 		end
-		if not gs or #gs == 0 then
-			self:SetGuide(ZGV:SanitizeGuideTitle("LEVELING/"..GetZoneNameByIndex(GetCurrentMapZoneIndex())))
-			return
-		elseif #gs==1 then
-			local g=gs[1]
-			self:SetGuide(g)
+		if GetZoneNameByIndex(GetCurrentMapZoneIndex()) == '' then
+			local gps = GPS:GetCurrentMapMeasurements()
+			if gps.mapIndex == Enums.IsleOfBalfieraMap then -- Temporary special case for Isle of Balfiera
+				self:SetGuide(ZGV:SanitizeGuideTitle("LEVELING/Blackwood"))
+			end
+		else
+			if not gs or #gs == 0 then
+				self:SetGuide(ZGV:SanitizeGuideTitle("LEVELING/"..GetZoneNameByIndex(GetCurrentMapZoneIndex())))
+				return
+			elseif #gs == 1 then
+				local g = gs[1]
+				self:SetGuide(g)
+			end
 		end
 	end
 

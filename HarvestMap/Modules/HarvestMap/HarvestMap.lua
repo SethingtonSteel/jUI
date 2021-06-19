@@ -7,11 +7,13 @@ if LibDebugLogger then
 	local logFunctionNames = {"Verbose", "Debug", "Info", "Warn", "Error"}
 	for _, logFunctionName in pairs(logFunctionNames) do
 		logFunctions[logFunctionName] = function(self, ...) return self.logger[logFunctionName](self.logger, ...) end
+		Harvest[logFunctionName] = logFunctions[logFunctionName]
 	end
 else
 	local logFunctionNames = {"Verbose", "Debug", "Info", "Warn", "Error"}
 	for _, logFunctionName in pairs(logFunctionNames) do
 		logFunctions[logFunctionName] = function(...) end
+		Harvest[logFunctionName] = logFunctions[logFunctionName]
 	end
 end
 	
@@ -57,7 +59,7 @@ It is not compatible with HarvestMap, please uninstall the HarvestMap-Import add
 	
 	Harvest:InitializeModules()
 	
-	Harvest.logger:Info(Harvest.GenerateSettingList())
+	Harvest:Info(Harvest.GenerateSettingList())
 	
 	-- initialize bonus features
 	if Harvest.IsHeatmapActive() then

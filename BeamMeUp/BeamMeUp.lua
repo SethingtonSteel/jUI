@@ -122,11 +122,12 @@ function Teleporter.PortalHandlerKeyPress(index, favorite)
 			Teleporter.createTable(5)
 		elseif index == 9 then -- active quests
 			Teleporter.createTable(9)
+		elseif index == 6 then -- dungeon finder
+			Teleporter.createTableDungeons()
 		else
 			Teleporter.createTable(0) -- all
 		end
 	else
-	
 		-- window is shown
 		if index == 11 then -- Refresh list
 			Teleporter.refreshListAuto()
@@ -260,6 +261,7 @@ end
 
 function Teleporter.HideTeleporter()
     Teleporter.win.Main_Control:SetHidden(true) -- hide main window
+	ClearMenu() -- close all submenus
 	
 	if SCENE_MANAGER:IsShowing("worldMap") then
 		-- show button only when main window is hidden and world map is open
@@ -320,6 +322,7 @@ function Teleporter.initializeBlacklist()
 	if mTeleSavedVars.hideOthers then
 		Teleporter.joinBlacklist(Teleporter.blacklistOthers)
 		Teleporter.joinBlacklist(Teleporter.blacklistRefuges)
+		Teleporter.joinBlacklist(Teleporter.blacklistSoloArenas)
 	end
 	
 	-- hide PVP zones
@@ -334,6 +337,7 @@ function Teleporter.initializeBlacklist()
 		Teleporter.joinBlacklist(Teleporter.blacklistGroupDungeons)
 		Teleporter.joinBlacklist(Teleporter.blacklistRaids)
 		Teleporter.joinBlacklist(Teleporter.blacklistGroupZones)
+		Teleporter.joinBlacklist(Teleporter.blacklistGroupArenas)
 	end
 	
 	-- hide Houses
@@ -343,22 +347,15 @@ function Teleporter.initializeBlacklist()
 	
 	-- hide Delves
 	if mTeleSavedVars.hideDelves then
-		Teleporter.joinBlacklist(Teleporter.blacklistDelves)
+		Teleporter.joinBlacklist(Teleporter.getAllDelves())
 	end
 	
 	-- hide Public Dungeons
 	if mTeleSavedVars.hidePublicDungeons then
-		Teleporter.joinBlacklist(Teleporter.blacklistPublicDungeons)
+		Teleporter.joinBlacklist(Teleporter.getAllPublicDungeons())
 	end
 end
 
-function Teleporter.joinBlacklist(list)
-	-- join the lists to global blacklist (merge to HashMap instead to a list)
-   for index, value in ipairs(list) do
-      Teleporter.blacklist[value] = true
-   end 
-
-end
 
 function Teleporter.initializeCategoryMap()
 	Teleporter.CategoryMap = {}
@@ -366,50 +363,60 @@ function Teleporter.initializeCategoryMap()
 	-- 1 = Delves, 2 = Public Dungeons, 3 = Houses, 4 = 4 men Group Dungeons, 5 = 12 men Raids (Trails), 6 = Group Zones (Dragonstar, Group Dungeons in Craglorn)
 	
 	-- Delves
-	for index, value in pairs(Teleporter.categoryDelves) do
+	for index, value in pairs(Teleporter.getAllDelves()) do
 		Teleporter.CategoryMap[value] = 1
 	end
 	
 	-- Public Dungeons
-	for index, value in pairs(Teleporter.categoryPublicDungeons) do
+	for index, value in pairs(Teleporter.getAllPublicDungeons()) do
 		Teleporter.CategoryMap[value] = 2
 	end
 
 	-- Houses
-	for index, value in pairs(Teleporter.categoryHouses) do
+	for index, value in pairs(Teleporter.blacklistHouses) do
 		Teleporter.CategoryMap[value] = 3
 	end
 	
 	-- 4 men Group Dungeons
-	for index, value in pairs(Teleporter.categoryGroupDungeons) do
+	for index, value in pairs(Teleporter.blacklistGroupDungeons) do
 		Teleporter.CategoryMap[value] = 4
 	end
 	
 	-- 12 men Raids (Trials)
-	for index, value in pairs(Teleporter.categoryRaids) do
+	for index, value in pairs(Teleporter.blacklistRaids) do
 		Teleporter.CategoryMap[value] = 5
 	end
 	
 	-- Group Zones
-	for index, value in pairs(Teleporter.categoryGroupZones) do
+	for index, value in pairs(Teleporter.blacklistGroupZones) do
 		Teleporter.CategoryMap[value] = 6
 	end
 	
+	-- Group Arenas
+	for index, value in pairs(Teleporter.blacklistGroupArenas) do
+		Teleporter.CategoryMap[value] = 7
+	end
+	
+	-- Solo Arenas
+	for index, value in pairs(Teleporter.blacklistSoloArenas) do
+		Teleporter.CategoryMap[value] = 8
+	end
+	
 	-- Overland Zones
-	for parentZoneId, value in pairs(Teleporter.whitelistDelves) do
+	for parentZoneId, tableObject in pairs(Teleporter.overlandDelvesPublicDungeons) do
 		Teleporter.CategoryMap[parentZoneId] = 9
 	end
 end
 
 function Teleporter.initializeParentMap()
 	Teleporter.ParentMap = {}
-	-- go over list Teleporter.whitelistDelves and add every zone with its parent [Delve zoneId] -> [Parent map zoneId]
-	
-	for parentZoneId, list in pairs(Teleporter.whitelistDelves) do
-		if list ~= nil then
-			for index, value in ipairs(list) do
-				Teleporter.ParentMap[value] = parentZoneId
-			end
+	-- go over global list and add every zone with its parent [Delve/PD zoneId] -> [Parent map zoneId]
+	for parentZoneId, tableObject in pairs(Teleporter.overlandDelvesPublicDungeons) do
+		for index, zoneId in ipairs(tableObject.delves) do
+			Teleporter.ParentMap[zoneId] = parentZoneId
+		end
+		for index, zoneId in ipairs(tableObject.publicDungeons) do
+			Teleporter.ParentMap[zoneId] = parentZoneId
 		end
 	end
 end
@@ -574,6 +581,11 @@ local function OnAddOnLoaded(eventCode, addOnName)
 		["wayshrineTravelAutoConfirm"] = false,
 		["currentZoneAlwaysTop"] = false,
 		["hideOwnHouses"] = false,
+		["df_showArenas"] = true,
+		["df_showGroupArenas"] = true,
+		["df_showDungeons"] = true,
+		["df_showTrials"] = true,
+		["df_sortByAcronym"] = false,
     }
     Teleporter.DefaultsChar = {
 		["prioritizationSource"] = {TELEPORTER_SOURCE_INDEX_FRIEND, TELEPORTER_SOURCE_INDEX_GUILD1, TELEPORTER_SOURCE_INDEX_GUILD2, TELEPORTER_SOURCE_INDEX_GUILD3, TELEPORTER_SOURCE_INDEX_GUILD4, TELEPORTER_SOURCE_INDEX_GUILD5} -- default: friends - guild1 - guild2 - guild3 - guild4 - guild5

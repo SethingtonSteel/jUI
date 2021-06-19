@@ -2,8 +2,9 @@ ProvinatusConfig = {
   Name = "Provinatus",
   FriendlyName = "Provinatus",
   Author = "@AlbinoPython",
-  Version = "2.1.8",
+  Version = "2.1.15",
   Website = "http://www.esoui.com/downloads/info1943-Provinatus.html",
+  Feedback = "https://www.esoui.com/portal.php?uid=25876&a=listbugs",
   SlashCommand = "/provinatus",
   AccountWideVars = true,
   Antiquities = {
@@ -62,7 +63,9 @@ ProvinatusConfig = {
   HarvestMap = {
     Enabled = false,
     Size = 24,
-    Alpha = 1
+    Alpha = 1,
+    Distance = 100,
+    OnlySpawned = true
   },
   LoreBooks = {
     Enabled = false,

@@ -1,18 +1,12 @@
+-----------------------------------------
+-- LOCALIZED GLOBAL VARIABLES
+-----------------------------------------
+
 local ZGV = _G.ZGV
-
------------------------------------------
--- LOCAL REFERENCES
------------------------------------------
-
-local zginherits, type = table.zginherits, type
-
------------------------------------------
--- LOCAL VARIABLES
------------------------------------------
-
 local Class = {}
-local STRICT_CLASSES=false
+local STRICT_CLASSES = false
 local allowed_nils
+local zginherits, type = table.zginherits, type
 
 -----------------------------------------
 -- SAVED REFERENCES

@@ -26,7 +26,7 @@ http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 
 if not Dustman then return end
 
-local ADDON_VERSION = "10.6"
+local ADDON_VERSION = "10.8"
 local ADDON_WEBSITE = "http://www.esoui.com/downloads/info97-Dustman.html"
 local ADDON_DONATIONS = "https://www.esoui.com/downloads/fileinfo.php?id=97#donate"
 
@@ -60,6 +60,15 @@ function Dustman.CreateSettingsMenu(defaults)
 		local qualName = color:Colorize(GetString("SI_ITEMQUALITY", i))
 		qualityChoices[i] = qualName
 		reverseQualityChoices[qualName] = i
+	end
+	
+	local jewMasterWritsQualityChoices = {}
+	local jewMasterWritsReverseQualityChoices = {}
+	for i = 0, ITEM_QUALITY_LEGENDARY do
+		local color = GetItemQualityColor(i)
+		local qualName = color:Colorize(GetString("SI_ITEMQUALITY", i))
+		jewMasterWritsQualityChoices[i] = qualName
+		jewMasterWritsReverseQualityChoices[qualName] = i
 	end
 	
 	local function GetIdFromName(choice)
@@ -1327,6 +1336,27 @@ function Dustman.CreateSettingsMenu(defaults)
 					setFunc = function(choice) GetSettings().housingRecipesQuality = reverseQualityChoices[choice] end,
 					disabled = function() return not GetSettings().housingRecipes end,
 					default = qualityChoices[defaults.housingRecipesQuality],
+				},
+				{
+                    type = "divider",
+                },
+				{
+					type = "checkbox",
+					name = GetString(DUSTMAN_JEWELRY_MASTER_WRITS),
+					tooltip = GetString(DUSTMAN_JEWELRY_MASTER_WRITS_DESC),
+					getFunc = function() return GetSettings().jewelryMasterWrits end,
+					setFunc = function(state) GetSettings().jewelryMasterWrits = state end,
+					default = defaults.jewelryMasterWrits,
+				},
+				{
+					type = "dropdown",
+					name = GetString(DUSTMAN_QUALITY),
+					tooltip = GetString(DUSTMAN_QUALITY_DESC),
+					choices = { unpack( jewMasterWritsQualityChoices, 3, 6 ) },
+					getFunc = function() return jewMasterWritsQualityChoices[GetSettings().jewelryMasterWritsQuality] end,
+					setFunc = function(choice) GetSettings().jewelryMasterWritsQuality = jewMasterWritsReverseQualityChoices[choice] end,
+					disabled = function() return not GetSettings().jewelryMasterWrits end,
+					default = jewMasterWritsQualityChoices[defaults.jewelryMasterWritsQuality],
 				},
 			},
 		},

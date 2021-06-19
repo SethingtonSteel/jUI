@@ -264,14 +264,16 @@ LUIE.Data.Tooltips = {
     ----------------------------------------------------------------
 
     -- Player Basic
+
+    Innate_Mounted                                  = GetString(SI_LUIE_SKILL_MOUNTED_TP),
+    Innate_Mounted_Passenger                        = GetString(SI_LUIE_SKILL_MOUNTED_PASSENGER_TP),
+    Innate_Vanity_Pet                               = GetString(SI_LUIE_SKILL_COLLECTIBLE_VANITY_PET_TP),
     Innate_Immobilize_Immunity                      = GetString(SI_LUIE_SKILL_IMMOBILIZE_IMMUNITY_TP),
     Innate_Snare_Immobilize_Immunity                = GetString(SI_LUIE_SKILL_SNARE_IMMOBILIZE_IMMUNITY_TP),
     Innate_Dodge_Fatigue                            = GetString(SI_LUIE_SKILL_DODGE_FATIGUE_TP),
-    Innate_Hidden                                   = GetString(SI_LUIE_SKILL_HIDDEN_TP),
     Innate_Invisible                                = GetString(SI_LUIE_SKILL_INVISIBLE_TP),
     --Innate_Sprint                                   = GetString(SI_LUIE_SKILL_SPRINT_TP),
     --Innate_Gallop                                   = GetString(SI_LUIE_SKILL_GALLOP_TP),
-    --Innate_Brace                                    = GetString(SI_LUIE_SKILL_BRACE_TP),
     Innate_Resurrection_Immunity                    = GetString(SI_LUIE_SKILL_RESURRECTION_IMMUNITY_TP),
     Innate_Taunt                                    = GetString(SI_LUIE_SKILL_TAUNT_TP),
     Innate_Disguised                                = GetString(SI_LUIE_SKILL_DISGUISE_TP),
@@ -314,8 +316,16 @@ LUIE.Data.Tooltips = {
     -- CHAMPION POINT SKILLS ---------------------------------------
     ----------------------------------------------------------------
 
+    -- Craft
     Champion_Shadowstrike                           = GetString(SI_LUIE_SKILL_SHADOWSTRIKE_TP),
+
+    -- Warfare
+    Champion_Enlivening_Overflow                    = GetString(SI_LUIE_SKILL_ENLIVENING_OVERFLOW_TP),
     Champion_Foresight                              = GetString(SI_LUIE_SKILL_FORESIGHT_TP),
+
+    -- Fitness
+    Champion_Expert_Evasion                         = GetString(SI_LUIE_SKILL_EXPERT_EVASION_TP),
+    Champion_Winded                                 = GetString(SI_LUIE_SKILL_WINDED_TP),
     Champion_Unchained                              = GetString(SI_LUIE_SKILL_UNCHAINED_TP),
 
     ----------------------------------------------------------------
@@ -357,9 +367,9 @@ LUIE.Data.Tooltips = {
     Food_Vendor_Health                              = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:57637:308:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
     Food_Vendor_Magicka                             = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:57631:134:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
     Food_Vendor_Stamina                             = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71252:308:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
-    Food_Cyrodilic_Field_Bar                        = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71076:307:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
-    Food_Cyrodilic_Field_Tack                       = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71074:307:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
-    Food_Cyrodilic_Field_Treat                      = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71075:307:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
+    Food_Cyrodilic_Field_Bar                        = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71076:368:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
+    Food_Cyrodilic_Field_Tack                       = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71074:368:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
+    Food_Cyrodilic_Field_Treat                      = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71075:368:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
 
     -- Crown Food
     Food_Crown_Crate_Meal                           = string.gsub(select(3, GetItemLinkOnUseAbilityInfo('|H1:item:94437:123:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h')), GetString(SI_LUIE_SKILL_REMOVE_TOOLTIP_SCALED_LEVEL), ""),
@@ -394,9 +404,9 @@ LUIE.Data.Tooltips = {
     Drink_Vendor_Health                             = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71249:134:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
     Drink_Vendor_Magicka                            = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71250:308:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
     Drink_Vendor_Stamina                            = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71251:134:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
-    Drink_Cyrodilic_Field_Tonic                     = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71079:307:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
-    Drink_Cyrodilic_Field_Brew                      = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71077:307:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
-    Drink_Cyrodilic_Field_Tea                       = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71078:307:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
+    Drink_Cyrodilic_Field_Tonic                     = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71079:368:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
+    Drink_Cyrodilic_Field_Brew                      = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71077:368:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
+    Drink_Cyrodilic_Field_Tea                       = select(3, GetItemLinkOnUseAbilityInfo('|H1:item:71078:368:50:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h')),
 
     -- Crown Drink
     Drink_Crown_Crate_Drink                         = string.gsub(select(3, GetItemLinkOnUseAbilityInfo('|H1:item:94438:123:1:0:0:0:0:0:0:0:0:0:0:0:1:0:0:1:0:0:0|h|h')), GetString(SI_LUIE_SKILL_REMOVE_TOOLTIP_SCALED_LEVEL), ""),
@@ -426,6 +436,7 @@ LUIE.Data.Tooltips = {
 
 
     -- Mementos
+    Memento_Witchmothers_Brew                       = GetAbilityDescription(84369),
     Memento_Almalexias_Lantern                      = select(2, GetCollectibleInfo(341)),
     Memento_Bonesnap_Binding_Talisman               = select(2, GetCollectibleInfo(348)),
     Memento_Discourse_Amaranthine                   = select(2, GetCollectibleInfo(345)),
@@ -467,6 +478,7 @@ LUIE.Data.Tooltips = {
     Set_Vateshran_2H                                = GetString(SI_LUIE_SKILL_SET_VATESHRAN_2H_TP),
     Set_Vateshran_1H                                = GetString(SI_LUIE_SKILL_SET_VATESHRAN_1H_TP),
     Set_Vateshran_Destro_Staff                      = GetString(SI_LUIE_SKILL_SET_VATESHRAN_DESTRO_TP),
+    Set_Vateshran_Destro_Staff_Buff                 = GetString(SI_LUIE_SKILL_SET_VATESHRAN_DESTRO_BUFF_TP),
     Set_Vateshran_Resto_Staff                       = GetString(SI_LUIE_SKILL_SET_VATESHRAN_RESTO_TP),
 
     -- Monster Helms
@@ -479,8 +491,8 @@ LUIE.Data.Tooltips = {
     Set_Earthgore                                   = GetString(SI_LUIE_SKILL_SET_EARTHGORE),
     Set_Grothdarr                                   = GetString(SI_LUIE_SKILL_SET_GROTHDARR),
     Set_Iceheart                                    = GetString(SI_LUIE_SKILL_SET_ICEHEART),
-    Set_Ilambris_Fire                               = zo_strformat(GetString(SI_LUIE_SKILL_SET_ILAMBRIS), GetString(SI_DAMAGETYPE3)),
-    Set_Ilambris_Shock                              = zo_strformat(GetString(SI_LUIE_SKILL_SET_ILAMBRIS), GetString(SI_DAMAGETYPE4)),
+    Set_Ilambris                                    = GetString(SI_LUIE_SKILL_SET_ILAMBRIS),
+    Set_Ilambris_Ground                             = GetString(SI_LUIE_SKILL_SET_ILAMBRIS_GROUND),
     Set_Lord_Warden_Buff                            = GetString(SI_LUIE_SKILL_SET_LORD_WARDEN_BUFF),
     Set_Malubeth_Damage                             = GetString(SI_LUIE_SKILL_SET_MALUBETH_DAMAGE),
     Set_Malubeth_Heal                               = GetString(SI_LUIE_SKILL_SET_MALUBETH_HEAL),
@@ -630,6 +642,7 @@ LUIE.Data.Tooltips = {
     Set_Explosive_Rebuke                            = GetString(SI_LUIE_SKILL_SET_EXPLOSIVE_REBUKE_TP),
 
     -- Disguises
+    Disguise_Generic                                = GetString(SI_LUIE_SKILL_DISGUISE_GENERIC_TP),
     Disguise_Kollopi_Essence                        = GetString(SI_LUIE_SKILL_DISGUISE_KOLLOPI_ESSENCE_TP),
     Disguise_Sea_Viper_Armor                        = GetString(SI_LUIE_SKILL_DISGUISE_SEA_VIPER_ARMOR_TP),
     Disguise_Vulkhel_Guard                          = GetString(SI_LUIE_SKILL_DISGUISE_VULKHEL_GUARD_TP),
@@ -668,7 +681,6 @@ LUIE.Data.Tooltips = {
     Skill_Petrify_Stun                              = GetString(SI_LUIE_SKILL_PETRIFY_STUN_TP),
     Skill_Fossilize_Stun                            = GetString(SI_LUIE_SKILL_FOSSILIZE_STUN_TP),
     Skill_Shattering_Rocks_Stun                     = GetString(SI_LUIE_SKILL_SHATTERING_ROCKS_STUN_TP),
-    Skill_Shattering_Rocks                          = GetString(SI_LUIE_SKILL_SHATTERING_ROCKS_TP),
     Skill_Ash_Cloud                                 = GetString(SI_LUIE_SKILL_ASH_CLOUD_TP),
     Skill_Eruption                                  = GetString(SI_LUIE_SKILL_ERUPTION_TP),
     Skill_Magma_Armor                               = GetString(SI_LUIE_SKILL_MAGMA_ARMOR_TP),
@@ -687,7 +699,6 @@ LUIE.Data.Tooltips = {
     Skill_Relentless_Focus                          = GetString(SI_LUIE_SKILL_RELENTLESS_FOCUS_TP),
     Skill_Merciless_Resolve                         = GetString(SI_LUIE_SKILL_MERCILESS_RESOLVE_TP),
     Skill_Grim_Focus_Defense                        = GetString(SI_LUIE_SKILL_GRIM_FOCUS_DEFENSE_TP),
-    Skill_Surprise_Attack                           = GetString(SI_LUIE_SKILL_SURPRISE_ATTACK_TP),
     Skill_Path_of_Darkness                          = GetString(SI_LUIE_SKILL_PATH_OF_DARKNESS_TP),
     Skill_Twisting_Path                             = GetString(SI_LUIE_SKILL_TWISTING_PATH_TP),
     Skill_Refreshing_Path                           = GetString(SI_LUIE_SKILL_REFRESHING_PATH_TP),
@@ -702,11 +713,11 @@ LUIE.Data.Tooltips = {
     Skill_Malevolent_Offering                       = GetString(SI_LUIE_SKILL_MALEVOLENT_OFFERING_TP),
     Skill_Cripple                                   = GetString(SI_LUIE_SKILL_CRIPPLE_TP),
     Skill_Crippling_Grasp                           = GetString(SI_LUIE_SKILL_CRIPPLING_GRASP_TP),
+    Skill_Debilitate                                = GetString(SI_LUIE_SKILL_DEBILITATE_TP),
     Skill_Siphoning_Strikes                         = GetString(SI_LUIE_SKILL_SIPHONING_STRIKES_TP),
     Skill_Leeching_Strikes                          = GetString(SI_LUIE_SKILL_LEECHING_STRIKES_TP),
     Skill_Siphoning_Attacks                         = GetString(SI_LUIE_SKILL_SIPHONING_ATTACKS_TP),
     Skill_Soul_Tether                               = GetString(SI_LUIE_SKILL_SOUL_TETHER_TP),
-    Skill_Refreshing_Path_Ground                    = GetString(SI_LUIE_SKILL_REFRESHING_PATH_GROUND),
 
     -- Sorcerer
     Skill_Persistence_Rank_1                        = zo_strformat(GetString(SI_LUIE_SKILL_PERSISTENCE), 7),
@@ -959,8 +970,6 @@ LUIE.Data.Tooltips = {
 
     -- Heavy Armor
     Skill_Unstoppable                               = GetString(SI_LUIE_SKILL_UNSTOPPABLE),
-    Skill_Unstoppable_Brute                         = GetString(SI_LUIE_SKILL_UNSTOPPABLE_BRUTE),
-    Skill_Immovable                                 = GetString(SI_LUIE_SKILL_IMMOVABLE),
 
     ----------------------------------------------------------------
     -- WORLD SKILLS ------------------------------------------------
@@ -1106,14 +1115,6 @@ LUIE.Data.Tooltips = {
     Skill_Replenishing_Barrier                      = GetString(SI_LUIE_SKILL_REPLENISHING_BARRIER_TP),
 
     -- ---------------------------------------------------
-    -- RACIALS ------------------------------------------
-    -- ---------------------------------------------------
-
-    Skill_Hunters_Eye_Rank_1                        = zo_strformat(GetString(SI_LUIE_SKILL_HUNTERS_EYE_TP), 3, 400),
-    Skill_Hunters_Eye_Rank_2                        = zo_strformat(GetString(SI_LUIE_SKILL_HUNTERS_EYE_TP), 6, 900),
-    Skill_Hunters_Eye_Rank_3                        = zo_strformat(GetString(SI_LUIE_SKILL_HUNTERS_EYE_TP), 10, 1500),
-
-    -- ---------------------------------------------------
     -- CYRODIIL ------------------------------------------
     -- ---------------------------------------------------
 
@@ -1191,7 +1192,6 @@ LUIE.Data.Tooltips = {
     Skill_Recover_Duel                              = GetString(SI_LUIE_SKILL_RECOVER_DUEL_TP),
 
     -- Animals
-    Skill_Ferocity                                  = GetString(SI_LUIE_SKILL_BEAR_FEROCITY_TP),
     Skill_Ancient_Skin                              = zo_strformat(GetString(SI_LUIE_SKILL_HARDENED_CARAPACE_TP), 9),
     Skill_Weakness_Lion                             = GetString(SI_LUIE_SKILL_WEAKNESS_LION_TP),
     Skill_Hardened_Shell                            = GetString(SI_LUIE_SKILL_HARDENED_SHELL_TP),
@@ -1202,7 +1202,6 @@ LUIE.Data.Tooltips = {
     Skill_Cleave_Stance                             = GetString(SI_LUIE_SKILL_CLEAVE_STANCE_TP),
     Skill_Defensive_Ward                            = GetString(SI_LUIE_SKILL_DEFENSIVE_WARD_TP),
     Skill_Soul_Tether_NPC                           = GetString(SI_LUIE_SKILL_SOUL_TETHER_NPC_TP),
-    Skill_Siphoning_Strikes_NPC                     = GetString(SI_LUIE_SKILL_SIPHONING_STRIKES_NPC_TP),
     --Skill_Focused_Healing                           = GetString(SI_LUIE_SKILL_FOCUSED_HEALING_TP),
     Skill_Rite_of_Passage_NPC                       = GetString(SI_LUIE_SKILL_RITE_OF_PASSAGE_NPC_TP),
     Skill_Throw_Dagger                              = GetString(SI_LUIE_SKILL_THROW_DAGGER_TP),
@@ -1526,9 +1525,110 @@ LUIE.Data.Tooltips = {
 
 }
 
---[[
-Possibly use these at some point
+-- Returns dynamic tooltips when called by Tooltip function
+function LUIE.DynamicTooltip(abilityId)
+    -- Brace
+    if abilityId == 974 then
+        local _, _, mitigation = GetAdvancedStatValue(ADVANCED_STAT_DISPLAY_TYPE_BLOCK_MITIGATION)
+        local _, _, speed = GetAdvancedStatValue(ADVANCED_STAT_DISPLAY_TYPE_BLOCK_SPEED)
+        local finalSpeed = 100 - speed
+        local _, cost = GetAdvancedStatValue(ADVANCED_STAT_DISPLAY_TYPE_BLOCK_COST)
+        -- Get current weapons to check if a frost staff is equipped.
+        local weaponPair = GetActiveWeaponPairInfo()
+        local weaponType
+        if weaponPair == ACTIVE_WEAPON_PAIR_MAIN then
+            weaponType = GetItemWeaponType(BAG_WORN, EQUIP_SLOT_MAIN_HAND)
+        elseif weaponPair == ACTIVE_WEAPON_PAIR_BACKUP then
+            weaponType = GetItemWeaponType(BAG_WORN, EQUIP_SLOT_BACKUP_MAIN)
+        else
+            weaponType = WEAPONTYPE_NONE
+        end
+        -- Set tooltip resource to Stamina by default
+        local resourceType = GetString(SI_ATTRIBUTES3) -- Stamina
+        -- If we have a frost staff equipped and have learned Tri Focus then use Magicka for the tooltip
+        if weaponType == WEAPONTYPE_FROST_STAFF then
+             local skillType, skillIndex, abilityIndex = GetSpecificSkillAbilityKeysByAbilityId(30948)
+             local purchased = select(6, GetSkillAbilityInfo(skillType, skillIndex, abilityIndex))
+             if purchased then
+                 resourceType = GetString(SI_ATTRIBUTES2) -- Magicka
+             end
+        end
+        mitigation = math.floor(mitigation * 100 + 0.5) / 100 -- Remove decimal places -- TODO: Recheck this if they ever update the function itself to round
+        tooltip = zo_strformat(GetString(SI_LUIE_SKILL_BRACE_TP), mitigation, finalSpeed, cost, resourceType)
+    end
+    -- Crouch
+    if abilityId == 20299 then
+        local _, _, speed = GetAdvancedStatValue(ADVANCED_STAT_DISPLAY_TYPE_SNEAK_SPEED_REDUCTION)
+        local _, cost = GetAdvancedStatValue(ADVANCED_STAT_DISPLAY_TYPE_SNEAK_COST)
+        if speed <= 0 or speed >= 100 then
+            tooltip = zo_strformat(GetString(SI_LUIE_SKILL_HIDDEN_NO_SPEED_TP), cost)
+        else
+            local finalSpeed = 100 - speed
+            tooltip = zo_strformat(GetString(SI_LUIE_SKILL_HIDDEN_TP), finalSpeed, cost)
+        end
+    end
+    -- Unchained
+    if abilityId == 98316 then
+        local duration = GetAbilityDuration(98316) / 1000
+        local pointsSpent = GetNumPointsSpentOnChampionSkill(64) * 1.1
+        local adjustPoints = math.floor(pointsSpent * 100 + 0.5) / 100 -- Remove decimal places
+        tooltip = zo_strformat(GetString(SI_LUIE_SKILL_UNCHAINED_TP), duration, adjustPoints)
+    end
 
+    if abilityId == 150057 then -- Medium Armor Evasion
+        -- Counter for bonus
+        local counter = 0
+        -- Count the # of Medium Armor pieces equipped
+        for i = 0, 16 do
+            local itemLink = GetItemLink(BAG_WORN, i)
+            local armorType = GetItemLinkArmorType(itemLink)
+            if armorType == ARMORTYPE_MEDIUM then
+                counter = counter + 1
+            end
+        end
+        local counter = counter * 2
+        tooltip = zo_strformat(GetString(SI_LUIE_SKILL_MEDIUM_ARMOR_EVASION), counter)
+    end
+
+    if abilityId == 126582 then -- Unstoppable Brute
+        -- Counter for bonus
+        local counter = 0
+        -- Count the # of Heavy Armor pieces equipped
+        for i = 0, 16 do
+            local itemLink = GetItemLink(BAG_WORN, i)
+            local armorType = GetItemLinkArmorType(itemLink)
+            if armorType == ARMORTYPE_HEAVY then
+                counter = counter + 1
+            end
+        end
+        local counter = counter * 5
+        local tooltipValue1 = GetAbilityDuration(126582) / 1000
+        local tooltipValue2 = counter
+        tooltip = zo_strformat(GetString(SI_LUIE_SKILL_UNSTOPPABLE_BRUTE), tooltipValue1, tooltipValue2)
+    end
+
+    if abilityId == 126583 then -- Immovable
+        -- Counter for bonus
+        local counter = 0
+        -- Count the # of Heavy Armor pieces equipped
+        for i = 0, 16 do
+            local itemLink = GetItemLink(BAG_WORN, i)
+            local armorType = GetItemLinkArmorType(itemLink)
+            if armorType == ARMORTYPE_HEAVY then
+                counter = counter + 1
+            end
+        end
+        local counter = counter * 5
+        local tooltipValue1 = GetAbilityDuration(126583) / 1000
+        local tooltipValue2 = counter
+        local tooltipValue3 = 65 + counter
+        tooltip = zo_strformat(GetString(SI_LUIE_SKILL_IMMOVABLE), tooltipValue1, tooltipValue2, tooltipValue3)
+    end
+
+    return tooltip
+end
+
+--[[
 function LUIE.ProcessTooltipType(input, tooltip)
     -- dummy func, maybe use
 end

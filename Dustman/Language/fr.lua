@@ -142,6 +142,8 @@ SafeAddString(DUSTMAN_TREASURE_MAPS, 					"Mettre au rebut les cartes aux tréso
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESC, 				"Si oui, met au rebut les cartes aux trésors.", 1)	
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESTROY, 			"...et les détruit !", 1)
 SafeAddString(DUSTMAN_TREASURE_MAPS_DESTROY_DESC,		"Détruit automatiquement les cartes aux trésors.", 1)
+SafeAddString(DUSTMAN_JEWELRY_MASTER_WRITS,				"Destroy Jewelry Master Writs", 1) --TO TRANSLATE
+SafeAddString(DUSTMAN_JEWELRY_MASTER_WRITS_DESC,		"Automatically destroy Jewelry Master Writs", 1)  --TO TRANSLATE
 --treasures and trophies submenu
 SafeAddString(DUSTMAN_TREASURES, 						"Trésors et trophées", 1)
 SafeAddString(DUSTMAN_TREASURE, 						"Mettre au rebut les trésors ?", 1)

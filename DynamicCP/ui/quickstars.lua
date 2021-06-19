@@ -16,8 +16,6 @@ local offsets = {
 }
 
 local quickstarsFragment = nil
-local SLOTTABLE_COOLDOWN = 30000
-local lastChange = 0
 
 ---------------------------------------------------------------------
 -- Utility
@@ -233,7 +231,7 @@ local function UpdateDropdowns(tree)
         -- Add sorted items to dropdown
         for _, data in ipairs(sortedSlottables) do
             local function OnItemSelected(_, _, entry)
-                DynamicCP.dbg("Selected " .. data.name .. " " .. tostring(data.skillId))
+                -- DynamicCP.dbg("Selected " .. data.name .. " " .. tostring(data.skillId))
                 OnStarSelected(tree, i, data.skillId, selectedSkillId)
             end
 
@@ -284,7 +282,7 @@ end
 -- Called when user clicks tab button
 ---------------------------------------------------------------------
 function DynamicCP.SelectQuickstarsTab(tree)
-    DynamicCP.dbg("selecting " .. tostring(tree))
+    -- DynamicCP.dbg("selecting " .. tostring(tree))
     -- TODO: show warning if navigating off of the tab with unsaved changes?
     -- Keep same if we are just refreshing the dropdowns
     if (tree == "REFRESH") then
@@ -402,30 +400,6 @@ end
 
 
 ---------------------------------------------------------------------
--- On purchase, set the cooldown
-function DynamicCP.QuickstarsOnPurchased(result)
-    if (result ~= CHAMPION_PURCHASE_SUCCESS) then return end
-    lastChange = GetGameTimeMilliseconds()
-
-    if (not DynamicCP.savedOptions.quickstarsShowCooldown) then return end
-
-    local secondsRemaining = (SLOTTABLE_COOLDOWN - GetGameTimeMilliseconds() + lastChange) / 1000
-    DynamicCPQuickstarsListCooldown:SetText(string.format("Cooldown %ds", secondsRemaining))
-    DynamicCPQuickstarsListCooldown:SetHidden(false)
-
-    -- Update the cooldown label
-    EVENT_MANAGER:RegisterForUpdate(DynamicCP.name .. "QuickstarsCooldown", 1000, function()
-        local secondsRemaining = (SLOTTABLE_COOLDOWN - GetGameTimeMilliseconds() + lastChange) / 1000
-        if (secondsRemaining <= 0) then
-            EVENT_MANAGER:UnregisterForUpdate(DynamicCP.name .. "QuickstarsCooldown")
-            DynamicCPQuickstarsListCooldown:SetHidden(true)
-        else
-            DynamicCPQuickstarsListCooldown:SetText(string.format("Cooldown %ds", secondsRemaining))
-        end
-    end)
-end
-
----------------------------------------------------------------------
 -- Toggle showing quickstars, persist it
 function DynamicCP.ToggleQuickstars()
     DynamicCP.savedOptions.showQuickstars = not DynamicCP.savedOptions.showQuickstars
@@ -449,12 +423,16 @@ function DynamicCP.InitQuickstarsScenes()
 
     if (DynamicCP.savedOptions.quickstarsShowOnHud) then
         HUD_SCENE:AddFragment(quickstarsFragment)
-        HUD_UI_SCENE:AddFragment(quickstarsFragment)
         DynamicCPQuickstarsContainer:SetHidden(false)
     else
         HUD_SCENE:RemoveFragment(quickstarsFragment)
-        HUD_UI_SCENE:RemoveFragment(quickstarsFragment)
         DynamicCPQuickstarsContainer:SetHidden(true)
+    end
+
+    if (DynamicCP.savedOptions.quickstarsShowOnHudUi) then
+        HUD_UI_SCENE:AddFragment(quickstarsFragment)
+    else
+        HUD_UI_SCENE:RemoveFragment(quickstarsFragment)
     end
 
     if (DynamicCP.savedOptions.quickstarsShowOnCpScreen) then
@@ -464,6 +442,33 @@ function DynamicCP.InitQuickstarsScenes()
         CHAMPION_PERKS_SCENE:RemoveFragment(quickstarsFragment)
         GAMEPAD_CHAMPION_PERKS_SCENE:RemoveFragment(quickstarsFragment)
     end
+end
+
+
+---------------------------------------------------------------------
+-- Register the cooldown updates
+function OnCooldownStart()
+    if (not DynamicCP.savedOptions.quickstarsShowCooldown) then return end
+    local secondsRemaining = DynamicCP.GetCooldownSeconds()
+    DynamicCPQuickstarsListCooldown:SetText(string.format("Cooldown %ds", secondsRemaining))
+    DynamicCPQuickstarsListCooldown:SetHidden(false)
+end
+
+function OnCooldownUpdate()
+    local secondsRemaining = DynamicCP.GetCooldownSeconds()
+    DynamicCPQuickstarsListCooldown:SetText(string.format("Cooldown %ds", secondsRemaining))
+end
+
+function OnCooldownEnd()
+    DynamicCPQuickstarsListCooldown:SetHidden(true)
+end
+
+function DynamicCP.QuickstarsOnPurchased()
+    -- Refresh quickstars dropdowns with a slight delay, to hopefully avoid the not updated thing
+    EVENT_MANAGER:RegisterForUpdate(DynamicCP.name .. "QuickstarsRefresh", 50, function()
+        EVENT_MANAGER:UnregisterForUpdate(DynamicCP.name .. "QuickstarsRefresh")
+        DynamicCP.SelectQuickstarsTab("REFRESH")
+    end)
 end
 
 ---------------------------------------------------------------------
@@ -489,4 +494,6 @@ function DynamicCP.InitQuickstars()
     DynamicCPQuickstarsListCooldown:SetColor(unpack(DynamicCP.savedOptions.quickstarsCooldownColor))
 
     DynamicCP.InitQuickstarsScenes()
+
+    DynamicCP.RegisterCooldownListener("Quickstars", OnCooldownStart, OnCooldownUpdate, OnCooldownEnd)
 end

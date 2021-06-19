@@ -1,10 +1,10 @@
 local ItemFinder = {
 Name = "ItemFinder",
 Author = "Rhyono",
-Version = "1.28",
+Version = "1.29",
 SettingsVersion = "1.04"}
 
-local pmax = 172000
+local pmax = 179000
 local gmin = 1
 local gmax = pmax
 local total_results = 0
@@ -52,6 +52,33 @@ ItemFinder.TraitTable = {
 	[ITEM_TRAIT_TYPE_JEWELRY_ROBUST]="Robust",
 	[ITEM_TRAIT_TYPE_JEWELRY_SWIFT]="Swift",
 	[ITEM_TRAIT_TYPE_JEWELRY_TRIUNE]="Triune",
+	[ITEM_TRAIT_TYPE_ARMOR_AGGRESSIVE] = "Aggressive",
+	[ITEM_TRAIT_TYPE_ARMOR_AUGMENTED] = "Augmented",
+	[ITEM_TRAIT_TYPE_ARMOR_BOLSTERED] = "Bolstered",
+	[ITEM_TRAIT_TYPE_ARMOR_FOCUSED] = "Focused",
+	[ITEM_TRAIT_TYPE_ARMOR_PROLIFIC] = "Prolific",
+	[ITEM_TRAIT_TYPE_ARMOR_QUICKENED] = "Quickened",
+	[ITEM_TRAIT_TYPE_ARMOR_SHATTERING] = "Shattering",
+	[ITEM_TRAIT_TYPE_ARMOR_SOOTHING] = "Soothing",
+	[ITEM_TRAIT_TYPE_ARMOR_VIGOROUS] = "Vigorous",
+	[ITEM_TRAIT_TYPE_JEWELRY_AGGRESSIVE] = "Aggressive",
+	[ITEM_TRAIT_TYPE_JEWELRY_AUGMENTED] = "Augmented",
+	[ITEM_TRAIT_TYPE_JEWELRY_BOLSTERED] = "Bolstered",
+	[ITEM_TRAIT_TYPE_JEWELRY_FOCUSED] = "Focused",
+	[ITEM_TRAIT_TYPE_JEWELRY_PROLIFIC] = "Prolific",
+	[ITEM_TRAIT_TYPE_JEWELRY_QUICKENED] = "Quickened",
+	[ITEM_TRAIT_TYPE_JEWELRY_SHATTERING] = "Shattering",
+	[ITEM_TRAIT_TYPE_JEWELRY_SOOTHING] = "Soothing",
+	[ITEM_TRAIT_TYPE_JEWELRY_VIGOROUS] = "Vigorous",
+	[ITEM_TRAIT_TYPE_WEAPON_AGGRESSIVE] = "Aggressive",
+	[ITEM_TRAIT_TYPE_WEAPON_AUGMENTED] = "Augmented",
+	[ITEM_TRAIT_TYPE_WEAPON_BOLSTERED] = "Bolstered",
+	[ITEM_TRAIT_TYPE_WEAPON_FOCUSED] = "Focused",
+	[ITEM_TRAIT_TYPE_WEAPON_PROLIFIC] = "Prolific",
+	[ITEM_TRAIT_TYPE_WEAPON_QUICKENED] = "Quickened",
+	[ITEM_TRAIT_TYPE_WEAPON_SHATTERING] = "Shattering",
+	[ITEM_TRAIT_TYPE_WEAPON_SOOTHING] = "Soothing",
+	[ITEM_TRAIT_TYPE_WEAPON_VIGOROUS] = "Vigorous"
 }
 
 ItemFinder.EquipTable = {
@@ -153,12 +180,12 @@ local function bridge(text,min,max,trait,etype,weight)
 	if max == nil then gmax = pmax else gmax = max end
 	
 	trait = trait:lower()	
-	
-	--equipment type poison doesn't have results until over 75k, stops by 82k and resumes at 135k. Partial selective search for efficiency.
+		
+	--equipment type poison doesn't have results until over 75k, stops by 82k and resumes at 135k then 152k. Partial selective search for beginning for efficiency.
 	if etype ~= "" and etype:lower() == "poison" and gmax > 75000 and gmin < 75000 then
 		gmin = 75000
-	end
-	
+	end	
+		
 	--Summerset jewelry traits do not begin until 139k; partial selective search for efficiency
 	if (trait == "bloodthirsty" or trait == "harmony" or trait == "infused" or trait == "protective" or trait == "swift" or trait == "triune") and gmax > 139000 and gmin < 139000 then
 		gmin = 139000
@@ -289,6 +316,9 @@ function ItemFinder.UseName(text,trait,etype,weight)
 							end
 						end
 						if matched then
+						if i > 176000 and (temp_trait == nil or link_suffix == nil) then
+						d(i)
+						end
 							out_ary[#out_ary+1] = "ID #" .. i .. ": |H1:item:" .. i .. link_suffix .. (temp_trait ~= "None" and (" " .. temp_trait) or "")
 							total_results = total_results + 1
 							--break at 100 results

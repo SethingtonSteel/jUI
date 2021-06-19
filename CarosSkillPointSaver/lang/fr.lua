@@ -60,7 +60,8 @@ local L = {}
 	L.CSPS_Tooltiptext_MinusCP = "Retirez le point de champion (maintenez Shift pour 10 points / étape suivante)"
 	L.CSPS_Tooltiptext_CpHbHk = "Cliquez ici pour changer le raccourci clavier de ce profil."
 	L.CSPS_Tooltip_CPBar = "Faites glisser et déposez une compétence de la liste pour l'insérer ici. Utilisez le clic droit pour supprimer une compétence mise ."
-	L.CSPS_Tooltip_CPPreset = "Dernière mise à jour: <<2>>/<<1>>/<<3>>\nPour les mises à jour les plus récentes, visitez:\n<<4>>"
+	L.CSPS_Tooltip_CPPUpdate = "Dernière mise à jour: <<2>>/<<1>>/<<3>>"
+	L.CSPS_Tooltip_CPPWebsite = "Pour les mises à jour les plus récentes, visitez:\n<<1>>"
 	L.CSPS_Tooltip_CPCustomBar = "Indique si une barre pour les points de champion mis doit être affichée dans le cadre du HUD"
 	L.CSPS_Tooltip_CPCustomIcons = "Indique si l'addon doit utiliser des icônes personnalisées pour les points de champion slottables"
 	
@@ -112,6 +113,16 @@ local L = {}
 	L.CSPS_CPBar_GroupKeybind = "Association de touches actuelle: %s"
 	L.CSPS_CPBar_Manage = "Gérer barre de champion"
 	
+	L.CSPS_CPPDescr_JoaTFarming = "Ce préréglage est optimisé pour être utilisé avec l'addon  \" Jack of all Trades \" et se concentre sur les ressources agricoles (le combat, la pêche et le crime sont ajoutés à un niveau de PC plus élevé)."
+	L.CSPS_CPPDescr_JoaTFishing = "Ce préréglage est optimisé pour être utilisé avec l'addon \" Jack of all Trades \" et se concentre sur la pêche (l'agriculture, le combat et le crime sont ajoutés à un niveau de PC plus élevé)."
+	L.CSPS_CPPDescr_JoaTThieving = "Ce préréglage est optimisé pour être utilisé avec l'addon \" Jack of all Trades \" et se concentre sur le crime (l'agriculture, le combat et la pêche sont ajoutés à un niveau de PC plus élevé)."
+	L.CSPS_CPPDescr_CombatFocus = "Ce préréglage est axé sur les points de champion verts liés au combat."
+
+	L.CSPS_StrictOrder = "Ordre strict"
+	L.CSPS_Tooltiptext_StrictOrder = "Cochez cette case pour laisser l'addon arrêter de charger un préréglage à la première compétence pour laquelle vous n'avez pas assez de points au lieu de vérifier si l'une des compétences suivantes peut être chargée à la place. Le choix de cette option peut vous laisser avec plus de points non dépensés, mais peut vous faire économiser les frais de re spécialisations de 3000 pièces d'or plus tard."
+	L.CSPS_CPPCurrentlyApplied = "Actuellement appliqué:  <<1[Aucun point /1 point/$d points]>>"
+
+	L.CSPS_MSG_ApplyClosing = "Vous semblez avoir des changements non appliqués dans vos points de champion. Assurez-vous de ne pas oublier de les appliquer."
 	
 	L.CSPS_CPBar_LocTrial = "Raid/Arène"
 	L.CSPS_CPBar_LocCurr = "Localisation actuelle"

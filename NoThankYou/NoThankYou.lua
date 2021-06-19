@@ -25,7 +25,7 @@ http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
 ]]
 
 local ADDON_NAME = "NoThankYou"
-local ADDON_VERSION = "10.8"
+local ADDON_VERSION = "10.9"
 local ADDON_AUTHOR = "|cEFEBBEGarkin|r, Ayantir, Vostorn, |c8794C5SlippyCheeze|r, Uta"
 local ADDON_WEBSITE = "http://www.esoui.com/downloads/info865-Nothankyou.html"
 
@@ -49,6 +49,8 @@ local defaults = {
 	motdGuilds = {},
 	nonstopHarvest = false,
 	noCameraSpin = false,
+	noCameraSpinStats = false,
+	noCameraSpinInv = false,
 	fenceDialog = false,
 	ultimateSound = 0,
 	disbandDialog = false,
@@ -861,11 +863,24 @@ local function DontRotateGameCamera(doOverrideNoCameraSpin)
 		dyeStampConfirmationGamepad = true,
 		dyeStampConfirmationKeyboard = true,
 		outfitStylesBook = true,
-		stats = true,
+		stats = false,
+		inventory = false,
 	}
 
 	local function ChangeScenesBehavior(disableFragments)
+		for name, scene in pairs(scenes) do
+			if scene.toRestore then
+				for index, fragment in ipairs(scene.toRestore) do
+					scene:AddFragment(fragment)
+				end
+			end
+		end
+		scenes = {}
 		if disableFragments then
+			if SV.noCameraSpin then
+				blacklistedScenes["stats"]     = not SV.noCameraSpinStats
+				blacklistedScenes["inventory"] = not SV.noCameraSpinInv
+			end
 			for name, scene in pairs(SCENE_MANAGER.scenes) do
 				if not blacklistedScenes[name] then
 					local sceneToSave = true
@@ -879,14 +894,6 @@ local function DontRotateGameCamera(doOverrideNoCameraSpin)
 							end
 							table.insert(scenes[name].toRestore, fragmentToRemove)
 						end
-					end
-				end
-			end
-		else
-			for name, scene in pairs(scenes) do
-				if scene.toRestore then
-					for index, fragment in ipairs(scene.toRestore) do
-						scene:AddFragment(fragment)
 					end
 				end
 			end
@@ -1190,6 +1197,7 @@ local function RemovePinsFromMaps()
 		[407] = true, -- Southern Elsweyr   Dragonguard Sanctum
 		[421] = true, -- Western Skyrim     Solitude
 		[449] = true, -- The Reach          Markarth
+		[467] = true, -- Blackwood          Leyawiin Outskirts
 	}
 	local isArena = {
 		[250] = true, -- Maelstrom Arena
@@ -1681,6 +1689,30 @@ local function BuildSettingsMenu()
 				DontRotateGameCamera()
 			end,
 			default = defaults.noCameraSpin,
+		},
+		{
+			type = "checkbox",
+			name = GetString(NOTYOU_CAMERA_ROTATE_STATS),
+			tooltip = GetString(NOTYOU_CAMERA_ROTATE_STATS_TOOLTIP),
+			getFunc = function() return SV.noCameraSpinStats end,
+			setFunc = function(value)
+				SV.noCameraSpinStats = value
+				DontRotateGameCamera()
+			end,
+			default = defaults.noCameraSpinStats,
+			disabled = function() return SV.noCameraSpin == false end,
+		},
+		{
+			type = "checkbox",
+			name = GetString(NOTYOU_CAMERA_ROTATE_INV),
+			tooltip = GetString(NOTYOU_CAMERA_ROTATE_INV_TOOLTIP),
+			getFunc = function() return SV.noCameraSpinInv end,
+			setFunc = function(value)
+				SV.noCameraSpinInv = value
+				DontRotateGameCamera()
+			end,
+			default = defaults.noCameraSpinInv,
+			disabled = function() return SV.noCameraSpin == false end,
 		},
 		---[[ Lore Library ]]---
 		{

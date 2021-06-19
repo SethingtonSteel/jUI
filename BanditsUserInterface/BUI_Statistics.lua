@@ -1294,13 +1294,13 @@ function BUI.Stats.SetupReport(context,header_button)	--Setup player report
 			"  |cbb3333Bleed|r "..math.floor(Element_Damage[DAMAGE_TYPE_BLEED]*100/Report.damage).."%"
 		end
 			title=title.."\n"..
-			"|cAAAAAADoT|r ".. 100-Direct_Damage.."%"..	--math.floor(Dot_Damage*100/Report.damage)
-			"  |cAAAAAADirect|r "..Direct_Damage.."%"..
-			"  |cbbbbbbWeapon|r "..math.floor(Weapon_Damage*100/Report.damage).."%"..
-			"  |c5555ffSpell|r "..math.floor(Spell_Damage*100/Report.damage).."%"
+			"|cbbbbbbWeapon|r "..math.floor(Weapon_Damage*100/Report.damage).."%"..
+			"  |c5555ffSpell|r "..math.floor(Spell_Damage*100/Report.damage).."%"..
+--			"  |cAAAAAADoT|r ".. 100-Direct_Damage.."%"..
+			(Direct_Damage<100 and "  |cAAAAAADirect damage|r "..Direct_Damage.."%" or "")
 		--Weawing
 		title=title.."\n"..
-			(Report.Ability.w and "|cAAAAAALight Attack/Ability:|r "..Report.Ability.w.."|cAAAAAA/|r"..(Report.Ability.a or 0) or "")..
+			(Report.Ability.w and "|cAAAAAAWeapon Attack/Ability:|r "..Report.Ability.w.."|cAAAAAA/|r"..(Report.Ability.a or 0) or "")..
 			(Report.Ability.a and "  |cbbbbbbRotation speed:|r "..math.min(math.floor(Report.Ability.a/fighttime*100),100).."|cAAAAAA%|r" or "")
 		BUI_Report_Elements:SetText(title)
 		BUI_Report_Elements:SetHidden(realcontext=="Incoming")

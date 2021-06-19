@@ -10,12 +10,18 @@ local zo_strformat = zo_strformat
 local bankerTythis = GetCollectibleName(267)
 local bankerCat = GetCollectibleName(6376)
 local merchantNuzimeh = GetCollectibleName(301)
-local merchantCat =  GetCollectibleName(6378)
+local merchantCat = GetCollectibleName(6378)
+local companionBastian = GetCollectibleName(9245)
+local companionMirri =  GetCollectibleName(9353)
 
 local bankerOptions     = { bankerTythis, bankerCat }
 local bankerOptionsKeys = { [bankerTythis] = 1, [bankerCat] = 2 }
 local merchantOptions   = { merchantNuzimeh, merchantCat }
 local merchantOptionsKeys   = { [merchantNuzimeh] = 1, [merchantCat] = 2 }
+local companionOptions   = { companionBastian, companionMirri }
+local companionOptionsKeys   = { [companionBastian] = 1, [companionMirri] = 2 }
+local homeOptions       = { "Inside", "Outside"}
+local homeOptionsKeys   = { ["Inside"] = 1, ["Outside"] = 2 }
 
 -- Create Slash Commands Settings Menu
 function SlashCommands.CreateSettings()
@@ -86,6 +92,28 @@ function SlashCommands.CreateSettings()
                 warning = GetString(SI_LUIE_LAM_RELOADUI_SLASH_WARNING),
             },
             {
+                -- Choose Home Option
+                type = "dropdown",
+                name = "\t\t\t\t\tChoose Inside or Outside for /Home",
+                choices = homeOptions,
+                getFunc = function() return homeOptions[Settings.SlashHomeChoice] end,
+                setFunc = function(value) Settings.SlashHomeChoice = homeOptionsKeys[value] end,
+                width = "full",
+                default = Defaults.SlashHomeChoice,
+                disabled = function() return not Settings.SlashHome end,
+            },
+            {
+                -- SlashSetPrimaryHome
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_SLASHCMDS_HOME_SET_PRIMARY),
+                tooltip = GetString(SI_LUIE_LAM_SLASHCMDS_HOME_SET_PRIMARY_TP),
+                getFunc = function() return Settings.SlashSetPrimaryHome end,
+                setFunc = function(value) Settings.SlashSetPrimaryHome = value SlashCommands.RegisterSlashCommands() end,
+                width = "full",
+                default = Defaults.SlashSetPrimaryHome,
+                warning = GetString(SI_LUIE_LAM_RELOADUI_SLASH_WARNING),
+            },
+            {
                 -- SlashCampaignQ
                 type = "checkbox",
                 name = GetString(SI_LUIE_LAM_SLASHCMDS_CAMPAIGN),
@@ -151,6 +179,40 @@ function SlashCommands.CreateSettings()
                 setFunc = function(value) Settings.SlashFence = value SlashCommands.RegisterSlashCommands() end,
                 width = "full",
                 default = Defaults.SlashFence,
+                warning = GetString(SI_LUIE_LAM_RELOADUI_SLASH_WARNING),
+            },
+            {
+                -- SlashCompanion
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_SLASHCMDS_COMPANION),
+                tooltip = GetString(SI_LUIE_LAM_SLASHCMDS_COMPANION_TP),
+                getFunc = function() return Settings.SlashCompanion end,
+                setFunc = function(value) Settings.SlashCompanion = value SlashCommands.RegisterSlashCommands() end,
+                width = "full",
+                default = Defaults.SlashCompanion,
+                warning = GetString(SI_LUIE_LAM_RELOADUI_SLASH_WARNING),
+            },
+            {
+                -- Choose Companion
+                type = "dropdown",
+                name = "\t\t\t\t\tChoose Companion to Summon",
+                choices = companionOptions,
+                getFunc = function() return companionOptions[Settings.SlashCompanionChoice] end,
+                setFunc = function(value) Settings.SlashCompanionChoice = companionOptionsKeys[value] end,
+                width = "full",
+                default = Defaults.SlashCompanionChoice,
+                disabled = function() return not Defaults.SlashCompanion end,
+
+            },
+            {
+                -- SlashEye
+                type = "checkbox",
+                name = GetString(SI_LUIE_LAM_SLASHCMDS_EYE),
+                tooltip = GetString(SI_LUIE_LAM_SLASHCMDS_EYE_TP),
+                getFunc = function() return Settings.SlashEye end,
+                setFunc = function(value) Settings.SlashEye = value SlashCommands.RegisterSlashCommands() end,
+                width = "full",
+                default = Defaults.SlashEye,
                 warning = GetString(SI_LUIE_LAM_RELOADUI_SLASH_WARNING),
             },
             {
